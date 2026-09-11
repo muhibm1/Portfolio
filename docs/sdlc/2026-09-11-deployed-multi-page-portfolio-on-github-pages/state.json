@@ -3,7 +3,7 @@
   "title": "Deployed multi-page portfolio on GitHub Pages",
   "tier": 2,
   "tier_override": null,
-  "phase": "intent",
+  "phase": "spec",
   "mode": "normal",
   "worktree": null,
   "branch": "wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages",
@@ -18,5 +18,5 @@
     "status": "none",
     "at": null
   },
-  "updated_at": "2026-09-11T02:37:17.689Z"
+  "updated_at": "2026-09-11T03:04:11.789Z"
 }
