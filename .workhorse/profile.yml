@@ -1,0 +1,165 @@
+# WorkHorse client profile. Written once at /workhorse:onboard, edited by humans, read by every agent and hook.
+# Every value here is a fact about THIS client. Label anything not verified with "(believed)".
+#
+# Written 2026-09-10 by the discovery analyst from the repository at commit b50497f, the owner's
+# description, and docs/design-brief.md. Full reasoning lives in docs/sdlc/codebase-map.md and
+# docs/sdlc/constraints.md. The G0 packet at the end of constraints.md lists what the owner must
+# confirm before the first change runs.
+
+client:
+  name: "Muhammad Muhibullah personal portfolio"
+  industry: "personal / careers (individual, no company)"
+  engagement_start: "2026-09-10"
+  primary_contact: "Site owner (sole engineer, sole decision maker, sole data subject)"
+
+# Autonomy ladder: shadow | assisted | bounded | full. See design doc 4.2. Default bounded.
+autonomy: bounded
+
+stack:
+  languages: [javascript, jsx, css, html]
+  frameworks: [react-19, vite-5, tailwindcss-4]
+  package_manager: npm
+  database: none
+  hosting: "github-pages (believed) - target repo muhibm1/Portfolio, not configured yet"
+  ci: "github-actions (believed) - intended, no .github directory exists yet"
+
+# Commands agents run. Each must be a single command that exits non-zero on failure.
+# Leave empty if the project has none; the verifier will report "no check defined".
+#
+# typecheck, test, test_file, e2e and screenshot are deliberately empty: this project has no
+# TypeScript and no test runner. See notes at the bottom of this file.
+commands:
+  install: "npm ci"
+  typecheck: ""
+  lint: "npm run lint"
+  format: ""
+  test: ""
+  test_file: ""
+  build: "npm run build"
+  e2e: ""
+  screenshot: ""
+  security_audit: "npm audit --audit-level=high"
+
+conventions:
+  default_branch: main
+  branch_prefix: wh/
+  commit_style: conventional
+  test_globs:                # files the fixer may NOT edit during a fix loop
+    - "**/*.test.*"
+    - "**/*.spec.*"
+    - "**/__tests__/**"
+    - "**/tests/**"
+    - "**/test/**"
+  docs_dir: docs
+  style_notes:
+    - "One default-exported function component per file under src/components"
+    - "Copy, metrics and resume content live in src/data/portfolioData.js, never inline in a component"
+    - "Styling is Tailwind utility classes in JSX; shared animation and colour tokens go in src/index.css"
+    - "No new runtime dependency without naming it, its licence and its exact version in the plan"
+    - "No analytics, tracking pixel, cookie, or visitor data collection of any kind"
+
+# Paths hooks refuse to edit (deny) or ask before editing (ask). Globs, repo-relative.
+#
+# protect-paths.js checks protected_paths (deny) BEFORE sensitive_paths (ask), so a path listed
+# in both is simply denied. .github/workflows/** is therefore listed as sensitive, not protected:
+# the Build phase has to create .github/workflows/deploy.yml, and a deny would make that
+# impossible rather than merely deliberate. Revisit once the workflow exists and is stable.
+# infra/**, migrations, auth, payments and billing were dropped from the template because none
+# of them exist in this project and a glob that matches nothing protects nothing.
+protected_paths:
+  - "**/*.pem"
+  - "**/*.key"
+  - ".env*"
+sensitive_paths:
+  - ".github/workflows/**"     # deploy pipeline, the only path that can publish to production
+  - "index.html"               # third-party script tags, meta tags and any CSP land here
+  - "vite.config.js"           # base path, a wrong value breaks every asset on GitHub Pages
+  - "package.json"             # supply chain
+  - "package-lock.json"        # supply chain
+
+# Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
+#
+# bash-guard.js already denies force pushes and any push to the default branch before these
+# lists are read. The terraform, kubectl and DROP DATABASE entries from the template were
+# removed: there is no infrastructure and no database here, so they described nothing.
+deny_commands:
+  - "git push --force"
+  - "git push -f"
+  - "npm publish"
+  - "gh repo delete"
+ask_commands:
+  - "git push"                 # a push to the default branch publishes the public site
+  - "npm install"
+  - "npm i "
+  - "npm uninstall"
+  - "npx "                     # runs code fetched from the registry at call time
+  - "gh workflow run"
+  - "gh release"
+
+# Build phase parallelism. The planner groups file-disjoint tasks into waves; the conductor runs
+# up to max_parallel builders per wave, each in its own worktree. Lower it if the client's
+# machine, CI, or rate limits cannot take 10.
+build:
+  max_parallel: 4              # single Windows laptop
+  wave_merge: rebase           # rebase | merge: how wave branches fold into the change branch
+
+# Environment tiers. The release engineer may act freely in dev, needs G5 for prod.
+# There is no staging environment. Production is GitHub Pages, published by a GitHub Actions
+# workflow triggered by a push to the default branch, so the deploy command is the push itself.
+# Agents are blocked from running it by bash-guard's built-in rule; the owner pushes.
+environments:
+  dev: { deploy: "npm run dev", auto: true }
+  staging: { deploy: "", auto: false }
+  prod: { deploy: "git push origin main", auto: false }
+
+# Compliance. Reviewed 2026-09-10 by the compliance mapper against docs/sdlc/codebase-map.md
+# and docs/sdlc/constraints.md. Confirmed: no backend, no database, no cookies, no analytics,
+# no forms, no localStorage (grep across src/ and index.html, exit 1, no matches). None of
+# gdpr, hipaa, pci-dss, soc2, iso27001, financial are selected below because none formally
+# apply: no PHI, no cardholder data, no assurance engagement with a customer, no money
+# movement, no company entity for soc2/iso27001 to certify. ccpa, coppa, ferpa and nis2 were
+# considered and excluded for the same reason (no business meeting CCPA's thresholds, no
+# children's data, no student records, not critical infrastructure).
+#
+# One item is flagged "possibly applicable, confirm with client" rather than selected, per the
+# compliance mapper's own rule not to select a regime it is unsure of: index.html loads Google
+# Fonts from fonts.googleapis.com and fonts.gstatic.com on every page view (lines 8-10), which
+# discloses each visitor's IP address to Google LLC (US). GitHub Pages hosting will do the same
+# for GitHub Inc once deployed (believed, not yet configured). For EU/UK visitors this is a
+# GDPR-relevant personal-data disclosure; whether a static site with no server-side component
+# "processes" that data as a controller, versus the visitor's browser simply making a direct
+# request Google's terms govern, is a genuinely unsettled legal question this mapper is not
+# positioned to resolve. The narrow, proportionate controls this triggers either way (name a
+# lawful basis, or remove the third-party call by self-hosting the fonts) are listed in full in
+# docs/sdlc/constraints.md, "Compliance controls" section, which every later phase should read.
+compliance:
+  regimes: []   # "gdpr" deliberately not selected; see "possibly applicable" note above and
+                # docs/sdlc/constraints.md Compliance controls.
+  special_categories: []   # None present, none inferable. Confirmed by reading the whole of
+                            # src/data/portfolioData.js and InteractiveTriageSimulator.jsx
+                            # PRESETS: no health, biometric, genetic, sexual-orientation,
+                            # religious, political or union-membership data, nothing from which
+                            # those are inferable.
+  data_residency: "No database, so nothing resides under the owner's control. Two flows disclose a visitor's IP address to a company outside the EU/UK on every page view: Google Fonts (fonts.googleapis.com, fonts.gstatic.com, loaded from index.html lines 8-10) to Google LLC, and GitHub Pages hosting to GitHub Inc once deployed (believed, not yet configured). Whether either company's current terms name a transfer mechanism (SCCs, EU-US Data Privacy Framework) for this flow is believed, not verified from this repository."
+  audit_log_required: false   # No admin surface, no PHI, no cardholder data, no financial
+                              # ledger. Nothing in the codebase meets any regime's audit-log
+                              # trigger.
+  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, phone, city, LinkedIn), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
+
+# Risk tier overrides. Paths here force at least the given tier regardless of the classifier.
+# Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
+tier_floor_paths:
+  3: []
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json"]
+
+# Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
+# tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.
+# Create the database once with /workhorse:sync --setup, then paste its id here.
+tracker:
+  provider: ""
+  database: ""
+  sync_artifacts: false
+  sync_on: [gate, phase]
+
+# Free text the discovery analyst could not fit elsewhere. Kept short.
+notes: "No test runner and no typechecker exist, so commands.test and commands.typecheck are empty on purpose; the spec should add vitest and React Testing Library so later phases have a real test command. commands.lint is declared but fails on this machine right now (confirmed): node_modules/@oxlint is empty, oxlint cannot load a native binding, and oxlint --version exits 1. That is npm cli issue 4828. Fix by removing node_modules and package-lock.json and reinstalling, before the first verify. package.json also carries @rolldown/binding-win32-x64-msvc as a direct dependency; nothing installed needs it (vite 5.4.11 bundles with rollup and esbuild, and rolldown is not installed) and because it is a direct non-optional dependency restricted to os win32 cpu x64, it is expected to fail npm ci on a Linux Actions runner (believed, not verified). hosting and ci are believed, not verified: there is no .github directory and GitHub Pages is not configured. generate_viewer.cjs at the repo root reads a path outside the repo and is dead code; delete it. Full detail in docs/sdlc/constraints.md."
