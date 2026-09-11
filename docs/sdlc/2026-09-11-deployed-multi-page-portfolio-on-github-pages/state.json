@@ -1,0 +1,22 @@
+{
+  "change_id": "2026-09-11-deployed-multi-page-portfolio-on-github-pages",
+  "title": "Deployed multi-page portfolio on GitHub Pages",
+  "tier": 2,
+  "tier_override": null,
+  "phase": "intent",
+  "mode": "normal",
+  "worktree": null,
+  "branch": "wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages",
+  "gates": {
+    "G1": "pending",
+    "G2": "pending",
+    "G3": "pending",
+    "G4": "pending",
+    "G5": "pending"
+  },
+  "verification": {
+    "status": "none",
+    "at": null
+  },
+  "updated_at": "2026-09-11T02:08:58.675Z"
+}
