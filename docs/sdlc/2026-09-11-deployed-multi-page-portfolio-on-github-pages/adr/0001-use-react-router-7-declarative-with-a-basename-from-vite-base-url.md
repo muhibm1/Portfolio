@@ -16,7 +16,7 @@ mid-level engineer on this stack would recognise.
 
 ## Decision
 
-We add `react-router` 7.9.4 (MIT) as a runtime dependency and use it in declarative mode:
+We add `react-router` 7.18.3 (MIT) as a runtime dependency and use it in declarative mode:
 `BrowserRouter` in `src/main.jsx`, a `<Routes>` table of four `<Route>` elements in
 `src/App.jsx`, and `<Link>` in place of the existing `onSelectCaseStudy` callbacks. We import
 from `react-router`, not `react-router-dom`, because v7 collapsed the DOM package into the core
@@ -47,3 +47,13 @@ explicit scroll effect (`R8`) because React Router does not scroll to hashes.
 Costs: one more runtime dependency and its transitive tree on a site that had none beyond React,
 Tailwind and icons. Revisit if react-router 8 changes the declarative API, which Dependabot will
 surface as a major-version pull request.
+
+## Amendment 2026-09-12
+
+Owner build decision B2 ("B2 and B3 as recommended", `conductor-log.md` line 35) moved the pin
+from 7.9.4 to 7.18.3 in commit `a98fdcf`. 7.9.4 fails `npm audit` on a high-severity range, 6.0.0
+to 7.17.0, and npm names 7.18.3 as the fix (confirmed, `verify-logs/audit.log` lines 23 to 39).
+7.18.3 is MIT with engines `node >=20.0.0` (confirmed, `node_modules/react-router/package.json`
+lines 18 and 157). The decision is unchanged. The v7 API facts above were checked against 7.9.4
+documentation; that they hold in 7.18.3 is believed, not verified, beyond `npm test` exiting 0 at
+`a98fdcf` (`conductor-log.md` line 37).
