@@ -5,8 +5,9 @@ import ContactFooter from './ContactFooter';
 import ResumeModal from './ResumeModal';
 
 /**
- * The frame around every route: the navbar, the page, the contact footer, and the resume modal
- * both of them open. Each page renders its own <main>, so the Outlet is not wrapped in one.
+ * The frame around every route: the navbar, the page, the contact footer, and the resume modal,
+ * which the navbar and the footer both know how to open. Each page renders its own <main>, so the
+ * Outlet is not wrapped in one.
  */
 export default function SiteLayout() {
   const [activeSection, setActiveSection] = useState('overview');
