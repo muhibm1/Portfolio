@@ -1,0 +1,17 @@
+# Weekly update pull requests for the npm packages and for the SHA-pinned actions in
+# .github/workflows/deploy.yml (R68). Merging one to main deploys the site, so read each diff first.
+# Dependabot will also propose the Vite and Vitest majors that ADR 0004 and ADR 0009 defer. There is
+# no ignore rule for them, because adding one is a spec change.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
