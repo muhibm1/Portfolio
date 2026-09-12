@@ -1,0 +1,6 @@
+# Security contact for https://muhibm1.github.io/Portfolio/ (RFC 9116).
+# Served under /Portfolio/, not the origin root, and renewed every year: see docs/hosted-config.md.
+Contact: mailto:mmalqaim@gmail.com
+Expires: 2027-09-12T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://muhibm1.github.io/Portfolio/.well-known/security.txt
