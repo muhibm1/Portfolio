@@ -7,13 +7,11 @@ import InteractiveTriageSimulator from './components/InteractiveTriageSimulator'
 import ExperienceTimeline from './components/ExperienceTimeline';
 import SkillsMatrix from './components/SkillsMatrix';
 import ContactFooter from './components/ContactFooter';
-import CaseStudyModal from './components/CaseStudyModal';
 import ResumeModal from './components/ResumeModal';
 import { portfolioData } from './data/portfolioData';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('overview');
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
 
   // Active section scroll spy
@@ -51,7 +49,6 @@ export default function App() {
       {/* Navigation Bar */}
       <Navbar
         activeSection={activeSection}
-        onSelectCaseStudy={(study) => setSelectedCaseStudy(study)}
         onOpenResume={() => setIsResumeOpen(true)}
       />
 
@@ -60,7 +57,6 @@ export default function App() {
         {/* Hero Section */}
         <Hero
           onOpenSimulator={handleOpenSimulator}
-          onOpenCaseStudy={(study) => setSelectedCaseStudy(study)}
         />
 
         {/* FDE Philosophy & Operating Principles */}
@@ -68,7 +64,6 @@ export default function App() {
 
         {/* Case Studies & System Deployments */}
         <CaseStudiesSection
-          onSelectCaseStudy={(study) => setSelectedCaseStudy(study)}
           onOpenSimulator={handleOpenSimulator}
         />
 
@@ -84,15 +79,6 @@ export default function App() {
 
       {/* Contact & Action Footer */}
       <ContactFooter onOpenResume={() => setIsResumeOpen(true)} />
-
-      {/* Full-bleed Case Study Modal / Dedicated Deep-Dive */}
-      {selectedCaseStudy && (
-        <CaseStudyModal
-          caseStudy={selectedCaseStudy}
-          onClose={() => setSelectedCaseStudy(null)}
-          onLaunchSimulator={handleOpenSimulator}
-        />
-      )}
 
       {/* Resume Viewer Modal */}
       {isResumeOpen && (
