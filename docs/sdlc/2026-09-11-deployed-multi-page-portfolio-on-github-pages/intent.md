@@ -196,12 +196,13 @@ the path floor.
   Believed, not independently verified here, that the exact final package list matches the spec's
   constraints section; confirmed only that none of those packages are present in `package.json`
   today.
-- **PII handling, tier 2:** the owner's own phone number `(512) 508-1536` is removed from a public
+- **PII handling, tier 2:** the owner's own phone number `(512) 508-xxxx` is removed from a public
   surface. Confirmed by reading `src/data/portfolioData.js` line 8. Believed, not re-verified by
   me, that it also appears in `ContactFooter.jsx` line 71 and `ResumeModal.jsx` lines 10 and 69 (as
   reported by the intent writer). `docs/sdlc/constraints.md` "Things that must not change without
   the owner saying so" names contact details in either direction. This alone is a tier-2 "PII
   handling" trigger under the rubric.
+  Digits redacted under G1-D1 (R89); the live checks are GC41 and GC89 in this change's `evals.md` and the R82 deploy smoke step.
 - **Considered for tier 3 and rejected, first production publication and employer-derived claims:**
   the intent repeatedly calls the phone-number decision and the employer/metric publication
   "irreversible" (risk signals, TL;DR, risk register). I weighed this against the tier-3 rubric

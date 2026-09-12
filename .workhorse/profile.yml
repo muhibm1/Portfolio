@@ -33,8 +33,8 @@ commands:
   typecheck: ""
   lint: "npm run lint"
   format: ""
-  test: ""
-  test_file: ""
+  test: "npm test"               # Vitest, added by change 2026-09-11 (R53); supersedes "deliberately empty" above
+  test_file: "npm test --"       # append one path, for example: npm test -- src/App.test.jsx
   build: "npm run build"
   e2e: ""
   screenshot: ""
@@ -76,6 +76,7 @@ sensitive_paths:
   - "vite.config.js"           # base path, a wrong value breaks every asset on GitHub Pages
   - "package.json"             # supply chain
   - "package-lock.json"        # supply chain
+  - "src/data/portfolioData.js" # employer-derived claims: constraints.md "Employer confidentiality content control" (G3-D4, spec OQ7)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #

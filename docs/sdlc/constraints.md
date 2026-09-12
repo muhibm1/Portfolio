@@ -99,10 +99,11 @@ pattern.
    system names such as "Apple Geo Ingest API", OAuth scopes, and region identifiers. It is
    fictional demo content, **confirmed** by reading the file, but a reader cannot tell that from
    the page. The owner should decide whether it needs a visible "illustrative example" label.
-3. **The owner's phone number is published on the page.** `(512) 508-1536` renders in
+3. **The owner's phone number is published on the page.** `(512) 508-xxxx` renders in
    `ContactFooter` and `ResumeModal`. **Confirmed.** That is a deliberate choice, and it also
    means the number is scrapeable by anyone. It is the owner's call, and it should be a
    conscious one.
+   Digits redacted under G1-D1 (R89); the live checks are GC41 and GC89 in the 2026-09-11 change's `evals.md` and the R82 deploy smoke step.
 4. **Timeline pressure is job-search pressure.** The site exists to support an active move into
    FDE roles. Work that delays a shippable page is expensive in a way that is invisible in the
    repository.
