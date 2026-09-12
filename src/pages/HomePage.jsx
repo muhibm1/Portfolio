@@ -9,6 +9,7 @@ import CaseStudiesSection from '../components/CaseStudiesSection';
 import InteractiveTriageSimulator from '../components/InteractiveTriageSimulator';
 import ExperienceTimeline from '../components/ExperienceTimeline';
 import SkillsMatrix from '../components/SkillsMatrix';
+import { prefersReducedMotion } from '../prefersReducedMotion';
 
 // In page order. 'contact' is the footer, which the layout renders below this page.
 const SPIED_SECTION_IDS = ['overview', 'philosophy', 'case-studies', 'simulator', 'experience', 'skills', 'contact'];
@@ -16,8 +17,6 @@ const SPIED_SECTION_IDS = ['overview', 'philosophy', 'case-studies', 'simulator'
 // The current section is the one under a line this many pixels below the top of the viewport,
 // so a section's navbar link lights up just before its heading reaches the top.
 const ACTIVE_LINE_OFFSET = 200;
-
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 export default function HomePage() {
   const { setActiveSection } = useOutletContext();
@@ -84,9 +83,4 @@ function targetIdFromHash(hash) {
   } catch {
     return '';
   }
-}
-
-function prefersReducedMotion() {
-  if (typeof window.matchMedia !== 'function') return false;
-  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
 }

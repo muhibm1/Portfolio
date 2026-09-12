@@ -4,8 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MODE_FRAMES, resolvePreset } from "thinking-orbs/engine";
 import { canvasWidthForViewport, colourForDepth } from "./orbDrawing.js";
-
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+import { REDUCED_MOTION_QUERY, prefersReducedMotion } from "../prefersReducedMotion";
 
 // The moment the package itself shows when a visitor prefers reduced motion.
 const STATIC_FRAME_TIME = 0.6;
@@ -27,7 +26,7 @@ const frameAt = MODE_FRAMES[workingPreset.mode];
 
 export default function ThinkingOrbHero({ size = 420 }) {
   const canvasRef = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const reducedMotionPreferred = usePrefersReducedMotion();
   const displaySize = Math.min(size, canvasWidthForViewport(window.innerWidth));
 
   useEffect(() => {
@@ -40,12 +39,12 @@ export default function ThinkingOrbHero({ size = 420 }) {
     if (!context) return undefined;
 
     const drawAt = (time) => drawOrb(context, displaySize, pixelRatio, time);
-    if (prefersReducedMotion) {
+    if (reducedMotionPreferred) {
       drawAt(STATIC_FRAME_TIME);
       return undefined;
     }
     return animateWhileVisible(canvas, drawAt);
-  }, [displaySize, prefersReducedMotion]);
+  }, [displaySize, reducedMotionPreferred]);
 
   return (
     <canvas
@@ -60,22 +59,17 @@ export default function ThinkingOrbHero({ size = 420 }) {
 // Read during the first render, not only in an effect, so a visitor who prefers reduced motion
 // never gets a single animation frame. Follows later changes to the setting live.
 function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(readPrefersReducedMotion);
+  const [reducedMotionPreferred, setReducedMotionPreferred] = useState(prefersReducedMotion);
 
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return undefined;
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
-    const handleChange = (event) => setPrefersReducedMotion(event.matches);
+    const handleChange = (event) => setReducedMotionPreferred(event.matches);
     reducedMotion.addEventListener("change", handleChange);
     return () => reducedMotion.removeEventListener("change", handleChange);
   }, []);
 
-  return prefersReducedMotion;
-}
-
-function readPrefersReducedMotion() {
-  if (typeof window.matchMedia !== "function") return false;
-  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+  return reducedMotionPreferred;
 }
 
 function drawOrb(context, size, pixelRatio, time) {

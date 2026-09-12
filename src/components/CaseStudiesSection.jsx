@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';
