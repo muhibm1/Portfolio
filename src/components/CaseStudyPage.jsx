@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';

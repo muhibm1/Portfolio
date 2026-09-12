@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router';
 
 const linkClass = 'px-4 py-2 rounded-[10px] border border-[#1d1d1d] text-xs font-semibold transition-colors';
