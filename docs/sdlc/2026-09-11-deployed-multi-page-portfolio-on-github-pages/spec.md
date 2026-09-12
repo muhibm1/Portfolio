@@ -12,6 +12,11 @@ audit. Every finding in [Constraint audit](#constraint-audit) has one line in
 [Response to audit](#response-to-audit), which is what the auditor re-checks against. R1 to R79
 and M1 to M17 keep their numbers because `evals.md` and the audit table reference them; the ten
 requirements added by this revision are R80 to R89.
+Amended: 2026-09-12 by the spec architect. A narrow amendment, not a re-spec, recording owner
+build decisions B2 and B3 (`conductor-log.md` line 35), landed as commit `a98fdcf`: `react-router`
+7.9.4 to 7.18.3 and `vitest` 3.2.4 to 3.2.7 (B2); `tailwindcss` and `@tailwindcss/vite` moved to
+`devDependencies` at exact 4.3.3 (B3); [ADR 0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md)
+added. No requirement is renumbered, and the G2 packet is annotated, not rewritten.
 
 Every factual claim below carries a label. **Confirmed** means this agent read the file or the
 tool output named. **Believed, not verified** means it was inferred, reported by an earlier
@@ -66,7 +71,7 @@ a reader could not resolve against `approvals.md`; every occurrence now carries 
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R1 | The app SHALL use `react-router` 7.9.4 in declarative mode, with `BrowserRouter` imported from `react-router` (not `react-router-dom`) and mounted in `src/main.jsx` around `<App />`. | `grep -n "from 'react-router'" src/main.jsx` returns exactly 1 match; `package.json` `dependencies` contains `"react-router": "7.9.4"` with no range prefix. | O2, G1-D3 |
+| R1 | The app SHALL use `react-router` 7.18.3 in declarative mode, with `BrowserRouter` imported from `react-router` (not `react-router-dom`) and mounted in `src/main.jsx` around `<App />`. | `grep -n "from 'react-router'" src/main.jsx` returns exactly 1 match; `package.json` `dependencies` contains `"react-router": "7.18.3"` with no range prefix. | O2, G1-D3; pin amended 2026-09-12 from 7.9.4 by owner decision B2, commit `a98fdcf` |
 | R2 | `BrowserRouter` SHALL receive a `basename` computed from `import.meta.env.BASE_URL` with any trailing slash removed, falling back to `/` when the result is empty. The computation SHALL live in one exported helper so it is testable without a DOM. | Unit test "strips the trailing slash from the Vite base url" asserts the helper maps `/Portfolio/` to `/Portfolio` and `/` to `/`. | O2, O5 |
 | R3 | The route table SHALL be exactly four routes: `/` to `HomePage`, `/work` to `WorkIndexPage`, `/work/:slug` to `CaseStudyPage`, `*` to `NotFoundPage`. No other route SHALL exist. | Tests render `/`, `/work`, the three case-study paths and `/work/no-such-study` and assert the expected level-1 heading for each; `grep -c "<Route " src/App.jsx` equals 4. | O2, O3, M5 |
 | R4 | All four routes SHALL render inside one shared layout, `src/components/SiteLayout.jsx`, which renders `Navbar`, an `<Outlet />`, `ContactFooter`, and the resume modal. | Test asserts the footer email link is present on `/`, `/work` and `/work/apple-llm-triage`. | O2, codebase-map "patterns to follow" |
@@ -312,13 +317,18 @@ R46), `ContactFooter.jsx` (phone removed R41, timer R47, clipboard R48), `Resume
 
 ### Routing
 
-Package choice: **`react-router` 7.9.4, MIT**. In v7 the DOM entry points moved into the
+Package choice: **`react-router` 7.18.3, MIT** (licence and engines `node >=20.0.0` confirmed,
+`node_modules/react-router/package.json` lines 18 and 157). Amendment 2026-09-12: the spec first
+pinned 7.9.4, which fails `npm audit` on a high-severity range, 6.0.0 to 7.17.0, with 7.18.3
+named as the fix (confirmed, `verify-logs/audit.log` lines 23 to 39); owner decision B2 moved it
+within the same major in commit `a98fdcf`. In v7 the DOM entry points moved into the
 `react-router` package and `react-router-dom` is published only as a re-export shim (confirmed
 against the v7 CHANGELOG via context7: "The `react-router-dom` ... have been collapsed into the
 `react-router` package ... `react-router-dom` is still published in v7 as a re-export"). We
 import from `react-router` and do not install `react-router-dom`. `BrowserRouter` accepts a
 `basename` prop (confirmed against the v7.9.4 API doc for `BrowserRouter`, signature
-`function BrowserRouter({ basename, children, window }: BrowserRouterProps)`).
+`function BrowserRouter({ basename, children, window }: BrowserRouterProps)`; that 7.18.3 keeps
+it is believed, not verified, on the grounds that it is the same major).
 
 Route table:
 
@@ -593,7 +603,7 @@ between the two idioms is recorded under findings outside scope.
 
 | Piece | Choice | Why |
 |-------|--------|-----|
-| Runner | `vitest` 3.2.4 | Vitest 4 requires Vite >= 6.0.0 and Node >= 20 (confirmed from the v4.1.6 migration guide via context7); this project is on Vite 5.4.11 (confirmed, `vite --help` prints `vite/5.4.11` per `codebase-map.md`). Vitest 3 is the last major that supports Vite 5 (believed, not verified). Upgrading to Vite 6 would touch `vite.config.js` and the whole build in the same change as the first deploy, which is the wrong risk to take together. ADR 0004 |
+| Runner | `vitest` 3.2.7 | Vitest 4 requires Vite >= 6.0.0 and Node >= 20 (confirmed from the v4.1.6 migration guide via context7); this project is on Vite 5, declared `^5.4.11` and resolved to 5.4.21 at `a98fdcf` (confirmed, `node_modules/vite/package.json` line 3). Vitest 3.2.7 declares `vite` as `^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0-0` (confirmed, `node_modules/vitest/package.json` line 162), so with the Vitest 4 floor above, Vitest 3 is the last major that supports Vite 5 (confirmed from those two facts). Upgrading to Vite 6 would touch `vite.config.js` and the whole build in the same change as the first deploy, which is the wrong risk to take together. ADR 0004. Amendment 2026-09-12: first pinned at 3.2.4; owner decision B2 moved it to 3.2.7, same major, in commit `a98fdcf`, to clear critical advisory GHSA-5xrq-8626-4rwp (as recorded in `conductor-log.md` line 30) |
 | DOM | `jsdom` | the default pairing with React Testing Library and the environment the profile's `test_globs` conventions assume. `happy-dom` is faster but diverges more from browser behaviour, and neither implements canvas, so the choice does not affect the orb tests |
 | React bindings | `@testing-library/react` 16 plus its required peer `@testing-library/dom` 10 | RTL 16 is the line that supports React 19, which this project uses (confirmed, `package.json` line 16). RTL 16 declares `@testing-library/dom` as a peer dependency rather than bundling it, so it must be installed explicitly (believed, not verified; R77 confirms at install time) |
 | Matchers | `@testing-library/jest-dom` 6 | `toBeInTheDocument` and `toHaveAttribute`, imported once in the setup file through its `/vitest` entry point |
@@ -817,6 +827,12 @@ baseline warns about in reverse. `.workhorse/profile.yml` `commands.security_aud
 unchanged at the full `npm audit --audit-level=high`, because as a local check the stricter form
 is right. The divergence is deliberate and recorded here so a reader does not treat it as drift.
 
+**Accepted residual risk, amended 2026-09-12.** Owner decision B3 moved `tailwindcss` and
+`@tailwindcss/vite` to `devDependencies` in commit `a98fdcf`, so the "two packages that do not"
+clause above no longer holds. Five dev-only advisories in Vite, esbuild and `@vitest/mocker` stay
+in the full audit and are accepted, owner: site owner, in
+[ADR 0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md).
+
 **Pre-ship checklist mapping.** The baseline's database items are not applicable, and are listed
 as such in the G2 packet's checklist rather than dropped. The items that do apply are R49, R59,
 R65, R66, R67, R68, R69, R73, R77, R78, R85, R86 and R88. The "third-party import pinned to an
@@ -934,20 +950,25 @@ assertion that passes on a blank page, which is what the first draft had.
 | [0001](./adr/0001-use-react-router-7-declarative-with-a-basename-from-vite-base-url.md) | Use react-router 7 in declarative mode with a basename derived from Vite's BASE_URL |
 | [0002](./adr/0002-serve-deep-links-by-copying-index-html-to-404-html-at-build-time.md) | Serve deep links by copying index.html to 404.html at build time |
 | [0003](./adr/0003-draw-the-hero-orb-with-a-custom-painter-over-thinking-orbs-engine.md) | Draw the hero orb with a custom painter over thinking-orbs/engine geometry |
-| [0004](./adr/0004-pin-vitest-3-and-stay-on-vite-5.md) | Pin Vitest 3.2.4 and stay on Vite 5 |
+| [0004](./adr/0004-pin-vitest-3-and-stay-on-vite-5.md) | Pin Vitest 3.2.7 and stay on Vite 5 |
 | [0005](./adr/0005-publish-with-the-official-github-pages-actions-flow.md) | Publish with the official GitHub Pages Actions flow, pinned to commit SHAs |
 | [0006](./adr/0006-inject-the-csp-meta-tag-at-build-time-only.md) | Inject the Content-Security-Policy meta tag at build time only |
 | [0007](./adr/0007-self-host-the-typefaces-with-fontsource-and-wire-them-into-the-tailwind-theme.md) | Self-host the typefaces with @fontsource and wire them into the Tailwind theme |
 | [0008](./adr/0008-replace-the-case-study-modal-with-a-page-and-keep-the-resume-as-a-modal.md) | Replace the case-study modal with a page and keep the resume as a modal |
+| [0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md) | Accept the dev-only Vite, esbuild and Vitest advisories until the Vite upgrade (added 2026-09-12, owner decision B3) |
 
 ---
 
 ## Dependency table
 
-Every version below is **believed, not verified**: the Bash tool is disabled in this session
-(confirmed by attempting a call), so no registry query was possible. Two versions are confirmed
-to *exist upstream* because context7 returned documentation tagged at them:
-`react-router@7.9.4` and `vitest@3.2.4`. R77 makes resolving and recording every version and
+When the spec was written every version below was **believed, not verified**: the Bash tool was
+disabled (confirmed by attempting a call), so no registry query was possible. Two versions were
+confirmed to *exist upstream* because context7 returned documentation tagged at them:
+`react-router@7.9.4` and `vitest@3.2.4`. **Amendment 2026-09-12:** owner decision B2 moved those
+two to `react-router@7.18.3` and `vitest@3.2.7` in commit `a98fdcf`, within their majors, to clear
+`npm audit` advisories. Those two rows and the two Tailwind rows under "Moved to development" now
+carry versions and licences confirmed from the installed manifests; every other row keeps its
+original label until R77's G4 evidence table records it. R77 makes resolving and recording every version and
 licence from the installed tree a binding build-phase control, and any pin that does not resolve
 is escalated to the owner rather than bumped.
 
@@ -955,7 +976,7 @@ is escalated to the owner rather than bumped.
 
 | Package | Version | Licence | Why nothing present works |
 |---------|---------|---------|---------------------------|
-| `react-router` | 7.9.4 | MIT (believed) | No router is installed (confirmed, `package.json` lines 12 to 20). Outcomes 2 to 5 need one. `react-router-dom` is not installed separately because v7 collapsed it into `react-router` (confirmed via context7 against the v7 CHANGELOG) |
+| `react-router` | 7.18.3 | MIT (confirmed, `node_modules/react-router/package.json` line 18) | No router is installed (confirmed, `package.json` lines 12 to 20). Outcomes 2 to 5 need one. `react-router-dom` is not installed separately because v7 collapsed it into `react-router` (confirmed via context7 against the v7 CHANGELOG). Amended 2026-09-12: first pinned at 7.9.4; owner decision B2, commit `a98fdcf` |
 | `@fontsource/inter` | 5.2.8 | OFL-1.1 for the font files (believed) | The family currently loads from Google's CDN. Nothing in the repo ships a woff2 |
 | `@fontsource/jetbrains-mono` | 5.2.8 | OFL-1.1 (believed) | same |
 | `@fontsource/space-grotesk` | 5.2.8 | OFL-1.1 (believed) | same |
@@ -973,7 +994,7 @@ costs one message and removes the only place in this spec where a runtime versio
 
 | Package | Version | Licence | Why nothing present works |
 |---------|---------|---------|---------------------------|
-| `vitest` | 3.2.4 | MIT (believed) | No test runner exists (confirmed, `package.json` lines 6 to 11 and 21 to 27). Vitest 3 is pinned rather than 4 because Vitest 4 requires Vite >= 6 (confirmed via context7) and this project is on Vite 5.4.11 |
+| `vitest` | 3.2.7 | MIT (confirmed, `node_modules/vitest/package.json` line 7) | No test runner exists (confirmed, `package.json` lines 6 to 11 and 21 to 27). Vitest 3 is pinned rather than 4 because Vitest 4 requires Vite >= 6 (confirmed via context7) and this project is on Vite 5, resolved 5.4.21 (confirmed, `node_modules/vite/package.json` line 3). Amended 2026-09-12: first pinned at 3.2.4; owner decision B2, commit `a98fdcf`. The dev-only advisories left in the full audit are accepted in ADR 0009 |
 | `@testing-library/react` | 16.3.0 | MIT (believed) | Needed to render routes and components in a test. The 16 line is the one that supports React 19 |
 | `@testing-library/dom` | 10.4.1 | MIT (believed) | A required peer of `@testing-library/react` 16, not bundled by it (believed; R77 confirms) |
 | `@testing-library/jest-dom` | 6.9.1 | MIT (believed) | DOM matchers. Named explicitly in `intent.md` Constraints |
@@ -984,6 +1005,18 @@ costs one message and removes the only place in this spec where a runtime versio
 | Package | Version | Licence | Why |
 |---------|---------|---------|-----|
 | `@rolldown/binding-win32-x64-msvc` | ^1.2.8 | MIT (believed) | A direct, non-optional dependency restricted to `os: win32` and `cpu: x64` that nothing needs: `rolldown` is not installed and Vite 5.4.11 bundles with rollup and esbuild (confirmed by the discovery analyst reading the installed manifests). Expected to fail `npm ci` on a Linux runner with `EBADPLATFORM` (believed, not verified) |
+
+### Moved to development
+
+Added 2026-09-12 by owner decision B3, commit `a98fdcf`. Neither package is added or removed, so
+R78's counts are unchanged, but the move is a dependency change R78 otherwise forbids and it
+drops the caret R49 says existing entries keep. Both are owner-approved exceptions, recorded here
+so G4 does not read them as drift.
+
+| Package | Version | Licence | Why |
+|---------|---------|---------|-----|
+| `tailwindcss` | 4.3.3, exact (was `^4.3.3` under `dependencies`, already resolving to 4.3.3 per `conductor-log.md` line 36) | MIT (confirmed, `node_modules/tailwindcss/package.json` line 5) | Build-time only; nothing it contains reaches a visitor. Under `dependencies` it pulled Vite's dev-server advisories into the blocking `--omit=dev` audit (R56) (confirmed, `verification.md` line 17). Closes [Findings outside scope](#findings-outside-scope) item 11 |
+| `@tailwindcss/vite` | 4.3.3, exact (same) | MIT (confirmed, `node_modules/@tailwindcss/vite/package.json` line 5) | Same |
 
 ### Already present, used more
 
@@ -1450,6 +1483,10 @@ waves 1, 2 and 4 deploy a working but visually unchanged site and wave 3 follows
 | G2-D4 | Card radius and shadows (R79), where `docs/design-brief.md` and the mockups disagree | Follow the design brief: 0 px on cards, 10 px on interactive elements, no shadows. `intent.md` names the brief the design authority | Follow the mockups: rounded cards with a soft shadow, which is also what the current code does | The site keeps today's `rounded-2xl` and `shadow-2xs` treatment, the OFF+BRAND "zero shadows, 0 px cards" direction in the brief is not implemented, and Outcome 8 is met only partially |
 | G2-D5 | Fidelity to `public/mockup-casestudy.jpg` | Build the flow diagram from each case study's `diagramSteps` (4 nodes, linear) rather than reproducing the mockup's 5-box fork, and do not build the mockup's "Log in" and "Sign up" controls | Reproduce the mockup exactly | The fork diagram would be hard-coded to one case study and wrong for the other two, or it would require inventing architecture detail the data does not contain, which `constraints.md` forbids. "Log in" and "Sign up" would be dead controls on a site with no accounts |
 
+Amendment 2026-09-12 to the G2-D3 row, which stays as the approved record: owner build decision
+B2 moved the pin from Vitest 3.2.4 to 3.2.7, same major, in commit `a98fdcf`. The decision itself,
+Vitest 3 on Vite 5, is unchanged; see ADR 0004.
+
 ## 3. Evidence
 
 Spec is a reading and design phase. No build, lint, test or install command was run, by design,
@@ -1489,6 +1526,11 @@ tool, which is available.
 | The mandated no-tracking pattern | read `docs/sdlc/constraints.md` line 208 | n/a | `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer` | confirmed, wider than `intent.md` M10 |
 | Whether `actions/configure-pages` needs `pages: write` with `enablement: false` | no network access | n/a | n/a | **believed, not verified**. R60 names the remedy if the first run disagrees |
 | Which security headers GitHub Pages sets on its own | no network access | n/a | n/a | **believed, not verified**. R87 settles it at the first deploy |
+
+Amendment 2026-09-12 to the react-router evidence row, which stays as the record of what was
+checked at G2: owner build decision B2 moved the pin from 7.9.4 to 7.18.3, same major, in commit
+`a98fdcf`. The `basename` and package-layout facts were checked against 7.9.4 documentation; that
+they hold in 7.18.3 is believed, not verified.
 
 Eval pass rates: not applicable. The 17 success metrics in `intent.md` become the eval set at
 G3; nothing has been built, so every row is unmeasured. The [Failure modes](#failure-modes)
