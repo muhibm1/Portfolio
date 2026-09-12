@@ -1,84 +1,77 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, ArrowUpRight, Check, Copy, FileText, Terminal, Heart } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Mail, ArrowUpRight, Check, CircleAlert, Copy, FileText } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';
+
+const COPY_FEEDBACK_MS = 2000;
+
+const copyStatusIcons = { idle: Copy, copied: Check, failed: CircleAlert };
 
 export default function ContactFooter({ onOpenResume }) {
   const { personal } = portfolioData;
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, copyText] = useClipboardCopy();
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(personal.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const CopyStatusIcon = copyStatusIcons[copyStatus];
 
   return (
-    <footer id="contact" className="py-20 px-4 border-t border-[#e2e0d8] bg-[#f4f3ee]">
+    <footer id="contact" className="py-20 px-4 border-t border-[#bfbebe] bg-[#e5e4e0]">
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Contact Banner */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#e4e2da] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="p-8 sm:p-12 bg-white border border-[#bfbebe] flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="space-y-3 max-w-xl">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#7a7872] block">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#1d1d1d]/70 block">
               Initiate Contact // Forward Deployed Roles
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#181818] font-['Space_Grotesk',sans-serif]">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1d] font-['Space_Grotesk',sans-serif]">
               Let's talk systems, integrations, and shipping.
             </h2>
-            <p className="text-sm text-[#5a5853] leading-relaxed">
+            <p className="text-sm text-[#1d1d1d]/70 leading-relaxed">
               Open to Forward Deployed Engineer (FDE), Solutions Architect, and Systems Integration opportunities where direct client impact and resilient software matter.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
             <button
-              onClick={handleCopyEmail}
-              className="px-5 py-3 rounded-xl bg-[#181818] text-white text-xs font-semibold hover:bg-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              onClick={() => copyText(personal.email)}
+              className="px-5 py-3 rounded-[10px] border border-[#1d1d1d] bg-[#1d1d1d] text-white text-xs font-semibold hover:bg-white hover:text-[#1d1d1d] transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              <span>{copied ? 'Copied mmalqaim@gmail.com' : 'Copy Email Address'}</span>
+              <CopyStatusIcon className="w-4 h-4" />
+              <span>{copyButtonLabel(copyStatus, personal.email)}</span>
             </button>
 
             <a
               href={`mailto:${personal.email}?subject=Forward%20Deployed%20Engineering%20Opportunity`}
-              className="px-5 py-3 rounded-xl bg-white border border-[#dedcd4] text-[#181818] text-xs font-semibold hover:bg-[#faf9f6] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-[10px] bg-white border border-[#1d1d1d] text-[#1d1d1d] text-xs font-semibold hover:bg-[#1d1d1d] hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Mail className="w-4 h-4 text-[#555]" />
+              <Mail className="w-4 h-4" />
               <span>Send Direct Email</span>
             </a>
 
             <button
               onClick={onOpenResume}
-              className="px-5 py-3 rounded-xl bg-[#f6f5f1] border border-[#dedcd4] text-[#181818] text-xs font-semibold hover:bg-[#ebe9e2] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-[10px] bg-[#e5e4e0] border border-[#bfbebe] text-[#1d1d1d] text-xs font-semibold hover:bg-[#cdcdc9] transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-[#555]" />
+              <FileText className="w-4 h-4" />
               <span>View Full Resume</span>
             </button>
           </div>
         </div>
 
         {/* Contact Links & Info Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-xs text-[#52504a]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-xs text-[#1d1d1d]/70">
           <div className="space-y-1.5">
-            <span className="font-mono text-[#888] uppercase tracking-wider block">Direct Email</span>
-            <a href={`mailto:${personal.email}`} className="font-mono text-sm font-semibold text-[#181818] hover:underline">
+            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">Direct Email</span>
+            <a href={`mailto:${personal.email}`} className="font-mono text-sm font-semibold text-[#1d1d1d] hover:underline">
               {personal.email}
             </a>
           </div>
 
           <div className="space-y-1.5">
-            <span className="font-mono text-[#888] uppercase tracking-wider block">Direct Phone</span>
-            <span className="font-mono text-sm font-semibold text-[#181818]">
-              {personal.phone}
-            </span>
-          </div>
-
-          <div className="space-y-1.5">
-            <span className="font-mono text-[#888] uppercase tracking-wider block">LinkedIn Profile</span>
+            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">LinkedIn Profile</span>
             <a
               href={personal.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-sm font-semibold text-[#181818] hover:underline inline-flex items-center gap-1"
+              className="font-mono text-sm font-semibold text-[#1d1d1d] hover:underline inline-flex items-center gap-1"
             >
               <span>{personal.linkedinHandle}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -86,23 +79,72 @@ export default function ContactFooter({ onOpenResume }) {
           </div>
 
           <div className="space-y-1.5">
-            <span className="font-mono text-[#888] uppercase tracking-wider block">Location</span>
-            <span className="font-mono text-sm font-semibold text-[#181818]">
+            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">Location</span>
+            <span className="font-mono text-sm font-semibold text-[#1d1d1d]">
               {personal.location} (Open to Relocation / Remote)
             </span>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#dedcd4] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#787670]">
+        <div className="pt-8 border-t border-[#bfbebe] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#1d1d1d]/70">
           <div>
             © {new Date().getFullYear()} Muhammad Muhibullah · Forward Deployed Engineering & Systems Integration
           </div>
           <div className="flex items-center gap-4">
-            <a href="#overview" className="hover:text-black">Back to Top ↑</a>
+            <a href="#overview" className="hover:text-[#1d1d1d]">Back to Top ↑</a>
           </div>
         </div>
       </div>
     </footer>
   );
+}
+
+function copyButtonLabel(copyStatus, email) {
+  if (copyStatus === 'copied') return `Copied ${email}`;
+  if (copyStatus === 'failed') return 'Copy failed';
+  return 'Copy Email Address';
+}
+
+/**
+ * Copies text to the clipboard and reports "copied" or "failed" for two seconds, then "idle".
+ * At most one reset timer is pending, and none outlives the component.
+ */
+function useClipboardCopy() {
+  const [copyStatus, setCopyStatus] = useState('idle');
+  const resetTimerRef = useRef(null);
+  const isMountedRef = useRef(false);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      clearTimeout(resetTimerRef.current);
+    };
+  }, []);
+
+  const copyText = async (text) => {
+    const hasCopied = await writeToClipboard(text);
+    // The component can unmount while the browser is still writing to the clipboard.
+    if (!isMountedRef.current) return;
+
+    clearTimeout(resetTimerRef.current);
+    setCopyStatus(hasCopied ? 'copied' : 'failed');
+    resetTimerRef.current = setTimeout(() => setCopyStatus('idle'), COPY_FEEDBACK_MS);
+  };
+
+  return [copyStatus, copyText];
+}
+
+// Resolves true only when the browser confirms the write. A missing Clipboard API (older
+// browsers, non-secure origins) and a rejected write (permission denied) both resolve false.
+async function writeToClipboard(text) {
+  if (!navigator.clipboard) return false;
+
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
 }
