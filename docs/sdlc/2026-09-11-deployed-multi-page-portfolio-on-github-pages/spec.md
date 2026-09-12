@@ -2,18 +2,24 @@
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Intent: [intent.md](./intent.md)
-Status: draft, awaiting G2
+Status: revised after the G2 constraint audit, awaiting re-audit
 Risk tier: 2
 Policy skills applied: `wh-agent-rules`, `wh-security-baseline`, `wh-readable-code`, `wh-adr`,
 `wh-review-packet`
 Written: 2026-09-11 by the spec architect, against the working tree at `main` (clean).
+Revised: 2026-09-11 by the spec architect, rework round 1 of 2, answering the G2 constraint
+audit. Every finding in [Constraint audit](#constraint-audit) has one line in
+[Response to audit](#response-to-audit), which is what the auditor re-checks against. R1 to R79
+and M1 to M17 keep their numbers because `evals.md` and the audit table reference them; the ten
+requirements added by this revision are R80 to R89.
 
 Every factual claim below carries a label. **Confirmed** means this agent read the file or the
 tool output named. **Believed, not verified** means it was inferred, reported by an earlier
-agent, or could not be checked from this host. No command was run during this phase: the Bash
-tool is disabled in this session (confirmed by attempting one call and receiving
-`No such tool available: Bash`), so every version and licence pin below is labelled accordingly
-and R77 makes resolving them a binding build-phase control.
+agent, or could not be checked from this host. No command was run during either the original
+phase or this revision: the Bash tool is disabled in both sessions (confirmed by attempting one
+call and receiving `No such tool available: Bash`), so every version and licence pin below is
+labelled accordingly and R77 makes resolving them a binding build-phase control. The greps this
+revision does cite as confirmed were run with the Grep tool, which is available.
 
 ---
 
@@ -28,7 +34,7 @@ links to `/work/:slug` survive on GitHub Pages by copying the built `dist/index.
 keeps the project's absolute no-storage position intact. Everything else follows from that
 choice plus the design authority in `docs/design-brief.md`.
 
-**On size.** This change is large: 79 requirements across routing, two new page types, a canvas
+**On size.** This change is large: 90 requirements across routing, two new page types, a canvas
 component, a font migration, a test toolchain, a deploy pipeline, and seven debt items. It is
 not separable into independently shippable changes, because nothing here delivers value alone: a
 router with no deploy is not a portfolio, and a deploy of today's page misses the point of the
@@ -43,21 +49,29 @@ recommendation.
 
 ## Requirements
 
-79 requirements. Every one has an acceptance check a test, a grep, or a command can implement.
-`SHALL` is mandatory. The `Source` column traces to `intent.md` Outcomes (O1 to O14), success
-metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
+90 requirements: R1 to R79 from the first draft with their numbers untouched, plus R80 to R90
+added by the [Response to audit](#response-to-audit). Every one has an acceptance check a test,
+a grep, or a command can implement, except the five that are permanently manual and say so in
+their own row (R19, R77, R84, and the design reviews in R22 and R79). `SHALL` is mandatory. The `Source` column traces to `intent.md`
+Outcomes (O1 to O14), success metrics (M1 to M17), a gate decision, `docs/design-brief.md`,
 `docs/sdlc/constraints.md`, `.workhorse/profile.yml`, or the global security baseline.
+
+**Decision labels carry their gate.** `G1-D1` to `G1-D5` are the five decisions in the G1 packet,
+approved and recorded in `approvals.md` ("D1 remove phone; D4 content is mine to publish",
+2026-09-11). `G2-D1` to `G2-D5` are the five decisions in section 2 of the G2 packet at the
+bottom of this file, which are still open. The first draft wrote both as bare `D1` to `D5`, which
+a reader could not resolve against `approvals.md`; every occurrence now carries its prefix.
 
 ### A. Routing and page shell
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R1 | The app SHALL use `react-router` 7.9.4 in declarative mode, with `BrowserRouter` imported from `react-router` (not `react-router-dom`) and mounted in `src/main.jsx` around `<App />`. | `grep -n "from 'react-router'" src/main.jsx` returns exactly 1 match; `package.json` `dependencies` contains `"react-router": "7.9.4"` with no range prefix. | O2, D3 |
+| R1 | The app SHALL use `react-router` 7.9.4 in declarative mode, with `BrowserRouter` imported from `react-router` (not `react-router-dom`) and mounted in `src/main.jsx` around `<App />`. | `grep -n "from 'react-router'" src/main.jsx` returns exactly 1 match; `package.json` `dependencies` contains `"react-router": "7.9.4"` with no range prefix. | O2, G1-D3 |
 | R2 | `BrowserRouter` SHALL receive a `basename` computed from `import.meta.env.BASE_URL` with any trailing slash removed, falling back to `/` when the result is empty. The computation SHALL live in one exported helper so it is testable without a DOM. | Unit test "strips the trailing slash from the Vite base url" asserts the helper maps `/Portfolio/` to `/Portfolio` and `/` to `/`. | O2, O5 |
 | R3 | The route table SHALL be exactly four routes: `/` to `HomePage`, `/work` to `WorkIndexPage`, `/work/:slug` to `CaseStudyPage`, `*` to `NotFoundPage`. No other route SHALL exist. | Tests render `/`, `/work`, the three case-study paths and `/work/no-such-study` and assert the expected level-1 heading for each; `grep -c "<Route " src/App.jsx` equals 4. | O2, O3, M5 |
 | R4 | All four routes SHALL render inside one shared layout, `src/components/SiteLayout.jsx`, which renders `Navbar`, an `<Outlet />`, `ContactFooter`, and the resume modal. | Test asserts the footer email link is present on `/`, `/work` and `/work/apple-llm-triage`. | O2, codebase-map "patterns to follow" |
 | R5 | The resume viewer SHALL stay a modal owned by `SiteLayout` and SHALL NOT become a route. | `grep -rn "ResumeModal" src/` shows an import only in `SiteLayout.jsx`; no `<Route>` path contains `resume`. | ADR 0008 |
-| R6 | The case-study modal SHALL be replaced by the `/work/:slug` page. `src/components/CaseStudyModal.jsx` SHALL be renamed to `src/components/CaseStudyPage.jsx`, and its hard-coded `mailto:` at line 298 SHALL read `personal.email`. | `git ls-files` contains no `CaseStudyModal.jsx`; `grep -rn "mmalqaim@gmail.com" src/` matches `src/data/portfolioData.js` and nothing else. | O14, constraints.md debt 8 |
+| R6 | The case-study modal SHALL be replaced by the `/work/:slug` page. `src/components/CaseStudyModal.jsx` SHALL be renamed to `src/components/CaseStudyPage.jsx`. All four hard-coded occurrences of the literal email address in components SHALL read `personal.email` instead: `CaseStudyModal.jsx` line 298 (`mailto:` href), `Navbar.jsx` line 17 (clipboard argument), `Navbar.jsx` line 87 (visible display text) and `ContactFooter.jsx` line 38 (visible display text). All four confirmed by grep over `src/` during this revision. | `git ls-files` contains no `CaseStudyModal.jsx`; `grep -rn "mmalqaim@gmail.com" src/` matches `src/data/portfolioData.js` and nothing else. | O14, constraints.md debt 8 |
 | R7 | On a route change with no hash, the app SHALL scroll the window to the top. | Test navigates `/` to `/work` and asserts `window.scrollTo` was called with `(0, 0)`. | O2 |
 | R8 | `HomePage` SHALL scroll to the element named by `location.hash` on mount and on hash change, smoothly unless `prefers-reduced-motion: reduce` matches, in which case instantly. | Test renders `/#simulator` and asserts `scrollIntoView` was called on the element with `id="simulator"`. | O4, design-brief 3 |
 | R9 | The scroll spy that highlights the active navbar link SHALL move from `App` (today `src/App.jsx` lines 20 to 40) into `HomePage` and SHALL run only on `/`. | Test renders `/work` with a spy on `window.addEventListener` and asserts no `scroll` listener is registered by the page. | codebase-map "state and interaction patterns" |
@@ -67,9 +81,9 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R11 | `vite.config.js` SHALL set `base: "/Portfolio/"`. | `npm run build` exit 0; `grep -c 'src="/Portfolio/' dist/index.html` is at least 1 and `grep -c '"/assets/' dist/index.html` is 0. | O1, M2, D3 |
+| R11 | `vite.config.js` SHALL set `base: "/Portfolio/"`. | `npm run build` exit 0; `grep -c 'src="/Portfolio/' dist/index.html` is at least 1 and `grep -c '"/assets/' dist/index.html` is 0. | O1, M2, G1-D3 |
 | R12 | The build SHALL write `dist/404.html` as a byte-identical copy of the final `dist/index.html`, produced by a `closeBundle` step declared inline in `vite.config.js` using `node:fs` only, with no new dependency and no shell. | After `npm run build`, `dist/404.html` exists and its SHA-256 equals that of `dist/index.html`. | O5, M7 |
-| R13 | Deep-link recovery SHALL NOT use `sessionStorage`, `localStorage`, `document.cookie`, or a query-string redirect shim. | The M10 grep over `src/` and `index.html` for `gtag\|analytics\|dataLayer\|document.cookie\|localStorage\|sessionStorage` returns 0 matches. | M10, profile `style_notes`, ADR 0002 |
+| R13 | Deep-link recovery SHALL NOT use `sessionStorage`, `localStorage`, `document.cookie`, or a query-string redirect shim. | The full no-tracking grep over `src/` and `index.html` for `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer` returns 0 matches. This is the discovery analyst's original pattern, restored: see the note under [The no-tracking grep](#the-no-tracking-grep). | M10, profile `style_notes`, ADR 0002 |
 | R14 | `index.html` SHALL declare the favicon that already exists at `public/favicon.svg`, referenced as `%BASE_URL%favicon.svg` so it survives the base rewrite. | `dist/index.html` contains `/Portfolio/favicon.svg`. | scope addition, see note under [Scope additions](#scope-additions) |
 
 ### C. The `/work` index
@@ -80,7 +94,7 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 | R16 | The three project entries SHALL be `workhorse`, `Shu` and `wasl`, sourced from a new `projects` array in `src/data/portfolioData.js`. No fourth project SHALL appear. | Test asserts the three names render and that `portfolioData.projects.length === 3`. | O4, design-brief 3 |
 | R17 | The one live-demo entry SHALL be the interactive triage simulator, sourced from a new `demos` array, linking to `/#simulator`. | Test asserts the entry's link `href` ends with `/#simulator`. | O4 |
 | R18 | `src/data/portfolioData.js` SHALL be extended with the keys `projects`, `demos`, `workIntro`, `personal.github` and `personal.githubHandle`, and with nothing else. No existing key, string or number SHALL change, except the deletion in R41. | `git diff src/data/portfolioData.js` reviewed at G4, plus a unit test asserting the four `telemetry` metric strings, the three `caseStudies` ids and the three `caseStudies` titles verbatim. | O9, M17, CLAUDE.md "Protected" |
-| R19 | `/work` SHALL follow the Jakub Reis layout recorded in `docs/design-brief.md` lines 44 to 49: 1200 px max width, a two-column asymmetric grid with staggered row offsets, 80 px between entries, weights 300 and 400 only, 0 px radius, no shadows, no borders, no buttons, `~` as the only separator, email top left and social links top right. | Design review at G4 against `docs/design-brief.md` lines 44 to 49. | O8, design-brief |
+| R19 | `/work` SHALL follow the Jakub Reis layout recorded in `docs/design-brief.md` lines 44 to 49: 1200 px max width, a two-column asymmetric grid with staggered row offsets, 80 px between entries, weights 300 and 400 only, 0 px radius, no shadows, no borders, no buttons, `~` as the only separator, email top left and social links top right. | Design review at G4 against `docs/design-brief.md` lines 44 to 49. **Permanently manual**, not an open item: max width, grid stagger and tracked-out type are computed-style and layout properties, jsdom has no layout engine and no fonts, and the profile has no `e2e` command by design (Playwright was considered and rejected on cost, see [Alternatives considered](#alternatives-considered)). This ceiling is recorded so no later phase reads the manual marker as an eval gap. | O8, design-brief |
 | R20 | `/work` SHALL offer a type filter with the values All, Case study, Project and Live demo, defaulting to All, rendered as text links rather than buttons so it does not violate R19. | Test asserts 7 articles at default and 3 articles after activating "Project". | design-brief 3 |
 
 ### D. The `/work/:slug` case-study page
@@ -101,8 +115,8 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 | R27 | The hero SHALL match `public/mockup-home.jpg`: stacked uppercase name on two lines, the role line, the availability pill, the telemetry strip, and the orb on the right where the monogram is today. All four `telemetry` entries SHALL render; the mockup shows three because of its crop, and dropping one would delete a factual claim. | Test asserts the heading text, the pill text, all four telemetry metric strings, and the orb's presence. | O6, O9 |
 | R28 | `src/components/MmLogo.jsx` SHALL be deleted once the orb replaces it and nothing imports it. Git history retains it. | `git ls-files` contains no `MmLogo.jsx`; `grep -rn "MmLogo" src/` returns nothing. | O6 |
 | R29 | A new `src/components/ThinkingOrbHero.jsx` SHALL render one `<canvas role="img">` whose geometry comes from `thinking-orbs/engine` using exactly two exports, `resolvePreset` and `MODE_FRAMES`, resolved as `resolvePreset('working', 64)` and painted through `MODE_FRAMES[mode](size, t, opts)`. The package's `paint`, `paintFrame`, `paintLines` and its `ThinkingOrb` component SHALL NOT be used. | `grep -n "thinking-orbs" src/components/ThinkingOrbHero.jsx` shows one import from `thinking-orbs/engine` naming only those two symbols. | O7, design-brief 2 |
-| R30 | The painter SHALL colour each dot by its depth across the stops `#facb0e`, `#f06ba8`, `#78bae6` and `#ffffff`, which are the OFF+BRAND gradient in `docs/design-brief.md` line 34 and the `--accent-amber`, `--accent-rose`, `--accent-blue` tokens in `src/index.css` lines 13 to 15, with no canvas shadow. | Design review at G4 against `public/mockup-home.jpg`. | O7, O8, design-brief |
-| R31 | The canvas CSS width SHALL be 420 px at viewport widths of 1024 px and above, set as an inline style so it is readable without layout, and SHALL shrink to `viewportWidth - 48` clamped to a minimum of 280 px on narrower viewports. | Test asserts `canvas.style.width === '420px'` under the jsdom default viewport, and that 380 <= 420 <= 440. | O7, M11 |
+| R30 | The painter SHALL colour each dot by its depth across the stops `#facb0e`, `#f06ba8`, `#78bae6` and `#ffffff`, which are the OFF+BRAND gradient in `docs/design-brief.md` line 34 and the `--accent-amber`, `--accent-rose`, `--accent-blue` tokens in `src/index.css` lines 13 to 15, with no canvas shadow. The interpolation SHALL be a small exported pure function, `colourForDepth(z)`, taking `z` in [-1, 1] and returning a CSS colour string, so the mapping is testable without a canvas. | Unit test "maps the near, middle and far depths onto the brand stops" calls `colourForDepth` at `z = -1`, `0` and `1` and asserts the exact returned strings, plus design review at G4 against `public/mockup-home.jpg`. A grep alone cannot tell the four stops apart, which is why the pure function is required. | O7, O8, design-brief |
+| R31 | The canvas CSS width SHALL be `Math.min(420, Math.max(280, viewportWidth - 48))` and SHALL be set as an inline style so it is readable without layout. That is 420 px at viewport widths of 468 px and above, `viewportWidth - 48` between 328 px and 468 px, and 280 px below that. The clamp SHALL be a small exported pure function, `canvasWidthForViewport(viewportWidth)`. | Unit test calls the helper at 1440, 1024, 700, 468 and 320 and asserts 420, 420, 420, 420 and 280; a render test asserts `canvas.style.width === '420px'` under the jsdom default viewport, which satisfies M11's 380 to 440 band. | O7, M11 |
 | R32 | Under `prefers-reduced-motion: reduce` the component SHALL paint exactly one frame at `t = 0.6` and SHALL NOT call `requestAnimationFrame` at all. | Test with a mocked `matchMedia` asserts the `requestAnimationFrame` call count is 0. | O7, M12 |
 | R33 | The component SHALL pause its loop when the canvas is not intersecting the viewport and when `document.visibilityState` is `hidden`, resume on both, and feature-detect `IntersectionObserver`, running unpaused when it is absent. | Test with a stubbed `IntersectionObserver` asserts `cancelAnimationFrame` is called when the entry reports `isIntersecting: false`. | O7 |
 | R34 | The effect SHALL cancel its animation frame, disconnect its observer, and remove its `visibilitychange` and `matchMedia` listeners on unmount. | Test unmounts and asserts both `cancelAnimationFrame` and `disconnect` were called. | O7, constraints.md debt 10 |
@@ -113,8 +127,8 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R37 | `index.html` lines 8 to 10 SHALL be deleted. | `grep -rc "fonts.googleapis.com\|fonts.gstatic.com" index.html dist/` returns 0 everywhere. | O11, M9, D2 |
-| R38 | Inter, JetBrains Mono and Space Grotesk SHALL be self-hosted from `@fontsource/inter`, `@fontsource/jetbrains-mono` and `@fontsource/space-grotesk`, weights 400, 500, 600 and 700 for each, imported in `src/main.jsx` above `./index.css`. Weight 300 and the italic face SHALL NOT be imported, because `grep -rn "font-light\|font-thin\|font-extralight\|italic" src/` returns no matches today (confirmed). | `grep -c "@fontsource" src/main.jsx` equals 12; `dist/assets/` contains at least 12 `.woff2` files. | O11, M9, D2 |
+| R37 | `index.html` lines 8 to 10 SHALL be deleted. | `grep -rc "fonts.googleapis.com\|fonts.gstatic.com" index.html dist/` returns 0 everywhere, and the deployed smoke check in R82 re-asserts it on the served HTML. | O11, M9, G1-D2 |
+| R38 | Inter, JetBrains Mono and Space Grotesk SHALL be self-hosted from `@fontsource/inter`, `@fontsource/jetbrains-mono` and `@fontsource/space-grotesk`, weights 400, 500, 600 and 700 for each, imported in `src/main.jsx` above `./index.css`. Weight 300 and the italic face SHALL NOT be imported, because `grep -rn "font-light\|font-thin\|font-extralight\|italic" src/` returns no matches today (confirmed). | `grep -c "@fontsource" src/main.jsx` equals 12; `dist/assets/` contains at least 12 `.woff2` files. | O11, M9, G1-D2 |
 | R39 | `src/index.css` SHALL declare `--font-sans`, `--font-mono` and `--font-display` in a Tailwind `@theme` block naming the three self-hosted families, and the hard-coded system stack at `src/index.css` line 22 SHALL be removed, so Inter is actually applied. Today it is loaded and never used (confirmed by reading `src/index.css` line 22 against `src/App.jsx` line 50). | The built CSS contains `font-family:Inter` and the body rule no longer contains `-apple-system`. | O8, O11, design-brief 31 to 40 |
 | R40 | `src/index.css` SHALL add a `@media (prefers-reduced-motion: reduce)` block neutralising animation duration, iteration count, transition duration and `scroll-behavior` site-wide, so the promise in R32 is not orb-only. | The built CSS contains `prefers-reduced-motion`. | O7, security baseline "defaults" |
 
@@ -122,62 +136,68 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R41 | The phone number SHALL be removed from `src/data/portfolioData.js` line 8, `src/components/ContactFooter.jsx` lines 68 to 73, and `src/components/ResumeModal.jsx` lines 10 and 69. `personal.phone` SHALL be deleted, not blanked, so no component can silently render an empty field. | `grep -rn "508-1536" src/ dist/` returns 0 matches, and `grep -rn "personal.phone" src/` returns 0 matches. | O10, M8, D1 |
-| R42 | Email and LinkedIn SHALL remain reachable on every route. | Test asserts a `mailto:` link and a LinkedIn link on `/`, `/work` and a case-study page. | O10, D1, constraints.md "must not change" |
+| R41 | The phone number SHALL be removed from `src/data/portfolioData.js` line 8, `src/components/ContactFooter.jsx` lines 68 to 73, and `src/components/ResumeModal.jsx` lines 10 and 69. `personal.phone` SHALL be deleted, not blanked, so no component can silently render an empty field. The now-unused `Phone` icon SHALL also be dropped from the `lucide-react` import lists at `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2 (both confirmed present by reading the lines during this revision), because oxlint may fail the build job on an unused import and block the deploy for a reason this requirement did not intend. | `grep -rn "508-1536" src/ dist/` returns 0 matches; `grep -rn "personal.phone" src/` returns 0 matches; `grep -rn "Phone" src/` returns 0 matches. | O10, M8, G1-D1 |
+| R42 | Email and LinkedIn SHALL remain reachable on every route. | Test asserts a `mailto:` link and a LinkedIn link on `/`, `/work` and a case-study page. | O10, G1-D1, constraints.md "must not change" |
 | R43 | `personal.github` and `personal.githubHandle` SHALL be added and used for the three project links and for the `/work` header social links. | Test asserts the three project links point at `https://github.com/muhibm1/<name>`. | O4, OQ4 |
-| R44 | No analytics, cookie, storage call, tracking pixel, embedded widget or third-party script SHALL be introduced anywhere. | The M10 grep returns 0 matches across `src/` and `index.html`. | M10, profile `style_notes`, constraints.md "must not change" |
+| R44 | No analytics, cookie, storage call, tracking pixel, embedded widget, third-party script or new outbound runtime call SHALL be introduced anywhere. | The full no-tracking grep, `grep -rn "fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer" src index.html`, returns 0 matches, exit 1. This is the pattern at `docs/sdlc/constraints.md` line 208 and in the G0 evidence table, verbatim (confirmed by reading line 208 during this revision). If a test file ever legitimately needs one of these tokens, the exception is recorded in this spec rather than the pattern narrowed. | M10, profile `style_notes`, constraints.md "must not change" |
 
 ### H. The simulator
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R45 | `InteractiveTriageSimulator` SHALL show a visible label naming its data as an illustrative example with fictional data, placed next to the scenario list and again on the payload inspector, not only as a page footnote. | Test asserts visible text matching `/illustrative example/i` and `/fictional/i`. | M16, D5, constraints.md compliance |
+| R45 | `InteractiveTriageSimulator` SHALL show a visible label naming its data as an illustrative example with fictional data, placed next to the scenario list and again on the payload inspector, not only as a page footnote. | Test asserts visible text matching `/illustrative example/i` and `/fictional/i`. | M16, G1-D5, constraints.md compliance |
 | R46 | The three `setTimeout` calls in `src/components/InteractiveTriageSimulator.jsx` at lines 75, 79 and 83 SHALL be tracked and cleared on reset and on unmount. | Fake-timer test asserts `vi.getTimerCount()` is 0 after unmounting mid-run. | constraints.md debt 10, intent risk signals |
-| R47 | The copy-confirmation timers at `src/components/Navbar.jsx` line 19 and `src/components/ContactFooter.jsx` line 12 SHALL also be cleared on unmount. | One test per component, same pattern as R46. | see [Correction to a carried finding](#correction-to-a-carried-finding) |
-| R48 | The three `navigator.clipboard.writeText` calls (`Navbar.jsx` line 17, `ContactFooter.jsx` line 10, `ResumeModal.jsx` line 10) SHALL handle rejection by surfacing a failed state instead of reporting success. | Test rejects the clipboard promise and asserts the button does not display "Copied". | constraints.md debt 11, security baseline "no silent consequential failure" |
+| R47 | The copy-confirmation timers at `src/components/Navbar.jsx` line 19, `src/components/ContactFooter.jsx` line 12 **and `src/components/ResumeModal.jsx` line 12** SHALL also be cleared on unmount. All three confirmed by grep over `src/` during this revision; the `ResumeModal` one was missed by the first draft and matters most, because `ResumeModal` is conditionally rendered and therefore unmounts on every close. | One test per component, three in total, same pattern as R46: `vi.getTimerCount()` is 0 after unmounting with the confirmation pending. | see [Correction to a carried finding](#correction-to-a-carried-finding) |
+| R48 | The three `navigator.clipboard.writeText` calls (`Navbar.jsx` line 17, `ContactFooter.jsx` line 10, `ResumeModal.jsx` line 10) SHALL handle rejection by surfacing a failed state instead of reporting success. | Test rejects the clipboard promise and asserts the button does not display "Copied", one per component. | constraints.md debt 11 ("clipboard catch"), which `intent.md` names in its non-goals sentence, so this requirement is **subject to G2-D2** and is deleted if G2-D2 is declined; security baseline "no silent consequential failure" |
 
 ### I. Test toolchain
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R49 | `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom` and `jsdom` SHALL be added as exact-pinned devDependencies at the versions in the [Dependency table](#dependency-table). | Every value under `devDependencies` is a bare version with no `^` or `~`. | O12, D3, profile `style_notes` |
+| R49 | `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom` and `jsdom` SHALL be added as exact-pinned devDependencies at the versions in the [Dependency table](#dependency-table). **Every package this change adds SHALL be pinned to an exact version, in `dependencies` and in `devDependencies` alike**: that is the four runtime packages `react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk` and the five devDependencies above, nine in total. No added package SHALL carry `^`, `~`, `>=`, `<`, `*`, `x`, a tag such as `latest`, or a URL or git specifier. Existing entries keep their ranges; R86 governs the drift that causes. | Two greps over `package.json`. First, `grep -c "\"\(react-router\|@fontsource/inter\|@fontsource/jetbrains-mono\|@fontsource/space-grotesk\|vitest\|@testing-library/react\|@testing-library/dom\|@testing-library/jest-dom\|jsdom\)\": \"[0-9]"` equals 9. Second, the same package alternation followed by `": "[\^~><*x]` or `": "latest` returns 0 matches. R85 runs both in CI on every push, so the pin cannot rot after G4. | O12, G1-D3, profile `style_notes`, security baseline "New third-party import in a runtime path pinned to an exact version" |
 | R50 | `vite.config.js` SHALL carry a `test` block with `environment: 'jsdom'`, `globals: true`, `setupFiles: ['./src/test/setup.js']`, `css: false`, `include: ['src/**/*.test.{js,jsx}']` and `restoreMocks: true`. | `npm test` exit 0 and `npm run build` exit 0, proving Vite 5 accepts the extra top-level key. | O12 |
 | R51 | `package.json` SHALL define `"test": "vitest run"` and `"test:watch": "vitest"`, both runnable on Windows PowerShell with no shell builtin, no POSIX path and no `&&`. | `npm test` exits 0 on the Windows host. | O12, constraints.md technical constraint 4 |
-| R52 | The suite SHALL report at least 12 passing tests and 0 skipped tests. | Read the Vitest summary line. | M4, security baseline "assert a non-zero test count" |
-| R53 | `.workhorse/profile.yml` SHALL set `commands.test` to `npm test` and `commands.test_file` to `npm test --`. | Read the file at G4. | O12, D3 |
+| R52 | The suite SHALL report at least 12 passing tests and 0 skipped tests, and **the build job SHALL enforce that floor rather than leave it to a human reading a summary line**. The workflow's test step SHALL run `npm test -- --reporter=json --outputFile=vitest-results.json`, and the step after it SHALL fail the run unless `numPassedTests` is at least 12 and `numPendingTests` plus `numTodoTests` plus `numFailedTests` is 0, using `node -e` with no new dependency. The failure message SHALL name the observed counts. | `grep -c "numPassedTests" .github/workflows/deploy.yml` is at least 1; the first workflow run's log shows the observed counts. The floor stays at 12 because `evals.md` is written against that number. | M4, security baseline "CI must actually run the security tests" and "assert a non-zero test count" |
+| R53 | `.workhorse/profile.yml` SHALL set `commands.test` to `npm test` and `commands.test_file` to `npm test --`. | Read the file at G4. | O12, G1-D3 |
 | R54 | `src/test/setup.js` SHALL import `@testing-library/jest-dom/vitest` and install stubs for `matchMedia` (defaulting to not matching), `IntersectionObserver`, and `HTMLCanvasElement.prototype.getContext` (returning `null`), restored between tests. | The suite passes with no unhandled jsdom "not implemented" output. | R32, R33, R35 |
 
 ### J. Deploy pipeline
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R55 | Exactly one workflow file SHALL exist, `.github/workflows/deploy.yml`, triggered on `push` to `main` and on `workflow_dispatch`. | `ls .github/workflows` has one entry; the file parses as YAML. | O1, M13 |
+| R55 | Exactly one workflow file SHALL exist, `.github/workflows/deploy.yml`, triggered on `push` to `main` and **on nothing else**. `workflow_dispatch` SHALL NOT be declared, because it is a second production-publish path that is agent-reachable behind a prompt (`gh workflow run` is in profile `ask_commands`, confirmed at `.workhorse/profile.yml` line 96) while `git push origin main` is denied to agents outright. Re-running a failed deployment stays possible from the Actions UI, which is the owner's own session and re-runs the same commit rather than publishing a new one. | `ls .github/workflows` has one entry; `grep -c "workflow_dispatch\|pull_request" .github/workflows/deploy.yml` is 0; `grep -A3 "^on:"` shows `push` with `branches: [main]` only. Full YAML validity is confirmed by GitHub's own parser on the first run, not by this repository: see [YAML validity](#yaml-validity). | O1, M13 |
 | R56 | The build job SHALL run, in order, `npm ci`, `npm run lint`, `npm test`, `npm run build`, then `npm audit --audit-level=high --omit=dev`. A non-zero exit from any of them SHALL stop the deploy. | Read the file; first workflow run exit codes. | M14, security baseline "minimum CI" |
 | R57 | A second, non-blocking `npm audit --audit-level=high` over the full tree SHALL run with `continue-on-error: true`, so dev-only advisories are visible without blocking a portfolio deploy. | Read the file. | see [Security and privacy](#security-and-privacy) |
 | R58 | Publication SHALL use the official flow: `actions/configure-pages`, `actions/upload-pages-artifact` with `path: dist`, and `actions/deploy-pages`, in a two-job build-then-deploy shape with the deploy job bound to the `github-pages` environment. | Read the file. | O1, ADR 0005 |
 | R59 | Every `uses:` line SHALL be pinned to a full 40-character commit SHA with the human-readable tag in a trailing comment. | `grep -c "uses: .*@[0-9a-f]\{40\}" .github/workflows/deploy.yml` equals the count of `uses:` lines. | security baseline "pinned to an exact version" |
-| R60 | `permissions` SHALL be exactly `contents: read`, `pages: write`, `id-token: write` at workflow level, with nothing wider anywhere. | Read the file. | security baseline |
-| R61 | `concurrency` SHALL be `group: pages` with `cancel-in-progress: false`, so two pushes deploy in order rather than interleaving. | Read the file. | O1 |
+| R60 | Token scope SHALL be least-privilege **per job**, not workflow-wide. Workflow level SHALL declare `permissions: contents: read` only. The build job SHALL declare `contents: read` and `pages: read`, and SHALL call `actions/configure-pages` with `enablement: false`. The deploy job SHALL declare `pages: write` and `id-token: write`, and nothing else. No job SHALL hold a write scope it does not use, and `write-all` SHALL not appear. The reason: the build job runs `npm ci` over a fully regenerated tree with lifecycle scripts enabled, plus four third-party actions, and `pages: write` with `id-token: write` are exactly the two scopes that publish the site. | `grep -n -A4 "permissions:" .github/workflows/deploy.yml` shows three blocks in that shape; `grep -c "write-all" ` is 0; `grep -c "id-token: write" ` is 1 and it sits inside the deploy job. | security baseline "least privilege", ADR 0005 |
+| R61 | `concurrency` SHALL be `group: pages` with `cancel-in-progress: false`, so two pushes deploy in order rather than interleaving. | `grep -c "group: pages" .github/workflows/deploy.yml` is 1 and `grep -c "cancel-in-progress: false" .github/workflows/deploy.yml` is 1. | O1 |
 | R62 | `actions/setup-node` SHALL pin `node-version: 22` and enable the npm cache. | Read the file. | see [Node version](#node-version) |
-| R63 | After deploy, a smoke step SHALL fetch the published URL and fail unless the response is 200 and the body contains the owner's name, retrying up to 5 times at 10 second intervals. | First workflow run. | [Observability](#observability) |
+| R63 | After deploy, a smoke step SHALL fetch `${{ steps.deployment.outputs.page_url }}` with `curl` and fail unless the HTTP status is 200, retrying up to 5 times at 10 second intervals to absorb Pages propagation lag. The fetched body SHALL be saved to a file for R80 to R82 to assert against. **The "body contains the owner's name" assertion of the first draft is removed**: `index.html` line 6 is the `<title>` and line 7 the `description` meta, both containing the owner's name (confirmed by reading the file), so that assertion passes on an un-executed shell and proved nothing. | First workflow run: the step's exit code, and the saved body in the run log. | [Observability](#observability), audit High finding 1 |
 | R64 | The workflow SHALL reference no secret of any kind. | `grep -c "secrets\." .github/workflows/deploy.yml` is 0. | profile: no secrets exist |
+| R80 | The smoke step SHALL parse every `src=` and `href=` asset reference out of the fetched body, fail unless each begins `/Portfolio/`, then fetch the module script URL and the stylesheet URL and fail unless each returns 200 with a `content-type` naming JavaScript and CSS respectively. It SHALL then fetch the first `.woff2` URL referenced by the fetched stylesheet and fail unless that returns 200. This is the assertion that detects a wrong `base`, a missing asset and a font file that 404s. | First workflow run; the step logs each URL and status. | audit High finding 1, M2, M9 |
+| R81 | The smoke step SHALL fetch `<page_url>work/apple-llm-triage` and fail unless the returned body is byte-identical to the body fetched in R63. The HTTP status of that request is 404 by design (see [Routing](#routing)) and SHALL NOT be asserted as 200. This is the assertion that detects a missing or stale `dist/404.html`. | First workflow run; the step compares SHA-256 digests of the two bodies. | audit High finding 1, M7, O5 |
+| R82 | The smoke step SHALL assert, against the body fetched in R63: exactly one `Content-Security-Policy` meta tag; exactly one `name="referrer"` meta tag; zero `<script` elements without a `src` attribute; zero occurrences of `fonts.googleapis.com` or `fonts.gstatic.com`; and zero occurrences of `508-1536`. Any failure fails the run. This is the assertion that detects a dropped CSP injection, an inline script that `script-src 'self'` would block, and a regression on either privacy removal, on the artifact that visitors actually receive rather than on the one the build produced locally. | First workflow run; each assertion logs its own pass or fail line. | audit High finding 1, R65, R66, R88, M8, M9 |
+| R83 | The smoke step SHALL be blocking: no `continue-on-error`, and a failure SHALL fail the workflow run. Each assertion SHALL fail with a message naming which assertion failed and the URL fetched, so the run log alone is enough to diagnose. The smoke step SHALL NOT claim to verify that the application mounted; see [Observability](#observability) for what it cannot prove and who owns that gap. | `grep -c "continue-on-error" .github/workflows/deploy.yml` is 1, and that single occurrence is on the informational audit step required by R57, not on any smoke step. | audit High finding 1, security baseline "no failure path both silent and consequential" |
+| R85 | The build job SHALL run a dependency-pin check before `npm ci` that fails the run when any of the nine packages named in R49 carries a range specifier, a tag, a URL or a git specifier in `package.json`. It SHALL be a `node -e` step reading `package.json`, with no new dependency, and SHALL name the offending package and specifier in its failure message. | `grep -c "pin check\|assertExactPins" .github/workflows/deploy.yml` is at least 1; the first workflow run's log shows the nine packages and their resolved specifiers. | audit High finding 2, security baseline pre-ship checklist |
+| R87 | The smoke step SHALL fetch the response headers of the published URL (`curl -sSI`) and print them to the run log, so which security headers GitHub Pages sets on its own is settled with evidence at the first deploy instead of being asserted here. The owner SHALL copy the observed header list into `docs/hosted-config.md` (R69) after the first successful run. The step SHALL NOT fail on a missing header, because this project cannot set one. | First workflow run log contains the header dump; `docs/hosted-config.md` contains the copied list after the first deploy. | audit Medium finding 5, security baseline "defaults from the first week" |
 
 ### K. Security baseline defaults
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R65 | A build-only Vite `transformIndexHtml` step declared in `vite.config.js` SHALL insert a `Content-Security-Policy` meta tag as the first element inside `<head>` of the built HTML, with the policy in [Security and privacy](#security-and-privacy). The source `index.html` SHALL NOT carry it, so `npm run dev` is unaffected. | `grep -c "Content-Security-Policy" dist/index.html dist/404.html` is 1 in each; the same grep on the source `index.html` is 0. | security baseline "defaults from the first week", ADR 0006 |
-| R66 | `dist/index.html` SHALL contain no inline `<script>` without a `src` attribute, so `script-src 'self'` does not break the page. | Grep `dist/index.html` for `<script` not followed by `src=`. If one appears, set `build.modulePreload.polyfill: false` or add its SHA-256 to `script-src`, and record which was done. | R65 |
+| R65 | A build-only Vite `transformIndexHtml` step declared in `vite.config.js` SHALL insert a `Content-Security-Policy` meta tag as the first element inside `<head>` of the built HTML, with the policy in [Security and privacy](#security-and-privacy). The source `index.html` SHALL NOT carry it, so `npm run dev` is unaffected. The same step injects the `Referrer-Policy` meta required by R88. | `grep -c "Content-Security-Policy" dist/index.html dist/404.html` is 1 in each; the same grep on the source `index.html` is 0; R82 re-asserts it on the served page. | security baseline "defaults from the first week", ADR 0006, G2-D2 |
+| R66 | `dist/index.html` SHALL contain no inline `<script>` without a `src` attribute, so `script-src 'self'` does not break the page. If one appears, the remedy SHALL be `build.modulePreload.polyfill: false`. **Adding the script's SHA-256 to `script-src` is explicitly not permitted**: the hash stops matching on any Vite patch bump, the symptom is a blank page in production only, Dependabot (R68) will propose exactly such bumps, and nothing would re-check it. If disabling the polyfill does not clear the inline script, the builder escalates to the owner rather than reaching for a hash. | Grep `dist/index.html` and `dist/404.html` for `<script` not followed by `src=`, expecting 0; `grep -c "sha256-" dist/index.html` is 0. R82 re-runs the same assertion against the served page on every deploy, so a future regression fails the run instead of a visitor's browser. | R65, audit Low finding 7 |
 | R67 | `public/.well-known/security.txt` SHALL exist with `Contact`, `Expires` (one year from the build date), `Preferred-Languages` and `Canonical` fields. | `dist/.well-known/security.txt` exists and contains all four field names. | security baseline, constraints.md "one that does" |
-| R68 | `.github/dependabot.yml` SHALL exist with weekly `npm` and `github-actions` ecosystems and `open-pull-requests-limit: 5`. | File exists and parses as YAML; both ecosystems present. | security baseline, constraints.md "one that does" |
-| R69 | `docs/hosted-config.md` SHALL exist and record every setting that lives only in the GitHub dashboard: Pages source set to "GitHub Actions", repository visibility, the deliberate absence of branch protection with its reason, and the absence of any Actions secret. | File exists and names all four. | security baseline "config that lives only in a vendor dashboard" |
+| R68 | `.github/dependabot.yml` SHALL exist with weekly `npm` and `github-actions` ecosystems and `open-pull-requests-limit: 5`. | `grep -c "package-ecosystem" .github/dependabot.yml` is 2, one `npm` and one `github-actions`; `grep -c "open-pull-requests-limit: 5"` is 1; `grep -c "interval: \"weekly\"\|interval: weekly"` is 2. Full YAML validity is confirmed by Dependabot's first scheduled run, not by this repository: see [YAML validity](#yaml-validity). | security baseline, constraints.md "one that does" |
+| R69 | `docs/hosted-config.md` SHALL exist and record every setting that lives only in the GitHub dashboard: Pages source set to "GitHub Actions"; repository visibility; which branch protections are enabled on `main` and which are deliberately not, with the reason (see [Branch protection](#deploy-pipeline)); the absence of any Actions secret; the response headers GitHub Pages sets, copied from the first run under R87; the dated post-deploy manual check log under R84; and the accepted position on the phone number in git history under R89. **This requirement is unconditional and is not part of G2-D2**, unlike R65, R67, R68 and R88: the first deploy fails without the Pages source setting, and the risk register rates that failure Likely. Bundling deploy documentation into a rejectable security-defaults decision would let one owner "no" delete a control the deploy itself needs. | File exists and names all seven items. | security baseline "config that lives only in a vendor dashboard", audit Medium finding 9 |
 
 ### L. Cleanup and toolchain repair
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
 | R70 | `@rolldown/binding-win32-x64-msvc` SHALL be removed from `dependencies`. | `grep -c rolldown package.json` is 0. | constraints.md technical constraint 8, M14 |
-| R71 | `node_modules` and `package-lock.json` SHALL be deleted and regenerated in one owner-approved `npm install`, and the regenerated `package-lock.json` SHALL be committed. | `npm run lint` exits 0 afterwards. | O13, M3, constraints.md technical constraint 5 |
+| R71 | `node_modules` and `package-lock.json` SHALL be deleted and regenerated in one owner-approved `npm install`, and the regenerated `package-lock.json` SHALL be committed. Regeneration re-resolves every existing caret range and the whole transitive tree, which `git diff package.json` cannot see; R86 is the review that covers it. | `npm run lint` exits 0 afterwards, and R86's before-and-after table exists in the G4 evidence. | O13, M3, constraints.md technical constraint 5 |
 | R72 | `generate_viewer.cjs` SHALL be removed from the repository with `git rm`. | `git ls-files` has no match for `generate_viewer`. | O14, M15 |
 | R73 | `.gitignore` SHALL contain the pattern `.env*`, not an enumeration of filenames. | `grep -c "^\.env\*" .gitignore` is 1, and `git ls-files` shows no tracked env file. | O14, M15, security baseline |
 
@@ -187,15 +207,28 @@ metrics (M1 to M17), the G1 decisions (D1 to D5), `docs/design-brief.md`,
 |----|-------------|------------------|--------|
 | R74 | `npm run build` SHALL exit 0 on the Windows dev host and on `ubuntu-latest`. | Run it in both places. | M1 |
 | R75 | No `package.json` script SHALL use a shell builtin, a POSIX-only path separator, or `&&`. | Read `scripts`. | constraints.md technical constraint 4, profile `build` |
-| R76 | The build phase SHALL run at most 4 builders in parallel. | The planner reads `profile.build.max_parallel: 4`. | profile `build.max_parallel` |
-| R77 | Before installing, the builder SHALL resolve each added package's current version and read the `license` field from the installed `node_modules/<pkg>/package.json`, and SHALL record both in the G4 evidence table. Any pin in the [Dependency table](#dependency-table) that does not resolve SHALL be escalated to the owner, never silently bumped. | G4 evidence table has one row per added package with a resolved version and a licence read from disk. | profile `style_notes`, `wh-agent-rules` |
-| R78 | Exactly 4 runtime dependencies and 5 devDependencies SHALL be added, and exactly 1 runtime dependency removed. No other dependency change SHALL occur. | `git diff package.json` reviewed at G4. | profile `style_notes` |
+| R76 | `.workhorse/profile.yml` SHALL keep `build.max_parallel: 4`, and no wave in [Build waves](#build-waves) SHALL contain a group of tasks that requires more than 4 workers running at once. The requirement is about the configured value and the wave shape, both of which are artifacts; it is deliberately not a claim about what the conductor did at run time, which no file records. | `grep -c "max_parallel: 4" .workhorse/profile.yml` is 1, and the wave table names 4 waves each of which is file-disjoint within itself. | profile `build.max_parallel`, eval note 2 |
+| R77 | Before installing, the builder SHALL resolve each added package's current version and read the `license` field from the installed `node_modules/<pkg>/package.json`, and SHALL record both in the G4 evidence table. Any pin in the [Dependency table](#dependency-table) that does not resolve, **or that resolves to a version other than the one written there**, SHALL be escalated to the owner and recorded, never silently bumped. That applies to the three `@fontsource` packages exactly as it applies to the other six; the first draft's carve-out for them is withdrawn. | G4 evidence table has one row per added package with a resolved version and a licence read from disk, plus an explicit line for any package where the resolved version differs from the table. **This check is permanently manual and that is accepted, not a gap**: reading a licence field requires an owner-approved `npm install` first (`npm install` is in profile `ask_commands`), and the evidence table is authored and reviewed by people. Owner: build phase, reviewed by the site owner at G4. | profile `style_notes`, `wh-agent-rules`, eval note 3, audit Medium finding 11 |
+| R78 | Exactly 4 runtime dependencies and 5 devDependencies SHALL be added, and exactly 1 runtime dependency removed. No other dependency change SHALL occur in `package.json`. Lockfile-level drift is out of this requirement's reach and is governed by R86. | `git diff package.json` reviewed at G4, plus R49's two greps for the pin shape and R85's CI check. | profile `style_notes` |
 
 ### N. Visual style
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R79 | Every surface SHALL follow the OFF+BRAND treatment in `docs/design-brief.md` lines 31 to 42: the parchment, ink, paper, ash and stone palette; zero shadows; 0 px radius on cards and 10 px on interactive elements; one chromatic element only, which is the orb. The home case-study cards SHALL follow the Varick pattern recorded in `docs/design-brief.md` lines 25 to 29: title, context paragraph, capability bullets, and a link to the dedicated page. This requirement is subject to D4, the radius and shadow conflict between the brief and the mockups. | Design review at G4 against `docs/design-brief.md` lines 25 to 42, plus a grep showing `shadow-` classes removed from `src/components/` if D4 resolves in favour of the brief. | O8, design-brief |
+| R79 | Every surface SHALL follow the OFF+BRAND treatment in `docs/design-brief.md` lines 31 to 42: the parchment, ink, paper, ash and stone palette; zero shadows; 0 px radius on cards and 10 px on interactive elements; one chromatic element only, which is the orb. The home case-study cards SHALL follow the Varick pattern recorded in `docs/design-brief.md` lines 25 to 29: title, context paragraph, capability bullets, and a link to the dedicated page. This requirement is subject to G2-D4, the radius and shadow conflict between the brief and the mockups. | Design review at G4 against `docs/design-brief.md` lines 25 to 42, plus a grep showing `shadow-` classes removed from `src/components/` if G2-D4 resolves in favour of the brief. | O8, design-brief |
+
+### O. Added by the response to the G2 constraint audit
+
+R80 to R83, R85 and R87 sit with the deploy pipeline in section J because that is where they run.
+The five below have no other home. All ten are new; R1 to R79 keep their original numbers.
+
+| ID | Requirement | Acceptance check | Source |
+|----|-------------|------------------|--------|
+| R84 | `docs/hosted-config.md` SHALL carry a "Post-deploy manual check" section listing the four things no step this project can run is able to prove, and the owner SHALL work through it and append a dated line after the first deploy and after any later change to `vite.config.js`, `index.html` or `package.json`. The four: the home page renders content inside `#root` in a real browser; the orb animates and stops when the tab is hidden; a deep link pasted into a fresh tab renders the case study; the browser console shows no CSP violation and no uncaught error. | The section exists with the four items; after the first deploy the file carries at least one dated line. Owner: site owner. This is a manual control by necessity, not by preference: there is no browser in CI and adding one (Playwright) was rejected on cost in [Alternatives considered](#alternatives-considered). | audit High finding 1, [Observability](#observability) |
+| R86 | Before committing the regenerated `package-lock.json` (R71), the builder SHALL record the resolved version of every direct dependency from the pre-existing lockfile and from the regenerated one, and SHALL put both columns in the G4 evidence table. Any direct dependency whose **major** version moved SHALL be escalated to the owner before the commit, never merged silently. The transitive tree is not reviewed entry by entry; that residue is an accepted risk with a named owner in the [Risk register](#5-risk-register). | G4 evidence table contains a before-and-after row for each of the 11 direct dependencies, with a stated verdict on every row that moved. | audit Medium finding 4, security baseline supply chain |
+| R88 | The build-only `transformIndexHtml` step that injects the CSP (R65) SHALL also inject `<meta name="referrer" content="strict-origin-when-cross-origin">`. It is the only baseline header besides the CSP that a meta tag can express, and it costs nothing in a step that already exists. | `grep -c 'name="referrer"' dist/index.html dist/404.html` is 1 in each and 0 in the source `index.html`; R82 re-asserts it on the served page. | audit Medium finding 5, security baseline, ADR 0006, G2-D2 |
+| R89 | The phone number SHALL survive in the working tree only where a machine check needs it as a literal. The occurrences at `docs/sdlc/constraints.md` line 102 and `intent.md` line 199 SHALL be redacted to `(512) 508-xxxx` in wave 4, each with a one-line note saying the digits were removed under G1-D1 and where the live check now lives. The occurrences in this file are the checks themselves and stay. Its survival in git history is **accepted, not fixed**; see [Retention](#data) for the reason and the owner. | After wave 4, a recursive grep for the number across the repository, excluding `.git` and `node_modules`, matches `spec.md` only. | audit Medium finding 6, G1-D1, constraints.md technical constraint 2 |
+| R90 | No requirement in this spec SHALL claim a detection capability that the check named beside it does not have. Where a failure mode has no automatable detection in this project, the spec SHALL name it as an accepted risk with an owner rather than crediting a step that cannot see it. | Review at re-audit: [Observability](#observability), [Failure modes](#failure-modes) and the [Risk register](#5-risk-register) each name R63 and R80 to R83 only for what they assert, and name R84 for the rest. | audit High finding 1, `wh-agent-rules` "evidence before assertion" |
 
 ---
 
@@ -327,9 +360,12 @@ ADR 0008.
 "`CaseStudyModal.jsx` reads the email from `portfolioData`". That file no longer exists after
 R6; the requirement is met at the renamed path `CaseStudyPage.jsx`, and the acceptance check is
 strengthened from "one file reads from data" to "`grep -rn "mmalqaim@gmail.com" src/` matches
-only the data module", which also catches two occurrences the intent did not name
-(`Navbar.jsx` line 17 and `ContactFooter.jsx` line 38, both confirmed by reading). The
-constraint auditor should confirm this substitution is acceptable.
+only the data module", which also catches three occurrences the intent did not name:
+`Navbar.jsx` line 17 (the clipboard argument), `Navbar.jsx` line 87 (visible display text) and
+`ContactFooter.jsx` line 38 (visible display text). Four in total, all confirmed by grep over
+`src/` during this revision; the first draft said three and missed `Navbar.jsx` line 87. R6's
+requirement text now names all four, so a builder reading the prose sees the same set the grep
+enforces.
 
 ### The `/work` index
 
@@ -367,12 +403,12 @@ public JavaScript bundle.
 | Key | Status | Who may read | Who may write | Pinned against change? |
 |-----|--------|--------------|---------------|------------------------|
 | `personal.name`, `.role`, `.subtitle`, `.email`, `.location`, `.linkedin`, `.linkedinHandle`, `.status`, `.summary`, `.monogram` | existing, unchanged | everyone, it is in the bundle | the owner, by commit | yes, by CLAUDE.md "Protected" and by review at G4 |
-| `personal.phone` | **deleted** by R41 | n/a | n/a | removal authorised by G1 D1 in `approvals.md` |
+| `personal.phone` | **deleted** by R41 | n/a | n/a | removal authorised by G1-D1 in `approvals.md` |
 | `personal.github`, `personal.githubHandle` | **new** | everyone | the owner | new field, see OQ4 |
 | `telemetry` (4 entries) | existing, unchanged | everyone | the owner | yes, pinned by the unit test in R18 |
 | `philosophy`, `experience`, `education`, `skills` | existing, unchanged | everyone | the owner | yes, by review at G4 |
 | `caseStudies` (3 entries, ids `apple-llm-triage`, `apple-data-health`, `neural-newsletters-llm`, confirmed at lines 66, 94, 122) | existing, unchanged | everyone | the owner | ids and titles pinned by the unit test in R18; the ids are now URL slugs, so changing one breaks any link already sent out |
-| `projects` (3 entries) | **new** | everyone | the owner | content is the owner's to write, see D1 |
+| `projects` (3 entries) | **new** | everyone | the owner | content is the owner's to write, see G2-D1 |
 | `demos` (1 entry) | **new** | everyone | the owner | |
 | `workIntro` | **new** | everyone | the owner | |
 
@@ -387,9 +423,31 @@ has to a `BEFORE UPDATE` trigger, and it is cheap.
 
 **Retention.** Everything in this file is published and effectively permanent: archives and
 search engines copy it (`constraints.md` technical constraint 2). Removing the phone number now
-does not unpublish copies made before the first deploy, but the site has never been deployed
-(confirmed: no `.github/` directory, no Pages configuration), so there are no prior copies to
-worry about. That is the single reason D1 is cheap today and expensive later.
+does not unpublish copies made before the first deploy, but the **site** has never been deployed
+(confirmed: no `.github/` directory, no Pages configuration), so there are no prior copies of the
+site to worry about. That is the single reason G1-D1 is cheap today and expensive later.
+
+**The repository is a separate question, and the first draft conflated the two.** The number
+`(512) 508-1536` also sits in three committed markdown files: `docs/sdlc/constraints.md` line
+102, `intent.md` line 199 and this file (confirmed by grep across the repository: four files
+match, the fourth being `portfolioData.js`). If the repository is public, and R69 asks the owner
+to record whether it is, those copies stay fetchable after R41 ships. Two decisions, both taken
+here:
+
+1. **Redact the working tree.** R89 reduces the number to the machine checks in this spec that
+   need it as a literal, and redacts the two other artifacts to `(512) 508-xxxx` with a note at
+   each site. Editing an approved artifact (`intent.md`) is deliberate and is called out here so
+   the auditor reads it as intentional rather than as drift; it changes no decision, and G1-D1
+   itself is unaffected.
+2. **Git history is accepted, not rewritten.** Commits from `b50497f` onward contain the number.
+   Rewriting history with `git filter-repo` would invalidate every commit SHA quoted in
+   `approvals.md`, `state.json` and the SDLC artifacts, on a repository whose whole purpose is to
+   be published and whose sole committer is the data subject himself, for a number that is on his
+   own resume. The residual exposure is one phone number, the owner's own, reachable only by
+   someone who clones the repository and reads its history. **Accepted risk, owner: site owner**,
+   recorded in `docs/hosted-config.md` under R69 and in the [Risk register](#5-risk-register).
+   The owner may reverse this by making the repository private or by rewriting history before the
+   first push; after the first push, neither undoes a clone.
 
 **Migrations.** Not applicable: there is no schema. The `portfolioData.js` change is additive
 only (R18) and is therefore trivially reversible by reverting one commit.
@@ -411,8 +469,8 @@ projects: [
     id: string,            // kebab-case, stable, not a URL slug (projects have no page)
     name: string,          // exactly the repository name: "workhorse", "Shu", "wasl"
     type: "Project",
-    tagline: string,       // one line, owner-supplied, see D1
-    description: string,   // one short paragraph, owner-supplied, see D1
+    tagline: string,       // one line, owner-supplied, see G2-D1
+    description: string,   // one short paragraph, owner-supplied, see G2-D1
     repo: string,          // https://github.com/muhibm1/<name>
     techStack: string[],
     year: string
@@ -464,9 +522,9 @@ the array already z-sorted far to near (confirmed, `dist/engine/core.d.ts` lines
 the `finalizeFrame` doc comment at lines 52 to 62). That is exactly what a custom painter needs:
 it iterates the array in order and draws, deriving colour from `z` and alpha from `a`.
 
-**Workflow interface.** Trigger: `push` to `main`, or `workflow_dispatch`. Inputs: none.
+**Workflow interface.** Trigger: `push` to `main`, and nothing else (R55). Inputs: none.
 Secrets: none (R64). Outputs: a GitHub Pages deployment and the `page_url` from
-`actions/deploy-pages`, consumed by the smoke step in R63.
+`actions/deploy-pages`, consumed by the smoke step in R63 and its assertions R80 to R83.
 
 ### The orb
 
@@ -484,8 +542,8 @@ Behaviour contract:
 |---------|----------|-------------|
 | Geometry | `resolvePreset('working', 64)` then `MODE_FRAMES.orbits(size, t, opts)` each frame | R29 |
 | Time base | `t = performance.now() / 1000 * speed`, `speed` from the preset (1.885) | R29 |
-| Colour | depth `z` in [-1, 1] mapped across `#facb0e`, `#f06ba8`, `#78bae6`, `#ffffff`; alpha from `dot.a`; no `shadowBlur` | R30 |
-| Size | inline CSS width and height; 420 at viewport >= 1024, else `viewportWidth - 48` clamped to >= 280 | R31 |
+| Colour | depth `z` in [-1, 1] mapped across `#facb0e`, `#f06ba8`, `#78bae6`, `#ffffff` by the pure exported helper `colourForDepth(z)`; alpha from `dot.a`; no `shadowBlur` | R30 |
+| Size | inline CSS width and height, from the pure helper `canvasWidthForViewport(w) = min(420, max(280, w - 48))`: 420 at 468 px and above, `w - 48` between 328 and 468, 280 below | R31 |
 | Backing store | `size * min(2, devicePixelRatio \|\| 1)`, transform set before each clear | R36 |
 | Reduced motion | one frame at `t = 0.6`, zero `requestAnimationFrame` calls, live-updating on the media query's `change` event | R32 |
 | Offscreen | `IntersectionObserver` pauses and resumes; `document.visibilitychange` pauses and resumes; both feature-detected, unpaused fallback when `IntersectionObserver` is absent | R33 |
@@ -554,12 +612,19 @@ Test layout follows `CLAUDE.md` ("tests live next to the component as `*.test.js
 | `src/basename.test.js` | strips the trailing slash from the Vite base url |
 | `src/routes.test.jsx` | renders the home page at `/`; renders the work index at `/work`; renders each of the three case studies; renders the not-found page for an unknown slug; scrolls to the top on a route change |
 | `src/pages/WorkIndexPage.test.jsx` | lists exactly three case studies, three projects and one live demo; shows only the three projects when the Project filter is active |
-| `src/components/ThinkingOrbHero.test.jsx` | renders a canvas 420 css pixels wide; paints one frame and schedules no animation frame when reduced motion is preferred; stops the loop when the orb leaves the viewport; releases its frame and observer on unmount |
+| `src/components/ThinkingOrbHero.test.jsx` | renders a canvas 420 css pixels wide; clamps the canvas width to 420 at wide viewports and 280 at narrow ones; maps the near, middle and far depths onto the brand stops; paints one frame and schedules no animation frame when reduced motion is preferred; stops the loop when the orb leaves the viewport; releases its frame and observer on unmount |
 | `src/components/InteractiveTriageSimulator.test.jsx` | labels the sample tickets as an illustrative example with fictional data; clears its pending timers on unmount |
 | `src/components/CaseStudyPage.test.jsx` | draws one flow node per diagram step for every case study; links from the last case study to the first |
+| `src/components/Navbar.test.jsx` | clears its copy-confirmation timer on unmount; does not report a successful copy when the clipboard rejects |
+| `src/components/ContactFooter.test.jsx` | same two, for the footer copy button |
+| `src/components/ResumeModal.test.jsx` | same two, for the resume copy button, which is the one component that unmounts on every close |
 | `src/data/portfolioData.test.js` | publishes no phone number; keeps the four telemetry metrics and the three case-study ids verbatim |
 
-That is 18 tests, above R52's floor of 12.
+That is 28 tests across ten files. The first draft said 18 against a shorter list and undercounted
+its own rows; the corrected count is written here rather than changed silently. R52's floor stays
+at **12**, unchanged, because `evals.md` is written against that number and R52 now enforces it in
+CI rather than by eye. If G2-D2 is declined, the six clipboard-rejection and copy-timer tests in
+the last three files reduce to three (R47 survives, R48 does not), which is still 25.
 
 ### Deploy pipeline
 
@@ -567,25 +632,36 @@ One file, `.github/workflows/deploy.yml`, two jobs.
 
 ```
 name:        Build and deploy to GitHub Pages
-on:          push to main; workflow_dispatch
-permissions: contents: read, pages: write, id-token: write
+on:          push to main            # and nothing else (R55)
+permissions: contents: read          # workflow level, read only (R60)
 concurrency: group: pages, cancel-in-progress: false
 
 job build (ubuntu-latest)
+  permissions: contents: read, pages: read          # no write scope in this job (R60)
   actions/checkout            @<sha>   # v5
   actions/setup-node          @<sha>   # v5, node-version 22, cache npm
+  node -e assertExactPins             # R85, fails on any range specifier
   npm ci
   npm run lint
-  npm test
+  npm test -- --reporter=json --outputFile=vitest-results.json
+  node -e assertTestFloor             # R52, >= 12 passed, 0 skipped/todo/failed
   npm run build
   npm audit --audit-level=high --omit=dev          # blocking
   npm audit --audit-level=high                     # continue-on-error: true
-  actions/configure-pages     @<sha>   # v5
+  actions/configure-pages     @<sha>   # v5, enablement: false
   actions/upload-pages-artifact @<sha> # v4, path: dist
 
 job deploy (ubuntu-latest, needs: build, environment: github-pages)
+  permissions: pages: write, id-token: write       # the only write scopes anywhere (R60)
   actions/deploy-pages        @<sha>   # v4
-  smoke: fetch ${{ steps.deployment.outputs.page_url }}, expect 200 and the owner's name
+  smoke (R63, R80 to R83, R87), blocking, against ${{ steps.deployment.outputs.page_url }}:
+    curl the page_url, expect 200, retry 5 x 10s, save the body       # R63
+    curl -sSI the page_url, print the response headers to the log     # R87
+    every asset path in the body begins /Portfolio/                   # R80
+    the module script, the stylesheet and one woff2 each return 200   # R80
+    <page_url>work/apple-llm-triage returns a body identical to the root body  # R81
+    exactly 1 CSP meta, exactly 1 referrer meta, 0 inline scripts,
+      0 fonts.googleapis.com, 0 fonts.gstatic.com, 0 phone number     # R82
 ```
 
 Action major versions in the comments are believed, not verified; R59 requires the builder to
@@ -600,14 +676,55 @@ until the repository's Settings, Pages, "Build and deployment", Source is set to
 something the workflow can do, and the first run fails without it. R69 records it in
 `docs/hosted-config.md`; the owner performs it.
 
-**Branch protection is deliberately absent.** The security baseline calls for branch protection
-requiring CI, even for a sole committer. It is not added here, because `constraints.md` names
-the deploy-on-push model as a thing that must not change without the owner saying so, and a
-protection rule requiring a pull request would break the owner's release mechanism. This is
-documented risk acceptance, recorded in `docs/hosted-config.md` with the reason, not a silent
-omission. The compensating control is that the workflow runs lint, tests, build and audit before
-publishing, so a broken commit fails before it reaches Pages, just after the push rather than
-before the merge.
+**Token scope, and why it is per job.** Workflow-level `permissions` are `contents: read`. The
+build job adds `pages: read` and nothing more; the deploy job holds `pages: write` and
+`id-token: write`, which are exactly the two scopes that publish the site (R60). The reason to
+split rather than declare all three at workflow level, which is what GitHub's own starter
+workflow does, is that the build job runs `npm ci` over a fully regenerated tree with lifecycle
+scripts enabled, plus four third-party actions, and none of that needs the ability to publish.
+
+Whether `actions/configure-pages` can run with only `pages: read` when `enablement` is `false`
+is **believed, not verified**: no network access was available in this session and GitHub's
+documentation was not read. The action is called with `enablement: false` because the owner sets
+the Pages source by hand (R69), so the action has nothing to create. If the first run fails on
+that step with a permissions error, the documented remedy is to **move
+`actions/configure-pages` into the deploy job**, not to widen the build job: this workflow
+consumes none of the action's outputs, because `base` is hard-coded by R11 rather than taken
+from `steps.pages.outputs.base_path`. The builder records which shape shipped.
+
+**Branch protection: the narrow waiver, corrected.** The security baseline calls for branch
+protection requiring CI, even for a sole committer. The first draft waived all branch protection
+by reasoning from one variant to every variant. Corrected position, in three parts:
+
+1. **A rule requiring a pull request is declined.** `constraints.md` names the deploy-on-push
+   model as a thing that must not change without the owner saying so, and requiring a pull
+   request would break the owner's release mechanism.
+2. **Two protections that do not require a pull request are recommended and cost nothing:**
+   block force pushes on `main`, and block deletion of `main`. Neither interferes with
+   `git push origin main`. The owner enables both when he sets the Pages source, and R69 records
+   the outcome either way.
+3. **Whether GitHub can require status checks to pass without also requiring a pull request** is
+   believed, not verified from this host. If it can, it is the one protection that would turn
+   "CI fails just after the push" into "the push is refused", and the owner should enable it. If
+   it cannot, the gap stands as accepted risk, owner: site owner, with the compensating control
+   that the workflow runs the pin check, lint, tests, the test-count floor, build and audit
+   before anything reaches Pages.
+
+### YAML validity
+
+R55 and R68 originally said each file "parses as YAML". The eval designer pointed out that this
+project has no YAML parser and that adding one contradicts its own dependency discipline. The
+framing is accepted explicitly rather than left ambiguous:
+
+- The machine checks for both files are **structural greps**, listed in R55 and R68. They catch
+  a missing trigger, an extra trigger, a missing ecosystem and a wrong limit, which are the
+  failure modes that matter here.
+- **Full YAML validity is confirmed by the consumer, not by this repository**: GitHub's own
+  parser accepts or rejects `deploy.yml` on the first push, visibly, and Dependabot's first
+  scheduled run does the same for `dependabot.yml`. Both are recorded as evidence at G4.
+- No YAML parser is added as a dependency for this. That is a deliberate choice, not an
+  oversight, and the residual risk is that a malformed file is discovered one push later rather
+  than one commit earlier. Owner: build phase.
 
 ### Security and privacy
 
@@ -626,7 +743,8 @@ independently confirmed earlier by the discovery analyst and compliance mapper).
 | The Google Fonts call | Discloses every visitor's IP to Google LLC | Removed entirely (R37, R38). This closes the GDPR-adjacent gap recorded in `constraints.md` "Compliance controls" without needing to settle the unsettled legal question, which is the reason self-hosting is preferred over recording a lawful basis |
 | GitHub Pages hosting | Discloses every visitor's IP to GitHub Inc. | Unavoidable for any host. Named as the single remaining subprocessor in `docs/hosted-config.md` (R69) |
 | Deep links | A redirect shim that needs `sessionStorage` would create a storage obligation where none exists | Not used (R13). The `404.html` copy needs no storage |
-| The deploy workflow | Over-broad token permissions; a compromised third-party action | Minimal `permissions` (R60); SHA-pinned actions (R59); no secrets (R64); no `pull_request_target` trigger |
+| The deploy workflow | Over-broad token permissions; a compromised third-party action | Per-job `permissions`, with `pages: write` and `id-token: write` only in the deploy job (R60); SHA-pinned actions (R59); no secrets (R64); `push` to `main` as the only trigger, so no `workflow_dispatch`, no `pull_request` and no `pull_request_target` (R55) |
+| `package.json` and the lockfile | A range specifier or a silent major bump enters the supply chain of a public site | Exact pins on all nine added packages (R49), enforced in CI on every push (R85); direct-dependency drift from the lockfile regeneration reviewed before commit (R86); versions and licences read from disk and escalated on any difference (R77) |
 | `mailto:` links | Address harvesting | Accepted. The address is already public by design and the owner wants to be contacted |
 | The phone number | Permanent scraping of a personal phone number | Removed before the first deploy (R41), authorised in `approvals.md` G1 note "D1 remove phone" |
 
@@ -647,6 +765,23 @@ form-action 'none';
 upgrade-insecure-requests
 ```
 
+**The other five baseline headers, each named rather than dropped.** The baseline asks for CSP,
+HSTS, `X-Content-Type-Options`, `Referrer-Policy` and `Permissions-Policy`. The first draft
+addressed only the CSP and said nothing about the rest, which read as four silent omissions.
+Each is now placed:
+
+| Header | Position |
+|--------|----------|
+| `Content-Security-Policy` | Achievable as a meta tag. R65, policy above, ADR 0006 |
+| `Referrer-Policy` | Achievable as `<meta name="referrer" content="strict-origin-when-cross-origin">`, injected by the same build step, free. **Added: R88** |
+| `Strict-Transport-Security` | **Unachievable here.** HSTS is ignored in a meta tag (believed, not verified against the specification in this session) and GitHub Pages does not let anyone set response headers. Believed, not verified, that `github.io` is on the HSTS preload list, which would make the point moot for this origin; R87 settles it by printing the actual response headers into the first run's log |
+| `X-Content-Type-Options` | **Unachievable here.** Header only; browsers ignore the `http-equiv` form (believed, not verified). Believed, not verified, that GitHub Pages sets `nosniff` itself; R87 settles it |
+| `Permissions-Policy` | **Unachievable here.** Header only, no meta form exists (believed, not verified) |
+
+The three unachievable ones become achievable only with a host that can set headers, which means
+a custom domain and a different host, both non-goals. They are recorded here and in
+`docs/hosted-config.md` (R69) so a future reader sees a decision rather than an oversight.
+
 `style-src 'unsafe-inline'` is required and is a real weakening: React inline `style` props are
 covered by `style-src-attr`, and this codebase uses them (for example `src/components/MmLogo.jsx`
 line 9 today, and the orb canvas after this change). It is accepted because the alternative,
@@ -656,8 +791,25 @@ written and silently ignored; clickjacking a static portfolio with no controls h
 The tag is injected at build time only (R65) so the Vite dev server's websocket and inline
 styles are unaffected. ADR 0006.
 
-**Dependency audit policy.** The blocking step is `npm audit --audit-level=high --omit=dev`,
-which covers everything that reaches a visitor. The full-tree audit runs alongside with
+**The no-tracking grep.** The single check the owner named as protecting the one rule that must
+not change is the no-tracking grep, so it runs in its mandated form, not a narrowed one. The
+pattern is `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer`
+over `src` and `index.html`, which is `docs/sdlc/constraints.md` line 208 and the G0 evidence
+table verbatim (confirmed by reading line 208 during this revision). `intent.md`'s M10 row
+dropped `fetch(`, `XMLHttpRequest` and `axios`, which are precisely the three tokens that would
+catch a newly introduced outbound call. R13 and R44 now name the full pattern. The narrowing
+originated in the approved intent, so it is corrected here rather than treated as a defect in
+that document; M10's target is unchanged in substance, only widened.
+
+**Dependency audit policy.** The blocking step is `npm audit --audit-level=high --omit=dev`. It
+covers everything that reaches a visitor, **and two packages that do not**: `tailwindcss` and
+`@tailwindcss/vite` sit in `dependencies` rather than `devDependencies` (confirmed,
+`package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages. The first
+draft's justification, "covers everything that reaches a visitor", was therefore inexact. It
+errs safe, so neither package is moved: relocating them would be a dependency change beyond
+R78's declared bounds, in the same change as the first production deploy, for no security gain.
+Recorded under [Findings outside scope](#findings-outside-scope) so the next dependency change
+can do it deliberately. The full-tree audit runs alongside with
 `continue-on-error: true` for visibility. The reason for the split: the deployed artifact
 contains no devDependency code, and blocking every deploy on an advisory in a jsdom or vitest
 transitive chain would train the owner to ignore a red check, which is the exact failure the
@@ -666,8 +818,10 @@ unchanged at the full `npm audit --audit-level=high`, because as a local check t
 is right. The divergence is deliberate and recorded here so a reader does not treat it as drift.
 
 **Pre-ship checklist mapping.** The baseline's database items are not applicable, and are listed
-as such in the G2 packet's checklist rather than dropped. The items that do apply are R59, R65,
-R66, R67, R68, R69, R73, R77 and R78.
+as such in the G2 packet's checklist rather than dropped. The items that do apply are R49, R59,
+R65, R66, R67, R68, R69, R73, R77, R78, R85, R86 and R88. The "third-party import pinned to an
+exact version" line is carried by R49 plus R85, not by R78: R78 bounds how many packages are
+added, R49 bounds how they are written, and R85 is the machine that keeps it true.
 
 ### Failure modes
 
@@ -678,11 +832,11 @@ For the eval designer: every row below is a failure or adversarial case.
 | npm registry slow or down | `npm ci` times out in CI | No deploy | GitHub Actions retries nothing; the run fails loudly and the previous deployment stays live. Acceptable: the last good site keeps serving | workflow run status |
 | `@rolldown/binding-win32-x64-msvc` still present | `npm ci` fails on Linux with `EBADPLATFORM` | First deploy blocked | R70 removes it; R71 regenerates the lockfile | M14, first workflow run |
 | `package-lock.json` out of sync with `package.json` | `npm ci` fails | No deploy | R71 commits the regenerated lockfile in the same commit | M14 |
-| Wrong `base` | Site serves with no CSS or JS | A broken page, worse than no page | R11 plus the `dist/index.html` asset-path grep | M2 |
-| `dist/404.html` missing or stale | Every deep link shows GitHub's own 404 page | Case-study links from applications break | R12 copies the built file at `closeBundle`, so it cannot drift | M7 |
+| Wrong `base` | Site serves with no CSS or JS | A broken page, worse than no page | R11 plus the `dist/index.html` asset-path grep at build time, and R80 at deploy time, which fetches the asset URLs off the served page and requires 200 | M2, R80 |
+| `dist/404.html` missing or stale | Every deep link shows GitHub's own 404 page | Case-study links from applications break | R12 copies the built file at `closeBundle`, so it cannot drift; R81 re-checks on the live site by fetching a deep link and comparing bodies | M7, R81 |
 | `basename` keeps its trailing slash | Every route falls through to `NotFoundPage` | Site appears empty | R2's tested helper | `src/basename.test.js` |
-| Vite injects an inline module-preload polyfill script | CSP `script-src 'self'` blocks it; the page does not boot | Blank page in production only, invisible in dev | R66 greps the built HTML and either disables `build.modulePreload.polyfill` or hashes the script | R66 |
-| CSP too strict for a `@fontsource` `url()` | Fonts silently fall back to the system stack | Typography regression, no error | `font-src 'self'` covers same-origin woff2; verified by loading the built site in the smoke step | R63 plus manual check at G4 |
+| Vite injects an inline module-preload polyfill script | CSP `script-src 'self'` blocks it; the page does not boot | Blank page in production only, invisible in dev | R66 greps the built HTML and disables `build.modulePreload.polyfill`; hashing is no longer permitted because the hash rots on a patch bump; R82 re-asserts "no inline script" against the served page on every deploy | R66, R82 |
+| A woff2 referenced by the built CSS 404s | Fonts silently fall back to the system stack | Typography regression, no error | R80 fetches one woff2 off the served stylesheet and requires 200. `font-src 'self'` covers same-origin woff2, so CSP is not the likely cause; a wrong `base` is | R80 |
 | `getContext('2d')` returns null (jsdom, or a browser with canvas disabled) | Orb paints nothing | Hero renders without the orb, no exception | R35 returns early | orb tests |
 | `matchMedia` absent (old browser, or jsdom without the stub) | Reduced-motion check throws | Whole page fails to render | Feature-detect, as the package does (`typeof matchMedia > "u"`, confirmed at `dist/index.es.js` line 51); R54 stubs it in tests | R32, R54 |
 | `IntersectionObserver` absent | No pause when offscreen | Battery drain only | Feature-detect and run unpaused, as the package does (confirmed, `dist/index.es.js` line 111) | R33 |
@@ -691,9 +845,11 @@ For the eval designer: every row below is a failure or adversarial case.
 | Clipboard permission denied | Button reports "Copied" when nothing was copied | A visitor pastes nothing and blames the site | R48 | clipboard rejection test |
 | GitHub Pages source not set to "GitHub Actions" | `actions/deploy-pages` fails | First deploy fails with a message naming the setting | R69 records it; the owner sets it before the first push | first workflow run |
 | Pages propagation lag after deploy | Smoke step fetches a stale or missing page | False failure | R63 retries 5 times at 10 second intervals | R63 |
+| React throws during mount, or a runtime exception blanks the page | The shell serves, every asset returns 200, and `#root` stays empty | A blank portfolio with a green check and no signal anywhere | **Not detectable by any step this project can run.** No browser runs in CI; curl sees the pre-mount shell, which is identical whether or not the app mounts. Accepted risk, owner: site owner, mitigated only by the manual post-deploy check in R84 | R84, manual |
+| A Dependabot pull request is merged | A deploy runs immediately, because merging to `main` is the release | An unreviewed dependency bump goes live | `open-pull-requests-limit: 5` plus the full CI gate on the merge commit: R85's pin check, lint, R52's test floor, build and the blocking runtime audit all run before Pages sees it. The owner reads the diff before merging | R85, R52, R56 on the merge commit |
+| Two pushes in quick succession | Interleaved deployments | Wrong artifact live | `concurrency` with `group: pages` and `cancel-in-progress: false` (R61) serialises them | R61's two greps, plus the deployment history showing two sequential `pages` deployments |
 | An `npm audit` high advisory in a runtime dependency | Deploy blocked | Site does not update until resolved | Intended. The dev-tree audit is non-blocking so this only fires for code a visitor runs | R56, R57 |
-| A Dependabot pull request is merged | A deploy runs immediately, because merging to `main` is the release | An unreviewed dependency bump goes live | `open-pull-requests-limit: 5` plus the full CI gate on every push. Recorded in the risk register |
-| Two pushes in quick succession | Interleaved deployments | Wrong artifact live | `concurrency` with `cancel-in-progress: false` (R61) serialises them |
+| A pinned version does not resolve, or resolves to a different version | `npm install` fails, or installs something other than the spec | An unreviewed version on a public site | R77 escalates to the owner; R49 and R85 refuse a range; R86 reviews direct-dependency drift from the lockfile regeneration | R77, R85, R86 |
 | Node 21 on the dev host versus Node 22 in CI | `npm install` prints `EBADENGINE` for Vitest locally | Noise, possibly a subtle runtime difference | See [Node version](#node-version) | R77 |
 
 **Idempotency.** Re-running the workflow on the same commit produces the same `dist` (asset
@@ -715,17 +871,39 @@ What exists after this change:
 |--------|------------------------|----------|
 | Build, lint, test or audit failure | A red check on the commit in GitHub, plus GitHub's own workflow-failure email to the actor (believed, not verified) | R55 to R57 |
 | Deploy failure | The same, plus the Pages deployment history on the repository's Environments tab | R58 |
-| The published site is broken after a successful deploy | The smoke step fails the run: HTTP status not 200, or the owner's name missing from the body | R63 |
-| Test count regression | Vitest's summary line in the run log; R52 asserts at least 12 | R52 |
+| The published site does not serve, or serves the wrong artifact | The smoke step fails the run, naming the failed assertion and the URL | R63, R80 to R83 |
+| Which security headers GitHub Pages sets on its own | The header dump in the run log, copied into `docs/hosted-config.md` | R87 |
+| Test count regression | The build job fails: at least 12 passed, 0 skipped, asserted by a step, not by eye | R52 |
+| A range specifier creeping into a pinned dependency | The build job fails before `npm ci`, naming the package | R85 |
 
-**The gap, stated plainly.** A page that renders blank in a visitor's browser after a green
-deploy produces no signal anywhere. Nobody is paged, no error is recorded, and the owner learns
-about it only if someone tells him. That is the accepted consequence of the no-tracking
-constraint. The smoke step (R63) is the one mitigation available without adding a third party:
-it catches a site that fails to serve or fails to contain its own content, which covers the
-`base`, `404.html` and CSP failure modes above. It does not catch a JavaScript exception in a
-specific browser. There is no on-call, no SLA and no incident process, which `constraints.md`
-already records.
+**What the smoke step can prove, and what it cannot.** This matters enough to be explicit,
+because the first draft credited a single `curl` with catching failure modes it could not see.
+There is no browser in CI, and adding one (Playwright) was rejected on cost. A `curl`-based
+step sees exactly one thing: the bytes GitHub Pages returns. So:
+
+| Failure mode | Detected by a curl step? | How, or why not |
+|---|---|---|
+| Pages does not serve at all | **Yes** | R63: status 200 required, 5 retries |
+| Wrong `base`, so assets 404 | **Yes** | R80: every asset path must begin `/Portfolio/`, and the module script, the stylesheet and one woff2 must each return 200 |
+| `dist/404.html` missing or stale, so deep links break | **Yes** | R81: a deep link returns a body identical to the root body |
+| The CSP injection silently stopped happening | **Yes** | R82: exactly one CSP meta tag on the served page |
+| An inline script exists that `script-src 'self'` would block | **Yes** | R82: zero `<script` without `src` on the served page. This is the mechanism by which "the CSP blanks the page" is caught, and it is caught by inspecting the artifact, not by executing it |
+| Google Fonts or the phone number regressed into the shipped HTML | **Yes** | R82 |
+| A CSP directive blocks something at run time that the markup does not reveal | **No** | A violation is reported by a browser's engine, which no step here runs. Partly mitigated: the only script sources are same-origin and R82 proves there are none inline |
+| React throws during mount, or any runtime exception, so `#root` stays empty | **No** | The served HTML is byte-identical whether or not the app mounts. `curl` cannot tell them apart |
+| The orb does not paint, fonts fall back visually, or the layout breaks | **No** | Requires rendering, layout and a font stack |
+| A visitor's specific browser fails where CI's would not | **No** | No browser matrix exists |
+
+**The gap, stated plainly, with an owner.** A page that mounts blank after a green deploy
+produces no automated signal anywhere. Nobody is paged, no error is recorded, and there is no
+on-call, no SLA and no incident process, which `constraints.md` already records. That is the
+accepted consequence of the no-tracking constraint, not something a check can close: application
+error tracking, the baseline's usual answer, is forbidden by profile `style_notes` and by
+`constraints.md`. **Accepted risk. Owner: the site owner.** The compensating control is R84: a
+four-item manual browser check in `docs/hosted-config.md`, performed after the first deploy and
+after any later change to `vite.config.js`, `index.html` or `package.json`, with a dated line
+appended each time. A manual control with a name and a date on it is worth more than a `curl`
+assertion that passes on a blank page, which is what the first draft had.
 
 ---
 
@@ -733,17 +911,17 @@ already records.
 
 | Option | Why not |
 |--------|---------|
-| Stay single-page with modals, no router | Drops `/work` and `/work/:slug`, which is most of `docs/design-brief.md` section 3 and Outcomes 2, 3, 4 and 5. Rejected by the owner at G1 (D3) |
+| Stay single-page with modals, no router | Drops `/work` and `/work/:slug`, which is most of `docs/design-brief.md` section 3 and Outcomes 2, 3, 4 and 5. Rejected by the owner at G1 (G1-D3) |
 | `wouter` instead of `react-router` (about 2 kB, MIT) | Smaller, but the project has no bundle-size pressure, `react-router` is the pattern every React engineer recognises (`wh-readable-code`: "no construct a mid-level engineer would not recognise"), and its v7 basename handling is documented. ADR 0001 |
 | `HashRouter`, URLs like `/Portfolio/#/work/apple-llm-triage` | Needs no `404.html` and always returns 200, but produces URLs that look broken on a resume and that some applicant-tracking systems mangle. ADR 0002 |
 | The `spa-github-pages` redirect shim | The standard GitHub Pages workaround, but it stores the original path in `sessionStorage` and round-trips through a query string. That introduces browser storage into a project whose entire privacy position is "no storage of any kind", and it would fail the M10 grep. ADR 0002 |
 | Pre-render every route to a static HTML file at build time | Gives real 200s and search-engine indexing for `/work/:slug`, which the `404.html` approach does not. Costs a pre-rendering plugin (a new dependency) and a second rendering path to keep correct. Deferred, recorded as a follow-up. ADR 0002 |
 | Use the package's `ThinkingOrb` component scaled up with a CSS transform | Renders a 64 px canvas scaled 6.5x: visibly soft, and still monochrome. ADR 0003 |
 | Keep the MM monogram and skip the orb | Contradicts the owner's explicit request quoted in `docs/design-brief.md` |
-| Keep Google Fonts | Leaves the GDPR-adjacent gap open and requires recording a lawful basis for disclosing every EU and UK visitor's IP to Google LLC. Rejected by the owner at G1 (D2) |
+| Keep Google Fonts | Leaves the GDPR-adjacent gap open and requires recording a lawful basis for disclosing every EU and UK visitor's IP to Google LLC. Rejected by the owner at G1 (G1-D2) |
 | Download the three woff2 files into `public/fonts` by hand | No new dependency, but the owner then owns subsetting, `@font-face` blocks, and licence files by hand, and the versions are untracked. ADR 0007 |
 | Vitest 4 with a Vite 6 upgrade | Current, but pairs a build-tool major upgrade with the first production deploy. ADR 0004 |
-| Playwright end-to-end instead of RTL unit tests | Would catch the CSP and `base` failures a jsdom test cannot, but needs browser downloads in CI and on a Windows laptop, and the profile has no `e2e` command. The smoke step in R63 covers the highest-value part of that at a fraction of the cost |
+| Playwright end-to-end instead of RTL unit tests | It is the only thing that would prove the app mounts, the CSP does not block anything at run time, and the layout renders. Rejected because it needs browser downloads in CI and on a Windows laptop, adds a large dependency tree to a static portfolio, and the profile has no `e2e` command. The smoke assertions R80 to R82 cover the artifact-level half of that cheaply; the run-time half is not covered by anything and is an accepted risk with the owner named, in [Observability](#observability) and R84. Revisit if the site ever grows a second contributor |
 | `peaceiris/actions-gh-pages` or pushing `dist` to a `gh-pages` branch | Both are the older pattern; the branch push puts build output in git history forever. ADR 0005 |
 | No CSP at all, on the grounds that a static site with no auth has little to protect | Defensible, and it is what the site has today. Rejected because the tag costs one build step, and "no CSP" is a due-diligence question with an embarrassing answer on an engineering portfolio. ADR 0006 |
 
@@ -783,8 +961,13 @@ is escalated to the owner rather than bumped.
 | `@fontsource/space-grotesk` | 5.2.8 | OFL-1.1 (believed) | same |
 
 Fontsource publishes each family independently, so these three may not share a version number.
-The builder resolves the current 5.x release for each, pins that exact value, and records it.
-A deviation from 5.2.8 is expected and is not a spec change.
+The builder resolves the current 5.x release for each, pins that exact value with no range
+prefix (R49, checked in CI by R85), and records it. **The first draft's carve-out, "a deviation
+from 5.2.8 is expected and is not a spec change", is withdrawn**: it contradicted R77 and meant
+three runtime versions would have been approved at G2 as ranges in all but name. R77 now governs
+these three exactly as it governs the other six, so any resolved version that differs from the
+pin above is recorded in the G4 evidence table and escalated to the owner before install. That
+costs one message and removes the only place in this spec where a runtime version was open-ended.
 
 ### Added, development
 
@@ -848,7 +1031,7 @@ The planner is free to re-group, but this is the file-disjointness the spec assu
 | 1 | Toolchain and dead code | `package.json`, `package-lock.json`, `vite.config.js`, `.gitignore`, `index.html`, `src/index.css`, `src/test/setup.js`, delete `generate_viewer.cjs` |
 | 2 | Routing shell and data | `src/main.jsx`, `src/App.jsx`, `src/components/SiteLayout.jsx`, `src/pages/*`, `src/components/Navbar.jsx`, `src/data/portfolioData.js` |
 | 3 | Surfaces | `src/components/Hero.jsx`, `ThinkingOrbHero.jsx`, `CaseStudyPage.jsx` (renamed), `CaseStudiesSection.jsx`, `InteractiveTriageSimulator.jsx`, `ContactFooter.jsx`, `ResumeModal.jsx`, delete `MmLogo.jsx`, all `*.test.jsx` |
-| 4 | Pipeline and defaults | `.github/workflows/deploy.yml`, `.github/dependabot.yml`, `public/.well-known/security.txt`, `docs/hosted-config.md`, `.workhorse/profile.yml` |
+| 4 | Pipeline and defaults | `.github/workflows/deploy.yml`, `.github/dependabot.yml`, `public/.well-known/security.txt`, `docs/hosted-config.md`, `.workhorse/profile.yml`, and the R89 redactions in `docs/sdlc/constraints.md` and `docs/sdlc/<id>/intent.md` |
 
 ---
 
@@ -861,17 +1044,35 @@ rather than discover it in a diff.
 1. **R14, the favicon link.** `public/favicon.svg` exists (confirmed by glob) and `index.html`
    never references it (confirmed by reading all 16 lines), so every visitor's browser requests
    `/favicon.ico` and gets a 404. One line in a file we are already editing.
-2. **R47 and R48, the copy-confirmation timers and clipboard rejections in `Navbar.jsx` and
-   `ContactFooter.jsx`.** The same two functions are already being edited for the
-   email-from-data fix (R6) and the phone removal (R41). Two lines each.
+2. **R47, the copy-confirmation timers in `Navbar.jsx`, `ContactFooter.jsx` and
+   `ResumeModal.jsx`.** The same functions are already being edited for the email-from-data fix
+   (R6) and the phone removal (R41). Two lines each. This is a correctness fix for a bug routing
+   makes worse, not an item from the intent's non-goals sentence.
 3. **R40, the site-wide reduced-motion block.** Outcome 7 promises reduced-motion behaviour for
    the orb; the availability pill's `animate-ping` (`src/components/Hero.jsx` line 18), the
    `.animate-iridescent` glow and `html.scroll-smooth` (`index.html` line 2) all keep animating
    without it, which makes the promise half-true.
 
-The three first-week security defaults (R65 to R69) are a larger addition and are raised as
-decision D2 in the G2 packet rather than assumed, because `intent.md` listed them under
-non-goals.
+**Items drawn from the intent's non-goals sentence, and where each landed.** That sentence reads:
+"the other open debt items in `docs/sdlc/constraints.md` that this request does not name (README
+rewrite, CSS custom properties, error boundary, clipboard catch, security headers meta,
+`security.txt`, Dependabot)". Seven items. The first draft raised three of them as decision D2,
+implemented a fourth as a scope addition without saying it was a named non-goal, partly addressed
+a fifth under findings outside scope, and declined two. The corrected disposition:
+
+| Item from the non-goals sentence | Disposition |
+|---|---|
+| Security headers meta | **G2-D2.** R65, R88 |
+| `security.txt` | **G2-D2.** R67 |
+| Dependabot | **G2-D2.** R68 |
+| Clipboard catch (`constraints.md` debt 11) | **G2-D2.** R48. The first draft slipped this in as a scope addition; it is a named non-goal and gets the same treatment as the other three |
+| CSS custom properties (debt 9) | **Not in G2-D2, and here is why.** R39 adds three font tokens in a `@theme` block because Outcomes 8 and 11 cannot be met without them: Inter is downloaded today and applied to nothing, so self-hosting alone would close the privacy gap and leave the typography unimplemented. That is required work under an approved outcome, not debt repayment. The palette half of debt 9, which is the larger part, is untouched and stays under [Findings outside scope](#findings-outside-scope) item 3 |
+| README rewrite | Declined, stays a non-goal. [Findings outside scope](#findings-outside-scope) item 1 |
+| Error boundary | Declined, stays a non-goal, with the reason recorded. [Findings outside scope](#findings-outside-scope) item 2 |
+
+`docs/hosted-config.md` (R69) is **not** part of G2-D2, although the first draft bundled it
+there. It is the only written record of the Pages source setting the first deploy depends on, so
+declining a security-defaults decision must not delete it. See R69.
 
 ---
 
@@ -882,16 +1083,31 @@ non-goals.
 90 or 70 to 90.
 
 **Confirmed by reading the file:** it contains **three**, at lines 75, 79 and 83, all inside
-`handleRunSimulation`. The fourth uncleared timer the earlier agents were probably counting is
-elsewhere: `src/components/Navbar.jsx` line 19 and `src/components/ContactFooter.jsx` line 12
-each hold one more, both `setTimeout(() => setCopied(false), 2000)` with no cleanup, for five in
-total across the app. R46 and R47 fix all five. The count matters because an eval written to
-assert "four timers cleared in one file" would be wrong.
+`handleRunSimulation`. The other uncleared timers are elsewhere, and the first draft of this
+section counted them wrong too. A grep for `setTimeout` across `src/` during this revision
+returns **six** matches in total (confirmed):
 
-The same read surfaced a second correction: `intent.md` names only
-`CaseStudyModal.jsx` line 298 as hard-coding the email, but `Navbar.jsx` line 17 and
-`ContactFooter.jsx` line 38 also contain the literal address (confirmed). R6's grep-based
-acceptance check covers all three.
+| File and line | Timer | Fixed by |
+|---|---|---|
+| `InteractiveTriageSimulator.jsx` 75, 79, 83 | the three simulation stages | R46 |
+| `Navbar.jsx` 19 | `setTimeout(() => setCopied(false), 2000)` | R47 |
+| `ContactFooter.jsx` 12 | the same | R47 |
+| `ResumeModal.jsx` 12 | the same, **missed by the first draft** | R47 |
+
+Six, not four as `constraints.md` item 10 and `intent.md` say, and not five as the first draft of
+this section said. The `ResumeModal` one is the most consequential of the three copy timers,
+because `ResumeModal` is conditionally rendered and therefore unmounts every time the viewer is
+closed, so its pending callback fires on an unmounted component in ordinary use rather than only
+on navigation. The count matters because an eval written against a wrong count is a wrong eval,
+which is the reason this section exists; it was wrong twice and is now stated with the grep that
+produced it.
+
+The same read surfaced a second correction, also undercounted: `intent.md` names only
+`CaseStudyModal.jsx` line 298 as hard-coding the email, but `Navbar.jsx` line 17, `Navbar.jsx`
+line 87 and `ContactFooter.jsx` line 38 also contain the literal address. **Four in components,
+plus the legitimate one in `portfolioData.js` line 7** (confirmed by grep during this revision;
+the first draft said three and missed `Navbar.jsx` line 87, which is visible display text). R6
+now names all four in its requirement text, and its grep-based acceptance check covers them.
 
 ---
 
@@ -899,9 +1115,9 @@ acceptance check covers all three.
 
 | # | Question | Proposed default | Owner |
 |---|----------|------------------|-------|
-| OQ1 | What is the one-line tagline and short description for each of `workhorse`, `Shu` and `wasl`? `docs/design-brief.md` has a phrase for the first two and nothing for `wasl`. No agent may invent this text | Ship whatever the owner writes. If he supplies nothing before the build, the three entries render as repository name plus link plus tech stack, with no prose, rather than inventing a description | Site owner (D1 in the packet) |
+| OQ1 | What is the one-line tagline and short description for each of `workhorse`, `Shu` and `wasl`? `docs/design-brief.md` has a phrase for the first two and nothing for `wasl`. No agent may invent this text | Ship whatever the owner writes. If he supplies nothing before the build, the three entries render as repository name plus link plus tech stack, with no prose, rather than inventing a description | Site owner (G2-D1) |
 | OQ2 | Are all three repositories public? A link to a private repository shows a 404 to every visitor | Assume public; the build phase checks each URL returns 200 before the first deploy and reports any that do not | Site owner |
-| OQ3 | `docs/design-brief.md` specifies 0 px card radius and zero shadows (OFF+BRAND); `public/mockup-home.jpg` and `public/mockup-casestudy.jpg` show rounded cards with a soft shadow, and the current code uses `rounded-2xl` and `shadow-2xs` throughout | Follow the design brief for tokens (0 px on cards, 10 px on interactive elements, no shadows) because `intent.md` names it the design authority, and follow the mockups for layout and content placement | Site owner (D4 in the packet) |
+| OQ3 | `docs/design-brief.md` specifies 0 px card radius and zero shadows (OFF+BRAND); `public/mockup-home.jpg` and `public/mockup-casestudy.jpg` show rounded cards with a soft shadow, and the current code uses `rounded-2xl` and `shadow-2xs` throughout | Follow the design brief for tokens (0 px on cards, 10 px on interactive elements, no shadows) because `intent.md` names it the design authority, and follow the mockups for layout and content placement | Site owner (G2-D4) |
 | OQ4 | Adding `personal.github` and `personal.githubHandle` adds a new personal-data field. `constraints.md` says not to add new personal data fields without the owner saying so | Add them. A public GitHub profile handle is already the owner's public professional identity, `docs/design-brief.md` names it, and Outcome 4 cannot be met without linking the three repositories | Site owner |
 | OQ5 | The dev host runs Node v21.7.3, which is outside Vitest 3's believed supported range and is not an LTS line | CI pins Node 22 (R62); the owner upgrades the dev host to Node 22 LTS at his convenience. `engine-strict` stays off, so the local install warns rather than fails | Site owner |
 | OQ6 | `public/` contains four design mockup JPEGs that will be published at `/Portfolio/mockup-*.jpg`, including one showing "Log in" and "Sign up" chrome this site does not have | Leave them for now and record it. Moving them to `docs/design/` would break the paths that `intent.md`, `docs/design-brief.md` and this spec all reference | Site owner |
@@ -930,6 +1146,160 @@ code during this phase.
 | 8 | `.workhorse/profile.yml` does not protect `src/data/portfolioData.js` | profile | OQ7 proposes fixing it in wave 4; if the owner declines, this stays open |
 | 9 | Deep links return HTTP 404 with the app shell, so `/work/:slug` will not be indexed by search engines | by design, see ADR 0002 | Pre-rendering would fix it and costs a new dependency and a second rendering path. Revisit if organic search ever matters |
 | 10 | `security.txt` will live at `/Portfolio/.well-known/security.txt`, not at the origin root that RFC 9116 requires, because the origin root belongs to the `muhibm1.github.io` user-site repository | `public/.well-known/` | Unavoidable without a custom domain. Recorded in `docs/hosted-config.md`, along with the annual `Expires` renewal it creates |
+| 11 | `tailwindcss` and `@tailwindcss/vite` are declared under `dependencies` although nothing they contain reaches a visitor | `package.json` lines 14 and 18 | Moving them to `devDependencies` is a dependency change outside R78's declared bounds, in the same change as the first production deploy, for no security gain: the misplacement makes the blocking audit stricter, not weaker. Do it in the next dependency change |
+| 12 | The phone number stays in git history from `b50497f` onward | git history | Accepted, not fixed. R89 and the [Retention](#data) paragraph state the reason and name the owner |
+
+---
+
+## Response to audit
+
+Written 2026-09-11 by the spec architect, rework round 1 of 2. One line per finding, in the
+auditor's own order: the 2 High, then the 13 Medium, then the 7 Low. Each says what changed in
+the spec, or records an explicit acceptance with a reason and a named owner. Nothing is left
+silent. The auditor's [Constraint audit](#constraint-audit) table below is untouched; the
+Resolution cells are the auditor's to set on re-check.
+
+No command was run in this session either (no Bash tool). The greps quoted below as confirmed
+were run with the Grep tool, which is available, over `src/` and the repository's markdown.
+
+### High
+
+**High 1, R63 and the claims that depend on it.** Fixed, and the over-crediting corrected in four
+places. R63 no longer asserts "the body contains the owner's name"; the finding is accepted in
+full, `index.html` lines 6 and 7 do contain it (re-confirmed by reading the file). R63 is now
+only what a `curl` can honestly prove: status 200 with retries, and the body saved for the
+assertions that follow. New R80 (every asset path begins `/Portfolio/`, and the script, stylesheet
+and one woff2 each return 200), R81 (a deep link returns a body identical to the root body), R82
+(exactly one CSP meta, exactly one referrer meta, zero inline scripts, zero Google Fonts origins,
+zero phone number, on the served page) and R83 (blocking, with a message naming the failed
+assertion). [Observability](#observability) now carries a table of what a curl step can and cannot
+detect; the [Failure modes](#failure-modes) rows for `base`, `404.html`, the inline polyfill and
+the font url each name the assertion that actually catches them; the Playwright row in
+[Alternatives considered](#alternatives-considered) and the risk register rows are rewritten.
+**The residue is accepted, not covered:** a runtime exception that leaves `#root` empty, a CSP
+violation only a browser engine reports, and anything requiring layout or fonts are undetectable
+by any step this project can run. Accepted risk, owner: site owner, with R84 as the compensating
+manual control (a four-item browser check in `docs/hosted-config.md`, dated each time). R90 makes
+"do not claim a detection you do not have" a standing rule.
+
+**High 2, exact pins for the runtime dependencies.** Fixed. R49 now requires an exact pin for
+**all nine added packages across `dependencies` and `devDependencies`**, names them, forbids `^`,
+`~`, `>=`, `<`, `*`, `x`, tags, URLs and git specifiers, and carries two greps as its machine
+check. New R85 runs the same check in CI before `npm ci` on every push, so the pin cannot rot
+after G4. The packet's security checklist line is rewritten to name R49 and R85 instead of R49
+and R78, because R78 bounds the count and never bounded the shape. The contradiction the auditor
+found is resolved by withdrawing the carve-out: the [Dependency table](#dependency-table) no
+longer says a deviation from 5.2.8 "is not a spec change", and R77 now escalates a pin that
+resolves to a different version exactly as it escalates one that does not resolve at all.
+
+### Medium
+
+1. **R47, the sixth `setTimeout`.** Fixed. R47 now names `ResumeModal.jsx` line 12 as well, and
+   requires three tests. [Correction to a carried finding](#correction-to-a-carried-finding) is
+   rewritten as a six-row table produced by a grep over `src/`, and says plainly that the count
+   was wrong twice. The test layout gains three component test files.
+2. **R60, workflow-level permissions.** Fixed. Workflow level is `contents: read` only; the build
+   job gets `contents: read` and `pages: read`; `pages: write` and `id-token: write` live only in
+   the deploy job. `actions/configure-pages` is called with `enablement: false`. Whether it needs
+   more than `pages: read` in that shape is **believed, not verified**, and the spec now says so
+   and names the remedy if the first run disagrees: move the action into the deploy job, not
+   widen the build job, because this workflow consumes none of its outputs. ADR 0005 updated.
+3. **R55, the `workflow_dispatch` second publish path.** Fixed by dropping it. `push` to `main` is
+   the only trigger; the acceptance check greps for its absence. Re-running a deployment stays
+   possible from the Actions UI, which re-runs the same commit in the owner's own session.
+4. **R71 against R78, lockfile drift.** Fixed. New R86 requires a before-and-after table of every
+   direct dependency's resolved version across the regeneration, in the G4 evidence, with any
+   major-version move escalated to the owner before the commit. R71 and R78 both point at it.
+   The transitive tree is **accepted, not reviewed entry by entry**; owner: build phase, recorded
+   in the risk register.
+5. **The four silently dropped headers.** Fixed. [Security and privacy](#security-and-privacy)
+   now places all five baseline headers in a table. `Referrer-Policy` is added as new R88, since
+   it is free in the build step R65 already declares. HSTS, `X-Content-Type-Options` and
+   `Permissions-Policy` are stated as unachievable on GitHub Pages (header only, no working meta
+   form; believed, not verified against the specification here), and new R87 prints the actual
+   response headers into the first run's log so what Pages sets by itself is settled with
+   evidence rather than asserted. ADR 0006 updated.
+6. **The phone number in committed artifacts and in history.** Split and decided. New R89
+   redacts `docs/sdlc/constraints.md` line 102 and `intent.md` line 199 to `(512) 508-xxxx` in
+   wave 4, leaving the literal only in this file's machine checks. Editing an approved artifact
+   is called out as deliberate. **Git history is accepted, not rewritten**, owner: site owner: a
+   rewrite would invalidate every commit SHA quoted in `approvals.md`, `state.json` and the
+   artifacts, for the owner's own number on a repository he alone commits to. Reason and reversal
+   options are in [Retention](#data); R69 records the position in `docs/hosted-config.md`.
+7. **R52's test floor was a human step.** Fixed. The workflow runs the suite with the JSON
+   reporter and a following `node -e` step fails the run unless at least 12 passed and skipped,
+   todo and failed are all 0, naming the observed counts. The floor stays 12 because `evals.md`
+   is written against that number.
+8. **The narrowed no-tracking grep.** Fixed. R13 and R44 now carry the full pattern from
+   `docs/sdlc/constraints.md` line 208 verbatim, including `fetch(`, `XMLHttpRequest` and
+   `axios`, which are the three tokens that catch a new outbound call. A note under
+   [Security and privacy](#security-and-privacy) records that the narrowing originated in the
+   approved intent and is corrected here rather than treated as a defect there.
+9. **R69 bundled into a rejectable decision.** Fixed. R69 is now explicitly unconditional and
+   outside G2-D2, which covers R65, R67, R68, R88 and R48 only. The packet's D2 row says so.
+10. **R48 and R39 against the intent's non-goals sentence.** Fixed. R48 moves into G2-D2 and is
+    deleted with it if the owner declines, exactly like the other named non-goals; it is no
+    longer presented as a quiet scope addition. R39 is **not** in G2-D2, and
+    [Scope additions](#scope-additions) now has a seven-row table saying why: R39's font tokens
+    are required by Outcomes 8 and 11, because Inter is downloaded today and applied to nothing,
+    while the palette half of debt 9 stays untouched under findings outside scope.
+11. **The dependency table's carve-out against R77.** Fixed, as described under High 2. Nine of
+    ten licences and eight of ten versions remain **believed, not verified** and cannot be
+    settled from this session: no Bash, no registry query, and none of the packages is on disk.
+    That is accepted with R77 plus R85 as the controls; owner: build phase, escalating to the
+    site owner on any difference.
+12. **Branch protection, waived too broadly.** Fixed. The waiver is now three specific positions:
+    a pull-request requirement is declined for the stated reason; blocking force pushes and
+    blocking deletion of `main` are recommended because neither touches deploy-on-push; and
+    whether GitHub can require status checks without requiring a pull request is believed, not
+    verified, with the owner asked to check it when he sets the Pages source. R69 records the
+    outcome. ADR 0005 updated.
+13. **Gate prefixes on decision labels.** Fixed. Every decision reference now reads `G1-D1` to
+    `G1-D5` or `G2-D1` to `G2-D5`, in the Source column, the Data table, the open questions, the
+    alternatives table and the packet's own decision table, with a convention note under
+    [Requirements](#requirements). Verbatim quotations of the `approvals.md` note keep its
+    original wording, since that file is not editable here.
+
+### Low
+
+1. **R6's occurrence count.** Fixed. R6 names all four component occurrences, including
+   `Navbar.jsx` line 87, which is visible display text. The deviation note under
+   [Routing](#routing) and the correction section both say four.
+2. **`style-src 'self' 'unsafe-inline'` is wider than the stated need.** Addressed as advisory.
+   The narrower `style-src 'self'` plus `style-src-attr 'unsafe-inline'` split is added to ADR
+   0006's alternatives with the reason it is not taken: CSP Level 3 `style-src-attr` support in
+   a meta tag is believed, not verified, and a browser that ignores it falls back to blocking the
+   inline `style` attributes the orb uses for its own dimensions, which is a visible regression
+   with no signal. Accepted, owner: site owner, revisit when real headers are available.
+3. **The unused `Phone` imports.** Fixed. R41 now requires dropping `Phone` from the
+   `lucide-react` import lists at `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2 (both
+   confirmed by reading), and its acceptance check greps for zero `Phone` matches in `src/`.
+4. **The audit-split rationale was inexact.** Fixed. The paragraph now states that `tailwindcss`
+   and `@tailwindcss/vite` sit in `dependencies`, so `--omit=dev` audits two build-only packages,
+   that this errs safe, and that they are deliberately not moved in this change. Recorded as
+   findings outside scope item 11.
+5. **Two five-cell rows in the failure-modes table.** Fixed. Both now have six cells and a named
+   eval, and a third row is added for the mount-failure case that has no eval at all and says so.
+6. **R60 and R61 checked by "read the file".** Fixed. Both now have greps.
+7. **R66's SHA-256 hash branch.** Fixed. The hash remedy is removed outright, leaving
+   `build.modulePreload.polyfill: false` and an escalation to the owner if that is not enough,
+   and R82 re-asserts "no inline script" against the served page on every deploy.
+
+### The eval designer's six notes
+
+1. **R31 had no upper clamp.** Fixed: the formula is `min(420, max(280, viewportWidth - 48))`,
+   exposed as the pure helper `canvasWidthForViewport`, with five tested points.
+2. **R76 was a process property.** Fixed: R76 is now about the configured value and the wave
+   shape, both of which are artifacts, and says why it is not a claim about run-time behaviour.
+3. **R77 is inherently manual.** Accepted explicitly in R77's own row, with the reason (reading a
+   licence needs an owner-approved install) and the owner named. Not a gap.
+4. **"Parses as YAML" in R55 and R68.** Decided: structural greps are the machine check, full
+   validity is confirmed by GitHub's and Dependabot's own parsers on first use, and no YAML
+   parser is added. Written up under [YAML validity](#yaml-validity).
+5. **R30's colour mapping was unverifiable.** Fixed: R30 requires a pure exported
+   `colourForDepth(z)` and a unit test asserting exact output at three depths.
+6. **R19 is a permanent manual ceiling.** Recorded as such in R19's own acceptance cell, with the
+   reason, so no later phase reads it as an open eval gap.
 
 ---
 
@@ -938,9 +1308,40 @@ code during this phase.
 Filled by the constraint auditor on 2026-09-11. This is the canonical table; severity High or
 above blocks G2.
 
-**Audit result: blocked (2 high).** 2 High, 13 Medium, 7 Low.
+**Audit result: pass.** Re-audited 2026-09-11 after rework round 1 of 2. 0 High, 2 Medium, 9 Low
+open. Of the 22 findings filed at the first audit (2 High, 13 Medium, 7 Low), 22 are fixed, 0
+accepted and 0 open; both High findings are closed. The 11 rows below them are new, filed against
+the material this revision added, and are open for the architect. As filed on 2026-09-11 before
+the rework, the result was **blocked (2 high)**; that line is kept here rather than overwritten so
+the change of verdict is legible.
 
-Method and its limits. Every row is labelled `confirmed` (this agent read the file or ran the
+Re-audit method and its limits. Each response was checked against the requirement text and the
+design sections it names, not against [Response to audit](#response-to-audit) alone. The Bash tool
+is unavailable in this session too, so no command was run; the greps cited in the new rows were
+run with the Grep tool and are labelled `confirmed` where this agent read the output. The
+[Dependency table](#dependency-table) is still unverified against the registry, which is finding
+M11 and stays the build phase's to close through R77.
+
+Checked at re-audit and found sound, recorded so the absence of a finding is not read as an
+absence of a check. The per-job permission design is internally consistent with the actions the
+build job calls: `actions/checkout` needs `contents: read`, which the build job declares;
+`actions/configure-pages` with `enablement: false` reads the Pages configuration, which
+`pages: read` covers; `actions/upload-pages-artifact` uploads through the Actions runtime token
+rather than through `GITHUB_TOKEN` scopes; and no step in the build job publishes anything (the
+first and third claims are believed, not verified, since no network access and no workflow run
+were available; the finding on the deploy job's own set is below). R80 to R83 are implementable
+in a GitHub Actions shell step with no new dependency: `curl`, `grep`, `sed` and `sha256sum` are
+present on `ubuntu-latest` and are enough to extract asset references, follow them, compare two
+bodies by digest and count meta and script tags (believed, not verified). R81 is right not to
+assert 200 on the deep link, which is the trap that shape usually falls into. No new
+special-category data arrives by inference through `projects`, `demos`, `workIntro` or
+`personal.github`; no compliance regime in `.workhorse/profile.yml` is triggered by any of R80 to
+R90; no new subprocessor is introduced, and R87 is a read of response headers rather than a new
+outbound call from the site. Every one of R80 to R90 carries a `Source` cell that resolves to an
+intent outcome, a metric, an audit finding or a policy skill, and every new requirement is
+reachable from the [Build waves](#build-waves) table through wave 4.
+
+Method and its limits, as filed at the first audit. Every row is labelled `confirmed` (this agent read the file or ran the
 grep named) or `believed, not verified`. The Bash tool is **not** available in this session
 either, contrary to the brief handed to this agent: the tool list is Read, Glob, Grep and Edit
 only. No `npm view` was run, so the [Dependency table](#dependency-table) could not be settled
@@ -970,28 +1371,39 @@ tracked, not verified, because `git ls-files` could not be run.
 
 | Severity | Constraint source | Item | Resolution |
 |----------|-------------------|------|------------|
-| High | Security baseline, "Never let a failure path be both silent and consequential"; "Verify empirically before asserting" | **R63, and the claims in [Observability](#observability) and the risk register that depend on it.** The smoke assertion "the body contains the owner's name" is satisfied by the un-executed shell. `index.html` line 6 is `<title>Muhammad Muhibullah \| Forward Deployed Engineer & Systems Integration</title>` and line 7 repeats the role in a `description` meta tag (confirmed by reading the file). A fetch of the published URL therefore returns 200 with the owner's name in the body even when the CSP blocks every script, `base` is wrong, or React never mounts. [Observability](#observability) credits R63 with covering "the `base`, `404.html` and CSP failure modes"; the risk register credits it with catching "a page that fails to serve or contain its content"; the [Failure modes](#failure-modes) row for a CSP-blocked module-preload polyfill names "blank page in production only, invisible in dev" as the worst failure shape. R63 as written cannot detect any of them, and the spec names it as the only runtime signal this project will ever have. | open |
-| High | Security baseline pre-ship checklist, "New third-party import in a runtime path pinned to an exact version"; profile `style_notes`, "No new runtime dependency without naming it, its licence and its exact version in the plan" | **R49, R78 and the packet's own security checklist.** R49's pin requirement and its acceptance check cover `devDependencies` only: "Every value under `devDependencies` is a bare version with no `^` or `~`". R1 pins `react-router` exactly. Nothing in the spec requires or checks an exact pin for `@fontsource/inter`, `@fontsource/jetbrains-mono` or `@fontsource/space-grotesk`, which are runtime dependencies whose woff2 files ship in the bundle. R78's only check is a human `git diff package.json` review at G4. The G2 packet nevertheless ticks the baseline item as "**Applies.** R49 and R78 pin exactly" (confirmed by reading lines 1137 to 1138). That is a claimed control the cited requirements do not implement, for three of the four added runtime dependencies. | open |
-| Medium | Security baseline, "Verify empirically before asserting"; `constraints.md` known debt 10 | **R47 and [Correction to a carried finding](#correction-to-a-carried-finding).** The correction states five uncleared `setTimeout` calls across the app. Confirmed by grep over `src/`: there are six. `ResumeModal.jsx` line 12 holds a sixth `setTimeout(() => setCopied(false), 2000)` with no cleanup, and R47 names only `Navbar.jsx` line 19 and `ContactFooter.jsx` line 12. `ResumeModal` is conditionally rendered, so it is the one component that already unmounts on every close, which makes the omitted timer the likeliest of the six to fire after unmount. The section exists to warn that a wrong count yields a wrong eval; the corrected count is itself wrong. | open |
-| Medium | Security baseline, least privilege for CI tokens; the spec's own threat table names "Minimal `permissions` (R60)" as the control for "over-broad token permissions" | **R60 and ADR 0005.** `permissions` are declared at workflow level, so the build job holds `pages: write` and `id-token: write` while it runs `npm ci` (lifecycle scripts across a fully regenerated tree, ten direct entries of which are new) and four third-party actions. Those two scopes are exactly what publishes the site, and only the deploy job needs them. `npm ci` is not run with `--ignore-scripts`. Whether `actions/configure-pages` needs `pages: write` in the build job is believed, not verified (no network access in this session), and that is the question the spec must answer before R60 can be called minimal. | open |
-| Medium | `constraints.md`, "Things that must not change without the owner saying so": the deploy-on-push model, "the owner performs production deploys himself" | **R55.** The workflow triggers on `push` to `main` **and** `workflow_dispatch`, which is a second production-publish path. `git push origin main` is denied to agents by the bash guard, but `gh workflow run` is in profile `ask_commands`, not `deny_commands` (confirmed, `.workhorse/profile.yml` lines 90 to 96), so the second path is agent-reachable behind a prompt while the first is not reachable at all. The asymmetry is not named in the G2 packet's decisions and is not recorded as an accepted risk. | open |
-| Medium | Security baseline, supply chain and exact pinning; internal contradiction between two requirements | **R71 against R78.** Every existing dependency uses a caret range (confirmed, `package.json` lines 13 to 26). Deleting `package-lock.json` and regenerating it re-resolves all of them plus the entire transitive tree, so `react`, `react-dom`, `tailwindcss`, `@tailwindcss/vite`, `lucide-react`, `vite` and `oxlint` move to whatever the registry serves on install day. R78 states "No other dependency change SHALL occur" and checks it with `git diff package.json`, which cannot see lockfile drift. The risk register's "Ten new packages enter the supply chain at once" therefore understates the change on the first production publication. No requirement reviews the lockfile diff. | open |
-| Medium | Security baseline, "Defaults from the first week": CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` | **R65, ADR 0006, [Security and privacy](#security-and-privacy).** Only the CSP is addressed. `Referrer-Policy` is expressible in the built HTML as `<meta name="referrer">`, costs nothing in the build step R65 already adds, and is neither specified nor recorded as declined. HSTS, `X-Content-Type-Options` and `Permissions-Policy` are header-only and so unachievable on GitHub Pages, but the spec does not say so: ADR 0006 names only `frame-ancestors`, HSTS and `report-uri`. This project's stated discipline is to record inapplicable baseline items rather than drop them (`constraints.md`, "Security baseline items that do not yet apply, and one that does"). Four of six headers are dropped silently. | open |
-| Medium | G1 approval note "D1 remove phone"; `constraints.md` technical constraint 2, everything published is permanent | **R41 and the Retention paragraph under [Data](#data).** The removal is scoped to `src/` and `dist/`. `(512) 508-1536` also sits in three committed files: `docs/sdlc/constraints.md` line 102, `intent.md` line 199 and `spec.md` line 125 (confirmed: a grep for `508-1536` across the repository matches exactly four files, the fourth being `portfolioData.js`), and it stays in git history after R41. If the repository is public, which R69 asks the owner to record and which this agent could not verify, the number remains fetchable after this change ships. The Retention paragraph's "there are no prior copies to worry about" is true of the site and not of the repository, and the difference is the whole value of doing D1 before the first deploy. | open |
-| Medium | Security baseline, "CI must actually run the security tests": assert a non-zero test count and fail loudly | **R52.** "The suite SHALL report at least 12 passing tests and 0 skipped tests" has the acceptance check "Read the Vitest summary line", which is a human step at G4. R56 puts `npm test` in the workflow, but nothing in CI asserts the floor or asserts that nothing was skipped, so a suite that silently drops to two tests still deploys green. That `vitest run` exits non-zero when no test file matches is believed, not verified, and is a weaker control than the one the baseline asks for. | open |
-| Medium | `constraints.md`, "Controls each later phase must honour", Review: "rerun the same grep the discovery analyst and this mapper both used"; profile `style_notes`, no tracking of any kind | **R13, R44 and the M10 grep.** The M10 pattern is `gtag\|analytics\|dataLayer\|document.cookie\|localStorage\|sessionStorage`. The grep it claims to be is `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer` (confirmed, `constraints.md` line 208 and the G0 evidence table at line 326). The three dropped alternatives are precisely the ones that would catch a newly introduced outbound call, and R44 is the machine check for the one rule the owner named as unchangeable. Compensating controls exist (`index.html` is a `sensitive_path`; CSP `default-src 'self'` fails closed on a new origin) but the check is weaker than the one mandated. The narrowing originates in the approved `intent.md`, so it needs a correction here rather than a rejection there. | open |
-| Medium | `constraints.md` technical constraint 1 and ADR 0005, "Cost, and the owner must act on it" | **R69 as bundled into G2 decision D2.** D2's alternative states that declining it deletes R65 to R69. R69 is `docs/hosted-config.md`, the only record of the Pages source setting the first deploy requires, and the risk register rates "First CI run fails because Pages source is not set" at Likelihood High. Bundling deploy documentation into a rejectable security-defaults decision means one owner "no" removes a control the deploy itself depends on. R69 is not a security default in the same sense as R65, R67 and R68. | open |
-| Medium | `intent.md` Non-goals, approved at G1 | **R48, and in part R39.** The non-goals sentence reads "the other open debt items in `docs/sdlc/constraints.md` that this request does not name (README rewrite, CSS custom properties, error boundary, clipboard catch, security headers meta, `security.txt`, Dependabot)". Three items from that single sentence are correctly raised as decision D2. "Clipboard catch" is `constraints.md` debt 11 and is implemented by R48 as a scope addition rather than a decision, and [Scope additions](#scope-additions) does not say it is a named non-goal. R39's `@theme` block partially addresses "CSS custom properties" (debt 9), disclosed only under findings outside scope item 3. Either all items from that sentence get the D2 treatment or the spec states why three do and two do not. | open |
-| Medium | Profile `style_notes`, exact version and licence in the plan; `wh-agent-rules`, evidence before assertion | **[Dependency table](#dependency-table) and R77.** Nine of ten licence values and eight of ten versions are "believed, not verified". This agent could not close the gap: the Bash tool is unavailable here too, so no registry query was run, and none of `react-router`, `vitest` or `jsdom` exists under `node_modules` to read a licence from (confirmed by glob). R77 is a real control and its escalation clause is the right shape. The table's own carve-out is not: "A deviation from 5.2.8 is expected and is not a spec change" contradicts R77 for the three `@fontsource` packages and means three runtime versions would be approved at G2 as ranges in all but name. Either the three versions are resolved before G2 approval, or R77 is amended so the carve-out also escalates. | open |
-| Medium | Security baseline, "Branch protection requiring CI to pass, even as a sole committer" | **[Deploy pipeline](#deploy-pipeline) and ADR 0005.** The waiver reasons from one variant of branch protection to all of them: "a rule requiring a pull request would break the deploy-on-push model that `docs/sdlc/constraints.md` protects". Protections that do not require a pull request, in particular blocking force pushes and blocking branch deletion on `main`, are compatible with deploy-on-push and are not considered. Whether GitHub can require status checks without requiring a pull request is believed, not verified from this host. The risk is accepted with a named owner in the risk register, so the gap is the reasoning the owner is deciding on rather than the absence of a decision. | open |
-| Medium | `wh-agent-rules`, artifacts are the record; traceability to `approvals.md` | **The Requirements `Source` column against [Decisions requested](#2-decisions-requested).** `D1` to `D5` denote the G1 decisions in the Source column (R41 cites "O10, M8, D1", which is G1 D1, remove phone) and the G2 packet's new decisions elsewhere in the same document (the [Data](#data) table's `projects` row says "content is the owner's to write, see D1", which is G2 D1, project copy; R79 says "subject to D4", which is G2 D4, radius and shadows, while G1 D4 is content publishability). No label carries a gate prefix, so a reader cannot resolve a Source cell against `approvals.md` without guessing which gate is meant. | open |
-| Low | `constraints.md` known debt 8; `intent.md` Outcome 14 | **R6.** The rename to `CaseStudyPage.jsx` is an acceptable substitute for Outcome 14's literal wording: the same intent's Outcomes 2 and 3 require the modal to become a page, so the filename in Outcome 14 was already inconsistent with its own document, the strengthened check is a strict superset of the outcome, and the packet checklist asks the owner to accept the rename explicitly. The count is wrong, though. The spec says three occurrences of the literal address in components; there are four. `Navbar.jsx` line 87 renders `mmalqaim@gmail.com` as display text in addition to line 17 (confirmed by grep over `src/`). The repo-wide grep check catches it; the prose a builder reads does not, and R6's requirement text mandates only the line 298 fix while its acceptance check is repo-wide. | open |
-| Low | Security baseline, CSP defaults | **ADR 0006 and the policy in [Security and privacy](#security-and-privacy).** `style-src 'self' 'unsafe-inline'` also admits injected `<style>` elements, which is wider than the stated need. The stated need is React inline `style` props, which fall under `style-src-attr`. The narrower split is not in the alternatives table. The weakening is disclosed and reasoned, so this is advisory only. | open |
-| Low | `constraints.md` technical constraint 5, lint must go green; R56 blocks the deploy on `npm run lint` | **R41.** Removing the phone leaves the `Phone` icon imported and unused at `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2 (confirmed by reading both lines). R41's two greps both pass with the dead imports still in place, and oxlint may then fail the build job for an unused import, which would block the deploy for a reason the requirement did not anticipate. | open |
-| Low | Security baseline, "Verify empirically before asserting" | **[Security and privacy](#security-and-privacy), dependency audit policy.** The rationale for the split, "the blocking step covers everything that reaches a visitor", does not hold: `tailwindcss` and `@tailwindcss/vite` sit in `dependencies`, not `devDependencies` (confirmed, `package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages, and neither R70 nor R78 moves them. The divergence from `commands.security_audit` is deliberate and documented, which is the right handling; only the stated reason is inexact, and it errs safe. | open |
-| Low | `wh-agent-rules`, fill every section; testability of failure modes | **[Failure modes](#failure-modes).** Two rows carry five cells in a six-column table and therefore no eval category: "A Dependabot pull request is merged" and "Two pushes in quick succession". The eval designer at G3 reads this table as its input, so both failure classes would arrive at G3 with no eval. | open |
-| Low | Testability | **R60 and R61.** The two workflow properties that decide token scope and deployment ordering are checked by "Read the file", while the less consequential R59 and R64 get greps. Both are greppable, and R60 is the subject of a Medium finding above. | open |
-| Low | Security baseline, no failure path both silent and consequential | **R66.** Of its two remedies, `build.modulePreload.polyfill: false` is self-maintaining and the SHA-256 hash branch is not: the hash stops matching on any Vite patch bump, and the symptom is a blank page in production only. No requirement re-checks the hash after an upgrade, and Dependabot (R68) will propose exactly such bumps. | open |
+| High | Security baseline, "Never let a failure path be both silent and consequential"; "Verify empirically before asserting" | **R63, and the claims in [Observability](#observability) and the risk register that depend on it.** The smoke assertion "the body contains the owner's name" is satisfied by the un-executed shell. `index.html` line 6 is `<title>Muhammad Muhibullah \| Forward Deployed Engineer & Systems Integration</title>` and line 7 repeats the role in a `description` meta tag (confirmed by reading the file). A fetch of the published URL therefore returns 200 with the owner's name in the body even when the CSP blocks every script, `base` is wrong, or React never mounts. [Observability](#observability) credits R63 with covering "the `base`, `404.html` and CSP failure modes"; the risk register credits it with catching "a page that fails to serve or contain its content"; the [Failure modes](#failure-modes) row for a CSP-blocked module-preload polyfill names "blank page in production only, invisible in dev" as the worst failure shape. R63 as written cannot detect any of them, and the spec names it as the only runtime signal this project will ever have. | fixed (R63, R80 to R83, R84, R90, [Observability](#observability)). R63 no longer asserts the name; R80 to R82 assert things a blank or mis-based page fails; R83 makes them blocking; the Observability table now says per failure mode whether curl can see it, and the residue is an accepted risk with the site owner named and R84 as the manual control. Confirmed by reading R63, R80 to R84, R90 and the rewritten Observability, Failure modes and risk-register rows |
+| High | Security baseline pre-ship checklist, "New third-party import in a runtime path pinned to an exact version"; profile `style_notes`, "No new runtime dependency without naming it, its licence and its exact version in the plan" | **R49, R78 and the packet's own security checklist.** R49's pin requirement and its acceptance check cover `devDependencies` only: "Every value under `devDependencies` is a bare version with no `^` or `~`". R1 pins `react-router` exactly. Nothing in the spec requires or checks an exact pin for `@fontsource/inter`, `@fontsource/jetbrains-mono` or `@fontsource/space-grotesk`, which are runtime dependencies whose woff2 files ship in the bundle. R78's only check is a human `git diff package.json` review at G4. The G2 packet nevertheless ticks the baseline item as "**Applies.** R49 and R78 pin exactly" (confirmed by reading lines 1137 to 1138). That is a claimed control the cited requirements do not implement, for three of the four added runtime dependencies. | fixed (R49, R85, [Dependency table](#dependency-table), packet checklist). R49 now names all nine added packages across both dependency blocks, forbids every range, tag, URL and git specifier, and carries two greps; R85 runs the same check in CI before `npm ci`; the `@fontsource` carve-out is withdrawn; the checklist line now names R49, R85, R77 and R59. Confirmed by reading R49, R85, the dependency table and the checklist |
+| Medium | Security baseline, "Verify empirically before asserting"; `constraints.md` known debt 10 | **R47 and [Correction to a carried finding](#correction-to-a-carried-finding).** The correction states five uncleared `setTimeout` calls across the app. Confirmed by grep over `src/`: there are six. `ResumeModal.jsx` line 12 holds a sixth `setTimeout(() => setCopied(false), 2000)` with no cleanup, and R47 names only `Navbar.jsx` line 19 and `ContactFooter.jsx` line 12. `ResumeModal` is conditionally rendered, so it is the one component that already unmounts on every close, which makes the omitted timer the likeliest of the six to fire after unmount. The section exists to warn that a wrong count yields a wrong eval; the corrected count is itself wrong. | fixed (R47, [Correction to a carried finding](#correction-to-a-carried-finding)). R47 names `ResumeModal.jsx` line 12 and requires three tests; the correction section is now a six-row table. Re-confirmed at re-audit: a grep for `setTimeout` over `src/` returns exactly six matches, at `InteractiveTriageSimulator.jsx` 75, 79, 83, `Navbar.jsx` 19, `ContactFooter.jsx` 12 and `ResumeModal.jsx` 12 |
+| Medium | Security baseline, least privilege for CI tokens; the spec's own threat table names "Minimal `permissions` (R60)" as the control for "over-broad token permissions" | **R60 and ADR 0005.** `permissions` are declared at workflow level, so the build job holds `pages: write` and `id-token: write` while it runs `npm ci` (lifecycle scripts across a fully regenerated tree, ten direct entries of which are new) and four third-party actions. Those two scopes are exactly what publishes the site, and only the deploy job needs them. `npm ci` is not run with `--ignore-scripts`. Whether `actions/configure-pages` needs `pages: write` in the build job is believed, not verified (no network access in this session), and that is the question the spec must answer before R60 can be called minimal. | fixed (R60, ADR 0005, [Deploy pipeline](#deploy-pipeline)). Permissions are per job: workflow `contents: read`, build `contents: read` plus `pages: read`, deploy `pages: write` plus `id-token: write`. The build job holds no write scope while it runs `npm ci` and four third-party actions. The `actions/configure-pages` question is answered in the only honest way available without network access: labelled believed, not verified, with a named remedy that moves the action rather than widening the job. Confirmed by reading R60 and ADR 0005 |
+| Medium | `constraints.md`, "Things that must not change without the owner saying so": the deploy-on-push model, "the owner performs production deploys himself" | **R55.** The workflow triggers on `push` to `main` **and** `workflow_dispatch`, which is a second production-publish path. `git push origin main` is denied to agents by the bash guard, but `gh workflow run` is in profile `ask_commands`, not `deny_commands` (confirmed, `.workhorse/profile.yml` lines 90 to 96), so the second path is agent-reachable behind a prompt while the first is not reachable at all. The asymmetry is not named in the G2 packet's decisions and is not recorded as an accepted risk. | fixed (R55, ADR 0005). The trigger is `push` to `main` and nothing else, the reason is stated in the requirement, the acceptance check greps for the absence of `workflow_dispatch` and `pull_request`, and the alternatives table in ADR 0005 records why it was dropped. Confirmed by reading R55 and ADR 0005 |
+| Medium | Security baseline, supply chain and exact pinning; internal contradiction between two requirements | **R71 against R78.** Every existing dependency uses a caret range (confirmed, `package.json` lines 13 to 26). Deleting `package-lock.json` and regenerating it re-resolves all of them plus the entire transitive tree, so `react`, `react-dom`, `tailwindcss`, `@tailwindcss/vite`, `lucide-react`, `vite` and `oxlint` move to whatever the registry serves on install day. R78 states "No other dependency change SHALL occur" and checks it with `git diff package.json`, which cannot see lockfile drift. The risk register's "Ten new packages enter the supply chain at once" therefore understates the change on the first production publication. No requirement reviews the lockfile diff. | fixed (R86, cited by R71 and R78). A before-and-after resolved-version table for every direct dependency, in the G4 evidence, with any major move escalated to the owner before the commit. The transitive residue is stated as accepted with an owner in the risk register rather than left implied. Confirmed by reading R86, R71, R78 and the risk register |
+| Medium | Security baseline, "Defaults from the first week": CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` | **R65, ADR 0006, [Security and privacy](#security-and-privacy).** Only the CSP is addressed. `Referrer-Policy` is expressible in the built HTML as `<meta name="referrer">`, costs nothing in the build step R65 already adds, and is neither specified nor recorded as declined. HSTS, `X-Content-Type-Options` and `Permissions-Policy` are header-only and so unachievable on GitHub Pages, but the spec does not say so: ADR 0006 names only `frame-ancestors`, HSTS and `report-uri`. This project's stated discipline is to record inapplicable baseline items rather than drop them (`constraints.md`, "Security baseline items that do not yet apply, and one that does"). Four of six headers are dropped silently. | fixed (R88, R87, [Security and privacy](#security-and-privacy), ADR 0006). All five baseline headers are placed in one table: `Referrer-Policy` is implemented as R88 in the build step R65 already declares, and HSTS, `X-Content-Type-Options` and `Permissions-Policy` are recorded as header-only and unachievable on this host, labelled believed, not verified, with R87 printing the response headers Pages actually sets into the first run's log. Confirmed by reading the header table, R87, R88 and ADR 0006 |
+| Medium | G1 approval note "D1 remove phone"; `constraints.md` technical constraint 2, everything published is permanent | **R41 and the Retention paragraph under [Data](#data).** The removal is scoped to `src/` and `dist/`. `(512) 508-1536` also sits in three committed files: `docs/sdlc/constraints.md` line 102, `intent.md` line 199 and `spec.md` line 125 (confirmed: a grep for `508-1536` across the repository matches exactly four files, the fourth being `portfolioData.js`), and it stays in git history after R41. If the repository is public, which R69 asks the owner to record and which this agent could not verify, the number remains fetchable after this change ships. The Retention paragraph's "there are no prior copies to worry about" is true of the site and not of the repository, and the difference is the whole value of doing D1 before the first deploy. | fixed (R89, [Retention](#data), risk register, packet checklist). The site and the repository are now separated: R89 redacts the working-tree copies in wave 4, git history is stated as accepted rather than silently left, the owner is named, and the packet checklist asks him to accept it at G2. Two new rows below carry what R89 still misses: the occurrences in `evals.md`, and the fact that it edits an approved artifact on a checklist line rather than a decision row |
+| Medium | Security baseline, "CI must actually run the security tests": assert a non-zero test count and fail loudly | **R52.** "The suite SHALL report at least 12 passing tests and 0 skipped tests" has the acceptance check "Read the Vitest summary line", which is a human step at G4. R56 puts `npm test` in the workflow, but nothing in CI asserts the floor or asserts that nothing was skipped, so a suite that silently drops to two tests still deploys green. That `vitest run` exits non-zero when no test file matches is believed, not verified, and is a weaker control than the one the baseline asks for. | fixed (R52, [Deploy pipeline](#deploy-pipeline)). The workflow runs the suite with the JSON reporter and a following `node -e` step fails the run unless at least 12 passed and pending, todo and failed are all 0, naming the observed counts. The floor is now machine-enforced rather than read by eye. Two new Low rows below are on the shape of that step, not on its existence |
+| Medium | `constraints.md`, "Controls each later phase must honour", Review: "rerun the same grep the discovery analyst and this mapper both used"; profile `style_notes`, no tracking of any kind | **R13, R44 and the M10 grep.** The M10 pattern is `gtag\|analytics\|dataLayer\|document.cookie\|localStorage\|sessionStorage`. The grep it claims to be is `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer` (confirmed, `constraints.md` line 208 and the G0 evidence table at line 326). The three dropped alternatives are precisely the ones that would catch a newly introduced outbound call, and R44 is the machine check for the one rule the owner named as unchangeable. Compensating controls exist (`index.html` is a `sensitive_path`; CSP `default-src 'self'` fails closed on a new origin) but the check is weaker than the one mandated. The narrowing originates in the approved `intent.md`, so it needs a correction here rather than a rejection there. | fixed (R13, R44, [The no-tracking grep](#the-no-tracking-grep)). Both requirements now carry the full pattern, and the correction is attributed to the intent rather than treated as a defect there. Re-confirmed at re-audit by reading `docs/sdlc/constraints.md` line 208: the pattern in R44 matches the mandated one token for token |
+| Medium | `constraints.md` technical constraint 1 and ADR 0005, "Cost, and the owner must act on it" | **R69 as bundled into G2 decision D2.** D2's alternative states that declining it deletes R65 to R69. R69 is `docs/hosted-config.md`, the only record of the Pages source setting the first deploy requires, and the risk register rates "First CI run fails because Pages source is not set" at Likelihood High. Bundling deploy documentation into a rejectable security-defaults decision means one owner "no" removes a control the deploy itself depends on. R69 is not a security default in the same sense as R65, R67 and R68. | fixed (R69, packet decision G2-D2). R69's own row says it is unconditional and outside G2-D2, the G2-D2 row says the same and lists only R48, R65, R67, R68 and R88, and the design tour repeats it. One owner "no" can no longer delete the record the first deploy needs. Confirmed by reading R69, the G2-D2 row and [Scope additions](#scope-additions) |
+| Medium | `intent.md` Non-goals, approved at G1 | **R48, and in part R39.** The non-goals sentence reads "the other open debt items in `docs/sdlc/constraints.md` that this request does not name (README rewrite, CSS custom properties, error boundary, clipboard catch, security headers meta, `security.txt`, Dependabot)". Three items from that single sentence are correctly raised as decision D2. "Clipboard catch" is `constraints.md` debt 11 and is implemented by R48 as a scope addition rather than a decision, and [Scope additions](#scope-additions) does not say it is a named non-goal. R39's `@theme` block partially addresses "CSS custom properties" (debt 9), disclosed only under findings outside scope item 3. Either all items from that sentence get the D2 treatment or the spec states why three do and two do not. | fixed ([Scope additions](#scope-additions), R48, G2-D2). The non-goals sentence is now a seven-row disposition table: R48 moves into G2-D2 and dies with it, R39 is argued as required by Outcomes 8 and 11 with the palette half left untouched, and the README and error boundary stay declined. Confirmed by reading the table, R48's Source cell and the G2-D2 row |
+| Medium | Profile `style_notes`, exact version and licence in the plan; `wh-agent-rules`, evidence before assertion | **[Dependency table](#dependency-table) and R77.** Nine of ten licence values and eight of ten versions are "believed, not verified". This agent could not close the gap: the Bash tool is unavailable here too, so no registry query was run, and none of `react-router`, `vitest` or `jsdom` exists under `node_modules` to read a licence from (confirmed by glob). R77 is a real control and its escalation clause is the right shape. The table's own carve-out is not: "A deviation from 5.2.8 is expected and is not a spec change" contradicts R77 for the three `@fontsource` packages and means three runtime versions would be approved at G2 as ranges in all but name. Either the three versions are resolved before G2 approval, or R77 is amended so the carve-out also escalates. | fixed ([Dependency table](#dependency-table), R77). The second branch of the finding is taken: the carve-out is withdrawn in the table's own text and R77 now escalates a pin that resolves to a different version exactly as it escalates one that does not resolve. The versions and licences stay believed, not verified in both sessions, which no agent could close from this host; R77 plus R85 are the controls and the owner is the escalation point. Confirmed by reading the table and R77 |
+| Medium | Security baseline, "Branch protection requiring CI to pass, even as a sole committer" | **[Deploy pipeline](#deploy-pipeline) and ADR 0005.** The waiver reasons from one variant of branch protection to all of them: "a rule requiring a pull request would break the deploy-on-push model that `docs/sdlc/constraints.md` protects". Protections that do not require a pull request, in particular blocking force pushes and blocking branch deletion on `main`, are compatible with deploy-on-push and are not considered. Whether GitHub can require status checks without requiring a pull request is believed, not verified from this host. The risk is accepted with a named owner in the risk register, so the gap is the reasoning the owner is deciding on rather than the absence of a decision. | fixed ([Deploy pipeline](#deploy-pipeline), ADR 0005, packet checklist). The waiver is now three separate positions: the pull-request requirement is declined with its reason, blocking force pushes and blocking deletion are recommended because neither touches deploy-on-push, and required status checks without a pull request is labelled believed, not verified with the owner asked to check it and R69 recording the outcome. Confirmed by reading the section, ADR 0005 and the checklist |
+| Medium | `wh-agent-rules`, artifacts are the record; traceability to `approvals.md` | **The Requirements `Source` column against [Decisions requested](#2-decisions-requested).** `D1` to `D5` denote the G1 decisions in the Source column (R41 cites "O10, M8, D1", which is G1 D1, remove phone) and the G2 packet's new decisions elsewhere in the same document (the [Data](#data) table's `projects` row says "content is the owner's to write, see D1", which is G2 D1, project copy; R79 says "subject to D4", which is G2 D4, radius and shadows, while G1 D4 is content publishability). No label carries a gate prefix, so a reader cannot resolve a Source cell against `approvals.md` without guessing which gate is meant. | fixed ([Requirements](#requirements) convention note and every Source cell). Spot-checked at re-audit: R41 reads `G1-D1`, the [Data](#data) table's `projects` row reads `G2-D1`, R79 reads `G2-D4`, OQ3 and OQ4 carry their prefixes, and the packet's decision table is numbered `G2-D1` to `G2-D5`. ADR 0006 says "decision D2 at G2", which resolves from its own sentence |
+| Low | `constraints.md` known debt 8; `intent.md` Outcome 14 | **R6.** The rename to `CaseStudyPage.jsx` is an acceptable substitute for Outcome 14's literal wording: the same intent's Outcomes 2 and 3 require the modal to become a page, so the filename in Outcome 14 was already inconsistent with its own document, the strengthened check is a strict superset of the outcome, and the packet checklist asks the owner to accept the rename explicitly. The count is wrong, though. The spec says three occurrences of the literal address in components; there are four. `Navbar.jsx` line 87 renders `mmalqaim@gmail.com` as display text in addition to line 17 (confirmed by grep over `src/`). The repo-wide grep check catches it; the prose a builder reads does not, and R6's requirement text mandates only the line 298 fix while its acceptance check is repo-wide. | fixed (R6). The requirement text names all four component occurrences, including `Navbar.jsx` line 87, and the deviation note under [Routing](#routing) and the correction section both say four. Confirmed by reading R6 |
+| Low | Security baseline, CSP defaults | **ADR 0006 and the policy in [Security and privacy](#security-and-privacy).** `style-src 'self' 'unsafe-inline'` also admits injected `<style>` elements, which is wider than the stated need. The stated need is React inline `style` props, which fall under `style-src-attr`. The narrower split is not in the alternatives table. The weakening is disclosed and reasoned, so this is advisory only. | fixed (ADR 0006 alternatives). The narrower `style-src 'self'` plus `style-src-attr 'unsafe-inline'` split is now in the alternatives table with the reason it is not taken, labelled believed, not verified, and a revisit condition. That is what the finding asked for; the policy itself is unchanged and remains the architect's call |
+| Low | `constraints.md` technical constraint 5, lint must go green; R56 blocks the deploy on `npm run lint` | **R41.** Removing the phone leaves the `Phone` icon imported and unused at `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2 (confirmed by reading both lines). R41's two greps both pass with the dead imports still in place, and oxlint may then fail the build job for an unused import, which would block the deploy for a reason the requirement did not anticipate. | fixed (R41). The requirement drops `Phone` from both `lucide-react` import lists and its check is `grep -rn "Phone" src/` returning 0. Re-confirmed safe at re-audit: the only `Phone` matches in `src/` are those two imports and the "Direct Phone" label at `ContactFooter.jsx` line 69, which R41's line range removes, so the check is satisfiable |
+| Low | Security baseline, "Verify empirically before asserting" | **[Security and privacy](#security-and-privacy), dependency audit policy.** The rationale for the split, "the blocking step covers everything that reaches a visitor", does not hold: `tailwindcss` and `@tailwindcss/vite` sit in `dependencies`, not `devDependencies` (confirmed, `package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages, and neither R70 nor R78 moves them. The divergence from `commands.security_audit` is deliberate and documented, which is the right handling; only the stated reason is inexact, and it errs safe. | fixed ([Security and privacy](#security-and-privacy), findings outside scope 11). The paragraph now states that `--omit=dev` still audits two build-only packages, that this errs safe, and that they are deliberately not moved in this change. Confirmed by reading the paragraph |
+| Low | `wh-agent-rules`, fill every section; testability of failure modes | **[Failure modes](#failure-modes).** Two rows carry five cells in a six-column table and therefore no eval category: "A Dependabot pull request is merged" and "Two pushes in quick succession". The eval designer at G3 reads this table as its input, so both failure classes would arrive at G3 with no eval. | fixed ([Failure modes](#failure-modes)). Both rows now carry six cells and a named eval, and a third row is added for the mount-failure case that says plainly it has no eval and names R84 and the accepted risk instead. Confirmed by reading the three rows |
+| Low | Testability | **R60 and R61.** The two workflow properties that decide token scope and deployment ordering are checked by "Read the file", while the less consequential R59 and R64 get greps. Both are greppable, and R60 is the subject of a Medium finding above. | fixed (R60, R61). R60 now carries three greps and R61 two. A new Low row below notes that three of R60's greps are written without a file argument, which is a defect in the check rather than in the requirement |
+| Low | Security baseline, no failure path both silent and consequential | **R66.** Of its two remedies, `build.modulePreload.polyfill: false` is self-maintaining and the SHA-256 hash branch is not: the hash stops matching on any Vite patch bump, and the symptom is a blank page in production only. No requirement re-checks the hash after an upgrade, and Dependabot (R68) will propose exactly such bumps. | fixed (R66, R82). The hash branch is removed outright and forbidden by name, the remaining remedy is `build.modulePreload.polyfill: false` with an escalation to the owner if that is not enough, and R82 re-asserts "no inline script" against the served page on every deploy. Confirmed by reading R66 and R82 |
+| Medium | Security baseline, "Verify empirically before asserting"; this spec's own R90, "no requirement SHALL claim a detection the check beside it does not have" | **R82's phone-number assertion.** R82 asserts "zero occurrences of `508-1536`" against the body fetched in R63, which is the served HTML shell. The phone number does not live in the HTML: it is in `src/data/portfolioData.js`, which Vite compiles into the JavaScript bundle, and `index.html` contains only a title, a description meta, three font links and an empty `#root` (confirmed by reading all 16 lines of `index.html`, and by a repository grep for `508-1536` that matches `portfolioData.js` and no other file under `src/`). So this assertion passes on a deploy that reintroduced the number, and R82's own stated purpose, "a regression on either privacy removal, on the artifact that visitors actually receive", is met for the Google Fonts half, whose tags are in the shell, and not for the phone half. The build-time controls still cover it: R41's grep runs over `dist/`, and the `portfolioData` unit test runs in CI under R52. The defect is the claim, which is the exact class R90 forbids. | open (either the assertion reaches the artifact the number ships in, or it is withdrawn and the coverage credited to R41 and the data test) |
+| Medium | `wh-agent-rules`, artifacts are the record; testability of an acceptance check | **R89's acceptance check.** "After wave 4, a recursive grep for the number across the repository, excluding `.git` and `node_modules`, matches `spec.md` only" is already false. `evals.md` carries `508-1536` twice, at line 128 (the `GC41` check command) and line 301 (`NF8`), both as machine-check literals of exactly the kind R89 protects in `spec.md` (confirmed by grep at re-audit: five files match, `spec.md`, `evals.md`, `intent.md`, `docs/sdlc/constraints.md` and `src/data/portfolioData.js`). R89 names only two files to redact and one to keep, so as written wave 4 either fails its own check or forces an edit to the eval designer's artifact that nothing in this spec authorises. | open (R89 must name `evals.md` explicitly, as a literal that stays or one that is redacted, and its check must match that decision) |
+| Low | `wh-agent-rules`, artifacts are the record; approvals chain | **R89's edit to `intent.md`.** `intent.md` is the artifact G1 was approved against, at commit `a7ed6543` (confirmed by reading `approvals.md`). The G1 note reads "D1 remove phone; D4 content is mine to publish", which authorises removing the number from the published surface and says nothing about editing the approved artifact. The spec surfaces the edit on a packet checklist line rather than as a G2 decision row, and the benefit is bounded: the number stays at that commit in history, which the spec itself accepts as not worth rewriting. The redaction is defensible as data minimisation; the authorisation for it is thinner than for anything else in wave 4. | open (either raise it as a G2 decision row so `approvals.md` records it, or leave `intent.md` as approved and carry the position in `docs/hosted-config.md` under R69) |
+| Low | `wh-agent-rules`, artifacts are the record; internal consistency | **Header line 14 against line 52 and section O.** Line 14 says "the ten requirements added by this revision are R80 to R89"; line 52, the [Response to audit](#response-to-audit), the packet TL;DR and the requirement tables say eleven, R80 to R90, and section O's preamble says "All ten are new" over eleven rows (confirmed by reading all three). R90 is the requirement that falls out of the count, which is the one telling every later phase not to claim a detection it does not have. | open (one number, in three places) |
+| Low | Security baseline, "CI must actually run the security tests, and fail loudly when it cannot" | **R52's reporter shape.** The step is `npm test -- --reporter=json --outputFile=vitest-results.json`, which replaces the default reporter rather than adding to it, so a failing run's log carries the counts in a JSON file and no failing test name (believed, not verified: Vitest is not installed here and no command could be run). Two consequences. When a test fails, `npm test` exits non-zero and the `node -e` step that names the observed counts never runs, so the loud failure the requirement describes fires only for a passing suite that is too small. And the owner diagnoses a red build from an artifact rather than from the log. Vitest accepts more than one `--reporter` with a per-reporter `--outputFile.json=`, which is the shape that keeps both (believed, not verified). | open (keep the default reporter alongside the JSON one, and say what the log shows on a failing run) |
+| Low | Security baseline, "prefer asserting a non-zero test count for the security-critical project" | **R52's floor against the spec's own test layout.** The [Test toolchain](#test-toolchain) section plans 28 tests across ten files, and 25 if G2-D2 is declined. The enforced floor is 12. A regression that silently drops 16 tests, which is every orb, clipboard and data test, still passes CI green. The floor satisfies the baseline's non-zero count literally, and the reason it stays at 12, that `evals.md` is written against that number, is stated, so this is a note rather than a missing control. | open (raise the floor to the planned count in the same pass that updates `evals.md`, or record why 12 is the right number for a 28-test suite) |
+| Low | Security baseline pre-ship checklist, "New third-party import in a runtime path pinned to an exact version" | **R85's allowlist.** The CI check is defined over the nine packages named in R49, read from `package.json`. Nothing fails when a tenth package is added later with a caret, which is the drift the check exists to prevent, and nothing requires the list to be updated when R78's dependency count changes. The narrowing is forced, since every pre-existing entry carries a caret and a blanket check would fail on day one, so the gap is that the forced narrowing is not written down next to the check. | open (state in R85 that the list is an allowlist, and name who updates it when a package is added) |
+| Low | Security baseline, "Verify empirically before asserting"; least privilege | **R60's deploy-job scope set.** R60 states that the deploy job declares `pages: write` and `id-token: write` "and nothing else" as settled, while the same requirement labels the `actions/configure-pages` question believed, not verified and names a remedy for it. GitHub's own two-job Pages starter grants `contents: read` to the deploy job as well (believed, not verified: no network access in this session), and a job-level `permissions` block removes every scope it does not list. If `actions/deploy-pages` needs a scope this job does not hold, the first deploy fails on the one step the whole change exists for, and no remedy is named for that case as one is for the build job. | open (label the deploy job's set with the same epistemic marker as the build job's, and name the remedy) |
+| Low | Testability; `wh-agent-rules`, evidence before assertion | **R60's acceptance greps.** Three of them are written with no file argument: `grep -c "write-all" `, `grep -c "id-token: write" ` and the trailing shape check. As written they read standard input and never return. R59, R61 and R64 all name `.github/workflows/deploy.yml` explicitly. The second half of the check, "and it sits inside the deploy job", is a human judgment no `grep -c` can make, which the requirement does not say. | open (name the file in all three, and say which part is read by a person) |
+| Low | `wh-agent-rules`, evidence before assertion; testability | **R90 and the claim at [Requirements](#requirements).** Line 55 says every requirement has an acceptance check a test, a grep or a command can implement "except the five that are permanently manual", naming R19, R77, R84, R22 and R79. R90's check is "Review at re-audit", which is neither machine-implementable nor one of the five, and it is a one-time review rather than a standing control: nothing re-runs it at G3, G4 or on a later change. R78 ("`git diff package.json` reviewed at G4") and R86 ("G4 evidence table contains") are human reviews too. The rule R90 states is the right rule; the sentence counting the manual checks is inexact by at least three. | open (either count the human-reviewed requirements honestly at line 55, or give R90 a home other than the requirement list) |
+| Low | Security baseline, "Never let a failure path be both silent and consequential" | **R84's dated line.** R84 is the only control for the accepted risk that the site mounts blank after a green deploy, and half of its acceptance check, "after the first deploy the file carries at least one dated line", cannot be verified at G4, because the first deploy happens after G5. Nothing in the artifact chain re-checks that the owner performed it and nothing carries it into a release runbook, so the compensating control for the largest accepted risk in this change is itself unverified. The requirement names the owner, which is the part that matters most. | open (carry R84 into `release.md`'s runbook as a G5 item, so the manual check has a place that outlives G4) |
 
 ---
 ---
@@ -1004,16 +1416,25 @@ Tier: 2
 Branch: `main`, clean
 PR: none
 Prepared: 2026-09-11
+Revised: 2026-09-11, rework round 1 of 2, after the constraint audit blocked this gate
 
 ## 1. TL;DR
 
-This spec turns the approved intent into 79 numbered requirements, a routing and page design, a
+This spec turns the approved intent into 90 numbered requirements, a routing and page design, a
 canvas-orb contract against the `thinking-orbs` engine, a self-hosted font plan, a Vitest and
 React Testing Library toolchain, and a GitHub Actions Pages pipeline, plus eight ADRs. It exists
 because the owner needs a working portfolio link now, and because the five sensitive paths this
 change touches need a design a reviewer can check before any code is written. You are asked to
 decide five things, of which two expand scope beyond the intent's non-goals and one is blocking
 content only you can write.
+
+The constraint audit blocked the first draft on two High findings and raised twenty more. Both
+Highs are now closed in the requirements themselves: the post-deploy smoke step no longer asserts
+something that passes on a blank page, and every added dependency is pinned exactly with a CI
+check that keeps it that way. All twenty Medium and Low findings are either fixed or accepted
+with a named owner, one line each in [Response to audit](#response-to-audit). Eleven requirements
+were added, R80 to R90; R1 to R79 keep their numbers. The auditor re-checks before this gate is
+decided.
 
 The change is large but not separable: nothing here ships value alone, so it is built in four
 sequential waves rather than split into four changes. If you want a smaller first increment,
@@ -1023,16 +1444,18 @@ waves 1, 2 and 4 deploy a working but visually unchanged site and wave 3 follows
 
 | # | Decision | Recommendation | Alternative | If you choose the alternative |
 |---|----------|----------------|-------------|-------------------------------|
-| D1 | Project copy for `workhorse`, `Shu` and `wasl` | You write one tagline and one short description per project, plus confirm all three repositories are public | Ship name, link and tech stack only, with no prose | `/work` shows three bare repository links next to three rich case studies, which reads as unfinished. No agent may write this copy for you (`constraints.md` business constraint 1) |
-| D2 | Fold the three first-week security defaults into this change: a build-time CSP meta tag (R65), `public/.well-known/security.txt` (R67), `.github/dependabot.yml` (R68), plus `docs/hosted-config.md` (R69) | Include all four. They ship with the workflow, cost minutes, and each is a due-diligence question an engineering hiring manager may actually check | Leave them out; `intent.md` listed them under non-goals | The spec drops R65 to R69 and records four accepted risks: no CSP on a public site, no disclosure contact, no dependency-update automation, and GitHub dashboard settings recorded nowhere in version control |
-| D3 | Pin Vitest 3.2.4 and stay on Vite 5.4.11 | Pin Vitest 3.2.4. Vitest 4 requires Vite >= 6 (confirmed), and a build-tool major upgrade does not belong in the same change as the first production deploy | Upgrade to Vite 6 and Vitest 4 now | `vite.config.js`, every plugin and the whole build change in the same commit as the first deploy. Adds an unbounded debugging risk to a change already touching five sensitive paths. Vitest 3 then needs a follow-up upgrade within roughly a year |
-| D4 | Card radius and shadows (R79), where `docs/design-brief.md` and the mockups disagree | Follow the design brief: 0 px on cards, 10 px on interactive elements, no shadows. `intent.md` names the brief the design authority | Follow the mockups: rounded cards with a soft shadow, which is also what the current code does | The site keeps today's `rounded-2xl` and `shadow-2xs` treatment, the OFF+BRAND "zero shadows, 0 px cards" direction in the brief is not implemented, and Outcome 8 is met only partially |
-| D5 | Fidelity to `public/mockup-casestudy.jpg` | Build the flow diagram from each case study's `diagramSteps` (4 nodes, linear) rather than reproducing the mockup's 5-box fork, and do not build the mockup's "Log in" and "Sign up" controls | Reproduce the mockup exactly | The fork diagram would be hard-coded to one case study and wrong for the other two, or it would require inventing architecture detail the data does not contain, which `constraints.md` forbids. "Log in" and "Sign up" would be dead controls on a site with no accounts |
+| G2-D1 | Project copy for `workhorse`, `Shu` and `wasl` | You write one tagline and one short description per project, plus confirm all three repositories are public | Ship name, link and tech stack only, with no prose | `/work` shows three bare repository links next to three rich case studies, which reads as unfinished. No agent may write this copy for you (`constraints.md` business constraint 1) |
+| G2-D2 | Fold the items from the intent's non-goals sentence that ship with the workflow into this change: a build-time CSP meta tag (R65), a `Referrer-Policy` meta tag (R88), `public/.well-known/security.txt` (R67), `.github/dependabot.yml` (R68), and the clipboard-failure fix (R48) | Include all five. They ship with the workflow, cost minutes, and each is a due-diligence question an engineering hiring manager may actually check. `docs/hosted-config.md` (R69) was in this row in the first draft and has been **taken out of it**: the first deploy fails without the Pages setting it records, so it is unconditional | Leave them out; `intent.md` listed them under non-goals | The spec drops R48, R65, R67, R68 and R88 and records five accepted risks: no CSP and no referrer policy on a public site, no disclosure contact, no dependency-update automation, and three copy buttons that report success when the clipboard refuses. R69 survives either way |
+| G2-D3 | Pin Vitest 3.2.4 and stay on Vite 5.4.11 | Pin Vitest 3.2.4. Vitest 4 requires Vite >= 6 (confirmed), and a build-tool major upgrade does not belong in the same change as the first production deploy | Upgrade to Vite 6 and Vitest 4 now | `vite.config.js`, every plugin and the whole build change in the same commit as the first deploy. Adds an unbounded debugging risk to a change already touching five sensitive paths. Vitest 3 then needs a follow-up upgrade within roughly a year |
+| G2-D4 | Card radius and shadows (R79), where `docs/design-brief.md` and the mockups disagree | Follow the design brief: 0 px on cards, 10 px on interactive elements, no shadows. `intent.md` names the brief the design authority | Follow the mockups: rounded cards with a soft shadow, which is also what the current code does | The site keeps today's `rounded-2xl` and `shadow-2xs` treatment, the OFF+BRAND "zero shadows, 0 px cards" direction in the brief is not implemented, and Outcome 8 is met only partially |
+| G2-D5 | Fidelity to `public/mockup-casestudy.jpg` | Build the flow diagram from each case study's `diagramSteps` (4 nodes, linear) rather than reproducing the mockup's 5-box fork, and do not build the mockup's "Log in" and "Sign up" controls | Reproduce the mockup exactly | The fork diagram would be hard-coded to one case study and wrong for the other two, or it would require inventing architecture detail the data does not contain, which `constraints.md` forbids. "Log in" and "Sign up" would be dead controls on a site with no accounts |
 
 ## 3. Evidence
 
 Spec is a reading and design phase. No build, lint, test or install command was run, by design,
-and the Bash tool was unavailable in this session in any case.
+and the Bash tool was unavailable in both the original session and the revision session. The
+four rows at the end of the table were added by the revision and were produced with the Grep
+tool, which is available.
 
 | Check | Command or file read | Exit code | Output | Status |
 |-------|----------------------|-----------|--------|--------|
@@ -1060,6 +1483,12 @@ and the Bash tool was unavailable in this session in any case.
 | `npm ci` fails on Linux with the rolldown binding | not runnable from a Windows host, and not runnable at all in this session | n/a | n/a | **believed, not verified** |
 | GitHub Pages is configurable for this repository | not checkable from the repository | n/a | no `.github/` directory exists | **believed, not verified** |
 | Build, lint, test, install | not run | n/a | spec does not run commands | **not verified** |
+| Uncleared `setTimeout` count, revision | grep `setTimeout` over `src/` | 0, 6 matches | `InteractiveTriageSimulator.jsx` 75, 79, 83; `Navbar.jsx` 19; `ContactFooter.jsx` 12; `ResumeModal.jsx` 12 | confirmed, corrects the first draft's five |
+| Hard-coded email occurrences, revision | grep `mmalqaim@gmail.com` over `src/` | 0, 5 matches | `portfolioData.js` 7 (legitimate); `CaseStudyModal.jsx` 298; `Navbar.jsx` 17; `Navbar.jsx` 87; `ContactFooter.jsx` 38 | confirmed, corrects the first draft's three |
+| Unused `Phone` import after R41 | read `ContactFooter.jsx` line 2, `ResumeModal.jsx` line 2 | n/a | `Phone` imported from `lucide-react` in both | confirmed |
+| The mandated no-tracking pattern | read `docs/sdlc/constraints.md` line 208 | n/a | `fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer` | confirmed, wider than `intent.md` M10 |
+| Whether `actions/configure-pages` needs `pages: write` with `enablement: false` | no network access | n/a | n/a | **believed, not verified**. R60 names the remedy if the first run disagrees |
+| Which security headers GitHub Pages sets on its own | no network access | n/a | n/a | **believed, not verified**. R87 settles it at the first deploy |
 
 Eval pass rates: not applicable. The 17 success metrics in `intent.md` become the eval set at
 G3; nothing has been built, so every row is unmeasured. The [Failure modes](#failure-modes)
@@ -1070,18 +1499,33 @@ table is written to be turned directly into failure and adversarial cases.
 Canonical table: the [Constraint audit](#constraint-audit) section above. The auditor fills it
 there and copies anything at severity High or above into this section.
 
-**Audit result: blocked (2 high).** 2 High, 13 Medium, 7 Low. The two High findings are
-reproduced verbatim below; the thirteen Medium and seven Low findings are in the canonical table
-with their constraint sources and are all `open`.
+**Audit result as filed on 2026-09-11: blocked (2 high).** 2 High, 13 Medium, 7 Low.
 
-| Severity | Constraint source | Item | Resolution |
-|----------|-------------------|------|------------|
-| High | Security baseline, "Never let a failure path be both silent and consequential"; "Verify empirically before asserting" | **R63, and the claims in [Observability](#observability) and the risk register that depend on it.** The smoke assertion "the body contains the owner's name" is satisfied by the un-executed shell. `index.html` line 6 is `<title>Muhammad Muhibullah \| Forward Deployed Engineer & Systems Integration</title>` and line 7 repeats the role in a `description` meta tag (confirmed by reading the file). A fetch of the published URL therefore returns 200 with the owner's name in the body even when the CSP blocks every script, `base` is wrong, or React never mounts. [Observability](#observability) credits R63 with covering "the `base`, `404.html` and CSP failure modes"; the risk register credits it with catching "a page that fails to serve or contain its content"; the [Failure modes](#failure-modes) row for a CSP-blocked module-preload polyfill names "blank page in production only, invisible in dev" as the worst failure shape. R63 as written cannot detect any of them, and the spec names it as the only runtime signal this project will ever have. | open |
-| High | Security baseline pre-ship checklist, "New third-party import in a runtime path pinned to an exact version"; profile `style_notes`, "No new runtime dependency without naming it, its licence and its exact version in the plan" | **R49, R78 and the packet's own security checklist.** R49's pin requirement and its acceptance check cover `devDependencies` only: "Every value under `devDependencies` is a bare version with no `^` or `~`". R1 pins `react-router` exactly. Nothing in the spec requires or checks an exact pin for `@fontsource/inter`, `@fontsource/jetbrains-mono` or `@fontsource/space-grotesk`, which are runtime dependencies whose woff2 files ship in the bundle. R78's only check is a human `git diff package.json` review at G4. The G2 packet nevertheless ticks the baseline item as "**Applies.** R49 and R78 pin exactly". That is a claimed control the cited requirements do not implement, for three of the four added runtime dependencies. | open |
+**Audit result after re-audit, 2026-09-11: pass (0 high).** Of the 22 findings filed at the first
+audit, 22 are fixed, 0 accepted and 0 open. Both High findings are closed in the requirements
+themselves, not argued away. High 1 is closed by the rewrite of R63 and by R80 to R84 and R90,
+with the [Observability](#observability) table now stating for each failure mode whether a curl
+step can see it and naming R84 and an accepted risk for the ones it cannot. High 2 is closed by
+R49 covering all nine added packages across `dependencies` and `devDependencies`, R85 enforcing
+the same check in CI before `npm ci`, the withdrawal of the `@fontsource` carve-out from the
+[Dependency table](#dependency-table), R77's extended escalation clause, and the rewritten
+checklist line in section 7.
 
-The auditor could not run any command: the Bash tool is unavailable in the audit session as well
-as the spec session, so the [Dependency table](#dependency-table) is still entirely unverified
-against the registry. See Medium finding M11 in the canonical table.
+The re-audit also read the new material as a first draft: R80 to R90, the rewritten requirements,
+the revised Observability, Failure modes, Security and privacy, Data (Retention), Dependency
+table, Scope additions, Correction to a carried finding, and ADRs 0005 and 0006. It filed **11
+further findings: 0 High, 2 Medium, 9 Low**, all open, all in the canonical table. No row is
+reproduced here, because nothing sits at High or above. The two Medium rows are worth the
+architect's attention before G4: R82's "zero occurrences of `508-1536`" assertion runs against
+the served HTML shell, which is not the artifact the phone number ships in (confirmed by reading
+all 16 lines of `index.html`), and R89's acceptance check is already false against the working
+tree, because `evals.md` lines 128 and 301 carry the number as machine-check literals (confirmed
+by grep).
+
+The auditor could not run any command: the Bash tool is unavailable in the re-audit session as
+well as the audit and spec sessions, so the [Dependency table](#dependency-table) is still
+entirely unverified against the registry. See Medium finding M11 in the canonical table. Every
+grep cited in the new rows was run with the Grep tool, which is available.
 
 The items the auditor was asked to start from, and where each landed:
 
@@ -1105,11 +1549,18 @@ The items the spec itself flagged as where it could be wrong:
 - `constraints.md` "must not change", the factual content of `portfolioData.js`. R18 restricts
   the change to five additive keys and pins the rest with a unit test.
 - Profile `style_notes`, no runtime dependency without name, licence and exact version. The
-  [Dependency table](#dependency-table) names all ten, and every version is labelled believed
-  with R77 as the control. An auditor may reasonably call that insufficient.
+  [Dependency table](#dependency-table) names all ten. The auditor called the first draft's
+  handling insufficient and was right; after the revision, R49 requires an exact pin for all
+  nine added packages, R85 checks it in CI, and R77 escalates any version that resolves
+  differently. Every version and licence in the table is still labelled believed, not verified,
+  because no registry query was possible in either session.
 - Profile `sensitive_paths`, all five touched. Each edit prompts the owner through the hook.
-- `intent.md` non-goals list CSP meta, `security.txt` and Dependabot. R65 to R69 add them
-  anyway. That is D2, and if D2 is rejected those five requirements are deleted.
+- `intent.md` non-goals list CSP meta, `security.txt`, Dependabot, the clipboard catch, the CSS
+  custom properties, the README and an error boundary. R65, R67, R68, R88 and R48 add five of
+  them anyway, which is G2-D2; if G2-D2 is rejected those five requirements are deleted.
+  `docs/hosted-config.md` (R69) is deliberately outside that decision, R39 is required by
+  Outcomes 8 and 11 rather than being debt repayment, and the README and error boundary stay
+  declined. The full disposition is the table under [Scope additions](#scope-additions).
 - Outcome 14 names `CaseStudyModal.jsx` by filename; R6 renames it. See the deliberate
   deviation note under [Routing](#routing).
 - Three unrequested scope additions are listed under [Scope additions](#scope-additions).
@@ -1118,20 +1569,24 @@ The items the spec itself flagged as where it could be wrong:
 
 | Risk | Likelihood | Impact | Mitigation | Owner |
 |------|------------|--------|------------|-------|
-| A pinned version in the dependency table does not resolve on the registry | Medium | An install fails and the builder is tempted to bump silently | R77: resolve, record, escalate. Never bump without telling the owner | Build phase |
+| A pinned version in the dependency table does not resolve, or resolves to a different version | Medium | An install fails, or a version nobody approved ships to a public site | R77: resolve, record, escalate on either, never bump silently. R49 forbids a range; R85 fails CI on one | Build phase, escalating to the site owner |
+| The lockfile regeneration moves an existing dependency to a new major | Medium | Untested behaviour change shipped alongside the first deploy | R86: before-and-after table of all 11 direct dependencies, major moves escalated before the commit | Build phase |
+| The transitive tree moves in ways nobody reads | Medium | Unreviewed code in a public bundle | Accepted: nobody reads a 1000-entry lockfile diff. Compensating controls are the blocking runtime `npm audit`, CSP `script-src 'self'`, Dependabot and R86's direct-dependency review | Site owner |
 | A published employer claim turns out to be confidential | Low | Reputational, possibly contractual, irreversible once indexed | Answered at G1 ("D4 content is mine to publish"); R18 prevents any agent changing a claim in either direction | Site owner |
 | First CI run fails because Pages source is not set to "GitHub Actions" | High | First deploy blocked for one setting | R69 records it; the owner sets it before the first push | Site owner |
 | Vite injects an inline script that `script-src 'self'` blocks | Medium | Blank page in production, working page in dev, the worst failure shape | R66 greps the built HTML and names two concrete remedies | Build phase |
-| CSP breaks something subtle that only shows in a browser | Medium | A visibly broken portfolio | The R63 smoke step catches a page that fails to serve or contain its content; a manual browser check at G4 catches the rest | Build and review |
-| `base` or `basename` wrong | High without the checks | Unstyled page, or every route empty | R11's asset grep and R2's unit test | Build phase |
+| CSP breaks something subtle that only shows in a browser | Medium | A visibly broken portfolio | Partly covered: R82 proves on the served page that there is no inline script and that the CSP meta is present, which is the artifact half. A CSP violation raised by a browser engine is **not detectable by anything in CI**; R84's manual browser check is the control | Site owner |
+| `base` or `basename` wrong | High without the checks | Unstyled page, or every route empty | R11's asset grep and R2's unit test at build time; R80 fetches the asset URLs off the published page and requires 200 on each | Build phase |
+| The app mounts blank in a visitor's browser after a green deploy | Low to Medium | A blank portfolio, discovered only if someone says so | **Accepted, not covered.** No browser runs in CI and Playwright was rejected on cost; curl sees the same bytes either way. R84's dated manual browser check after the first deploy and after any change to `vite.config.js`, `index.html` or `package.json` is the only control | Site owner |
+| The phone number stays in git history | Certain, by design | One personal number readable by anyone who clones and reads history | **Accepted.** R89 redacts the working tree; a history rewrite would invalidate every commit SHA the SDLC artifacts quote, for the owner's own number. Reversible only before the first push | Site owner |
 | Deep links return 404 status, so search engines do not index case studies | Certain, by design | Organic search never surfaces a case study | Accepted. Recorded as finding 9 and in ADR 0002. Revisit with pre-rendering if it ever matters | Site owner |
 | Merging a Dependabot pull request publishes the site immediately | Medium | An unreviewed bump goes live | Full CI gate on every push plus `open-pull-requests-limit: 5`. The owner reads the diff before merging | Site owner |
 | No branch protection, so a bad direct push reaches CI with nothing between | Medium | A broken commit fails CI after the fact rather than before the merge | Deliberate: protection would break the deploy-on-push model `constraints.md` protects. Recorded in `docs/hosted-config.md` | Site owner |
 | A blocking `npm audit` stops deploys for an advisory in a dev-only chain | Medium | The owner starts ignoring red | The blocking audit is `--omit=dev`; the full audit is informational. The divergence from `commands.security_audit` is documented | Build phase |
-| Ten new packages enter the supply chain at once | Medium | Unreviewed transitive code on a public site | Exact pins, licences recorded from disk, CSP `script-src 'self'`, blocking runtime audit, Dependabot | Spec and Build |
+| Nine new packages enter the supply chain at once, on top of a full lockfile re-resolution | Medium | Unreviewed transitive code on a public site | Exact pins on all nine (R49), enforced in CI on every push (R85), licences and versions read from disk with escalation (R77), direct-dependency drift reviewed before the lockfile is committed (R86), CSP `script-src 'self'`, blocking runtime audit, Dependabot | Spec and Build |
 | The orb drifts from the package's accessibility behaviour | Medium | Reduced-motion and battery regressions | R32 to R35, each with a named test; the package's own handling is confirmed and is what the contract copies | Build phase |
-| A render exception blanks the whole site, including the nav, with no signal | Low | Total outage with zero observability | Accepted and stated. No error boundary in this change (finding 2); the R63 smoke step catches a shell that fails to render at all | Site owner |
-| The site is large enough that one of the 79 requirements is quietly dropped | Medium | A silently unmet outcome | Every requirement has a machine-checkable acceptance check; G4 verifies against this table | Review phase |
+| A render exception blanks the whole site, including the nav, with no signal | Low | Total outage with zero observability | Accepted and stated. No error boundary in this change (finding 2), and no smoke step can see it: R84's manual check is the only control | Site owner |
+| The site is large enough that one of the 90 requirements is quietly dropped | Medium | A silently unmet outcome | Every requirement has a machine-checkable acceptance check except the five marked permanently manual; G4 verifies against this table | Review phase |
 
 ## 6. Design tour
 
@@ -1139,19 +1594,28 @@ Ordered by risk. Sensitive paths first, then the paths that decide whether the s
 all, then content, then tests and docs.
 
 1. **`.github/workflows/deploy.yml`** (new, profile `sensitive_path`, `tier_floor_paths.2`).
-   The only path that can publish to production. Read `permissions`, `concurrency`, the SHA
-   pins, and the fact that no secret appears. R55 to R64. This sits first because it runs with
-   `id-token: write` and because everything else is invisible until it works.
+   The only path that can publish to production. Read the per-job `permissions` first: the
+   workflow is `contents: read`, the build job never holds a write scope, and `pages: write`
+   plus `id-token: write` exist only in the deploy job. Then `concurrency`, the single `push`
+   trigger with no `workflow_dispatch`, the SHA pins, the pin check and the test-count assertion,
+   the smoke assertions, and the fact that no secret appears. R55 to R64, R80 to R83, R85, R87.
 2. **`vite.config.js`** (edited, sensitive). Gains `base`, two inline build steps (copy to
-   `404.html`, inject the CSP meta tag) and the `test` block. A wrong `base` serves a page with
-   no CSS or JavaScript; a wrong CSP serves a blank one. R11, R12, R50, R65.
+   `404.html`, inject the CSP and referrer meta tags) and the `test` block. A wrong `base` serves
+   a page with no CSS or JavaScript; a wrong CSP serves a blank one. R11, R12, R50, R65, R66,
+   R88.
 3. **`index.html`** (edited, sensitive). Loses the three Google Fonts tags, which is the whole
    privacy change, and gains one favicon line. Nothing else. R14, R37.
-4. **`package.json` and `package-lock.json`** (edited, sensitive). Ten dependency changes and
-   two new scripts. Read the [Dependency table](#dependency-table) alongside. R49, R51, R70,
-   R71, R78.
-5. **`.github/dependabot.yml`, `public/.well-known/security.txt`, `docs/hosted-config.md`**
-   (new). The first-week defaults. Subject to D2. R67 to R69.
+4. **`package.json` and `package-lock.json`** (edited, sensitive). Ten dependency changes, two
+   new scripts, and a lockfile regenerated from scratch. Read the
+   [Dependency table](#dependency-table) alongside, and R86's before-and-after table at G4:
+   every existing dependency carries a caret today, so regeneration re-resolves all of them.
+   R49, R51, R70, R71, R78, R85, R86.
+5. **`.github/dependabot.yml`, `public/.well-known/security.txt`** (new). The first-week
+   defaults, subject to G2-D2. R67, R68.
+   **`docs/hosted-config.md`** (new). Unconditional, not part of G2-D2: it records the Pages
+   source setting the first deploy needs, the branch-protection position, the observed response
+   headers, the manual post-deploy check log, and the accepted position on git history. R69,
+   R84, R87, R89.
 6. **`src/main.jsx` and `src/App.jsx`** (edited). Where the router mounts and where the route
    table lives. A wrong `basename` makes every route fall through to the not-found page. R1 to
    R3.
@@ -1165,26 +1629,36 @@ all, then content, then tests and docs.
 10. **`src/components/InteractiveTriageSimulator.jsx`** (edited). The illustrative-example label
     and the timer cleanup. R45, R46.
 11. **`src/components/ContactFooter.jsx`, `ResumeModal.jsx`, `Navbar.jsx`, `Hero.jsx`,
-    `CaseStudiesSection.jsx`** (edited). Phone removal, email from data, clipboard handling,
-    links to the new routes, the orb in place of the monogram. R6, R41, R42, R47, R48.
+    `CaseStudiesSection.jsx`** (edited). Phone removal including the dead `Phone` imports, all
+    four hard-coded email occurrences moved to data, three copy timers cleared, clipboard
+    rejection handled, links to the new routes, the orb in place of the monogram. R6, R41, R42,
+    R47, R48.
 12. **`src/index.css`** (edited). Font tokens, the system-stack removal that actually applies
     Inter, and the site-wide reduced-motion block. R39, R40.
-13. **Tests** (`src/**/*.test.{js,jsx}`, `src/test/setup.js`, new). 18 tests, the first
-    automated evidence this project has ever had. R52, R54.
+13. **Tests** (`src/**/*.test.{js,jsx}`, `src/test/setup.js`, new). 28 tests across ten files,
+    the first automated evidence this project has ever had, with the floor of 12 now asserted by
+    the workflow rather than by eye. R52, R54.
 14. **Deleted** (`generate_viewer.cjs`, `src/components/MmLogo.jsx`). R28, R72.
 15. **`.gitignore`, `.workhorse/profile.yml`** (edited). The `.env*` pattern and the new test
     commands. R53, R73.
 
 ## 7. Checklist
 
-- [ ] The five decisions above are answered, in particular D1, which blocks `/work` content
+- [ ] The five decisions above are answered, in particular G2-D1, which blocks `/work` content
 - [ ] The route shapes `/`, `/work`, `/work/:slug` are what you want, and you accept that deep
       links return HTTP 404 with the correct page body
 - [ ] You accept that `CaseStudyModal.jsx` is renamed to `CaseStudyPage.jsx` rather than kept
 - [ ] `MmLogo.jsx` being deleted is what you want; git history keeps it
-- [ ] The dependency table is acceptable: 4 runtime added, 5 dev added, 1 removed
+- [ ] The dependency table is acceptable: 4 runtime added, 5 dev added, 1 removed, all nine
+      pinned exactly, and the lockfile regenerated with only its direct dependencies reviewed
 - [ ] You will set the repository's Pages source to "GitHub Actions" before the first push
-- [ ] You accept no branch protection on `main`, for the reason stated
+- [ ] You accept the branch-protection position: no pull-request requirement, but you enable
+      "block force pushes" and "block deletions" on `main`, and you check whether required
+      status checks can be enabled without a pull-request requirement
+- [ ] You accept that nothing in CI can prove the site actually mounts in a browser, and that
+      you personally perform the four-item post-deploy check in `docs/hosted-config.md` (R84)
+- [ ] You accept that the phone number stays in git history, and that the working-tree copies in
+      `docs/sdlc/constraints.md` and `intent.md` are redacted (R89)
 - [ ] The three unrequested scope additions are acceptable
 
 Security pre-ship checklist, embedded verbatim at tier 2. Items with no database are marked not
@@ -1214,19 +1688,37 @@ reading every file under `src/`.
 - [ ] New secret or env var covered by `.gitignore` as a pattern; confirmed with `git ls-files`.
       **Applies.** R73 adds `.env*` as a pattern and the check is `git ls-files`, not reading
       `.gitignore`
-- [ ] New third-party import in a runtime path pinned to an exact version. **Applies.** R49 and
-      R78 pin exactly; R59 pins every GitHub Action to a commit SHA; R77 verifies from disk
+- [ ] New third-party import in a runtime path pinned to an exact version. **Applies.** R49
+      requires an exact pin for all nine added packages, in `dependencies` and `devDependencies`
+      alike, and carries two greps as its check; R85 runs the same check in CI on every push;
+      R77 reads the resolved version and the licence from disk and escalates any difference to
+      the owner; R59 pins every GitHub Action to a full commit SHA; R78 bounds how many packages
+      may be added. This line named R49 and R78 in the first draft, which was not true of the
+      three `@fontsource` runtime packages
+- [ ] The post-deploy smoke step asserts only what it can prove. **Applies.** R63 asserts status
+      200; R80 asserts every asset resolves; R81 asserts the deep-link fallback; R82 asserts the
+      CSP meta, the referrer meta, no inline script, no Google Fonts origin and no phone number
+      on the served page; R83 makes all of it blocking. What no step can prove is listed in
+      [Observability](#observability) and owned by the site owner through R84
 
-**Recommend hold. G2 is blocked by 2 High findings** in the
-[Constraint audit](#constraint-audit) and reproduced in section 4. Both are claimed controls that
-the requirements naming them do not implement: R63's smoke assertion passes on a blank page,
-and no requirement pins the three `@fontsource` runtime dependencies to an exact version. Both
-are cheap to resolve in the spec and neither needs the owner. The architect resolves them, the
-auditor re-checks, and the packet then returns for approval.
+**Recommend approve with conditions**, on the assumption that the constraint auditor confirms
+both High findings are closed. If the auditor does not, this line returns to "Recommend hold"
+and the architect gets the second of its two rework rounds.
 
-When it returns, the five decisions still stand: the owner answers D1, because `/work` cannot be
-built without project copy, and D2, because five requirements are deleted if it is declined. The
-thirteen Medium findings must each have a resolution or a named owner before G4.
+Both Highs were claimed controls the requirements naming them did not implement, and both are
+now implemented rather than argued away: R63's smoke assertion is replaced by R80 to R83, which
+assert things a blank page fails, and the residue no check can reach is an accepted risk with
+the owner named and a manual control (R84) attached; R49 now pins all nine added packages with
+R85 enforcing it in CI on every push. All thirteen Medium and all seven Low findings have a line
+in [Response to audit](#response-to-audit): fifteen fixed in the requirements, five accepted with
+a reason and a named owner (git history, the transitive lockfile tree, the `style-src` split,
+`tailwindcss` in the wrong block, and the un-provable run-time behaviour of the deployed page).
+
+The conditions are the five decisions, unchanged in substance: the owner answers **G2-D1**,
+because `/work` cannot be built without project copy, and **G2-D2**, because five requirements
+are deleted if it is declined. G2-D2 no longer takes `docs/hosted-config.md` with it. Two items
+need the owner outside the decision table: the branch-protection settings in the checklist above,
+and his agreement to perform R84's manual check himself.
 
 ## Approve
 

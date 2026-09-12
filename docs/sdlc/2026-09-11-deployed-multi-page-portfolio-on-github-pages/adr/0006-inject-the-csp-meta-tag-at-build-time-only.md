@@ -1,8 +1,11 @@
-# 0006: Inject the Content-Security-Policy meta tag at build time only
+# 0006: Inject the Content-Security-Policy and Referrer-Policy meta tags at build time only
 
 Date: 2026-09-11
 Status: proposed
 Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
+Revised: 2026-09-11 after the G2 constraint audit. One decision changed: the same build step now
+injects a `Referrer-Policy` meta tag as well, and the three baseline headers that cannot be
+expressed in markup are named rather than left unmentioned.
 
 ## Context
 
@@ -18,9 +21,10 @@ inline styles that a production-grade policy would block.
 
 ## Decision
 
-A build-only Vite `transformIndexHtml` step declared inline in `vite.config.js` inserts the meta
-tag as the first element inside `<head>` of the built HTML. The source `index.html` never
-carries it, so `npm run dev` is unaffected. Because the copy to `dist/404.html` happens in
+A build-only Vite `transformIndexHtml` step declared inline in `vite.config.js` inserts two meta
+tags as the first elements inside `<head>` of the built HTML: the Content-Security-Policy, and
+`<meta name="referrer" content="strict-origin-when-cross-origin">`. The source `index.html`
+never carries either, so `npm run dev` is unaffected. Because the copy to `dist/404.html` happens in
 `closeBundle`, after the HTML transform, the fallback page carries the same policy. The policy
 is `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'
 data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action
@@ -37,12 +41,17 @@ in production only.
 | No CSP at all | Defensible: a static site with no auth token, no storage and no user input has little for an injected script to steal. Rejected because the tag costs one build step and "no CSP" is a due-diligence question with an embarrassing answer on an engineering portfolio |
 | Add `frame-ancestors 'none'` anyway | It is silently ignored in a meta tag. Writing a directive that does nothing is worse than omitting it, because the next reader believes it is enforced |
 | A `_headers` file or a hosting rewrite | Neither exists on GitHub Pages. This would require moving hosts |
+| `style-src 'self'` plus `style-src-attr 'unsafe-inline'`, which is narrower than `style-src 'self' 'unsafe-inline'` | Correct in principle: the stated need is React inline `style` props, not injected `<style>` elements. Not taken, because CSP Level 3 `style-src-attr` support in a `<meta http-equiv>` tag is believed, not verified, and a browser that ignores it falls back to blocking the inline `style` attributes the orb uses for its own dimensions. That is a visible regression with no signal, on a site with no error tracking. Revisit when real headers and a report endpoint are available |
+| Try to express HSTS, `X-Content-Type-Options` or `Permissions-Policy` in markup | All three are response-header-only; no meta form is honoured (believed, not verified against the specifications in this session). They are recorded as unachievable on this host rather than attempted, and `R87` prints the actual response headers into the first deploy's log so what GitHub Pages sets by itself is known rather than assumed |
 
 ## Consequences
 
 Easier: the shipped site declares an explicit policy, `object-src 'none'` and `script-src 'self'`
-close the two cheapest injection routes, and `default-src 'self'` fails closed if anyone ever
-adds a third-party origin without asking the lawful-basis question.
+close the two cheapest injection routes, `default-src 'self'` fails closed if anyone ever adds a
+third-party origin without asking the lawful-basis question, and the referrer policy stops a full
+URL leaking to any outbound link the site grows later. `R82` re-asserts both tags against the
+served page on every deploy, so a build step that silently stops running fails the workflow
+rather than shipping quietly.
 
 Harder: `style-src` needs `'unsafe-inline'`, which is a real weakening. React inline `style`
 props are covered by `style-src-attr`, and this codebase uses them, for example
