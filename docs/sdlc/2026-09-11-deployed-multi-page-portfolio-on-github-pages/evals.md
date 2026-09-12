@@ -15,6 +15,63 @@ eight ADRs, `.workhorse/profile.yml`, `docs/design-brief.md`, and the working tr
 Every factual claim below is labelled **confirmed** (this agent read the file or line named)
 or **believed, not verified** (inferred, or carried from an earlier agent). No em-dashes.
 
+## Amendment (2026-09-12, B2/B3 pin corrections and one new case)
+
+The owner approved B2 and B3 on 2026-09-12 (`conductor-log.md` lines 35-37, commit `a98fdcf`,
+**confirmed** by the facts this agent was given). This amendment corrects every case that named
+a pre-approval version number, records the audit-status change, and adds one new case for B3. No
+case was removed and no case's requirement mapping changed except the one addition noted below;
+the [coverage matrix](#9-coverage-matrix) gains one entry (`GC91` against `R49`) and is otherwise
+unchanged.
+
+- **GC1** (R1). `react-router` is now pinned exactly at `7.18.3`, not `7.9.4`
+  (**confirmed** per the facts given to this agent). The grep pattern and the expected pinned
+  string are both updated from `7.9.4` to `7.18.3`; the check's shape (exactly one import line,
+  no `^`/`~` on the pin) is unchanged.
+- **AD14** (R85). `vitest` is now pinned exactly at `3.2.7`, not `3.2.4`
+  (**confirmed** per the facts given to this agent). The red-team fixture's caret example
+  changes from `"vitest": "^3.2.4"` to `"vitest": "^3.2.7"`, so the fixture still represents a
+  plausible regression against the real pinned value rather than one that could never occur.
+- `tailwindcss` and `@tailwindcss/vite` moved from `dependencies` to `devDependencies`, exact
+  `4.3.3` (**confirmed** per the facts given to this agent). This agent searched every case in
+  this file for the literals `7.9.4`, `3.2.4`, `tailwindcss`, and `@tailwindcss/vite`: only GC1
+  and AD14 named the two version strings above, and no existing case named Tailwind's package
+  location, so no other case needed rewording on this point. GC91, below, is new coverage for it.
+- `npm audit --omit=dev --audit-level=high` now exits 0 (**confirmed** per the facts given to
+  this agent). The full `npm audit --audit-level=high` (no `--omit=dev`) still exits 1 on five
+  dev-only advisories (vite `GHSA-fx2h-pf6j-xcff` high; vite `GHSA-4w7w-66w2-5vf9`,
+  `GHSA-v6wh-96g9-6wx3`, esbuild `GHSA-67mh-4wv8-2f99`, `@vitest/mocker` `GHSA-82fw-gwwq-j7x9`,
+  all moderate), which the spec architect is recording as accepted in new
+  `adr/0009-accept-dev-only-vite-and-vitest-advisories.md` (**believed, not verified**: this
+  agent did not read that ADR, since it is being written in parallel by the spec architect and
+  this agent's scope is `evals.md` only). This agent searched every case in this file expecting
+  the full, un-scoped `npm audit --audit-level=high` to exit 0: none exists. GC56 and the
+  failure-taxonomy "Unauthorised" row already scope the blocking requirement to the
+  `--omit=dev` form; GC57 already scopes the full-tree form to "present, paired with
+  `continue-on-error: true`," never to an exit code. Both stand unchanged. For any future case
+  that does read the full audit's exit code, the expected result is: exit 1 is acceptable only
+  if every listed advisory is in ADR 0009's dev-only set, and `--omit=dev` exits 0.
+- **GC91** (new, against R49). Added in [section I](#i-test-toolchain-r49-r54): a golden command
+  case checking that `tailwindcss` and `@tailwindcss/vite` sit under `devDependencies` at exact
+  `4.3.3`, and that `npm audit --omit=dev --audit-level=high` exits 0. This is the one new case
+  in this amendment. Its ID breaks the strict `GCn`-maps-to-`Rn` numbering the same way `GC-CP`
+  already does: it is an additional pin-and-audit check against R49, not a new requirement, and
+  `GC91` is the next free integer after the file's highest existing golden-case number, `GC90`.
+  It is cross-referenced in the [coverage matrix](#9-coverage-matrix)'s R49 row alongside GC49.
+
+**Finding outside this amendment's scope, reported and not fixed here**: GC78 and R78 state
+"exactly 4 runtime dependencies and 5 devDependencies SHALL be added" against a baseline of 7
+`dependencies` and 5 `devDependencies`, and GC78's command asserts the final counts are 10 and
+10. Moving `tailwindcss` and `@tailwindcss/vite` from `dependencies` to `devDependencies` changes
+which packages sit in which final section (2 fewer runtime, 2 more dev) without changing the
+totals GC78 checks (10 and 10 either way, since GC78 only asserts array lengths and the absence
+of the removed rolldown package, not package-level membership by section). This agent did not
+re-verify whether GC78's `node -e` check incidentally still passes membership-wise, because R78's
+own wording and the spec's before/after bounds are the spec architect's amendment to make, not
+this agent's; this agent's instructions were scoped to `evals.md` cases naming the specific
+literals above, and GC78 does not name any of them. Flagging here so the spec architect or the
+verifier checks GC78 against R78's final wording once R78 itself is amended.
+
 ## Amendment (2026-09-12, targeted rework before Verify)
 
 G3 was approved (`approvals.md`: "D1 copy approved; D2, D4, D5 as recommended"). The G3 packet's
@@ -82,7 +139,9 @@ the hero orb's dot rendering, logged in `conductor-log.md` (the plan-phase entry
   requirement(s) it covers, since one interface can produce several edge/failure/adversarial
   cases against the same requirement. R80-R90 keep this convention: `GC80` through `GC90` map
   one-for-one, and new edge/failure/adversarial cases continue the existing sequences
-  (`EG22`, `FL21`-`FL23`, `AD14`-`AD16`) rather than restarting them.
+  (`EG22`, `FL21`-`FL23`, `AD14`-`AD16`) rather than restarting them. `GC91` (2026-09-12
+  amendment) is the one documented exception, matching `GC-CP`: an additional golden case
+  against an existing requirement (R49), not a new requirement.
 - This revision was produced without re-running any command from the prior pass; every case
   carried unchanged from the first version keeps its original epistemic labels.
 
@@ -104,7 +163,7 @@ One case per requirement, minimum. Grouped by the spec's own lettered sections (
 
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
-| GC1 | R1 | Given `src/main.jsx`, when grepped for the router import, then exactly one `from 'react-router'` line exists and `package.json` pins `react-router` at `7.9.4` with no range prefix | `grep -c "from 'react-router'" src/main.jsx`; `grep -n "\"react-router\": \"7.9.4\"" package.json` | First count is 1; second grep matches, no `^`/`~` | Windows | command |
+| GC1 | R1 | Given `src/main.jsx`, when grepped for the router import, then exactly one `from 'react-router'` line exists and `package.json` pins `react-router` at `7.18.3` with no range prefix | `grep -c "from 'react-router'" src/main.jsx`; `grep -n "\"react-router\": \"7.18.3\"" package.json` | First count is 1; second grep matches, no `^`/`~` | Windows | command |
 | GC2 | R2 | Given `import.meta.env.BASE_URL` values, when the exported basename helper runs, then it strips a trailing slash and falls back to `/` on empty | Vitest `"strips the trailing slash from the Vite base url"`: `computeBasename('/Portfolio/') === '/Portfolio'`; `computeBasename('/') === '/'` | Both assertions pass | Windows | `src/basename.test.js` |
 | GC3 | R3 | Given the route table, when `/`, `/work`, all 3 case-study paths, and `/work/no-such-study` render, then each shows the expected level-1 heading, and the route table has exactly one pathless layout route wrapping exactly four child routes (index, `work`, `work/:slug`, `*`) | RTL render per path, assert `getByRole('heading', {level:1})` text; `grep -cE "<Route (path=|index)" src/App.jsx` for the child-route count; `grep -c "<Route " src/App.jsx` for the total, which must equal the child-route count plus exactly 1 | Correct heading per path; child-route grep = 4; total grep = 5 (one pathless layout route, not four `<Route` elements as the first draft counted) | Windows | `src/routes.test.jsx` + command |
 | GC4 | R4 | Given `SiteLayout`, when `/`, `/work`, `/work/apple-llm-triage` render, then the footer's `mailto:` link is present on all three | RTL, `getByRole('link', {name: /mailto/})` or `container.querySelector('a[href^="mailto:"]')` per route | Present on all 3 routes | Windows | `src/components/SiteLayout.test.jsx` |
@@ -208,6 +267,7 @@ No case below is adjusted.
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
 | GC49 | R49 | Given every added package SHALL be exact-pinned in both `dependencies` and `devDependencies`, when `package.json` is read, then all **nine** named packages (`react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk`, `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom`, `jsdom`) carry no `^`, `~`, `>=`, `<`, `*`, `x`, tag, URL or git specifier | Two greps over `package.json`. First, `grep -c "\"\(react-router\|@fontsource/inter\|@fontsource/jetbrains-mono\|@fontsource/space-grotesk\|vitest\|@testing-library/react\|@testing-library/dom\|@testing-library/jest-dom\|jsdom\)\": \"[0-9]"` equals 9. Second, the same alternation followed by `": "[\^~><*x]` or `": "latest` returns 0 matches | 9; 0 | Windows | command (the same two greps R85 runs in CI on every push, so the pin cannot rot after G4; see GC85). The first version of this case checked only the five devDependencies; the runtime four now carry the same bar |
+| GC91 | R49 | Given B3 (approved 2026-09-12) moved `tailwindcss` and `@tailwindcss/vite` from `dependencies` to `devDependencies` at exact `4.3.3`, when `package.json` and a local, production-scoped audit are read, then both packages appear under `devDependencies` with no range prefix, neither appears under `dependencies`, and the production-only audit exits clean | `grep -n "\"tailwindcss\": \"4.3.3\"" package.json`; `grep -n "\"@tailwindcss/vite\": \"4.3.3\"" package.json`; confirm both matched lines fall inside the `devDependencies` block and `grep -c "\"tailwindcss\"\|\"@tailwindcss/vite\"" ` restricted to the `dependencies` block returns 0; `npm audit --omit=dev --audit-level=high` | Both greps match `4.3.3` with no `^`/`~`; 0 matches inside `dependencies`; `npm audit --omit=dev --audit-level=high` exits 0 | Windows | command. Added by the 2026-09-12 B2/B3 amendment; this ID is a documented exception to the `GCn`-maps-to-`Rn` convention, the same exception `GC-CP` already uses, since it is a second golden case against R49 rather than a new requirement |
 | GC50 | R50 | Given the `test` block in `vite.config.js`, when read, then it declares `environment: 'jsdom'`, `globals: true`, `setupFiles`, `css: false`, `restoreMocks: true`, and both `npm test` and `npm run build` still exit 0 | `grep` for each key; `npm test`; `npm run build` | All keys found; both exit 0 | Windows | command |
 | GC51 | R51 | Given `package.json` scripts, when read, then `test` is `vitest run` and `test:watch` is `vitest`, both bare binary invocations | `grep -n "\"test\":\|\"test:watch\":" package.json`; `npm test` on Windows | Exact script bodies; exits 0 | Windows | command |
 | GC52 | R52 | Given the build job **enforces** the test floor rather than leaving it to a human reading a summary line, when the workflow's test step runs `npm test -- --reporter=json --outputFile=vitest-results.json` and the step after it reads the file, then the run fails unless `numPassedTests >= 12` and `numPendingTests + numTodoTests + numFailedTests === 0`, naming the observed counts on failure | `grep -c "numPassedTests" .github/workflows/deploy.yml` >= 1; first workflow run's log shows the observed counts and, on failure, the counts named in the message; locally, `npm test` still reports `Tests N passed` with N >= 12 | Structural presence and local floor confirmed on Windows; CI enforcement confirmed on the first workflow run | Windows (structure + local run) + CI-only (enforcement) | command + CI-only confirmation. AD15 red-teams this check's own sensitivity to a skipped test |
@@ -262,7 +322,7 @@ No case below is adjusted.
 | GC75 | R75 | Given no shell builtins in scripts, when `package.json` `scripts` is read, then none contains `&&`, a POSIX-only separator, or a shell builtin | `node -e "const s=require('./package.json').scripts; Object.values(s).forEach(v=>{if(/&&\|\|\||\/bin\//.test(v)) throw new Error(v)})"` | Exits 0 | Windows | command |
 | GC76 | R76 | Given `build.max_parallel: 4`, and the requirement is now explicitly stated to be about the **configured value and the wave shape**, artifacts both, and deliberately not a claim about what the conductor did at run time (a runtime property no single file records), when `.workhorse/profile.yml` and the [Build waves](#build-waves) table are read, then the value is present and each of the 4 waves is file-disjoint within itself | `grep -n "max_parallel: 4" .workhorse/profile.yml`; review of the 4-wave table for file-disjointness | Found; each wave file-disjoint | Windows | command |
 | GC77 | R77 | Given every added package, **including the three `@fontsource` packages** (the first draft's carve-out for them is withdrawn: a pin that resolves to a different version now escalates exactly like one that fails to resolve at all), when the G4 evidence table is reviewed, then it has one row per added package with a version resolved from `node_modules/<pkg>/package.json` and a licence read the same way, plus an explicit escalation line for any package whose resolved version differs from the [Dependency table](#dependency-table) | Manual review of 9 rows: `react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk`, `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom`, `jsdom` | 9 rows, each with a resolved version and licence; an escalation line on any mismatch | **manual, and permanently so, accepted explicitly in R77's own row**: reading a licence field requires an owner-approved `npm install` before any version/licence can be read from disk, and the table is authored and reviewed by people. Owner: build phase, reviewed by the site owner at G4. Not a gap | G4 evidence table |
-| GC78 | R78 | Given exactly 4 runtime deps added, 5 devDeps added, 1 runtime dep removed, when `package.json` is read, then the final counts and membership match. **Lockfile-level drift is explicitly out of this requirement's reach and is governed by R86, not R78** | `node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); if(d.length!==10\|\|v.length!==10) throw 1; if(d.includes('@rolldown/binding-win32-x64-msvc')) throw 2;"` | Exits 0 (10 dependencies, 10 devDependencies; today's baseline is 7 and 5 respectively, confirmed by reading `package.json`) | Windows | command; R86 covers the transitive/lockfile drift this check cannot see, see GC86 |
+| GC78 | R78 | Given exactly 4 runtime deps added, 5 devDeps added, 1 runtime dep removed, when `package.json` is read, then the final counts and membership match. **Lockfile-level drift is explicitly out of this requirement's reach and is governed by R86, not R78** | `node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); if(d.length!==10\|\|v.length!==10) throw 1; if(d.includes('@rolldown/binding-win32-x64-msvc')) throw 2;"` | Exits 0 (10 dependencies, 10 devDependencies; today's baseline is 7 and 5 respectively, confirmed by reading `package.json`) | Windows | command; R86 covers the transitive/lockfile drift this check cannot see, see GC86. **See the 2026-09-12 amendment's "finding outside scope"** on the Tailwind devDependencies move's effect on this row's membership, not yet reconciled here |
 
 ### N. Visual style (R79)
 
@@ -376,7 +436,7 @@ residual risk. AD14-AD16 red-team the new deploy-time detection instruments them
 | AD11 | R65, R66 | A compromised dependency injects an inline `<script>` (no `src`) into the build output | Red-team check: construct a `dist/index.html` fixture with a deliberately injected inline script, run GC66's grep against that fixture | The grep correctly flags it (count > 0), proving the detection instrument catches this attack, not merely that today's clean build passes | Windows |
 | AD12 | R33, R34 | Replay: rapidly navigating away from and back to `/` many times (a user mashing back/forward, or a bot) | Vitest mounts and unmounts the router at `/` 20 times in a loop, asserts `cancelAnimationFrame` count equals `requestAnimationFrame` count and `vi.getTimerCount() === 0` after the last unmount | No accumulation of frames, observers, or timers across replays | Windows |
 | AD13 | R65 | Clickjacking: a malicious site iframes the portfolio, because a `<meta>` CSP cannot express `frame-ancestors` on GitHub Pages | Not automatable by a command; this is a named, accepted residual risk recorded in ADR 0006 and `spec.md` "Security and privacy" | Documented as accepted, not fixed: the site has no session, no auth token, and no state-changing control for a clickjack overlay to exploit, so the residual risk is judged acceptable | manual, and scored "documented" rather than "rejected" per the target note above |
-| AD14 | R85 | Red-team the pin-check step itself: a fixture `package.json` carries `"vitest": "^3.2.4"` (a caret reintroduced on one of the nine R49 packages) | Run R85's `node -e` pin-check logic against the fixture file instead of the real `package.json` | The check correctly fails and names `vitest` and its `^3.2.4` specifier, proving the detection instrument catches this exact regression class, not merely that today's clean `package.json` passes | Windows (fixture, not the live `package.json`) |
+| AD14 | R85 | Red-team the pin-check step itself: a fixture `package.json` carries `"vitest": "^3.2.7"` (a caret reintroduced on one of the nine R49 packages) | Run R85's `node -e` pin-check logic against the fixture file instead of the real `package.json` | The check correctly fails and names `vitest` and its `^3.2.7` specifier, proving the detection instrument catches this exact regression class, not merely that today's clean `package.json` passes | Windows (fixture, not the live `package.json`) |
 | AD15 | R52 | Red-team the test-floor assertion: a fixture `vitest-results.json` reports `numPassedTests: 12`, `numPendingTests: 1` (one skipped test), everything else 0 | Run R52's `node -e` assertion logic against the fixture instead of a real Vitest report | The check correctly fails, since `numPendingTests` is required to be 0, proving the floor rejects a partially-skipped suite rather than only counting passes | Windows (fixture, not a live test run) |
 | AD16 | R82 | Reuse AD11's fixture (a `dist/index.html` with a deliberately injected inline `<script>`, no `src`) framed as the served page R82 asserts against, not the build artifact GC66 checks | Run the same inline-script grep AD11 uses against the fixture, as R82's live re-check would | The grep correctly flags it (count > 0), proving R82's live re-check catches the same class of regression R66/GC66 catches at build time, closing the gap between "built correctly" and "served correctly" | Windows (fixture, shared with AD11 and GC66) |
 
@@ -488,7 +548,7 @@ Every requirement maps to at least one golden case (`GCn`). Additional edge (`EG
 | R46 | GC46 | EG14 | FL13 | - |
 | R47 | GC47 | EG15 | - | - |
 | R48 | GC48 (subject to G2-D2) | EG15 | FL14 | - |
-| R49 | GC49 | - | - | - |
+| R49 | GC49, GC91 | - | - | - |
 | R50 | GC50 | - | - | - |
 | R51 | GC51 | - | - | - |
 | R52 | GC52 | - | - | AD15 |
@@ -531,7 +591,8 @@ Every requirement maps to at least one golden case (`GCn`). Additional edge (`EG
 | R89 | GC89 | - | - | - |
 | R90 | GC90 (review property) | - | - | - |
 
-All 90 requirements have at least one golden case. 0 are uncovered.
+All 90 requirements have at least one golden case. 0 are uncovered. R49 carries two golden
+cases (`GC49`, `GC91`) as of the 2026-09-12 amendment; every other row is unchanged.
 
 ### Metrics (M1-M17)
 
@@ -610,6 +671,19 @@ New notes from this revision, arising from R80-R90:
    11 explicitly, so a future reader does not have to re-derive it and risk getting it wrong
    the way the timer and email counts were gotten wrong twice in this spec's own history (see
    [Correction to a carried finding](#correction-to-a-carried-finding)).
+
+New note from the 2026-09-12 B2/B3 amendment:
+
+10. **R78's "exactly 4 runtime dependencies and 5 devDependencies added" no longer matches
+    B3's outcome without a stated reconciliation.** Moving `tailwindcss` and
+    `@tailwindcss/vite` from `dependencies` to `devDependencies` is a change to which existing
+    packages sit in which section, not a change to how many packages are "added" in R78's
+    sense, but R78 also states "no other dependency change SHALL occur in `package.json`" and
+    the spec's own line 1149 called this exact move "a dependency change outside R78's declared
+    bounds... do it in the next dependency change." This agent did not resolve that tension,
+    since it is a requirement-wording question for the spec architect, who is amending R78 in
+    parallel; it is reported above under "Finding outside this amendment's scope" rather than
+    fixed here. GC78 is left unchanged pending that resolution.
 
 No requirement was left entirely without a case, including the five (R19, R76 in its
 config-only sense, R77, R84, R86) that are permanently manual or evidence-table by nature, and
