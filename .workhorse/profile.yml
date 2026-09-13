@@ -38,7 +38,7 @@ commands:
   build: "npm run build"
   e2e: ""
   screenshot: ""
-  security_audit: "npm audit --audit-level=high"
+  security_audit: "npm audit --omit=dev --audit-level=high"   # the blocking gate, same as CI (R56). The full-tree audit runs non-blocking in CI (R57); its dev-only advisories are accepted in change 2026-09-11 ADR 0009
 
 conventions:
   default_branch: main
