@@ -145,7 +145,7 @@ compliance:
   audit_log_required: false   # No admin surface, no PHI, no cardholder data, no financial
                               # ledger. Nothing in the codebase meets any regime's audit-log
                               # trigger.
-  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, phone, city, LinkedIn), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
+  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, city, LinkedIn and GitHub profile; the phone number was removed from the site by change 2026-09-11, spec R41, and remains only in git history, see docs/hosted-config.md section 7), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
 
 # Risk tier overrides. Paths here force at least the given tier regardless of the classifier.
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
