@@ -149,7 +149,7 @@ These become evals. Every one is checkable by a command or a test.
 | Routes render | 5 routes render without throwing: `/`, `/work`, `/work/apple-llm-triage`, `/work/apple-data-health`, `/work/neural-newsletters-llm` | React Testing Library render per route |
 | Work index contents | `/work` shows exactly 3 case studies, 3 projects (`workhorse`, `Shu`, `wasl`) and 1 simulator entry | RTL test asserting counts |
 | Deep links resolve | `dist/404.html` exists and serves the same app shell as `dist/index.html` | file existence plus content comparison |
-| Phone number absent | 0 matches for `508-1536` in `dist/` and in `src/` | recursive grep |
+| Phone number absent | 0 matches for the owner's phone number in `dist/` and in `src/` | `node scripts/check-phone-redaction.mjs dist` after a build (R89, ADR 0010); it scans every tracked file, which includes `src/`, plus `dist/`, and exits 0 on no hit |
 | No Google Fonts | 0 matches for `fonts.googleapis.com` and `fonts.gstatic.com` in `dist/` and `index.html` | recursive grep |
 | No tracking introduced | 0 matches for `gtag`, `analytics`, `dataLayer`, `document.cookie`, `localStorage`, `sessionStorage` in `src/` and `index.html` | the same grep the discovery analyst ran |
 | Orb at hero scale | orb canvas CSS width between 380 and 440 px inclusive | RTL test reading the rendered element size |
@@ -196,7 +196,7 @@ the path floor.
   Believed, not independently verified here, that the exact final package list matches the spec's
   constraints section; confirmed only that none of those packages are present in `package.json`
   today.
-- **PII handling, tier 2:** the owner's own phone number `(512) 508-xxxx` is removed from a public
+- **PII handling, tier 2:** the owner's own phone number is removed from a public
   surface. Confirmed by reading `src/data/portfolioData.js` line 8. Believed, not re-verified by
   me, that it also appears in `ContactFooter.jsx` line 71 and `ResumeModal.jsx` lines 10 and 69 (as
   reported by the intent writer). `docs/sdlc/constraints.md` "Things that must not change without
@@ -293,6 +293,10 @@ Tier: set by the risk classifier, not by this packet
 Branch: `main`, clean
 PR: none
 Prepared: 2026-09-11
+Amended: 2026-09-13. Every form of the owner's phone number was redacted from this file under G4
+rejection note D3. This changes the bytes of the G1 packet approved at `a7ed654`, not its meaning:
+D1 still removes the phone number from the public site and keeps email and LinkedIn. Git history
+keeps the original text and is out of scope.
 
 ## 1. TL;DR
 
@@ -308,7 +312,7 @@ first push to `main`.
 
 | # | Decision | Recommendation | Alternative | If you choose the alternative |
 |---|----------|----------------|-------------|-------------------------------|
-| D1 | Publish the phone number? | Remove `(512) 508-1536` from the public site; keep email and LinkedIn | Keep it | Spec keeps `personal.phone` rendering in `ContactFooter` and `ResumeModal`; the number is scrapeable forever once Pages is live |
+| D1 | Publish the phone number? | Remove the owner's phone number from the public site; keep email and LinkedIn | Keep it | Spec keeps `personal.phone` rendering in `ContactFooter` and `ResumeModal`; the number is scrapeable forever once Pages is live |
 | D2 | Fonts and the third-party call | Self-host Inter, JetBrains Mono and Space Grotesk from pinned `@fontsource` packages; delete `index.html` lines 8 to 10 | Keep Google Fonts | The GDPR-adjacent gap in `constraints.md` stays open and the spec must instead record a lawful basis for disclosing every EU/UK visitor's IP to Google LLC |
 | D3 | Architecture: router, tests, host | `react-router` multi-page; Vitest plus React Testing Library as `commands.test`; no custom domain, so `base: "/Portfolio/"` | Stay single-page with modals; ship untested; buy a domain | Single-page drops `/work` and `/work/:slug` and most of the design brief; no tests keeps verification build-only forever; a domain changes `base` and adds a `CNAME` |
 | D4 | Content publishability | Confirm the Apple, TCS, Neural Newsletters and edX claims and the four telemetry metrics are yours to publish and not confidential | Redact or soften specific claims | The spec must list exactly which strings change, and only you may write the replacements |
