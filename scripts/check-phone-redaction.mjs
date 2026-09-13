@@ -187,7 +187,6 @@ function listFilesUnder(directoryArgument) {
   if (!fs.existsSync(absolutePath)) {
     throw new Error(`${directoryArgument} does not exist; run the build first or drop the argument`)
   }
-  if (!fs.statSync(absolutePath).isDirectory()) return [absolutePath]
   return fs
     .readdirSync(absolutePath, { recursive: true, withFileTypes: true })
     .filter((entry) => entry.isFile())
