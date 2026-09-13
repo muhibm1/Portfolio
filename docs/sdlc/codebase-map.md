@@ -177,7 +177,7 @@ static content compiled into the JavaScript bundle and served to everyone.
 
 | Where | What | Category | Status |
 | --- | --- | --- | --- |
-| `src/data/portfolioData.js`, `personal` | Owner's name, role, email, phone number, city, LinkedIn URL, availability statement, summary | **Personal data, the owner's own**, published deliberately | confirmed |
+| `src/data/portfolioData.js`, `personal` | Owner's name, role, email, city, LinkedIn URL, GitHub profile URL, availability statement, summary. The phone number was removed by change 2026-09-11 (spec R41) | **Personal data, the owner's own**, published deliberately | confirmed |
 | `src/data/portfolioData.js`, `telemetry` | Four headline metrics (350+ tickets/day, 50+ regions, -40% incidents, 99.9% reliability) | Employer-derived claims | confirmed |
 | `src/data/portfolioData.js`, `philosophy` | Three principles, free text | None | confirmed |
 | `src/data/portfolioData.js`, `caseStudies` | Case studies naming Apple, TCS and Neural Newsletters, with challenge, solution, impact, diagram steps and tech stack | **Former and current employer detail**, see constraints | confirmed |
