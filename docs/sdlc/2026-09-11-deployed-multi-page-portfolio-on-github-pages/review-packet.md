@@ -1,188 +1,279 @@
 # Review packet: Deployed multi-page portfolio on GitHub Pages
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
-Gate: G4
+Gate: G4 (second presentation, after rejection)
 Tier: 2
-Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages` at `ac38128`
-(verification ran green at `8ea98a7`; `ac38128` differs only in `docs/sdlc/**`, confirmed by the
-bug reviewer)
-PR: not opened. Prerequisite: the owner publishes local main (942d311) to the empty private
-origin; the conductor then pushes this branch and opens the PR against main.
+Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages` at `807c5fd`
+(verification ran green at `460405e`, Node v22.12.0; `git diff --name-only 460405e 807c5fd`,
+conductor-confirmed, lists only `conductor-log.md`, `verification.md` and
+`verify-logs/eval-runner-report.md`, all under this change's `docs/sdlc/` folder; committing
+this packet adds one further docs-only commit on top of `807c5fd`)
+PR: none. Origin `muhibm1/Portfolio` is private with no branches; a PR needs main on origin, and
+only the owner publishes main.
 Prepared: 2026-09-13
+
+## Response to rejection
+
+The prior G4 packet (artifact commit `0af230f`, sha256 pinned on `approvals.md` line 40) was
+rejected 2026-09-13T01:46:12.951Z. Each note is quoted from `approvals.md`, followed by what
+changed.
+
+**D1.** "ratified, ADR 0009 and the --omit=dev security_audit stand, owner to confirm when he
+reviews." No change made. ADR 0009 and `.workhorse/profile.yml:41` stand exactly as ratified
+under delegation by the main session, not by the owner. The owner's own confirmation is still
+requested below.
+
+**D2.** "deferred to the owner; do not change repository visibility and do not push main, the
+owner does both himself." No change made. Repository visibility is unchanged, nothing was
+pushed, and no agent touched the publishing path.
+
+**D3.** "redact every full and partial occurrence of the phone number in committed docs
+(intent.md, spec.md, evals.md and any other file), including the approved G1 text in intent.md;
+note in approvals context that the redaction changes the approved packet's bytes, not its
+meaning; git history is out of scope." Fixed across four commits: `1d11c97` (spec.md amended,
+R89 widened to full/last-seven/area-plus-exchange forms across every tracked file, ADR 0010 adds
+the detection method), `545da85` (evals.md and intent.md redacted; the intent.md G1 packet header
+carries a dated note that its bytes changed under G4-D3, not its meaning), `76bcc00`
+(`scripts/check-phone-redaction.mjs` added, `docs/sdlc/constraints.md` redacted), `652750f`
+(simplifier removed an unrequested branch from the script). The redaction also changed the bytes
+of the approved G2 packet, `spec.md`, whose sha256 `approvals.md` line 22 pins, not its meaning.
+Git history is out of scope, as instructed; commits from `b50497f` onward still carry the number,
+and so, currently, does the tip of local `main` and 37 of 38 local branches (below).
+
+**D4.** "move public/mockup-*.jpg to docs/design/ and add a build or test check that no mockup
+file reaches dist/." Fixed in `38d36b4`: the four mockups moved with `git mv` to `docs/design/`;
+new `src/publicDirectory.test.js` guards both directions; `docs/design-brief.md` and
+`docs/sdlc/codebase-map.md` paths updated; ADR 0008 amended in `1d11c97`; new ADR 0012 records the
+design decision.
+
+**D5.** "fix Back to Top in src/components/ContactFooter.jsx so it works on every route. Then
+re-verify on Node v22.12.0 and present G4 again." Fixed in `c518b71`: Back to Top is now a
+`<button type="button">` calling `window.scrollTo({ top: 0 })`, `'auto'` under reduced motion,
+with 6 new tests covering 5 routes plus the reduced-motion branch; reasoning in ADR 0011.
+Re-verification ran on Node v22.12.0 and is green (below).
 
 ## 1. TL;DR
 
-This change turns the single-page, undeployable Vite/React scaffold into a multi-page portfolio
-(`/`, `/work`, `/work/:slug`) with a live orb hero, self-hosted fonts, a real test suite and a
-GitHub Actions deploy to GitHub Pages, so the owner has a working link for his resume and job
-applications. Verification is green (164/164 tests, lint, build and the scoped `security_audit`
-all exit 0), and the four reviewers found no finding above medium. No PR exists yet: the GitHub
-repository `muhibm1/Portfolio` is private with no branches at all (confirmed: `git ls-remote
---heads origin` returns nothing, `gh repo view` shows an empty `defaultBranchRef`), so the owner
-must first publish local main (`942d311`, the G3 approval commit, no `.github` directory) to
-origin before the conductor can push this branch and open a PR. You are asked to ratify five
-grouped decisions below, several of which a delegated instruction answered on your behalf during
-Verify, before this can go to `main`.
+This is the fix-wave resubmission of the same change: a multi-page portfolio deploying to GitHub
+Pages, resubmitted after the owner (via delegation) rejected G4 for four fixable items and one
+confirmation. Verification is green at `460405e` (174 tests, lint, build, scoped `security_audit`
+all exit 0). 0 critical and 0 high findings are open; 3 mediums are open (D1, owner confirmation;
+two detection gaps this fix wave introduced in the redaction script). You are asked to ratify D1,
+decide D2 on the concrete terms below (publish only `main`, never `git push --all`, since local
+main's current files and 37 of 38 local branches still carry the owner's phone number), and rule
+on D3/D4, where this packet's own recommendation is to fix both in one short loop before
+re-presenting G4, because a live document (`hosted-config.md`) currently states redaction facts
+that are false at HEAD. No PR exists yet; publishing `main` is the owner's own act.
 
 ## 2. Decisions requested
 
 | # | Decision | Recommendation | Alternative | If you choose the alternative |
 |---|----------|----------------|-------------|-------------------------------|
-| D1 | Ratify the `security_audit` scope change. At commit `26b5c0e`, under your instruction "Approve every command yourself, I'm busy", the main session (not you) confirmed ADR 0009's accepted-risk position and changed `.workhorse/profile.yml` line 41 from `npm audit --audit-level=high` to `--omit=dev`. That change alone turned Verify from red to green. It accepts, among five dev-only advisories, `GHSA-82fw-gwwq-j7x9` (arbitrary file read in the Vitest runner), and two Windows-specific advisories mitigated only behaviourally (no `--host`, no untrusted browsing while `npm run dev` runs on this Windows host) | The security reviewer judges the acceptance sound on the merits (dev-only, confirmed; blocking audit clean; `dist/` has 0 `.map` files and no dev-server code) but not a valid owner acceptance until you ratify it here | Reject the delegated acceptance | Revert `profile.yml` line 41 to the unscoped command; Verify returns to red on the same 5 GHSA ids until each is fixed upstream (all fixes are semver-major) |
-| D2 | Repository visibility for the first deploy (G3-D3, still open), and the identity exposure that comes with it. GitHub Free serves Pages only from a public repository; `muhibm1/Portfolio` is private today. Going public also publishes all 67 commit author/committer entries (`@instructors.2u.com`), the email in `approvals.md` "Who" lines, and the owner's phone number in git history from `b50497f` onward (already accepted, not rewritten, per `hosted-config.md` item 7). Making main public also puts that same history on GitHub, private until you decide this | Make the repository public before the first push to `main` (after item 1's prerequisite: the owner publishes main to origin first); accept the identity exposure as a known, documented consequence; use a GitHub no-reply address for commits from here on | (a) A paid GitHub plan (conflicts with the "no paid services" business constraint). (b) Publish `dist/` to a separate public repository (needs a spec amendment and a new write credential). (c) Rewrite git history before going public to scrub author emails and the phone number | (a)/(b) block the first Pages deploy indefinitely; branch protection also stays unavailable (`gh api .../protection` returns 403 on a private Free repo). (c) invalidates every commit SHA quoted in `approvals.md`, `state.json` and this change's SDLC artifacts |
-| D3 | Phone-number redaction scope, counted precisely by the conductor with `git grep` (digits never printed in any artifact). The full ten-digit number appears in 3 places: `intent.md:311`, `spec.md:460`, `spec.md:1466`. The last seven digits alone (exchange plus line number, no area code) appear on 7 lines of `spec.md`, 3 of `evals.md`, 2 of `intent.md` (some inside eval check commands). The redacted form (area code and exchange, with `xxxx`) appears in `spec.md` (3), `evals.md` (2), `intent.md` (1), `docs/sdlc/constraints.md` (1), so the full number can be rebuilt from any committed last-seven occurrence plus a redacted form. The look-alike string in `src/data/portfolioData.test.js` is a different number (sha256 differs); it is not the owner's | Extend the redaction (GC89 option b) to every remaining full and partial occurrence, replacing each with the generic pattern already used in `portfolioData.test.js` and `deploy.yml` | Leave the remaining occurrences as committed text | The number stays reconstructable from committed files the moment the repository goes public (D2); this compounds the git-history exposure already accepted in `hosted-config.md` item 7 |
-| D4 | Four `public/mockup-*.jpg` files (`mockup-home`, `mockup-casestudy`, `mockup-maroon`, `mockup-mmlogo`) are unreferenced by any component but still copy into `dist/` and would publish at stable URLs for the first time. They show an Apple logo, Apple-attributed metrics that differ from `portfolioData.js` (for example "350M+" vs the shipped "150" LLM throughput figure), and "Log in / Sign up" chrome | `git mv` them to `docs/design/` and add a build assertion that `dist/` has no `mockup-*` file | Accept publication as is | An Apple-branded, factually inconsistent internal mockup becomes publicly and permanently fetchable at a stable URL |
-| D5 | `src/components/ContactFooter.jsx:94` "Back to Top" is a genuine open code defect (bug reviewer), not an owner decision: `href="#overview"` is a no-op on `/work`, `/work/:slug` and the not-found page, and the footer renders on every route; no eval covers it | Fix before merge (route-aware target, for example scroll-to-top or a link to `/`), because it is visible on every non-home route and is a one-line change. The six open low bug findings can optionally be fixed at the same time | Defer to a follow-up change | Rejecting G4 with notes sends this change back through a fix loop before merge; approving with the defect accepted records it in the risk register as a known issue instead |
+| D1 | Your own confirmation of ADR 0009 and the `--omit=dev` `security_audit` scope, still ratified only by delegation (main session, under "Approve every command yourself, I'm busy"), not read by you | Review ADR 0009 and confirm explicitly; no code change needed | Decline the delegated ratification | Revert `profile.yml:41` to the unscoped command; Verify returns red on the same 5 GHSA ids (`GHSA-4w7w-66w2-5vf9`, `GHSA-67mh-4wv8-2f99`, `GHSA-82fw-gwwq-j7x9`, `GHSA-fx2h-pf6j-xcff`, `GHSA-v6wh-96g9-6wx3`) until each is fixed upstream, all semver-major |
+| D2 | Publishing path, conductor-confirmed: local `main`'s current files (`spec.md`, `evals.md`, `intent.md` of this change, `docs/sdlc/constraints.md`, `src/data/portfolioData.js`) still carry the owner's phone number, and 37 of 38 local branches carry it at their tip; only this change branch is clean (0 files at HEAD) | Publish only `main` to the private origin. Keep the repository private until this change merges, so that main's tip no longer carries the number. Accept that history still carries it, as `hosted-config.md` item 7 already records. Only then decide public visibility. Never `git push --all` and never push a task branch | Push the change branch alone, or push the change branch straight to `main` | Pushing the change branch alone makes it GitHub's default branch and activates its `dependabot.yml`; the conductor will not do this. Pushing the change branch to `main` triggers the deploy workflow, a production release without G4 or G5 |
+| D3 | Redaction-control gaps found in this round's fixes: 2 new mediums (`scripts/check-phone-redaction.mjs:141` misses the number with a country code written directly in front; `:205-206` silently skips any file with a NUL byte, so a UTF-16LE text file is invisible to the scan) | Reject G4 with these notes; fix both mediums in one short loop, then re-present G4. The current tree is independently confirmed clean today by two independently built scans, so this protects against a future regression, not today's exposure | Approve with conditions, record as a tracked follow-up | Ships now with two known detection gaps left open; no live exposure today, but the gaps persist into the next change that touches these docs |
+| D4 | Doc accuracy: `hosted-config.md:116-119` states that the full number remains and that redaction is an open owner decision, both false at HEAD; `docs/sdlc/constraints.md` item 3's lead sentence still says the number renders in `ContactFooter`/`ResumeModal`; `profile.yml:144,148` still names the phone in `retention_notes`; `codebase-map.md:180` still lists it; `spec.md`/`intent.md` still cite `public/mockup-*.jpg`; `spec.md` still says "90 requirements" (actual 92); `intent.md:205` cites the wrong gate for the redaction reason | Reject G4 with these notes; fix these doc-only edits in the same short loop as D3. `hosted-config.md` stating false redaction facts breaches the owner's own standing rule, in his global CLAUDE.md, against writing an unchecked factual claim into a report | Approve with conditions, record as a tracked follow-up | Docs stay factually wrong about redaction completeness and requirement counts until a follow-up lands, in a report the owner's own rule says should not carry an unchecked claim |
+| D5 | The unchanged backlog: adoption score 3/5 (not re-reviewed this round, carried from artifact `7ed0918`), 6 carried bug lows, 9 carried conformance lows, and 6 carried security lows, none touched by this fix wave or its findings | Accept as tracked backlog; none is release-blocking at tier 2, and none was raised or reopened by the fix-wave reviewers | Hold G4 until adoption is re-reviewed and raised to 4/5 | Another review loop, with no functional or security benefit, since nothing in the backlog changed this round |
 
 ## 3. Evidence
 
-Checks (from `verification.md`, run on Node v22.12.0, commit `8ea98a7`; `ac38128` changes only
-`docs/sdlc/**` per the bug reviewer, so these results still describe the reviewed code):
+Green at commit `460405e`, Node v22.12.0, confirmed (`verification.md`):
 
 | Check | Command | Exit code | Output | Status |
-|-------|---------|-----------|--------|--------|
-| install | `npm ci` | carried, unchanged lockfile | `verify-logs/install.log` | confirmed pass |
-| typecheck | none | n/a | n/a | no check defined (no TypeScript) |
-| lint | `npm run lint` | 0 | `verify-logs/lint.log`, 0 warnings | confirmed pass |
-| test | `npm test` (Vitest) | 0 | `verify-logs/test.log`, 21 files, 164 tests, 0 failed | confirmed pass |
-| build | `npm run build` | 0 | `verify-logs/build.log`; `dist/index.html`, `dist/404.html`, `dist/.well-known/security.txt` present | confirmed pass |
-| e2e | none | n/a | n/a | no check defined, by design (cost) |
-| security_audit | `npm audit --omit=dev --audit-level=high` (profile line 41, changed at `26b5c0e`; see D1) | 0 | `verify-logs/security_audit.log`, 0 vulnerabilities | confirmed pass |
-| full-tree audit (informational, R57) | `npm audit --audit-level=high` | 1 | `verify-logs/security_audit_full.log` | confirmed: exactly the 5 GHSA ids ADR 0009 accepts, none new |
-| screenshot | none | n/a | n/a | no check defined |
+|---|---|---|---|---|
+| install | `npm ci` | 0 | `verification.md`; `verify-logs/install.log` (gitignored, local only) | confirmed |
+| lint | `npm run lint` | 0 | `verification.md`; `verify-logs/lint.log` (gitignored, local only) | confirmed |
+| test | `npm test` (Vitest) | 0; 22 files, 174 passed | `verification.md`; `verify-logs/test.log` (gitignored, local only) | confirmed |
+| build | `npm run build` | 0 | `verification.md`; `verify-logs/build.log` (gitignored, local only) | confirmed |
+| security_audit | `npm audit --omit=dev --audit-level=high` | 0 | `verification.md`; `verify-logs/security_audit.log` (gitignored, local only) | confirmed |
+| full-tree audit (informational, R57) | `npm audit --audit-level=high` | 1 | `verification.md` | confirmed: exactly the 5 GHSA ids ADR 0009 accepts, none new |
 
-Not verified pre-deploy: everything CI-only (Linux install, the four smoke-check halves R80-R83,
-branch-protection state, response headers) and everything manual by design (R19, R22 visual half,
-R77/R86 dependency evidence tables, R79 visual half, R84 four-item browser check). Full list in
+`verify-logs/*.log` files are gitignored (`.gitignore:3`, `*.log`, confirmed with
+`git check-ignore -v`), so this run's raw log output exists only on the machine that ran Verify.
+The tracked evidence for this run is `verification.md` and `verify-logs/eval-runner-report.md`,
+both committed in `661763c`, confirmed with `git log -- <path>`. The tracked `verify-logs/*.exit`
+files and `verify-logs/eval-runner-results.md` are not part of the fix-wave diff
+`d74f23f..807c5fd`; they were not refreshed this round and still describe the earlier verify at
+`8ea98a7`.
+
+New cases pass, confirmed:
+
+| Case | Result |
+|---|---|
+| GC89 | self-test 9/9 renderings, 0/6 near-misses; scan 0 hits |
+| GC41 | dist scan 0 hits |
+| GC91 | 13 footer tests; `href="#overview"` count 0 |
+| GC92 | 4 tests; dist mockup count 0 |
+| GC93 (renamed R49 case), EG23, AD17 | pass |
+
+Eval summary: golden 83/83 scoreable, edge 22/23 (`EG19` manual, pre-existing gap, not new),
+failure 15/15 scoreable, adversarial 15/17 automated plus AD10's structural half (`AD13`
+documented, not pass/fail). All targets are 100% for cases that can run pre-deploy.
+
+`807c5fd` (this branch's HEAD) differs from `460405e` only in `docs/sdlc/**` (verification and
+conductor-log commits, conductor-confirmed via `git diff --name-only`). The conductor ran its own
+masked scan at every step, deriving the reference number from `b50497f`: 0 hits in tracked files
+at HEAD. Two eval-runner dispatches this session hit turn limits before finishing; a third,
+working directly in the checked-out branch, completed and is the one `verification.md` relies on.
+
+Not verified pre-deploy: everything CI-only (Linux install, four smoke-check halves, branch
+protection state, response headers) and everything manual by design (`R19`, `R22` visual half,
+`R77`/`R86` dependency evidence tables, `R79` visual half, `R84` browser check). Full list in
 `verification.md` "Not verified".
-
-Eval summary: golden 82/82, edge 21/21, failure 15/15 scoreable pre-deploy, adversarial 14/14 (+
-AD13 documented, not pass/fail), non-functional 16/17 automatable portions confirmed (NF14 is
-CI-only). All targets are 100% for the cases that can run before the first deploy.
 
 ## 4. Findings
 
-Merged from all four reviewers, sorted by severity. No finding above medium was raised. The
-conformance reviewer's claim that `state.json` shows G1-G3 pending is dropped from this packet:
-`WH status --json` shows G1, G2 and G3 approved, confirmed by the conductor.
+Merged from all reviewers on the fix-wave diff `d74f23f..807c5fd`. Adoption was **not re-run**
+this round; the rejection notes did not touch it, so its score and findings are carried from
+artifact `7ed0918` unchanged, marked below. Sorted by severity; every finding from every reviewer
+appears.
 
 | Severity | Reviewer | File:line | Finding | Resolution |
-|----------|----------|-----------|---------|------------|
-| Medium | Security | `.workhorse/profile.yml:41`, `adr/0009` | `security_audit` scope narrowed to `--omit=dev` by the main session under delegation, not the owner; this alone turned Verify green. Includes `GHSA-82fw-gwwq-j7x9` and two Windows-specific advisories mitigated only behaviourally | Open: owner ratification requested at D1. If declined, revert line 41 and Verify goes red |
-| Medium | Security | `spec.md` (full number at line 460, 1466; last-seven digits on 7 lines total; redacted form on 3 lines), `evals.md` (last-seven on 3 lines, redacted on 2), `intent.md` (full number at line 311; last-seven on 2 lines; redacted on 1) | Owner's phone number, in full or partial form, remains in committed docs at HEAD, counted precisely by the conductor with `git grep`; any last-seven occurrence plus a redacted form rebuilds the full number; `hosted-config.md` recommends going public before this is resolved | Open: owner decision at D3 |
-| Medium | Security | `public/mockup-home.jpg`, `mockup-casestudy.jpg`, `mockup-maroon.jpg`, `mockup-mmlogo.jpg` | Copy into `dist/` and would publish at stable URLs for the first time; show an Apple logo and Apple-attributed metrics that differ from `portfolioData.js`; nothing in `src/` references them | Open: owner decision at D4 |
-| Medium | Bug | `src/components/ContactFooter.jsx:94` | "Back to Top" (`href="#overview"`) is a no-op on `/work`, `/work/:slug` and the not-found page; `#overview` only exists on `/`. The footer renders on every route | Open code defect, no eval covers it. Fix-vs-defer decision at D5 |
-| Low | Bug | `src/pages/HomePage.jsx:39-49`, `SiteLayout.jsx:13` | Navbar highlights the wrong section after returning home at scroll 0; the scroll spy only runs on scroll events and `activeSection` survives the route change | Open |
-| Low | Bug | `src/components/SiteLayout.jsx:36-40` | Browser Back drops the visitor at the top of home instead of restoring scroll position; matches R7 as written | Open; spec question for owner |
-| Low | Bug | `src/components/CaseStudyPage.jsx:28` | Selected tab carries over to the next case study; the route element has no `key` | Open |
-| Low | Bug | `vite.config.js:13-24` | `font-src 'self'` CSP blocks 8 of 64 built `@font-face` blocks Vite inlines as `data:` URIs (JetBrains Mono Cyrillic/Vietnamese glyphs); not visible today, `src/` has no such characters | Open |
-| Low | Bug | `vite.config.js:75-77` | `404.html` copy in `closeBundle` throws `ENOENT` on a failed build and masks the real error; the build still fails, nothing broken deploys | Open |
-| Low | Bug | `src/App.jsx:17` | `/Portfolio/index.html`, a direct link to the built entry file, renders "Page not found"; a fix needs a fifth route, which R3 forbids | Open: owner decision |
-| Low | Security | `.github/workflows/deploy.yml:11-13`, `dependabot.yml` | Dependabot PRs get no CI before merge; the build job triggers on push to `main` only. No fork reach today | Open |
-| Low | Security | `package.json:18-20,22` | `lucide-react`, `react`, `react-dom`, `thinking-orbs` keep caret ranges in the runtime path, outside R85's nine-package allowlist; predate this change; lockfile integrity-hashed | Open, pre-existing |
-| Low | Security | `deploy.yml:104` | Test-count floor is 12 against 164 actual tests; constraint-audit Low still open | Open |
-| Low | Security | `public/.well-known/security.txt:4` | `Expires` set to exactly one year; RFC 9116 recommends less than a year | Open, trivial |
-| Low | Security | `src/data/portfolioData.js:181` | "wasl" tagline plausibly makes religious affiliation inferable; `profile.yml:139-143` still asserts nothing is inferable; copy was approved at G3-D1 | Open: record the owner's conscious decision, update the profile comment |
-| Low | Security | git metadata (67 author/committer entries), `approvals.md` | All commits use an `@instructors.2u.com` address; approvals carry an email; going public publishes both | Open: owner decision at D2 |
-| Low | Conformance | `CaseStudyModal.jsx:217` (pre-rename) | "Metrics audited and verified across production environments." was removed as a side effect of the R22 heading change, not individually named by a G3-D5 range | Fixed (already removed); flagged as undirected scope |
-| Low | Conformance | `NotFoundPage.jsx`, `CaseStudyPage.jsx` (Previous/Next) | New UI strings are inline rather than in `portfolioData.js`; defensible as chrome, but a literal reading of the content convention differs | Open |
-| Low | Conformance | `spec.md` R43, `WorkIndexPage.jsx` | R43's spec text was not amended for G3-D2 (`repoPublic`); 0 GitHub links render on `/work` today because all three repos are private. GC43 was amended, the spec prose was not | Open, doc drift |
-| Low | Conformance | `src/components/ProjectEntry.jsx:5` | `PRIVATE_REPOSITORY_NOTE` uses a middle dot (U+00B7); R19 requires `~` as the only separator | Open, genuine drift |
-| Low | Conformance | `spec.md:17`, `adr/0009` header, `plan.md:220` | Stale docs: spec header says "R80-R89" (ten) vs eleven elsewhere; the spec's Tailwind row cites `verification.md` line 17 wrongly; `plan.md` line 220 shows the pre-`26b5c0e` audit command; ADR 0009's header date (2026-09-12) disagrees with the log (2026-09-13T00:04Z) | Open, doc drift |
-| Low | Conformance | `src/App.jsx`, `adr/0001` | `App.jsx` has 5 `<Route` (4 path/index + 1 pathless layout) vs R3's acceptance text "equals 4"; GC3 was amended to 5 but ADR 0001 still says four | Open, doc drift |
-| Low | Conformance | `package.json` (`tailwindcss`, `@tailwindcss/vite`) | Both sit outside the R49/R85 nine-package allowlist, pinned exact at 4.3.3 in `devDependencies` | Accepted: documented gap (B3, ADR 0009) |
-| Low | Adoption | `README.md` | Still the create-vite template; deferred as an outside-scope item in `spec.md` line 1218 | Open |
-| Low | Adoption | repo `CLAUDE.md` | States lint fails and there are no tests; on Node 22.12.0 lint exits 0 and 164 tests pass | Open, stale |
-| Low | Adoption | `package.json`, `.nvmrc` (absent) | No Node version pin while oxlint 1.81.0 requires `^20.19.0` or `>=22.12.0` and CI uses Node 22 | Open |
-| Low | Adoption | `.github/workflows/deploy.yml` | Three step-name styles; `ROOT_URL`/`MODULE_URL` via `GITHUB_ENV` uncommented at use; grep/sed asset extraction not labelled as an accepted trade-off; "Read the Pages configuration" step runs `configure-pages` with `enablement: false` | Open, readability |
-| Low | Adoption | `src/components/FdePhilosophy.jsx` | Icons bound by array index with no test of the binding | Open |
-| Low | Adoption | components using `text-[#1d1d1d]`, `src/index.css` `--ink: #181818` | Hard-coded hex colour diverges from the CSS token value | Open |
-| Low | Adoption | `.gitignore:31` | Blanket `.claude/` would drop a committed Claude config if the owner ever adds one; nothing tracked today | Open, low priority |
-| Low | Adoption | `spec.md` (1827 lines) | De facto runbook; consider extracting a dedicated runbook document (believed, not verified; unlabelled by the reviewer) | Open, nice-to-have |
+|---|---|---|---|---|
+| Medium | Security | `.workhorse/profile.yml:41`, ADR 0009 | `--omit=dev` scope ratified by the main session under delegation, not the owner | Open: D1, owner confirmation requested |
+| Medium | Security (D3, prior round) | `spec.md`, `evals.md`, `intent.md` | Full/partial phone number in committed docs | Fixed in `1d11c97`, `545da85`, `76bcc00`; 0 hits confirmed at HEAD |
+| Medium | Security (D4, prior round) | `public/mockup-*.jpg` | Mockups would publish at stable URLs | Fixed in `38d36b4` for the site (0 mockups in `dist/`); files remain tracked at `docs/design/`, see Low below |
+| Medium | Bug (D5, prior round) | `src/components/ContactFooter.jsx:94` | Back to Top no-op on non-home routes | Fixed in `c518b71`, tested at 5 routes against the real route table |
+| Medium | Bug | `scripts/check-phone-redaction.mjs:141` | The number with a country code written directly in front is caught in no form; exit 0, confirmed in a scratch clone; the self-test enshrines this as a near-miss; `portfolioData.test.js:50` and `deploy.yml:302`'s generic patterns also miss it | Open: D3, recommend fix before re-presenting G4 |
+| Medium | Bug | `scripts/check-phone-redaction.mjs:205-206` | Any file with a NUL byte is treated as binary and skipped; a UTF-16LE file (Windows PowerShell 5.1's `>` redirect writes this) leaves only an uninformative count. 5 images skipped today, result complete at HEAD | Open: D3, recommend fix before re-presenting G4 |
+| Low | Bug | `HomePage.jsx:39-49`, `SiteLayout.jsx:13` | Navbar highlights the wrong section after returning home at scroll 0 | Open, carried |
+| Low | Bug | `SiteLayout.jsx:36-40` | Browser Back drops the visitor at top instead of restoring scroll | Open, carried; spec question for owner |
+| Low | Bug | `CaseStudyPage.jsx:28` | Selected tab carries over to the next case study | Open, carried |
+| Low | Bug | `vite.config.js:13-24` | `font-src 'self'` blocks 8 of 64 built `@font-face` blocks (Cyrillic/Vietnamese glyphs); not visible today | Open, carried |
+| Low | Bug | `vite.config.js:75-77` | `404.html` copy in `closeBundle` masks the real error on a failed build | Open, carried |
+| Low | Bug | `App.jsx:17` | `/Portfolio/index.html` renders "Page not found" | Open, carried; owner decision |
+| Low | Bug | `scripts/check-phone-redaction.mjs:200-202` | A tracked file missing from the working tree is skipped silently | Open |
+| Low | Bug | `scripts/check-phone-redaction.mjs:102` | Zero-files guard is global; an existing but empty directory argument exits 0 | Open |
+| Low | Bug | `scripts/check-phone-redaction.mjs:34` | En dash, no-break space, tab, underscore and HTML-entity separators escape all three forms | Open |
+| Low | Bug | `src/publicDirectory.test.js:22,42` | Name check is case-sensitive; `Mockup-Home.jpg` or a renamed file passes | Open |
+| Low | Conformance | `ProjectEntry.jsx:5` | `PRIVATE_REPOSITORY_NOTE` uses a middle dot, not `~` as R19 requires | Open, carried |
+| Low | Conformance | `spec.md` R43, `WorkIndexPage.jsx` | R43 text not amended for `repoPublic`; 0 GitHub links render today | Open, carried, doc drift |
+| Low | Conformance | `src/App.jsx`, ADR 0001 | 5 `<Route` elements vs R3's acceptance text "equals 4"; ADR 0001 still says four | Open, carried, doc drift |
+| Low | Conformance | `spec.md` header | Says "R80-R89" (ten) vs eleven elsewhere | Open, carried, doc drift |
+| Low | Conformance | `spec.md` Tailwind row | Cites `verification.md` line 17 wrongly; now further stale | Open, carried, doc drift |
+| Low | Conformance | `plan.md:220` | Shows the pre-`26b5c0e` audit command | Open, carried, doc drift |
+| Low | Conformance | ADR 0009 header | Date disagrees with the conductor log timestamp | Open, carried, doc drift |
+| Low | Conformance | `NotFoundPage.jsx`, `CaseStudyPage.jsx` (Previous/Next) | New UI strings inline rather than in `portfolioData.js` | Open, carried |
+| Low | Conformance | `CaseStudyModal.jsx:217` (pre-rename) | "Metrics audited and verified..." removed as a side effect of the R22 heading change, not individually named | Removed (pre-existing); still open as undirected scope creep, not individually authorized |
+| Low | Conformance | `spec.md` (7 lines), `intent.md` (4 lines) | Still cite `public/mockup-*.jpg`; `evals.md`'s GC22v/GC27v/GC30v were repointed to `docs/design`, so spec and evals now disagree on location | Open, doc drift; manual checks only |
+| Low | Conformance | `spec.md:67,1846` | Still say "90 requirements"; actual is 92 | Open, doc drift |
+| Low | Conformance | `intent.md:205` | Cites G1-D1, not G4-D3, as the redaction reason | Open, doc drift |
+| Low | Conformance | `docs/sdlc/constraints.md` item 3 | Lead sentence stale, still says the number renders in `ContactFooter`/`ResumeModal` | Open, doc drift |
+| Low | Conformance | `package.json` (`tailwindcss`, `@tailwindcss/vite`) | Outside R49/R85's nine-package allowlist, pinned exact | Accepted: documented gap (B3, ADR 0009) |
+| Low | Security | `spec.md:1644-1645` | Constraint-audit says two mediums still open; both resolved in code and evals this round | Open: doc bookkeeping, recommend recording closed |
+| Low | Security | `scripts/check-phone-redaction.mjs` | Misses `tel:+1`, a bare leading 1, `tel:%2B1`, en dash, no-break space, underscore, entity-hyphen, spaced-digit separators (independent loose-derivation scan); catches `+1 (`, `1-`, `+1.`, slash and four-separator forms | Open, D3; remediation: optional `(?:\+?1[ .()-]{0,3})?`, wider separators, country-code self-test renderings, assert zero `tel:` in dist |
+| Low | Security | CI (`deploy.yml`) | Cannot run the redaction script: shallow clone (no `fetch-depth`); script not wired into `package.json`, `deploy.yml`, or a pre-push hook. If history is ever rewritten, the `b50497f` reference disappears and ADR 0010 does not say so | Open |
+| Low | Security | 5 tracked binary/UTF-16 files | Skipped by the scan; a number drawn in an image is invisible. Owner should eyeball the 4 mockups and `src/assets/hero.png` | Open |
+| Low | Security | `constraints.md:106`, `:102-105`, `hosted-config.md:116-119`, `profile.yml:144,148`, `codebase-map.md:180` | Stale or overstated docs about redaction and remaining content; `hosted-config.md` item 7 correctly records the history exposure as accepted | Open, D4 |
+| Low | Security | local `main` (5 files) and 37 of 38 local branches | Current files still carry the phone number; publishing local main as-is, or `git push --all`, puts it on GitHub in current files, not only history. Counts conductor-confirmed: 5 files on `main`, 37 of 38 local branches at tip, only the change branch clean | Open: D2, owner decision on how to publish |
+| Low | Security | `src/publicDirectory.test.js` guard | Compares names only, case-sensitively; a renamed or case-changed file passes | Open; remediation: case-insensitive match plus sha256 comparison against `docs/design` |
+| Low | Security | `docs/design/mockup-*.jpg`, history at `public/` | Still tracked, become publicly fetchable once the repository is public; all four carry C2PA "Created by Google Generative AI" provenance; ADR 0012 rejects deletion | Open: D2, owner decision |
+| Low | Security | `public/icons.svg` | Unused create-vite template sprite, still publishes; predates this change | Open, carried, pre-existing |
+| Low | Security | `.github/workflows/deploy.yml:11-13`, `dependabot.yml` | Dependabot PRs get no CI before merge | Open, carried |
+| Low | Security | `package.json:18-20,22` | 4 runtime dependencies keep caret ranges, pre-existing | Open, carried |
+| Low | Security | `deploy.yml:104` | Test-count floor 12 against 174 actual tests | Open, carried |
+| Low | Security | `public/.well-known/security.txt:4` | `Expires` set to exactly one year; RFC 9116 recommends less | Open, carried, trivial |
+| Low | Security | `src/data/portfolioData.js:181` | "wasl" tagline plausibly makes religious affiliation inferable; `profile.yml:139-143` still asserts nothing is inferable | Open, carried; record the owner's conscious decision |
+| Low | Security | git metadata, `approvals.md` | All commits use `@instructors.2u.com`; going public publishes it plus the approver email | Open, carried; D2 |
+| Low | Adoption (carried, not re-reviewed) | `README.md` | Still the create-vite template | Open |
+| Low | Adoption (carried) | repo `CLAUDE.md` | States lint fails and there are no tests; false on Node 22.12.0 | Open, stale |
+| Low | Adoption (carried) | `package.json`, `.nvmrc` (absent) | No Node version pin | Open |
+| Low | Adoption (carried) | `.github/workflows/deploy.yml` | Step-name style inconsistency, uncommented env var use, unlabelled trade-offs | Open, readability |
+| Low | Adoption (carried) | `FdePhilosophy.jsx` | Icons bound by array index, untested binding | Open |
+| Low | Adoption (carried) | `text-[#1d1d1d]` usages, `--ink: #181818` | Hard-coded hex diverges from the CSS token | Open |
+| Low | Adoption (carried) | `.gitignore:31` | Blanket `.claude/` would drop a committed config if ever added | Open, low priority |
+| Low | Adoption (carried) | `spec.md` (1827 lines) | De facto runbook; consider extracting a dedicated document | Open, nice-to-have |
 
-Conformance summary: 90 requirements, 82 automated and passing, 5 manual by design, about 14
-CI-only awaiting the first deploy, 2 pending your evidence review at this gate (R77 and R86's
-dependency version/licence tables, in `conductor-log.md` T1/T1b entries), 0 missing, 0 untested.
-No unauthorised scope creep or undisclosed sensitive-path edit.
+Conformance summary: 92 requirements, 84 automated and passing, 5 manual by design, about 14
+CI-only awaiting the first deploy, 2 pending owner evidence review (R77/R86 tables), 0 missing,
+0 untested. All 22 fix-wave files trace to F1-F3 or a doc task; `652750f` conforms to ADR 0010.
 
-Adoption score: 3/5. Blockers for 4+: stale `README.md` and `CLAUDE.md`, no Node version pin,
-unedited `deploy.yml` readability items, untested icon-index binding, a hard-coded colour that
-diverges from its token, and an overbroad `.gitignore` entry.
+Adoption score: 3/5, carried from `7ed0918`, not re-reviewed this round. Compiler note, believed
+not verified: the new `scripts/` folder and script are not wired into any `package.json` script,
+which may bear on the adoption score at the next review.
+
+Security checklist: 2 pass (secrets/env vars; third-party version pins), 0 fail, 9 n/a (no
+database, policies, storage bucket, user input, or admin surface).
 
 ## 5. Risk register
 
+From `plan.md` "Risks", updated with what this round's reviewers raised.
+
 | Risk | Likelihood | Impact | Mitigation | Owner |
-|------|------------|--------|------------|-------|
-| No PR exists; main has no branches on origin | Certain until the owner acts | G4 cannot proceed to a PR or a merge | Owner publishes local main (`942d311`, no `.github` directory, so no workflow runs) to origin; the conductor then pushes this branch and opens the PR | Site owner |
-| Repository stays private past the first push | High until D2 | First Pages deploy fails; branch protection stays unavailable | D2 decided at this gate before the push | Site owner |
-| ADR 0009 / profile change is not ratified | Open until D1 | If declined, `security_audit` reverts to the unscoped command and Verify returns to red | D1 decided at this gate | Site owner |
-| Phone number, full or partial, remains in committed docs and in git history | Medium | Reconstructable from committed files, and readable in history, once the repository or its history is public; publishing main to origin (still private) already puts that history on GitHub | D3 decides the redaction scope; `hosted-config.md` item 7 already records the history exposure as accepted | Site owner |
-| Mockup images with Apple branding and mismatched metrics publish to `dist/` | Medium | Reputational or trademark concern on first publication | D4 decides removal vs acceptance | Site owner |
-| "Back to Top" is broken on every non-home route | Medium | Visible navigation defect from first deploy | D5 decides fix-before-merge vs defer; five related low bug findings tracked separately | Site owner |
-| Scroll-restoration and other low-severity navigation defects | Low to Medium | Minor UX defects, no data or security impact | Tracked as open findings; not release-blocking at tier 2 | Next change |
-| Dependabot PRs can merge to `main` without CI on the build job | Low | An unreviewed dependency change could deploy | Add a `pull_request` trigger for the build job (spec change to R55) | Next change |
-| Adoption gaps (README, CLAUDE.md, no Node pin, deploy.yml readability) | Certain until fixed | Onboarding and maintenance friction; no functional risk; holds the adoption score at 3 | Track for a follow-up change | Site owner |
-| Vite 5 test-key rejection or an inline script in the build | Closed | Would have broken the build or shipped a CSP violation | R50 fallback import; R66/R82 checks passed in Verify | Build phase (resolved) |
-| A dependency pin does not resolve, or a lockfile regeneration moves a major version | Closed | Would have shipped an unreviewed dependency | R77/R86 tables checked and escalated during build; nothing moved silently | Build phase (resolved) |
+|---|---|---|---|---|
+| No PR exists; main has no branches on origin | Certain until the owner acts | G4 cannot proceed to a PR or merge | Owner publishes only local `main` to origin (never `git push --all`, never a task branch); conductor then pushes this branch and opens the PR | Site owner |
+| Repository stays private past the first push | High until D2 | First Pages deploy fails; branch protection stays unavailable | D2 decided at this gate: publish `main` first, keep private until this change merges, then decide visibility | Site owner |
+| ADR 0009 / profile change not ratified by the owner | Open until D1 | If declined, `security_audit` reverts and Verify goes red | D1 decided at this gate | Site owner |
+| Redaction script misses a country-code-prefixed number or a UTF-16LE file | Medium, new this round | A future document edit could reintroduce the number undetected | D3 recommends fix-now in one short loop; current tree independently confirmed clean by two separate scans today | Site owner, then this change's fix loop |
+| Local `main` (5 files) and 37 of 38 local branches carry the number in current files | Medium, new this round | Publishing local main as-is, or `git push --all`, puts it on GitHub in current files | D2 decides the publishing method; never `git push --all` | Site owner |
+| Redaction script cannot run in CI (shallow clone) | Low | A regression is caught only when a human runs the script locally | Add `fetch-depth: 0` in a future change (ask-first path, ADR 0010) | Next change |
+| Mockups remain tracked at `docs/design/`, become fetchable once public | Low to Medium | AI-generated (C2PA-tagged) design reference becomes publicly visible | D2 accepts as a known consequence; ADR 0012 rejects deletion | Site owner |
+| Docs (`hosted-config.md`, `constraints.md`, `profile.yml`, `codebase-map.md`) state redaction facts that are false at HEAD | Medium, new this round | A reader trusts a false claim about what was removed, in breach of the owner's own no-unchecked-claims rule | D4 recommends fix-now in the same short loop as D3 | Site owner, then this change's fix loop |
+| Adoption gaps (README, CLAUDE.md, no Node pin, deploy.yml readability) | Certain until fixed | Onboarding and maintenance friction; no functional or security impact | Tracked for a follow-up change, unchanged this round | Site owner |
+| Back to Top broken on non-home routes | Closed | Would have been a visible navigation defect | Fixed in `c518b71`, tested at 5 routes | Resolved |
+| Mockups reaching `dist/` | Closed | Would have published Apple-branded, factually inconsistent images | Fixed in `38d36b4`, guarded by `src/publicDirectory.test.js` | Resolved |
+| Phone number in committed spec/evals/intent text | Closed | Would have been reconstructable from committed files once public | Fixed in `1d11c97`, `545da85`, `76bcc00`; 0 hits confirmed | Resolved |
 
 ## 6. Diff tour
 
-Ordered by risk: sensitive paths first, then business logic, then interfaces, then tests, then
-docs and config. 70 files changed, 6685 insertions, 1643 deletions (`git diff main...HEAD --stat`).
+22 files changed, 1181 insertions, 203 deletions (`git diff --shortstat d74f23f 807c5fd`,
+conductor-confirmed). No protected or sensitive path from `.workhorse/profile.yml` is touched by
+this fix wave, confirmed by grepping `git diff --name-only d74f23f 807c5fd` against the profile's
+protected and sensitive path lists: none match. `spec.md`, `evals.md`, `intent.md` and the `adr/`
+folder are linked below as relative paths because they live beside this packet in the change
+folder; `docs/sdlc/constraints.md` and `docs/sdlc/codebase-map.md` are linked from the repo root
+because they live outside the change folder. Ordered business logic first, then tests, then docs
+and config.
 
-1. **`.github/workflows/deploy.yml`** (new, 315 lines, sensitive). The only path that can publish
-   to production. Build and deploy jobs, 5 actions pinned to commit SHAs, no secrets, smoke
-   assertions (R80-R83) inline beside `id-token: write`. First in the tour because it is the
-   deploy mechanism itself.
-2. **`.github/dependabot.yml`** (new). Weekly dependency PRs; no pre-merge CI (finding above).
-3. **`index.html`** (sensitive, -3/+1 net on the font tags). Removed the three Google Fonts tags,
-   added the favicon link. Closes the GDPR-adjacent third-party-call flag.
-4. **`vite.config.js`** (sensitive, +67 lines, new file effectively). Sets `base: "/Portfolio/"`,
-   injects the CSP and referrer-policy meta tags, copies `404.html` in `closeBundle` (bug finding
-   above), adds the Vitest config block. A wrong `base` breaks every asset on Pages.
-5. **`package.json` / `package-lock.json`** (sensitive, supply chain). Nine packages pinned at
-   exact versions, `@rolldown/binding-win32-x64-msvc` removed, Tailwind moved to
-   `devDependencies`. Caret ranges remain on four pre-existing runtime packages (finding above).
-6. **`src/data/portfolioData.js`** (sensitive, employer-derived claims). Phone key deleted;
-   `projects`, `demos`, `personal.github` added. Content-preservation review at G4: additions
-   only, no existing metric, date, employer or role string changed, confirmed by reading the diff.
-7. **`.workhorse/profile.yml`** (human-owned config, +7/-1). `security_audit` line 41 reversed
-   under delegation (D1); `commands.test`/`test_file` set; `portfolioData.js` added to
-   `sensitive_paths`.
-8. **`docs/hosted-config.md`** (new, 159 lines). Records the open owner decisions this packet
-   surfaces: repository visibility, branch protection blocked by visibility, the accepted
-   phone-in-history exposure, and the not-yet-recorded response headers.
-9. **`adr/0009-accept-dev-only-vite-and-vitest-advisories.md`** (new, 74 lines) plus amendments to
-   ADR 0001, 0004, 0005, 0006. Records the dependency and audit-scope decisions behind D1.
-10. **Business logic**: `src/components/CaseStudyPage.jsx` (renamed from `CaseStudyModal.jsx`,
-    -308/+240), `ThinkingOrbHero.jsx` + `orbDrawing.js` (new canvas animation, no prior code to
-    compare against), `ContactFooter.jsx`, `Navbar.jsx`, `ResumeModal.jsx`,
-    `InteractiveTriageSimulator.jsx`, `ProjectEntry.jsx`, `CaseStudiesSection.jsx`, `Hero.jsx`,
-    `SiteLayout.jsx`, `App.jsx` (route table rewrite). The largest functional surface; five of
-    the medium/low bug findings above sit in this group.
-11. **Interfaces**: `src/pages/HomePage.jsx`, `WorkIndexPage.jsx`, `NotFoundPage.jsx`,
-    `CaseStudyFlowDiagram.jsx`, `src/main.jsx`, `src/basename.js`, `src/hooks/useClipboardCopy.js`.
-    Compose the business-logic components above into the five routes.
-12. **Tests**: 21 `*.test.jsx`/`*.test.js` files, 164 tests, added alongside every component and
-    page above in the same commits.
-13. **Docs and config**: `docs/sdlc/**` artifacts for this change, `public/.well-known/security.txt`
-    (new), `.gitignore` (+6), `docs/sdlc/constraints.md` (redaction). `README.md` and repo
-    `CLAUDE.md` are untouched and stale (adoption findings above); `src/App.css` remains unused
-    and out of scope.
+1. **`src/components/ContactFooter.jsx`** (`c518b71`, F1, +11/-1). Back to Top becomes a
+   `<button type="button">` calling `window.scrollTo`, reduced-motion aware. The only functional
+   fix in this wave that changes site behaviour visitors see.
+2. **`scripts/check-phone-redaction.mjs`** (new, +211/-0, `76bcc00` then `652750f`). Derives the
+   reference number from `b50497f` at run time and scans the tree for three forms; no digit is
+   ever printed. Security-relevant tooling, first because the two new medium findings live here.
+3. **`docs/design/mockup-{home,casestudy,maroon,mmlogo}.jpg`** (`git mv` from `public/`, `38d36b4`,
+   binary, no diff, 100% rename). Moved off the served path; still tracked, still publicly
+   fetchable once the repository is public (Low, security).
+4. **`src/publicDirectory.test.js`** (new, +69/-0, `38d36b4`). Guards both directions: no
+   mockup under `public/`, no `mockup-` string under `src/` or `index.html`.
+5. **`src/components/ContactFooter.test.jsx`** (+63/-0, `c518b71`). 6 new tests: 5 routes plus the
+   reduced-motion branch.
+6. **`src/data/portfolioData.test.js`** (+1/-1, comment only, `76bcc00`). Notes that GC41 and GC89
+   now run the redaction script instead of a literal grep; no assertion changed.
+7. **`spec.md`** (+187/-24, `1d11c97`). New "G4 rejection response" section, R89 widened, R91 and
+   R92 added. Largest single doc change; carries the new and remaining doc-drift findings.
+8. **`evals.md`** (+207/-59, `545da85`). GC41/GC89/NF8 repointed to the script; GC91, GC92, EG23,
+   AD17 added; GC22v/27v/30v repointed to `docs/design`.
+9. **`intent.md`** (+7/-3, `545da85`). Redacted; dated note that G1's approved bytes changed, not
+   their meaning.
+10. **`docs/sdlc/constraints.md`** (+2/-2, `76bcc00`). Item 3 redacted; lead sentence and the
+    "fully removed" line remain stale (Low, security and conformance).
+11. **`adr/0010-...md`** (new, +53, `1d11c97`), **`adr/0011-...md`** (new, +45, `1d11c97`),
+    **`adr/0012-...md`** (new, +43, `1d11c97`). Record the detection-by-derivation, Back to Top,
+    and mockup-guard decisions.
+12. **`adr/0008-...md`** (+5/-1, `1d11c97`). Path reference repointed to `docs/design`.
+13. **`docs/design-brief.md`** (+5/-5), **`docs/sdlc/codebase-map.md`** (+5/-4) (`38d36b4`).
+    Mockup path references updated; `codebase-map.md:180` still lists the phone (Low, security).
+14. **`verification.md`** (+112/-103, committed in `661763c`), **`verify-logs/eval-runner-report.md`**
+    (new, +142, also committed in `661763c`, confirmed with `git log`), **`conductor-log.md`**
+    (+13, committed across `460405e` and `807c5fd`). Re-verification record for this gate; no
+    source change.
 
 ## 7. Checklist
 
-- [ ] No PR exists yet; the owner publishes local main (`942d311`) to the empty private origin
-      first, then the conductor pushes this branch and opens the PR against main
+- [ ] No PR exists yet. Publish only `main` to the private origin, never `git push --all` and
+      never a task branch: local main's current files and 37 of 38 local branches carry the
+      owner's phone number, only this change branch is clean at HEAD. Then the conductor pushes
+      this branch and opens the PR against main
 - [ ] Intent still matches what the owner asked for
-- [ ] Every requirement has a test (82 of 90 automated; 8 manual/CI-only by design, tracked above)
-- [ ] No finding above medium remains unresolved (true: highest open severity is medium; three of
-      the four medium findings are owner decisions, D1, D3, D4; the fourth, Back to Top
-      (`ContactFooter.jsx:94`), is an open code defect with no eval covering it, fix-vs-defer
-      decision at D5)
+- [ ] Every requirement has a test (84 of 92 automated; 8 manual/CI-only by design, tracked above)
+- [ ] No finding above medium remains unresolved (true: highest open severity is medium; 0
+      critical, 0 high; 3 mediums open, D1 owner confirmation and two detection gaps in
+      `scripts/check-phone-redaction.mjs`; the script has two detection gaps, the current tree has
+      0 occurrences by two independent scans)
 - [ ] Rollback is documented (`plan.md` "Rollback"; the owner's `git revert` on `main` after G5)
-- [ ] Client engineer could maintain this from the docs alone (adoption score 3/5 says not yet;
-      see the adoption findings)
+- [ ] Client engineer could maintain this from the docs alone (adoption score 3/5, unchanged and
+      not re-reviewed this round, says not yet)
 
 Security pre-ship checklist, embedded verbatim (tier 2), each line's disposition exactly as the
 security reviewer recorded it:
@@ -201,32 +292,27 @@ security reviewer recorded it:
 - [ ] Deny-side assertions distinguish failure modes: hidden-ness for reads, rejection for writes,
       and read-back with an admin client for blocked updates. **N/A: no policies.**
 - [ ] New storage bucket: private unless there is a written reason. **N/A: no storage bucket.**
-      The security reviewer notes the `public/` analogue fails under the mockup-files finding
-      above: everything in `public/` is world-readable by design, including the four mockups.
+      `public/` is world-readable by design; the mockup finding above is its analogue.
 - [ ] New table holding user free text: length constraint, and a rate limit if insertable in a
       loop. **N/A: no user input anywhere.**
 - [ ] New admin capability writes to an append-only log. **N/A: no admin surface.**
 - [ ] New secret or env var covered by `.gitignore` as a pattern; confirmed with `git ls-files`.
-      **Pass.** No secret or env var added; `.env*` pattern confirmed via `git check-ignore` and
-      `git ls-files`; 0 Actions secrets (`gh api .../actions/secrets`, `total_count: 0`).
-- [ ] New third-party import in a runtime path pinned to an exact version. **Pass.**
-      `react-router` 7.18.3 (MIT), three `@fontsource` packages at 5.2.8 (OFL-1.1), each version
-      and licence read from `node_modules/<package>/package.json`.
+      **Pass.** No secret or env var added this round.
+- [ ] New third-party import in a runtime path pinned to an exact version. **Pass.** No new
+      runtime dependency this round; `scripts/check-phone-redaction.mjs` uses Node built-ins and
+      the `git` binary only.
 
-Checklist result: 2 pass, 0 fail, 9 n/a. Separately, the security reviewer's specific R-based
-checks scored 20 pass, 3 fail (phone in committed docs; branch protection returns 403 because the
-repo is private; `public/` holds the four unintended mockup files), 2 n/a (response headers and
-error tracking, both settled at or excluded by design until the first deploy).
+Checklist result: 2 pass, 0 fail, 9 n/a.
 
 ## 8. Recommendation
 
-Recommend approve with conditions: verification is green and no finding is above medium, but
-three open medium findings are owner decisions (D1, D3, D4), one medium finding is an open code
-defect (Back to Top, `ContactFooter.jsx:94`, fix-vs-defer decision at D5), and the adoption score
-is 3 of 5, below the bar for an unconditional approve. Also no PR can be opened yet: the owner
-must publish local main to the empty private origin first. Approving G4 with this packet's notes
-should explicitly answer D1 through D5; the adoption findings are not release-blocking at tier 2
-and may be deferred to a follow-up change, but should be acknowledged in the approval notes.
+Recommend reject: `hosted-config.md:116-119` states that redaction is still an open owner decision
+and that the number remains in three docs, both false at HEAD, which breaches the owner's own
+standing rule against writing an unchecked factual claim into a report, so fix that plus the two
+redaction-script mediums (D3, D4) in one short loop and re-present G4. 0 critical and 0 high
+findings are open; 3 mediums are open (D1, owner confirmation; the two script detection gaps
+named in D3). D1 and D5 do not block a future approve: D1 is a ratify-in-place item and D5 is
+unchanged backlog the reviewers accept as tracked.
 
 ```
 /workhorse:approve G4
