@@ -49,3 +49,12 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 - Packet: `docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/review-packet.md` sha256 `1c1bbc2b7acb792224caf710cbeecd2abc617c16f27f9c404121259cf16bb09d`
 - Tier at decision: 2
 - Notes: Decided by Claude (main session) under the owner's instruction 'Approve every command yourself, I'm busy'; the owner has not read the packet. Short fix pass per the packet's own recommendation: (1) scripts/check-phone-redaction.mjs must also catch the number written with a +1 or 1 country-code prefix directly in front, and must read UTF-16 files (or fail loudly on files it cannot decode) instead of skipping them silently; add a test for each. (2) Correct docs/hosted-config.md lines 116-119 and every other stale doc the packet lists so no document claims the number remains in docs or that its removal is an open decision. D1 stays ratified on the owner's behalf pending his own confirmation; D2 (visibility, pushing main) stays with the owner; D5 backlog stays tracked. Re-verify on Node v22.12.0, re-run the security and conformance reviews, update review-packet.md, and present G4 again.
+
+## G4: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-13T05:03:00.718Z
+- Artifact commit: `b6103144e2d41436fd289d654b5ad6854e499347` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/review-packet.md` sha256 `e9b1b83ac8914845bd33e8506f8966f91122cafc17af36750bad8c92496e15d8`
+- Tier at decision: 2
+- Notes: Approved by Claude (main session) under the owner's instruction 'Approve every command yourself, I'm busy'; the owner has not read the packet. Conditions: D1 (ADR 0009, --omit=dev audit) remains ratified only on the owner's behalf until he confirms it himself. D2 stays with the owner: he pushes main to the private origin and decides repository visibility; never git push --all. D3: the two new mediums in scripts/check-phone-redaction.mjs (mixed-encoding files read as UTF-16; no-op exit 0 when started through a junction or symlink) are tracked as a follow-up change, not fixed here; the tree is clean today. D4 backlog stays tracked.
