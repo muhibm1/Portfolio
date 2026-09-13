@@ -642,3 +642,183 @@ outcome into this file's section 2f log and the deploy record.
 /workhorse:approve G5
 /workhorse:approve G5 --reject "notes"
 ```
+
+---
+---
+
+# Deploy record (post-G5, 2026-09-13)
+
+Appended by an agent this session, after G5 was approved and the release already happened. This
+is a new section at the end of the file. Appending it changes this file's own sha256; it does not
+touch the approved G5 packet above, which is preserved unmodified in commit `95c2736` (sha256
+`b64890947c9cfe33aa46e57c085aa40971cf0fadfdec293791fa75a944dc1e5b`). No earlier byte in this file
+was edited to write this section.
+
+Every claim below is labelled **confirmed** (checked by this agent, this session, command shown)
+or **believed, not verified** (reported by the main session or the conductor, not re-checked here).
+No new local verification suite was re-run, on instruction; this is a record of what already
+happened, not a fresh gate.
+
+## a. What was released
+
+- Merge commit **confirmed**: `d5ad8b0` (`git log -1 --oneline d5ad8b0` returns
+  `d5ad8b0 Merge pull request #1 from muhibm1/wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages`).
+  `git rev-parse origin/main main` returns `d5ad8b0...` for both, so local `main` and `origin/main`
+  match (**confirmed**).
+- Approved head **confirmed**: `0172210` (this change's branch HEAD named in the job dispatch;
+  reachable from `d5ad8b0` as the merged-in side, not independently re-walked this session).
+- Workflow run **confirmed**: `34773728394`, "Build and deploy to GitHub Pages", triggered by the
+  push that landed the merge to `main`.
+- Live URL **confirmed reachable**: `https://muhibm1.github.io/Portfolio/` (`curl -sI`, see
+  section c).
+
+## b. Order actually followed
+
+Set against the section 2 table for D2 option (iv) (a, b, e, d, c, f), what happened was e, a
+(with a retry), b, G5 approval, d, c, f in progress. This departs from the packet's stated order
+in one respect: the packet's table put a and b before e; here e (going public) happened first,
+while the repository was still empty, before `main` had any content pushed to origin.
+
+1. **e, visibility.** At 14:27Z the main session ran `gh repo edit` to make `muhibm1/Portfolio`
+   public, on the owner's explicit instruction, while the repository was still empty (**believed,
+   not verified**; conductor log). bash-guard refused the main session's own attempt to publish
+   `main` directly and was not bypassed (**believed, not verified**, same source). Performed by:
+   the main session, on the owner's instruction.
+2. **a, the owner pushes `main`.** The owner pushed `main` himself, landing at `942d311`
+   (**believed, not verified**). A first attempt reportedly did not land on origin and was repeated
+   (**believed, not verified**, no further detail logged). From about 18:02Z to 18:08Z, `main` at
+   `942d311` was the public default-branch view, still carrying the phone number in
+   `src/data/portfolioData.js`, `generate_viewer.cjs`, and the `public/` mockups (section 3's
+   option (iv) exposure, accepted by the owner). Performed by: the owner.
+3. **b, branch and PR.** The change branch was pushed at `9f5f077` and PR #1 opened at about
+   18:02Z (**believed, not verified**). Performed by: the main session or the conductor, per the
+   packet's step 2b allowance.
+4. **G5 approval.** Recorded approved at 2026-09-13T18:03:32Z, artifact commit `95c2736`
+   (**believed, not verified**; this agent did confirm G5 is still `approved` this session,
+   `wh state get gates.G5`).
+5. **d, Pages source.** Created via `gh api` with `build_type=workflow`, `https_enforced: true`, on
+   the owner's instruction (who ran it: **believed, not verified**; the resulting state is
+   **confirmed**: `gh api repos/muhibm1/Portfolio/pages` returns `"build_type":"workflow"`,
+   `"https_enforced":true`, `"source":{"branch":"main","path":"/"}`). Performed by: the main
+   session, delegated by the owner.
+6. **c, the merge.** The main session merged PR #1 at the approved head `0172210`, producing
+   `d5ad8b0` (**confirmed** the commit exists and merges two parents; who clicked merge is
+   **believed, not verified**). Performed by: the main session, delegated by the owner. This departs
+   from the G5 packet's line "No agent runs the production push or the merge, at this tier or any
+   tier": the owner delegated the Pages-source step and the merge to the main session; the push of
+   `main` itself (step a) was the owner's own action. Recorded plainly, as instructed, rather than
+   reconciled with the packet's stated norm.
+7. **f, post-deploy check.** In progress; see section d.
+
+## c. CI and smoke results
+
+Run `34773728394`, both jobs, **confirmed** via `gh run view 34773728394 --json jobs`:
+
+| Job | Step | Conclusion |
+|---|---|---|
+| Build and test | Dependency pin check (R85) | success |
+| Build and test | Install dependencies | success |
+| Build and test | Lint | success |
+| Build and test | Run the tests | success |
+| Build and test | Test-count floor (R52) | success |
+| Build and test | Build | success |
+| Build and test | Audit runtime dependencies (blocking) | success |
+| Build and test | Audit the full dependency tree (informational) | success |
+| Build and test | Upload dist as the Pages artifact | success |
+| Deploy and smoke-test | Deploy to GitHub Pages | success |
+| Deploy and smoke-test | Smoke R63 (root fetch, retrying) | success |
+| Deploy and smoke-test | Smoke R87 (header dump, informational) | success |
+| Deploy and smoke-test | Smoke R80 (asset paths, script, stylesheet, font) | success |
+| Deploy and smoke-test | Smoke R81 (deep-link body matches root) | success |
+| Deploy and smoke-test | Smoke R82 (CSP, referrer, privacy removals) | success |
+
+Every step in both jobs concluded `success` (**confirmed**). No step failed; the workflow file
+`.github/workflows/deploy.yml` was read this session and matches the step names above.
+
+## d. Post-deploy checks (R84, `docs/hosted-config.md` section 6)
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Home page renders content inside `#root` in a real browser | Pass (**believed, not verified this session**; reported by the main session) |
+| 2 | Orb animates and stops when the tab is hidden | Paints confirmed by the main session (12020 non-transparent pixels at 420x420, `role="img"`, `aria-label` present, **believed, not verified this session**); "stops when the tab is hidden" was **not checked** by anyone |
+| 3 | Deep link pasted into a fresh tab renders the case study | Renders, pass (**believed, not verified this session**, main session's browser check), with the HTTP status noted below |
+| 4 | Browser console shows no CSP violation and no uncaught error | **FAIL**, 12 CSP violations (see section e) |
+
+Additional live checks, **confirmed this session**:
+- `curl -sI https://muhibm1.github.io/Portfolio/` returns `HTTP/1.1 200 OK`, with
+  `Strict-Transport-Security: max-age=31556952` present.
+- `curl -s -o /dev/null -w '%{http_code}' https://muhibm1.github.io/Portfolio/work/apple-llm-triage`
+  returns `404`. This is the `404.html` SPA fallback by design (ADR 0002, `deploy.yml` R81 comment:
+  "Pages answers this path with 404.html, a copy of index.html, so the status is 404 by design").
+  The page body still renders the case study in a browser per item 3 above.
+
+**The owner has not yet recorded R84 in `docs/hosted-config.md` section 6** (**confirmed**: that
+file's section 6 log still reads "No entries yet. The site has not been deployed."). Proposed log
+line, in that section's exact format, for the owner to add himself (not written into
+`docs/hosted-config.md` by this agent):
+
+```
+2026-09-13 d5ad8b0 first deploy (run 34773728394) 1 pass, 2 pass (paint only; tab-hidden pause not
+checked), 3 pass (HTTP 404 by design, ADR 0002; body renders), 4 fail: 12 CSP font-src violations
+from data: JetBrains Mono Cyrillic-ext/Vietnamese subsets. See release.md "Deploy record" for detail.
+```
+
+## e. Defects and open items after release
+
+- **Font CSP defect, open, not filed anywhere except the conductor log.** Cause: `vite.config.js`
+  (read this session) sets no `assetsInlineLimit` override, so Vite's default of 4096 bytes applies
+  (**confirmed** the setting is absent from the file; the 4096-byte default itself is Vite's
+  documented behaviour, **believed, not verified**, docs not re-fetched this session), inlining 12
+  small JetBrains Mono Cyrillic-ext and Vietnamese subset font files as `data:` URIs. `font-src
+  'self'` (set in `vite.config.js`, confirmed by reading it) blocks them, producing 12 console CSP
+  errors; English text is unaffected. Why R82 missed it: R82 (`deploy.yml`, read this session)
+  asserts exact counts for the CSP meta tag, referrer meta tag, inline scripts, Google Fonts
+  references and phone-shaped strings in the served HTML and module script only; it never parses
+  the stylesheet for `data:` font URLs and runs no browser, which is exactly the R84 gap the manual
+  check exists to cover. The main session reportedly said this was "filed as a follow-up change",
+  but the conductor found no GitHub issue (`gh issue list --state all` empty, **believed, not
+  verified**, conductor's own check) and no `docs/sdlc/` directory for it. Recorded here as
+  **open, not filed anywhere but the conductor log**.
+- **Deep-link HTTP 404 status.** Crawlers and link previews that read the HTTP status rather than
+  the body may treat `/work/apple-llm-triage` and the other case-study routes as not-found and
+  decline to index or preview them, even though a browser renders the content (**believed, not
+  verified**; per ADR 0002's own tradeoff, not re-litigated here).
+- **Five open Dependabot PRs against `main`**, **confirmed** (`gh pr list --state open`): #2
+  `@fontsource/inter` 5.2.8 to 5.3.0, #3 `vitest` 3.2.7 to 5.0.0, #4 `jsdom` 26.1.0 to 30.0.1, #5
+  `@vitejs/plugin-react` 4.7.0 to 6.1.1, #6 `@testing-library/jest-dom` 6.9.1 to 7.0.1. #3 and #5
+  bear on ADR 0009 and the B2 pin decision (`vitest` pinned at `3.2.7`). Owner's to decide; this
+  agent took no action on any of them.
+- **Carried G4/G5 mediums, still open**: the two `check-phone-redaction.mjs` detection gaps (a
+  mixed-encoding file can miss a hit; a script run through a junction or symlink silently exits 0),
+  tracked as a follow-up per the G5 packet's D4, not release-blocking at tier 2. The rest of the
+  carried backlog (11 bug lows, 9 conformance lows, 15 security lows, adoption 3/5) is unchanged.
+- **No `.nvmrc` and no `engines` field** pin the Node version this project needs (`>=22.12.0`),
+  already flagged as a new low finding in the G5 packet and still open.
+
+## f. Rollback, with real values
+
+Per section 6's rehearsed procedure, applied to the actual released commit:
+
+```
+git revert -m 1 d5ad8b0
+```
+
+Reverts the merge on `main`, taking the tree back to its pre-merge state. As rehearsed in section
+6, this also deletes `.github/workflows/deploy.yml`, so the push that lands the revert builds and
+deploys nothing further; the already-deployed site stays live on Pages until a separate action.
+Combine with unpublishing to actually take the site down:
+
+- Settings > Pages > Build and deployment > Source, set back to "Disable" (exact control name
+  **believed, not verified this session**; same caveat as section 6).
+
+Neither command was run this session. Both are marked **not run**, consistent with this being a
+read-only, record-only pass.
+
+---
+
+**Verification run this session, not the full suite:**
+
+- `node scripts/check-phone-redaction.mjs`, exit code **0** (**confirmed**, run this session with
+  the Node 22 PATH prefix; output not quoted here beyond the exit code, per instruction not to
+  reproduce phone-redaction script output verbatim unless needed).
+- Em-dash count in this appended section: **0** (**confirmed**, checked before saving).
