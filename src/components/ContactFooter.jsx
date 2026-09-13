@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, ArrowUpRight, Check, CircleAlert, Copy, FileText } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';
 import { useClipboardCopy } from '../hooks/useClipboardCopy';
+import { prefersReducedMotion } from '../prefersReducedMotion';
 
 const copyStatusIcons = { idle: Copy, copied: Check, failed: CircleAlert };
 
@@ -91,7 +92,9 @@ export default function ContactFooter({ onOpenResume }) {
             © {new Date().getFullYear()} Muhammad Muhibullah · Forward Deployed Engineering & Systems Integration
           </div>
           <div className="flex items-center gap-4">
-            <a href="#overview" className="hover:text-[#1d1d1d]">Back to Top ↑</a>
+            <button type="button" onClick={scrollToTopOfPage} className="font-mono hover:text-[#1d1d1d] cursor-pointer">
+              Back to Top ↑
+            </button>
           </div>
         </div>
       </div>
@@ -103,4 +106,11 @@ function copyButtonLabel(copyStatus, email) {
   if (copyStatus === 'copied') return `Copied ${email}`;
   if (copyStatus === 'failed') return 'Copy failed';
   return 'Copy Email Address';
+}
+
+// The footer renders on every route, so this scrolls the page the visitor is on rather than
+// linking to a section that exists only on the home page (R91, ADR 0011). 'auto' defers to CSS
+// scroll-behavior, which src/index.css forces to instant under reduced motion.
+function scrollToTopOfPage() {
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }
