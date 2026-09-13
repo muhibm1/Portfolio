@@ -10,7 +10,7 @@ Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 `selectedCaseStudy` and `isResumeOpen` (confirmed, lines 16, 17 and 89 to 100). Once a router
 exists, every modal has to be reconsidered: it can stay a modal, become a route, or become a
 route that renders as a modal over a background location. Intent Outcome 3 requires
-`/work/:slug` to be a real page laid out per `public/mockup-casestudy.jpg`. Outcome 14 says
+`/work/:slug` to be a real page laid out per `docs/design/mockup-casestudy.jpg`. Outcome 14 says
 "`CaseStudyModal.jsx` reads the email from `portfolioData`", naming a file. Debt item 8 in
 `docs/sdlc/constraints.md` is that the same file hard-codes the owner's email at line 298.
 
@@ -50,3 +50,7 @@ the deviation is stated in the spec's Routing section, in the G2 checklist, and 
 Cost: `CaseStudiesSection.jsx` and `Navbar.jsx` lose their `onSelectCaseStudy` callbacks in
 favour of `<Link>`, and `App.jsx` loses one of its three `useState` hooks. That is a net
 simplification, but it touches three files that did not otherwise need to change.
+
+Amended 2026-09-13 (G4-D4, spec R92): the mockup this ADR cites moved from `public/` to
+`docs/design/`. Only the path in Context changed. The decision, alternatives and consequences are
+unchanged.
