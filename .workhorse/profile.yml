@@ -33,12 +33,12 @@ commands:
   typecheck: ""
   lint: "npm run lint"
   format: ""
-  test: ""
-  test_file: ""
+  test: "npm test"               # Vitest, added by change 2026-09-11 (R53); supersedes "deliberately empty" above
+  test_file: "npm test --"       # append one path, for example: npm test -- src/App.test.jsx
   build: "npm run build"
   e2e: ""
   screenshot: ""
-  security_audit: "npm audit --audit-level=high"
+  security_audit: "npm audit --omit=dev --audit-level=high"   # the blocking gate, same as CI (R56). The full-tree audit runs non-blocking in CI (R57); its dev-only advisories are accepted in change 2026-09-11 ADR 0009
 
 conventions:
   default_branch: main
@@ -76,6 +76,7 @@ sensitive_paths:
   - "vite.config.js"           # base path, a wrong value breaks every asset on GitHub Pages
   - "package.json"             # supply chain
   - "package-lock.json"        # supply chain
+  - "src/data/portfolioData.js" # employer-derived claims: constraints.md "Employer confidentiality content control" (G3-D4, spec OQ7)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -144,7 +145,7 @@ compliance:
   audit_log_required: false   # No admin surface, no PHI, no cardholder data, no financial
                               # ledger. Nothing in the codebase meets any regime's audit-log
                               # trigger.
-  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, phone, city, LinkedIn), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
+  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, city, LinkedIn and GitHub profile; the phone number was removed from the site by change 2026-09-11, spec R41, and remains only in git history, see docs/hosted-config.md section 7), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
 
 # Risk tier overrides. Paths here force at least the given tier regardless of the classifier.
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
