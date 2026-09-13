@@ -185,7 +185,7 @@ static content compiled into the JavaScript bundle and served to everyone.
 | `src/data/portfolioData.js`, `education` | Two degrees | Education history | confirmed |
 | `src/data/portfolioData.js`, `skills` | Four skill lists | None | confirmed |
 | `src/components/InteractiveTriageSimulator.jsx`, `PRESETS` | Three invented ticket payloads with plausible-looking internal system names, OAuth scopes and region identifiers | **Fictional but Apple-flavoured**, see constraints | confirmed |
-| `public/`, `src/assets/` | Favicon, icon sprite, four design mockup JPEGs, `hero.png`, two framework SVGs | None | confirmed |
+| `public/`, `src/assets/`, `docs/design/` | Favicon and icon sprite in `public/`; `hero.png` and two framework SVGs in `src/assets/`; four design mockup JPEGs in `docs/design/` (moved out of `public/` by change 2026-09-11, R92) | None | confirmed |
 
 **No special-category data** as GDPR Art. 9 defines it: no health, no biometrics, no politics,
 no religion, no union membership, no sexual orientation, and nothing from which those are
@@ -256,6 +256,7 @@ yet agreed by the owner; this is a G0 question.
   choices and a TypeScript template, and says nothing about this project. **Confirmed**.
 - `src/assets/react.svg`, `src/assets/vite.svg` and `src/assets/hero.png` are not imported by any
   component. **Confirmed** by `grep`.
-- `public/mockup-*.jpg` are four design mockups referenced by `docs/design-brief.md`. They are
-  served publicly at `/mockup-home.jpg` and similar because anything in `public/` is copied to
-  the site root. They are design artefacts, not site content.
+- `docs/design/mockup-*.jpg` are four design mockups referenced by `docs/design-brief.md`. They
+  are design artefacts, not site content. Change 2026-09-11 (R92) moved them out of `public/`,
+  which Vite copies to the site root, and `src/publicDirectory.test.js` fails if one returns
+  there or is referenced from `src/` or `index.html`.
