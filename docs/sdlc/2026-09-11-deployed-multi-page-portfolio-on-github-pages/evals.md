@@ -12,8 +12,101 @@ requirement's wording, acceptance check, or expected value changed. Also read: `
 eight ADRs, `.workhorse/profile.yml`, `docs/design-brief.md`, and the working tree at `main`
 (`src/`, `index.html`, `vite.config.js`, `package.json`, `.gitignore`).
 
+Revised again 2026-09-13 by the eval designer, answering the G4 rejection (`approvals.md` G4
+block) and `spec.md`'s amendment the same day: 92 requirements (R91 and R92 added), and R41, R82
+and R89 rewritten so no acceptance check carries a digit of the owner's phone number. This pass
+redacts the four lines the conductor's masked scan found in this file (**confirmed** by this
+agent's own Grep run before any edit), rewrites GC41, GC89 and NF8 to the script-based check,
+adds GC91 (R91), GC92 (R92), EG23 and AD17, and renames the case previously numbered GC91 (an
+additional check against R49, added 2026-09-12) to GC93 to free the id. See the amendment
+immediately below for the full account.
+
 Every factual claim below is labelled **confirmed** (this agent read the file or line named)
 or **believed, not verified** (inferred, or carried from an earlier agent). No em-dashes.
+
+## Amendment (2026-09-13, G4 rejection response)
+
+G4 was rejected (`approvals.md`, G4 block, `2026-09-13T01:46:12.951Z`). D3 orders every full and
+partial form of the owner's phone number redacted from every tracked file, including this one.
+D4 orders the four design mockups out of `public/`, with a build or test guard so none reaches
+`dist/`. D5 orders Back to Top fixed so it works on every route. The spec architect answered all
+three in `spec.md`'s G4 rejection response section (2026-09-13): R89, R41 and R82 were rewritten
+so no acceptance check carries the digits, and R91 and R92 were added. This amendment answers
+that section's "What `evals.md` must change" list, item by item. No case whose requirement did
+not change lost its case, and no requirement lost its case.
+
+**Redaction, confirmed.** Running the Grep tool against this file before any edit found exactly
+four lines carrying a digit form of the number: 152, 409, 502 and 612, and no others. Each is
+rewritten below to carry no digit of the number, in words or as `(NNN) NNN-NNNN`. This agent
+never wrote a digit of the number anywhere, including in this amendment or in its own report.
+
+- Line 152 (the "wave 4 builder findings" amendment, GC89 bullet): the quoted redacted example
+  is replaced with a form that carries no digit, with a note that the line itself needed fixing
+  under this same D3 instruction.
+- Line 409 (GC41's exact check): the literal grep is replaced by
+  `node scripts/check-phone-redaction.mjs dist`, run after a build, per R41's amended check and
+  R89's script contract in `spec.md`. The `personal.phone` and `Phone` greps and the unit test
+  reference are kept unchanged.
+- Line 502 (GC89, rewritten in full): now asserts exactly R89's amended acceptance check.
+- Line 612 (NF8, rewritten): names the script and the generic unit test instead of the digits.
+
+**GC89, and the withdrawal of "option (a)."** R89 no longer carves out an allowed set of files
+that may hold the literal digits. It names one script, `scripts/check-phone-redaction.mjs`, with
+a `--self-test` mode proving the matcher and a scan mode that must find nothing, anywhere `git
+ls-files` reaches, including `intent.md` and this file. GC89 is rewritten to assert exactly
+that. **Withdrawn, dated 2026-09-13:** the 2026-09-12 wave 4 amendment's "option (a), adding
+`intent.md` to GC89's expected match set" and the parallel exception this file's own
+check-definition rows (GC41, GC89, NF8, the failure-taxonomy row) had carried for themselves.
+Both assumed some file legitimately needs the literal digits to check for them. The script makes
+that assumption false: it derives the number from git history at run time and matches it
+without ever printing or requiring it in a check body, so nothing needs an exception any longer.
+"Option (b)" from the same withdrawn note, asking the owner to authorise redacting `intent.md`'s
+G1 D1 decision text and M8 metric row, is moot for the same reason and is not carried forward as
+an open question; the intent writer redacts those lines under the same D3 instruction this
+amendment answers.
+
+**NF8, rewritten.** Target and method now name the script and the generic unit test. Its case
+list gains `GC89`, which already exercises the same script over the whole tracked tree.
+
+**Failure taxonomy and adversarial rows checked, none other found.** Every row of section 8 and
+section 5 was read for a quoted digit. **Confirmed:** none exists outside the four lines above.
+The "Leaked (data)" row already described R82's detection as a generic character-class pattern
+match rather than a literal digit search, from the 2026-09-12 wave 4 amendment, and carries no
+digit itself. No taxonomy or adversarial row needed rewording.
+
+**`GC91` renamed to `GC93`.** R91 and R92 are new requirements as of this amendment, and this
+file's own case ID convention (section 0) reserves `GCn` for requirement `Rn`. The case the
+2026-09-12 B2/B3 amendment added as `GC91` (an additional golden case against R49, for the B3
+tailwind move and the scoped audit, not a requirement of its own) now collides with that
+convention. It is renamed `GC93`, the next free integer after `GC92`. Every live reference is
+updated: section 0's convention note, section 2.I's case row, and the coverage matrix's R49 row
+and summary sentence. The 2026-09-12 amendment's own narrative, which first introduced the case
+as `GC91`, is left as written with one bracketed note at its first mentions pointing here, since
+it is a historical record of that day, not a live case definition.
+
+**`GC91` and `GC92`, added.** New golden cases for R91 and R92 in a new lettered subsection,
+section 2.P, following `spec.md` section P's requirement order. `EG23` (R91) extends the edge
+sequence and `AD17` (R92) extends the adversarial sequence. The coverage matrix gains rows for
+R91 and R92. Neither requirement carries a new numeric success metric in `intent.md` (**believed,
+not verified**: the intent writer is amending that file in the same window, and this agent's
+scope is `evals.md` only), so no new `NFn` row is added; if the intent writer adds one, the next
+eval revision picks it up.
+
+**GC22v, GC27v, GC30v repointed.** Each named `public/mockup-*.jpg`; R92 moves the four mockups
+to `docs/design/`. Each is rewritten to name the `docs/design/` path.
+
+**Targets and totals updated.** Section 1 and the coverage matrix's summary sentences move from
+"R1-R90" / "90 requirements" to "R1-R92" / "92 requirements." No target's number changes: R91
+and R92 get a golden and an edge case like any other requirement, and R92 additionally gets an
+adversarial case, so no category's 100% bar moves.
+
+**Not edited in this pass, and why.** `intent.md`, `constraints.md`, `approvals.md`, `state.json`
+and every source file are out of this agent's scope this window, per the conductor's instruction
+and `wh-agent-rules`. Where this amendment names a fact in one of those (R89's script contract,
+the phone-number look-alike at `src/data/portfolioData.test.js` line 48, the mockups' current
+location in `public/`), it is labelled **confirmed** where this agent read the file directly,
+and **believed, not verified** where it depends on another agent's parallel edit landing as
+described.
 
 ## Amendment (2026-09-12, GC78 final dependency-count correction)
 
@@ -56,8 +149,8 @@ superseded where it appears below, not deleted.
 fixed "10 and 10" that only ever held immediately after R78 and before B3, so it does not need
 to be re-derived by hand every time a package moves sections. It keeps the rolldown-absence
 check (extended to both sections) and adds an explicit membership check that `tailwindcss` and
-`@tailwindcss/vite` are `devDependencies` keys and not `dependencies` keys, which overlaps GC91
-by design (both check the same fact from different angles: GC91 via `grep`, GC78 via `node -e`
+`@tailwindcss/vite` are `devDependencies` keys and not `dependencies` keys, which overlaps GC93
+by design (both check the same fact from different angles: GC93 via `grep`, GC78 via `node -e`
 array membership). The command is a single Windows-safe `node -e` invocation and prints the
 actual counts and the specific failed assertion(s) on any mismatch, so a future failure is
 self-describing instead of a bare non-zero exit with no message. See the rewritten row in
@@ -148,20 +241,24 @@ below. Every claim here is labelled **confirmed** (this agent read the cited fil
   5` appears once per `package-ecosystem` entry (`npm` and `github-actions`), so twice in the
   file, not once as R68's acceptance check first stated. GC68 is reworded to expect the count
   once per ecosystem entry (two occurrences total for the current two ecosystems).
-- **GC89** (R89). **Confirmed** by reading `intent.md`: line 199 was correctly redacted to
-  `(512) 508-xxxx` by T13 under R89, but line 152 (the M8 success-metric row, which reads the
-  literal as a check target) and line 311 (the G1 D1 decision row: the recommendation to remove
-  the number, quoted verbatim) both still carry the full digits, and neither line was named by
-  R89, `plan.md`, or the G3 packet. A repository-wide scan at HEAD, excluding `.git`,
-  `node_modules`, `.worktrees` and any nested `worktrees` directory, finds the digits in
-  `spec.md`, `evals.md`, and this change's `intent.md`: three files, not the two GC89 expected.
-  This agent adopts **option (a)**: adding `intent.md` to GC89's expected match set, on the
-  reasoning that line 152 is a success-metric check reading the literal (the same role
-  `evals.md`'s own check rows already play, and the precedent the prior amendment already used
-  to add `evals.md` to this set) and line 311 is the G1 D1 decision record the owner approved,
-  which this amendment does not touch or ask anyone to edit. **Option (b) — asking the owner to
-  authorise redacting the approved G1 D1 decision text and the M8 metric row in `intent.md` —
-  remains open to the owner at G4**, and is not decided here.
+- **GC89** (R89). **Confirmed** by reading `intent.md`: line 199 was redacted by T13 under R89 to
+  a form with no digit of the number (this bullet originally quoted that redacted form verbatim,
+  which itself still carried the digits; corrected here 2026-09-13, see the amendment at the top
+  of this file), but line 152 (the M8 success-metric row, which reads the literal as a check
+  target) and line 311 (the G1 D1 decision row: the recommendation to remove the number, quoted
+  verbatim) both still carried the full digits at the time this bullet was written, and neither
+  line was named by R89, `plan.md`, or the G3 packet. A repository-wide scan at HEAD, excluding
+  `.git`, `node_modules`, `.worktrees` and any nested `worktrees` directory, found the digits in
+  `spec.md`, `evals.md`, and this change's `intent.md`: three files, not the two GC89 expected at
+  the time. This agent adopted **option (a)**, on the reasoning that line 152 was a
+  success-metric check reading the literal (the same role `evals.md`'s own check rows already
+  played, and the precedent the prior amendment already used to add `evals.md` to this set) and
+  line 311 was the G1 D1 decision record the owner approved, which that amendment did not touch
+  or ask anyone to edit. Option (b), asking the owner to authorise redacting the approved G1 D1
+  decision text and the M8 metric row in `intent.md`, was left open to the owner at G4, and was
+  not decided there. **Both option (a) and the exception it created are withdrawn as of
+  2026-09-13**, per the amendment at the top of this file: R89's script makes the exception
+  unnecessary, since no check anywhere needs the literal digits to test for them.
 
 ## Amendment (2026-09-12, B2/B3 pin corrections and one new case)
 
@@ -169,8 +266,8 @@ The owner approved B2 and B3 on 2026-09-12 (`conductor-log.md` lines 35-37, comm
 **confirmed** by the facts this agent was given). This amendment corrects every case that named
 a pre-approval version number, records the audit-status change, and adds one new case for B3. No
 case was removed and no case's requirement mapping changed except the one addition noted below;
-the [coverage matrix](#9-coverage-matrix) gains one entry (`GC91` against `R49`) and is otherwise
-unchanged.
+the [coverage matrix](#9-coverage-matrix) gains one entry (`GC91`, renamed `GC93` on 2026-09-13,
+against `R49`) and is otherwise unchanged.
 
 - **GC1** (R1). `react-router` is now pinned exactly at `7.18.3`, not `7.9.4`
   (**confirmed** per the facts given to this agent). The grep pattern and the expected pinned
@@ -184,7 +281,8 @@ unchanged.
   `4.3.3` (**confirmed** per the facts given to this agent). This agent searched every case in
   this file for the literals `7.9.4`, `3.2.4`, `tailwindcss`, and `@tailwindcss/vite`: only GC1
   and AD14 named the two version strings above, and no existing case named Tailwind's package
-  location, so no other case needed rewording on this point. GC91, below, is new coverage for it.
+  location, so no other case needed rewording on this point. GC91 (renamed GC93 on 2026-09-13),
+  below, is new coverage for it.
 - `npm audit --omit=dev --audit-level=high` now exits 0 (**confirmed** per the facts given to
   this agent). The full `npm audit --audit-level=high` (no `--omit=dev`) still exits 1 on five
   dev-only advisories (vite `GHSA-fx2h-pf6j-xcff` high; vite `GHSA-4w7w-66w2-5vf9`,
@@ -199,13 +297,16 @@ unchanged.
   `continue-on-error: true`," never to an exit code. Both stand unchanged. For any future case
   that does read the full audit's exit code, the expected result is: exit 1 is acceptable only
   if every listed advisory is in ADR 0009's dev-only set, and `--omit=dev` exits 0.
-- **GC91** (new, against R49). Added in [section I](#i-test-toolchain-r49-r54): a golden command
-  case checking that `tailwindcss` and `@tailwindcss/vite` sit under `devDependencies` at exact
-  `4.3.3`, and that `npm audit --omit=dev --audit-level=high` exits 0. This is the one new case
-  in this amendment. Its ID breaks the strict `GCn`-maps-to-`Rn` numbering the same way `GC-CP`
-  already does: it is an additional pin-and-audit check against R49, not a new requirement, and
-  `GC91` is the next free integer after the file's highest existing golden-case number, `GC90`.
-  It is cross-referenced in the [coverage matrix](#9-coverage-matrix)'s R49 row alongside GC49.
+- **GC91** (new, against R49; **renamed `GC93` on 2026-09-13**, see the top amendment; every live
+  reference below and elsewhere in this file uses `GC93`, this bullet is left as originally
+  written). Added in [section I](#i-test-toolchain-r49-r54): a golden command case checking that
+  `tailwindcss` and `@tailwindcss/vite` sit under `devDependencies` at exact `4.3.3`, and that
+  `npm audit --omit=dev --audit-level=high` exits 0. This is the one new case in this amendment.
+  Its ID broke the strict `GCn`-maps-to-`Rn` numbering the same way `GC-CP` already does: it is
+  an additional pin-and-audit check against R49, not a new requirement, and `GC91` was the next
+  free integer after the file's highest existing golden-case number, `GC90`, at the time. It is
+  cross-referenced in the [coverage matrix](#9-coverage-matrix)'s R49 row (now `GC93`) alongside
+  GC49.
 
 **Superseded 2026-09-12 by the "GC78 final dependency-count correction" amendment above.** The
 paragraph immediately below states GC78's totals are "10 and 10 either way." That is wrong:
@@ -298,24 +399,34 @@ the hero orb's dot rendering, logged in `conductor-log.md` (the plan-phase entry
   cases against the same requirement. R80-R90 keep this convention: `GC80` through `GC90` map
   one-for-one, and new edge/failure/adversarial cases continue the existing sequences
   (`EG22`, `FL21`-`FL23`, `AD14`-`AD16`) rather than restarting them. `GC91` (2026-09-12
-  amendment) is the one documented exception, matching `GC-CP`: an additional golden case
-  against an existing requirement (R49), not a new requirement.
+  amendment) was the one documented exception, matching `GC-CP`: an additional golden case
+  against an existing requirement (R49), not a new requirement. **R91 and R92 (2026-09-13, G4
+  rejection response) keep the convention too**: `GC91` maps to `R91` and `GC92` maps to `R92`,
+  with `EG23` and `AD17` continuing the edge and adversarial sequences. This freed integer
+  collided with the 2026-09-12 exception case, which had been assigned the literal id `GC91`;
+  that case is renamed `GC93` (the next free integer after `GC92`) so the `GCn`-maps-to-`Rn`
+  rule holds for R91 without an exception. `GC93` is still the same R49 case, unchanged in
+  substance.
 - This revision was produced without re-running any command from the prior pass; every case
   carried unchanged from the first version keeps its original epistemic labels.
+- This 2026-09-13 pass also ran with no Bash or code-execution tool: this session's tool list is
+  Read, Glob, Grep and Write only, and none is a command runner (**confirmed** by the tool list
+  itself). "Confirmed" for every claim added in the 2026-09-13 amendment means the Read or Grep
+  tool was actually run against the named file; it does not mean any check below was executed.
 
 ## 1. Targets
 
 | Category | Target | Rationale |
 |----------|--------|-----------|
-| Golden | 100% pass | Every one of R1-R90 has a golden case; the outcome does not ship without every one passing |
-| Edge | 100% pass | Boundaries on the app's few real interfaces: the URL (slug, hash), the viewport, timers, device pixel ratio, and now the smoke step's own asset-parsing logic |
+| Golden | 100% pass | Every one of R1-R92 has a golden case; the outcome does not ship without every one passing |
+| Edge | 100% pass | Boundaries on the app's few real interfaces: the URL (slug, hash), the viewport, timers, device pixel ratio, the smoke step's own asset-parsing logic, and now the Back to Top control's idempotency at scroll position 0 |
 | Failure | 100% correct handling | Every row of the spec's own failure-modes table (`spec.md` lines 830-853) becomes one case here, **including the mount-failure row, which the spec itself states has no automated detection.** That row's case (FL23) is scored on whether the accepted-risk documentation and the R84 manual compensating control exist, not on catching the failure, matching R90's rule against crediting a check with a detection it does not have |
-| Adversarial | 100% rejected or safely handled, **except AD13** | AD13 (clickjacking via a meta-only CSP) is a stated, accepted residual risk per ADR 0006, not a defect; it is scored "documented", not "rejected". Every other adversarial case, including the three new red-team cases against the smoke step's own detection logic (AD14-AD16), targets a surface the design already claims to defend, so 100% is the right bar, not an aspiration |
+| Adversarial | 100% rejected or safely handled, **except AD13** | AD13 (clickjacking via a meta-only CSP) is a stated, accepted residual risk per ADR 0006, not a defect; it is scored "documented", not "rejected". Every other adversarial case, including the three red-team cases against the smoke step's own detection logic (AD14-AD16) and the new mockup-reintroduction case (AD17), targets a surface the design already claims to defend, so 100% is the right bar, not an aspiration |
 | Non-functional | see rows | One row per success metric M1-M17, each with the intent's own numeric target |
 
 ## 2. Golden cases
 
-One case per requirement, minimum. Grouped by the spec's own lettered sections (A-O).
+One case per requirement, minimum. Grouped by the spec's own lettered sections (A-P).
 
 ### A. Routing and page shell (R1-R10)
 
@@ -358,7 +469,7 @@ One case per requirement, minimum. Grouped by the spec's own lettered sections (
 |----|-----|----------|--------------|----------|--------------|----------------|
 | GC21 | R21 | Given the three known slugs and one unknown slug, when each renders, then the three resolve and the unknown shows `NotFoundPage` | 4 RTL renders, assert heading per case | Correct case study per slug; `NotFoundPage` heading for the unknown one | Windows | `src/components/CaseStudyPage.test.jsx` + `src/pages/NotFoundPage.test.jsx` |
 | GC22 | R22 | Given the mockup layout, when a case-study page renders, then the four chip labels and both column headings appear | RTL text assertions for `Challenge`, `System Architecture`, `Production Deployment`, `Measured Impact`, and `Key enterprise metrics` | All present | Windows | `src/components/CaseStudyPage.test.jsx` |
-| GC22v | R22 | Given `public/mockup-casestudy.jpg`, when a case-study page renders in a browser, then the eyebrow line, uppercase display title, left-diagram/right-metrics split, and chip row match the mockup | Manual visual review | Reviewer confirms | manual: pixel layout fidelity, no browser rendering in the toolchain | G4 design review |
+| GC22v | R22 | Given `docs/design/mockup-casestudy.jpg` (moved from `public/` under R92, **path amended 2026-09-13**), when a case-study page renders in a browser, then the eyebrow line, uppercase display title, left-diagram/right-metrics split, and chip row match the mockup | Manual visual review | Reviewer confirms | manual: pixel layout fidelity, no browser rendering in the toolchain | G4 design review |
 | GC23 | R23 | Given the four tabs are sourced only from existing fields, when each tab renders for all 3 case studies, then its body text is a substring of the corresponding `challenge` / `diagramSteps` / `solution`+`techStack` / `impact` field | RTL text-substring assertions per tab per case study | Substring match, no invented prose, all 3 case studies | Windows | `src/components/CaseStudyPage.test.jsx` |
 | GC24 | R24 | Given `diagramSteps` of varying length, when the flow diagram renders, then the node count equals the array length | Vitest renders the diagram with a stub of length 4 (the 3 real case studies) and also the diagram sub-component alone with stub lengths 2 and 6 | Node count equals array length in every case | Windows | `src/components/CaseStudyPage.test.jsx` |
 | GC25 | R25 | Given the `caseStudies` order, when the last case study (`neural-newsletters-llm`) renders, then "next" points at the first (`apple-llm-triage`), and vice versa on the first | RTL, assert `next`/`previous` link hrefs | Wraparound both directions | Windows | `src/components/CaseStudyPage.test.jsx` |
@@ -369,11 +480,11 @@ One case per requirement, minimum. Grouped by the spec's own lettered sections (
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
 | GC27 | R27 | Given `/` renders, then the stacked name heading, the availability pill, all 4 telemetry strings, and the orb canvas are present | RTL text assertions for the heading, pill text, `350+`, `50+`, `-40%`, `99.9%`, and `getByRole('img')` for the canvas | All present, exactly one canvas | Windows | `src/pages/HomePage.test.jsx` |
-| GC27v | R27 | Given `public/mockup-home.jpg`, when the hero renders in a browser, then the two-line uppercase name stack and the orb's position match | Manual visual review | Reviewer confirms | manual: pixel layout fidelity | G4 design review |
+| GC27v | R27 | Given `docs/design/mockup-home.jpg` (moved from `public/` under R92, **path amended 2026-09-13**), when the hero renders in a browser, then the two-line uppercase name stack and the orb's position match | Manual visual review | Reviewer confirms | manual: pixel layout fidelity | G4 design review |
 | GC28 | R28 | Given the orb replaces the monogram, when the repo is grepped, then `MmLogo.jsx` is gone and unreferenced | `git ls-files \| grep -c MmLogo.jsx`; `grep -rn "MmLogo" src/` | 0; 0 | Windows | command |
 | GC29 | R29 | Given `ThinkingOrbHero`, when its source and its render output are checked, then it imports only `resolvePreset` and `MODE_FRAMES` from `thinking-orbs/engine` and renders exactly one `<canvas role="img">` | `grep -n "thinking-orbs" src/components/ThinkingOrbHero.jsx`; RTL asserts one `role="img"` element; `grep -cwE "paintFrame\|paintLines\|ThinkingOrb" src/components/ThinkingOrbHero.jsx` (whole-word match, so the component's own name, `ThinkingOrbHero`, is not itself counted as an occurrence of `ThinkingOrb`) | One import line naming only those two symbols; one canvas; second grep = 0 | Windows | command + `src/components/ThinkingOrbHero.test.jsx` |
 | GC30 | R30 | Given the painter colours each dot by depth via a small exported pure function `colourForDepth(z)`, when the unit test "maps the near, middle and far depths onto the brand stops" calls it at `z=-1`, `z=0`, `z=1`, then it returns the exact expected CSS colour strings mapping the OFF+BRAND stops (`#facb0e`, `#f06ba8`, `#78bae6`, `#ffffff`), and no `shadowBlur` call exists in the source | Vitest asserts `colourForDepth(-1)`, `colourForDepth(0)`, `colourForDepth(1)` against exact hard-coded strings; `grep -c "shadowBlur" src/components/ThinkingOrbHero.jsx` | Exact match at all 3 depths; grep = 0 | Windows | `src/components/ThinkingOrbHero.test.jsx` (or a sibling `colourForDepth.test.js` if the helper is extracted) + command |
-| GC30v | R30 | Given `public/mockup-home.jpg`, when the orb renders in a real browser, then dots are coloured by depth across the amber-rose-blue-white gradient with no glow | Manual visual review (jsdom has no canvas rendering); now a supplement to GC30's exact-output unit test, not the only check on the mapping | Reviewer confirms the gradient reads correctly against the mockup image | manual: canvas pixels are not renderable in jsdom | G4 design review |
+| GC30v | R30 | Given `docs/design/mockup-home.jpg` (moved from `public/` under R92, **path amended 2026-09-13**), when the orb renders in a real browser, then dots are coloured by depth across the amber-rose-blue-white gradient with no glow | Manual visual review (jsdom has no canvas rendering); now a supplement to GC30's exact-output unit test, not the only check on the mapping | Reviewer confirms the gradient reads correctly against the mockup image | manual: canvas pixels are not renderable in jsdom | G4 design review |
 | GC31 | R31 | Given the clamp `Math.min(420, Math.max(280, viewportWidth - 48))` is a small exported pure function `canvasWidthForViewport(viewportWidth)`, when it is called at 1440, 1024, 700, 468 and 320, then it returns 420, 420, 420, 420 and 280 respectively; separately, a render test asserts `canvas.style.width === '420px'` under the jsdom default viewport | Vitest calls `canvasWidthForViewport` at the five named widths and asserts the five named outputs; RTL reads `canvas.style.width` | Five exact outputs: 420, 420, 420, 420, 280; render check: `'420px'` | Windows | `src/components/ThinkingOrbHero.test.jsx` (or a sibling `canvasWidthForViewport.test.js`) |
 | GC32 | R32 | Given `prefers-reduced-motion: reduce` matches, when the orb mounts, then it paints one frame at `t=0.6` and never calls `requestAnimationFrame` | Vitest mocks `matchMedia` to match the reduce query, spies `requestAnimationFrame`, asserts 0 calls after mount and after a flushed tick | 0 calls | Windows, needs the R54 `matchMedia` stub | `src/components/ThinkingOrbHero.test.jsx` |
 | GC33 | R33 | Given `IntersectionObserver` reports the canvas offscreen, or `document.visibilityState` becomes `hidden`, when either fires, then the loop pauses and resumes on the opposite signal | Vitest stubs `IntersectionObserver`, fires `{isIntersecting:false}` then `{isIntersecting:true}`; separately sets `document.visibilityState='hidden'` and fires `visibilitychange`, then reverses | `cancelAnimationFrame` on pause, `requestAnimationFrame` on resume, both paths | Windows | `src/components/ThinkingOrbHero.test.jsx` |
@@ -406,7 +517,7 @@ No case below is adjusted.
 
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
-| GC41 | R41 | Given the phone number is deleted (not blanked), **and the now-unused `Phone` icon import is dropped from `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2** (both confirmed present by the spec architect during this revision, because oxlint may fail the build on an unused import), when `src/`, `dist/` are grepped, then no trace remains | `grep -rn "508-1536" src/ dist/`; `grep -rn "personal.phone" src/`; `grep -rn "Phone" src/` | 0; 0; 0 | Windows | command (post-build; shared with M8) + `src/data/portfolioData.test.js` ("publishes no phone number") |
+| GC41 | R41 | Given the phone number is deleted (not blanked), **and the now-unused `Phone` icon import is dropped from `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2** (both confirmed present by the spec architect during this revision, because oxlint may fail the build on an unused import), when a build completes and `src/` is grepped, then no trace of the number remains anywhere the script or the greps reach | `node scripts/check-phone-redaction.mjs dist` (run after `npm run build`; **amended 2026-09-13**: this replaces the literal grep so this row carries no digit of the number, per R41's amended check and R89's script contract); `grep -rn "personal.phone" src/`; `grep -rn "Phone" src/` | Script exits 0; 0; 0 | Windows | command (post-build; shared with M8) + `src/data/portfolioData.test.js` ("publishes no phone number") |
 | GC42 | R42 | Given email and LinkedIn remain reachable, when `/`, `/work`, and a case-study page render, then both are present | RTL, assert a `mailto:` link and a LinkedIn `href` on all 3 | Present on all 3 | Windows | `src/components/SiteLayout.test.jsx` |
 | GC43 | R43 | Given `personal.github`/`githubHandle` and each project's `repoPublic` flag, when `/work` renders, then a public project's card links to `https://github.com/muhibm1/<name>`; a private project's card shows "Private repository · walkthrough on request" with a mailto link to `personal.email` and no GitHub link; and, because `workhorse`, `Shu` and `wasl` are all currently marked private, every project card on the live data shows the note | RTL: a `repoPublic: true` fixture card has `getByRole('link', {name: /github/i})` with `href` `https://github.com/muhibm1/<name>`; a `repoPublic: false` fixture card has `queryByRole('link', {name: /github/i})` null, the note text present, and a `mailto:` link to `personal.email`; against the live `portfolioData.projects` (all three `repoPublic: false`), all three cards show the note and 0 GitHub links exist on `/work` | Public fixture: exact GitHub URL, no note; private fixture: note text, mailto link, no GitHub link; live data: 3 of 3 cards show the note, 0 GitHub links | Windows | `src/components/ProjectEntry.test.jsx` + `src/pages/WorkIndexPage.test.jsx` |
 | GC44 | R44 | Given no analytics, cookie, storage call, tracking pixel, embedded widget, third-party script or new outbound runtime call anywhere, when `src/` and `index.html` are grepped with the **full** pattern from `docs/sdlc/constraints.md` line 208, then none of the nine named tokens appear | `grep -rn "fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer" src index.html` | 0 matches | Windows | command (shared with GC13, M10) |
@@ -425,7 +536,7 @@ No case below is adjusted.
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
 | GC49 | R49 | Given every added package SHALL be exact-pinned in both `dependencies` and `devDependencies`, when `package.json` is read, then all **nine** named packages (`react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk`, `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom`, `jsdom`) carry no `^`, `~`, `>=`, `<`, `*`, `x`, tag, URL or git specifier | Two greps over `package.json`. First, `grep -c "\"\(react-router\|@fontsource/inter\|@fontsource/jetbrains-mono\|@fontsource/space-grotesk\|vitest\|@testing-library/react\|@testing-library/dom\|@testing-library/jest-dom\|jsdom\)\": \"[0-9]"` equals 9. Second, the same alternation followed by `": "[\^~><*x]` or `": "latest` returns 0 matches | 9; 0 | Windows | command (the same two greps R85 runs in CI on every push, so the pin cannot rot after G4; see GC85). The first version of this case checked only the five devDependencies; the runtime four now carry the same bar |
-| GC91 | R49 | Given B3 (approved 2026-09-12) moved `tailwindcss` and `@tailwindcss/vite` from `dependencies` to `devDependencies` at exact `4.3.3`, when `package.json` and a local, production-scoped audit are read, then both packages appear under `devDependencies` with no range prefix, neither appears under `dependencies`, and the production-only audit exits clean | `grep -n "\"tailwindcss\": \"4.3.3\"" package.json`; `grep -n "\"@tailwindcss/vite\": \"4.3.3\"" package.json`; confirm both matched lines fall inside the `devDependencies` block and `grep -c "\"tailwindcss\"\|\"@tailwindcss/vite\"" ` restricted to the `dependencies` block returns 0; `npm audit --omit=dev --audit-level=high` | Both greps match `4.3.3` with no `^`/`~`; 0 matches inside `dependencies`; `npm audit --omit=dev --audit-level=high` exits 0 | Windows | command. Added by the 2026-09-12 B2/B3 amendment; this ID is a documented exception to the `GCn`-maps-to-`Rn` convention, the same exception `GC-CP` already uses, since it is a second golden case against R49 rather than a new requirement |
+| GC93 | R49 | Given B3 (approved 2026-09-12) moved `tailwindcss` and `@tailwindcss/vite` from `dependencies` to `devDependencies` at exact `4.3.3`, when `package.json` and a local, production-scoped audit are read, then both packages appear under `devDependencies` with no range prefix, neither appears under `dependencies`, and the production-only audit exits clean | `grep -n "\"tailwindcss\": \"4.3.3\"" package.json`; `grep -n "\"@tailwindcss/vite\": \"4.3.3\"" package.json`; confirm both matched lines fall inside the `devDependencies` block and `grep -c "\"tailwindcss\"\|\"@tailwindcss/vite\"" ` restricted to the `dependencies` block returns 0; `npm audit --omit=dev --audit-level=high` | Both greps match `4.3.3` with no `^`/`~`; 0 matches inside `dependencies`; `npm audit --omit=dev --audit-level=high` exits 0 | Windows | command. Added by the 2026-09-12 B2/B3 amendment as `GC91`; this ID is a documented exception to the `GCn`-maps-to-`Rn` convention, the same exception `GC-CP` already uses, since it is a second golden case against R49 rather than a new requirement. **Renamed `GC93` on 2026-09-13** to free `GC91` for R91, added the same day |
 | GC50 | R50 | Given the `test` block in `vite.config.js`, when read, then it declares `environment: 'jsdom'`, `globals: true`, `setupFiles`, `css: false`, `restoreMocks: true`, and both `npm test` and `npm run build` still exit 0 | `grep` for each key; `npm test`; `npm run build` | All keys found; both exit 0 | Windows | command |
 | GC51 | R51 | Given `package.json` scripts, when read, then `test` is `vitest run` and `test:watch` is `vitest`, both bare binary invocations | `grep -n "\"test\":\|\"test:watch\":" package.json`; `npm test` on Windows | Exact script bodies; exits 0 | Windows | command |
 | GC52 | R52 | Given the build job **enforces** the test floor rather than leaving it to a human reading a summary line, when the workflow's test step runs `npm test -- --reporter=json --outputFile=vitest-results.json` and the step after it reads the file, then the run fails unless `numPassedTests >= 12` and `numPendingTests + numTodoTests + numFailedTests === 0`, naming the observed counts on failure | `grep -c "numPassedTests" .github/workflows/deploy.yml` >= 1; first workflow run's log shows the observed counts and, on failure, the counts named in the message; locally, `npm test` still reports `Tests N passed` with N >= 12 | Structural presence and local floor confirmed on Windows; CI enforcement confirmed on the first workflow run | Windows (structure + local run) + CI-only (enforcement) | command + CI-only confirmation. AD15 red-teams this check's own sensitivity to a skipped test |
@@ -499,8 +610,21 @@ spec. The five below have no other home there, matching the spec's own section O
 | GC84 | R84 | Given `docs/hosted-config.md` carries a "Post-deploy manual check" section, when read, then it lists the four items no automated step this project runs can prove: the home page renders content inside `#root` in a real browser; the orb animates and stops when the tab is hidden; a deep link pasted into a fresh tab renders the case study; the browser console shows no CSP violation and no uncaught error. After the first deploy, and after any later change to `vite.config.js`, `index.html` or `package.json`, the owner appends a dated line | `grep -c` for each of the four item phrases in the file, four checks; after the first deploy, a human confirms at least one dated line exists | All 4 items present; >= 1 dated line after the first deploy | **manual**: this is the compensating control for the one failure class nothing else in this spec can detect, a runtime mount exception (see [Observability](#observability), R90, FL23); there is no browser in CI and Playwright was rejected on cost | owner, post-deploy, dated line in `docs/hosted-config.md` |
 | GC86 | R86 | Given the lockfile regeneration (R71) re-resolves every existing caret range, when the G4 evidence table is reviewed, then it has a before-and-after row for each of the **11 direct dependencies that survive the regeneration** (the 6 `dependencies` and 5 `devDependencies` that are neither newly added nor the one removed: today's 7 `dependencies` plus 5 `devDependencies`, minus `@rolldown/binding-win32-x64-msvc`), with an explicit escalation line on any row whose **major** version moved | Manual review: 11 rows, each with a pre-regeneration and post-regeneration resolved version, and a stated verdict on any row that moved a major version | 11 rows present with both versions; escalation line present on any major move, absent otherwise | **manual**: requires the owner-approved `npm install` and reading the pre- and post-regeneration lockfiles; evidence-gathering for a human-reviewed table, not a pass/fail command | G4 evidence table |
 | GC88 | R88 | Given the same `transformIndexHtml` step that injects the CSP (R65) also injects `<meta name="referrer" content="strict-origin-when-cross-origin">`, when `dist/index.html`, `dist/404.html` and source `index.html` are read, then the referrer meta is present in both built files and absent from source | `grep -c 'name="referrer"' dist/index.html dist/404.html`; `grep -c 'name="referrer"' index.html` | 1, 1; 0 | Windows | command (post-build; shared with GC65). Subject to **G2-D2**: dropped with R65, R67, R68 if the owner declines |
-| GC89 | R89 | Given the phone number survives in the working tree only where a machine check needs it as a literal or where it is part of an approved decision record, when wave 4 completes, then `docs/sdlc/constraints.md` line 102 and `intent.md` line 199 read `(512) 508-xxxx` with a one-line note that the digits were removed under G1-D1 and where the live check now lives, and a repository-wide grep for the full number, excluding `.git`, `node_modules`, `.worktrees` and any nested directory literally named `worktrees` (covers `.claude/worktrees`, the agent tool's worktree location, **confirmed** by directory listing: several such worktrees exist today and each holds a full pre-change copy of `spec.md` and `evals.md`), matches only `spec.md`, `evals.md`, and this change's `intent.md`. `evals.md` legitimately carries the digits in its own check definitions (GC41, this row, NF8, and the failure-taxonomy row; GC82 no longer names the literal as of the 2026-09-12 wave 4 amendment, see above). `intent.md` legitimately carries the digits at line 152 (the M8 success-metric row, a check literal in the same role `evals.md` plays) and at line 311 (the G1 D1 decision row the owner approved); neither line was named for redaction by R89, `plan.md`, or the G3 packet, and this amendment does not ask for either to change | `grep -rln "508-1536" --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.worktrees --exclude-dir=worktrees .` | Exactly three files match: `spec.md`, `evals.md`, and `intent.md` | Windows | command, run after wave 4. **This amendment adopts option (a) from the wave 4 finding: adding `intent.md` to the expected set, because it changes no approved artifact and follows the precedent of `evals.md` being added at the earlier G3 amendment. Option (b) — asking the owner to authorise redacting the approved G1 D1 text and the M8 metric row in `intent.md` — remains open to the owner at G4.** |
+| GC89 | R89 | Given `scripts/check-phone-redaction.mjs` is the sole detection method and R89 now forbids a digit of the number in any check, when the dev host runs the script against a clean working tree at HEAD, then the self-test proves all three forms are detected and the look-alike is not, and the scan finds no hit anywhere `git ls-files` reaches | `node scripts/check-phone-redaction.mjs --self-test`; then `node scripts/check-phone-redaction.mjs` | Self-test exits 0, proving each of the three forms (full, last seven digits, area code plus exchange) is detected and the look-alike at `src/data/portfolioData.test.js` line 48 is not; the scan exits 0 and reports more than 0 files scanned. Exit 2 (the reference could not be derived from `b50497f`) is a failure, never a pass. **The allowed-match set is now empty**: no file, including `evals.md`, `spec.md` and `intent.md`, is permitted a literal digit of the number anywhere | Windows | command, run by the eval runner on the dev host, not in CI (ADR 0010). **Amended 2026-09-13 (G4 rejection response, D3).** This replaces the prior version of this row, which named an allowed-match set of `spec.md`, `evals.md` and `intent.md` and adopted "option (a)" from the 2026-09-12 wave 4 amendment. Both are withdrawn: the script detects and forbids the number everywhere, so no file needs an exception to hold it as a check literal. "Option (b)" from the same withdrawn note is moot for the same reason and is not carried forward |
 | GC90 | R90 | Given no requirement SHALL claim a detection capability the check named beside it does not have, when the re-audit or the G4 conformance reviewer reads [Observability](#observability), [Failure modes](#failure-modes) and the [Risk register](#5-risk-register) side by side with every requirement's acceptance-check column, then every claimed detection traces to a check that actually performs it, and every undetectable failure mode is named as an accepted risk with a named owner rather than credited to a step that cannot see it | Manual cross-reference review, spot-checked against the specific over-crediting pattern audit High finding 1 found (a `curl` step credited with checking DOM content or an owner's name): confirm R63 and R80-R83 are cited only for what they assert, and R84 is cited for the rest | 0 requirements found crediting an undetectable capability | **manual: a cross-artifact consistency property, not a single file or command.** Both the constraint auditor's re-audit and the G4 conformance reviewer are positioned to check it; either finding a violation blocks its gate | re-audit (G2) and conformance review (G4) |
+
+### P. Added by the G4 rejection response (R91-R92)
+
+R91 and R92 were added to `spec.md` on 2026-09-13, in that file's own section P. They have no
+other home here, matching the spec's own section P.
+
+| ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
+|----|-----|----------|--------------|----------|--------------|----------------|
+| GC91 | R91 | Given the footer's Back to Top control is a `<button type="button">` that calls `window.scrollTo({ top: 0, behavior })` using `prefersReducedMotion()`, when it is clicked on each of `/`, `/work`, `/work/apple-llm-triage`, `/work/no-such-study` and `/no-such-page`, then the window scroll call, the level-1 heading, and the absence of any "back to top" link are all as R91 requires; separately, under a reduced-motion preference, `behavior` is `'auto'` | An `it.each` over the five routes renders `<App />` in a `MemoryRouter` at that path (the `renderAppAt` pattern already in `src/routes.test.jsx`), replaces `window.scrollTo` with a spy, and clicks `getByRole('button', { name: /back to top/i })`. It asserts: the spy was called exactly once with `{ top: 0, behavior: 'smooth' }`; the level-1 heading text is unchanged before and after the click; `queryByRole('link', { name: /back to top/i })` is `null`. A sixth test mocks `window.matchMedia` to match `(prefers-reduced-motion: reduce)` and asserts the call is `{ top: 0, behavior: 'auto' }`. Separately, `grep -c 'href="#overview"' src/components/ContactFooter.jsx` | Five route tests each pass their three assertions (spy called once with the exact object, heading unchanged, no matching link found); the reduced-motion test passes with `behavior: 'auto'`; the grep is 0; a reviewer confirms the fix commit's `git diff --name-only` lists only `ContactFooter.jsx` and `ContactFooter.test.jsx` | Windows | `src/components/ContactFooter.test.jsx` + command |
+| GC92 | R92 | Given the four mockups moved from `public/` to `docs/design/` with `git mv`, and `src/publicDirectory.test.js` guards the move, when the suite runs and the site builds, then no mockup reaches `public/`, `dist/`, or an `src/` reference, and every doc path that named the old location now names the new one | `npm test -- src/publicDirectory.test.js`; after `npm run build`, `find dist -name 'mockup-*' \| wc -l` (Git Bash) and `(Get-ChildItem -Path dist -Recurse -File -Filter 'mockup-*' \| Measure-Object).Count` (PowerShell); `git ls-files docs/design`; `git ls-files public`; `grep -c "public/mockup-"` over `docs/sdlc/codebase-map.md` and ADR 0008; in `docs/design-brief.md`, `grep -c "mockup-"` compared against `grep -c "docs/design/mockup-"` | `src/publicDirectory.test.js` exits 0 with 4 passing tests (no file under `public/` named `mockup-*`; all four files exist under `docs/design/`; no file under `src/`, and not `index.html`, contains the string `mockup-`, excluding the test's own path; `vite.config.js` does not contain `publicDir`); both post-build counts are 0; `git ls-files docs/design` lists all four filenames; `git ls-files public` lists none named `mockup-*`; both doc-path greps are 0; the design-brief counts are equal (every remaining `mockup-` mention already reads `docs/design/mockup-`) | Windows | `src/publicDirectory.test.js` + command (post-build, both shell forms) + command (git and doc greps) |
+
+`EG23` (R91) and `AD17` (R92) extend the edge and adversarial sequences; see
+[section 3](#3-edge-cases) and [section 5](#5-adversarial-cases).
 
 ### Content preservation (R18 / M17)
 
@@ -511,8 +635,9 @@ spec. The five below have no other home there, matching the spec's own section O
 ## 3. Edge cases
 
 Boundaries, ordering, concurrency, and idempotency on the app's real interfaces: the URL
-(slug and hash), the viewport, timers, device pixel ratio, and the smoke step's own
-asset-parsing logic (R80).
+(slug and hash), the viewport, timers, device pixel ratio, the smoke step's own
+asset-parsing logic (R80), and now the Back to Top control's idempotency at scroll position 0
+(R91).
 
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
@@ -538,6 +663,7 @@ asset-parsing logic (R80).
 | EG20 | R73 | Given the pattern `.env*`, when hypothetical filenames are checked, then `.env`, `.env.local`, and `.env.production` are all ignored consistently | `git check-ignore --no-index .env .env.local .env.production` (no files are created) | All three reported as ignored | Windows | command |
 | EG21 | R12 | Given the build should be idempotent, when `npm run build` runs twice in a row with no source changes, then `dist/index.html` is byte-identical both times | `npm run build; sha256sum dist/index.html \| cut -d" " -f1 > h1.txt; npm run build; sha256sum dist/index.html \| cut -d" " -f1 > h2.txt; diff h1.txt h2.txt` | No diff output (identical hash) | Windows | command |
 | EG22 | R80 | Given the smoke step's asset parser encounters a query-string asset reference (`/Portfolio/assets/index-abc123.js?v=2`) or a protocol-relative URL (`//example.com/script.js`) in the fetched body, when it parses `src=`/`href=` attributes, then the query-string case still resolves to a path beginning `/Portfolio/` (matched up to, or stripped at, the `?`) and the protocol-relative case is correctly flagged as **not** beginning `/Portfolio/` | Construct a fixture body string containing both patterns, run R80's parsing logic (once written, either a small pure function or the same pattern the workflow step uses) against the fixture instead of a live page | Query-string asset passes the `/Portfolio/` prefix check; protocol-relative asset fails it | Windows (fixture test of the parser logic, not the live page) | command (test fixture) |
+| EG23 | R91 | Given the visitor is already at the top of the page (`window.scrollY === 0`) when they click Back to Top, when the click fires, then `window.scrollTo` is still called exactly once with the same arguments as at any other scroll position, and the URL, including any hash, and the matched route are unchanged after the click | RTL renders `/work/apple-llm-triage`, sets `window.scrollY = 0`, spies `window.scrollTo`, reads `location.pathname` and `location.hash` (via `useLocation` or `window.location`) before and after, clicks the button | `window.scrollTo` called once with `{ top: 0, behavior: 'smooth' }` (or `'auto'` under reduced motion); `location.pathname` and `location.hash` unchanged before and after the click | Windows | `src/components/ContactFooter.test.jsx` |
 
 ## 4. Failure cases
 
@@ -573,11 +699,13 @@ value each adds beyond that table's own "Handling" column.
 ## 5. Adversarial cases
 
 The attack surface here is thin but real: the URL is the only attacker-controlled input (a
-public GitHub Pages URL can be crafted by anyone), and the CI workflow's token permissions,
-action pinning, dependency-pin check, and audit gate are the authorization/supply-chain
-decisions. Target is 100% rejected or safely handled, except AD13, which is a named, accepted
-residual risk. AD14-AD16 red-team the new deploy-time detection instruments themselves
-(R85, R52, R82), the same pattern AD11 and EG17 already use against GC66 and GC59.
+public GitHub Pages URL can be crafted by anyone), the CI workflow's token permissions, action
+pinning, dependency-pin check, and audit gate are the authorization/supply-chain decisions, and
+the mockup guard (R92) is a build-input surface anyone with write access to the repository could
+regress. Target is 100% rejected or safely handled, except AD13, which is a named, accepted
+residual risk. AD14-AD16 red-team the deploy-time detection instruments themselves (R85, R52,
+R82), and AD17 red-teams the mockup guard (R92), the same pattern AD11 and EG17 already use
+against GC66 and GC59.
 
 | ID | Req | Attack | Exact check | Expected | Automatable |
 |----|-----|--------|--------------|----------|--------------|
@@ -597,6 +725,7 @@ residual risk. AD14-AD16 red-team the new deploy-time detection instruments them
 | AD14 | R85 | Red-team the pin-check step itself: a fixture `package.json` carries `"vitest": "^3.2.7"` (a caret reintroduced on one of the nine R49 packages) | Run R85's `node -e` pin-check logic against the fixture file instead of the real `package.json` | The check correctly fails and names `vitest` and its `^3.2.7` specifier, proving the detection instrument catches this exact regression class, not merely that today's clean `package.json` passes | Windows (fixture, not the live `package.json`) |
 | AD15 | R52 | Red-team the test-floor assertion: a fixture `vitest-results.json` reports `numPassedTests: 12`, `numPendingTests: 1` (one skipped test), everything else 0 | Run R52's `node -e` assertion logic against the fixture instead of a real Vitest report | The check correctly fails, since `numPendingTests` is required to be 0, proving the floor rejects a partially-skipped suite rather than only counting passes | Windows (fixture, not a live test run) |
 | AD16 | R82 | Reuse AD11's fixture (a `dist/index.html` with a deliberately injected inline `<script>`, no `src`) framed as the served page R82 asserts against, not the build artifact GC66 checks | Run the same inline-script grep AD11 uses against the fixture, as R82's live re-check would | The grep correctly flags it (count > 0), proving R82's live re-check catches the same class of regression R66/GC66 catches at build time, closing the gap between "built correctly" and "served correctly" | Windows (fixture, shared with AD11 and GC66) |
+| AD17 | R92 | A mockup file is reintroduced: either copied back into `public/` (for example `public/mockup-home.jpg` recreated), or referenced from `src/` (for example a stray string containing `mockup-` added to a component or to `index.html`), while everything else is left as R92 requires | Run `src/publicDirectory.test.js` against a working tree with one of the two fixtures applied (a file added under `public/`, or a source file edited to contain the string `mockup-`) instead of the clean tree | The suite fails: the `public/` fixture fails the "no file under `public/` is named `mockup-*`" assertion; the `src/` fixture fails the "no file under `src/` contains the string `mockup-`" assertion. Either way, `npm test` exits non-zero before `npm run build` runs (R56's order), so the regression is caught before a deploy, not after | Windows (fixture, not the live tree) |
 
 ## 6. Non-functional (success metrics M1-M17)
 
@@ -609,7 +738,7 @@ residual risk. AD14-AD16 red-team the new deploy-time detection instruments them
 | NF5 | M5 | 5 of 5 named routes render without throwing: `/`, `/work`, and the 3 case-study paths | RTL render per route | GC3, GC21 |
 | NF6 | M6 | Exactly 3 case studies, 3 projects (`workhorse`, `Shu`, `wasl`), 1 simulator entry on `/work` | RTL count assertions | GC15, GC16, GC17 |
 | NF7 | M7 | `dist/404.html` exists and is byte-identical to `dist/index.html` (0 bytes different) | File existence + sha256 comparison; re-asserted live by R81's body comparison against a deep link | GC12, GC81 |
-| NF8 | M8 | 0 matches for `508-1536` in `dist/` and `src/` | recursive grep; re-asserted live by R82 | GC41, GC82 |
+| NF8 | M8 | 0 hits from `scripts/check-phone-redaction.mjs`, self-test then scan, across `dist/` and every path `git ls-files` reaches; 0 matches from the generic pattern in the "publishes no phone number" unit test | `node scripts/check-phone-redaction.mjs --self-test` then `node scripts/check-phone-redaction.mjs dist`; `src/data/portfolioData.test.js` ("publishes no phone number"); re-asserted live by R82's generic pattern | GC41, GC82, GC89 |
 | NF9 | M9 | 0 matches for `fonts.googleapis.com` / `fonts.gstatic.com` in `dist/` and `index.html` | recursive grep | GC37 (existence of the call); GC39 (the deeper "actually applied" check the architect flagged, since M9 alone can pass while typography silently fails); GC82 (re-asserted live on the served page) |
 | NF10 | M10 | 0 matches for `fetch(`, `XMLHttpRequest`, `axios`, `gtag`, `analytics`, `dataLayer`, `document.cookie`, `localStorage`, `sessionStorage` in `src/` and `index.html` | the discovery analyst's own grep, re-run with the widened pattern | GC13, GC44; GC82 re-asserts the phone-number-pattern and font-origin subset of this position on the served page |
 | NF11 | M11 | Orb canvas CSS width in `[380, 440]` px inclusive | RTL reads `canvas.style.width` (inline, per R31; jsdom has no layout to read `getBoundingClientRect` from) | GC31 |
@@ -630,8 +759,9 @@ static properties of the three hard-coded `PRESETS` entries (confirmed, reading
 random latency number and a timestamp at run time. No model, no API call, no ranking, and no
 retrieval exists anywhere in this codebase (confirmed by the discovery analyst's grep for
 `fetch(`, `XMLHttpRequest`, `axios`, and re-confirmed here by reading every component file).
-R80-R90 add no such surface either: they are deploy-pipeline assertions and documentation
-requirements, not classification or retrieval.
+R80-R92 add no such surface either: they are deploy-pipeline assertions, a UI scroll control, a
+build guard against a stray asset, and documentation requirements, not classification or
+retrieval.
 
 ## 8. Failure taxonomy
 
@@ -644,14 +774,14 @@ the control for what no automated step can see.
 | Missing result | A route or asset fails to load entirely (blank page, unfallen-back 404) | R80 catches an asset that 404s off the served page. R81 catches a stale or missing `dist/404.html` by comparing a live deep-link body against the live root body. **Deep-link pages beyond the one R81 checks (`/work/apple-llm-triage`) have no separate smoke coverage.** A mount failure that leaves `#root` empty behind an HTTP 200 has **no detection at all** (FL23); R84 is the only control | FL5 (stale/missing `dist/404.html`), FL7 (CSP-blocked inline script, blank page in production only), FL21 (live cross-check), FL23 (mount failure, no automated detection) |
 | Slow | The npm registry or GitHub Pages propagation is slow, delaying or failing the deploy | The GitHub Actions run's own duration and failure status; GitHub's workflow-failure email to the actor (believed, not verified). R63's retry budget converts most propagation lag into a pass, not a signal; R63's exhaustion after 5 retries (FL22) is the signal for genuine slowness | FL1 (registry down), FL16 (Pages propagation lag), FL22 (retries exhausted) |
 | Leaked (resource) | Timers, animation frames, or observers outlive their component and accumulate across navigations | **No detection in production** (no monitoring, by design); caught only pre-release by the fake-timer and mount/unmount eval cases | GC34, GC46, GC47, FL12, FL13, AD12 |
-| Leaked (data) | Personal data (the phone number) or a confidential employer claim reaches the public, permanent, scrapeable surface | R82 catches a regression of the phone number on the served page at every deploy, via a generic character-class pattern match rather than a literal digit search (GC82, amended 2026-09-12 to stop naming the owner's specific digits, per plan rule 3). **No detection of a leak that falls outside that pattern's shape, and no crawler or archive monitoring**, by design; the only available check beyond R82's pattern match is a periodic manual grep of the deployed site, and once a search engine or archive copies it, it is unrecoverable (see below) | R41 (phone number), R82, D4 (employer claims) |
+| Leaked (data) | Personal data (the phone number) or a confidential employer claim reaches the public, permanent, scrapeable surface | R82 catches a regression of the phone number on the served page at every deploy, via a generic character-class pattern match rather than a literal digit search (GC82, amended 2026-09-12 to stop naming the owner's specific digits, per plan rule 3). `scripts/check-phone-redaction.mjs` (GC89) is the dev-host control that catches the same class of leak in the source tree, not the served page. **No detection of a leak that falls outside that pattern's shape, and no crawler or archive monitoring**, by design; the only available check beyond R82's pattern match and GC89's dev-host scan is a periodic manual grep of the deployed site, and once a search engine or archive copies it, it is unrecoverable (see below) | R41 (phone number), R82, R89, D4 (employer claims) |
 | Unauthorised | The deploy workflow or a dependency executes with more privilege or reach than intended | GitHub's own Actions permission enforcement on the per-job `permissions:` blocks (R60); the blocking `npm audit --audit-level=high --omit=dev` step; R85's pin check before `npm ci`; Dependabot alerts on the repository's Security tab | AD7, AD8, AD9, AD10, AD14, FL17 |
-| Corrupted | The build artifact is internally inconsistent (`dist/404.html` stale, `package-lock.json` out of sync, malformed workflow YAML) | The build's own exit code (`npm ci` / `npm run build` failing); GC12's build-time hash-equality check and R81's live body comparison; GitHub's "invalid workflow file" banner in the Actions tab | FL3, FL5, FL21 |
+| Corrupted | The build artifact is internally inconsistent (`dist/404.html` stale, `package-lock.json` out of sync, malformed workflow YAML, or a stray mockup reaching `dist/`) | The build's own exit code (`npm ci` / `npm run build` failing); GC12's build-time hash-equality check and R81's live body comparison; `src/publicDirectory.test.js` (GC92), which runs before the build; GitHub's "invalid workflow file" banner in the Actions tab | FL3, FL5, FL21, AD17 |
 | Unrecoverable | An action that cannot be undone once a visitor, search engine, or archive has copied it | **No detection after the fact.** The only control is pre-push human sign-off (D1, D4 in the G1 approval notes) and running every eval case above **before** every push, never after | The entire reason D1 and D4 exist as explicit owner decisions rather than defaults; a wrongly-published phone number or employer claim |
 
 ## 9. Coverage matrix
 
-### Requirements (R1-R90)
+### Requirements (R1-R92)
 
 Every requirement maps to at least one golden case (`GCn`). Additional edge (`EGn`), failure
 (`FLn`), or adversarial (`ADn`) cases are listed where they exist.
@@ -706,7 +836,7 @@ Every requirement maps to at least one golden case (`GCn`). Additional edge (`EG
 | R46 | GC46 | EG14 | FL13 | - |
 | R47 | GC47 | EG15 | - | - |
 | R48 | GC48 (subject to G2-D2) | EG15 | FL14 | - |
-| R49 | GC49, GC91 | - | - | - |
+| R49 | GC49, GC93 | - | - | - |
 | R50 | GC50 | - | - | - |
 | R51 | GC51 | - | - | - |
 | R52 | GC52 | - | - | AD15 |
@@ -748,9 +878,12 @@ Every requirement maps to at least one golden case (`GCn`). Additional edge (`EG
 | R88 | GC88 (subject to G2-D2) | - | - | - |
 | R89 | GC89 | - | - | - |
 | R90 | GC90 (review property) | - | - | - |
+| R91 | GC91 | EG23 | - | - |
+| R92 | GC92 | - | - | AD17 |
 
-All 90 requirements have at least one golden case. 0 are uncovered. R49 carries two golden
-cases (`GC49`, `GC91`) as of the 2026-09-12 amendment; every other row is unchanged.
+All 92 requirements have at least one golden case. 0 are uncovered. R49 carries two golden cases
+(`GC49`, `GC93`, renamed from `GC91` on 2026-09-13 to free that id for R91); R91 and R92 are new
+as of the same date; every other row is unchanged.
 
 ### Metrics (M1-M17)
 
@@ -763,7 +896,7 @@ cases (`GC49`, `GC91`) as of the 2026-09-12 amendment; every other row is unchan
 | M5 | NF5 (GC3, GC21) |
 | M6 | NF6 (GC15, GC16, GC17) |
 | M7 | NF7 (GC12, GC81) |
-| M8 | NF8 (GC41, GC82) |
+| M8 | NF8 (GC41, GC82, GC89) |
 | M9 | NF9 (GC37, GC39, GC82) |
 | M10 | NF10 (GC13, GC44, GC82) |
 | M11 | NF11 (GC31) |
@@ -774,7 +907,9 @@ cases (`GC49`, `GC91`) as of the 2026-09-12 amendment; every other row is unchan
 | M16 | NF16 (GC45) |
 | M17 | NF17 (GC-CP, GC18) |
 
-All 17 metrics have at least one case. 0 are uncovered.
+All 17 metrics have at least one case. 0 are uncovered. R91 and R92 carry no new numeric metric
+in `intent.md` as of this revision (**believed, not verified**: `intent.md` is being amended in
+parallel by the intent writer in this same window).
 
 ## 10. Notes for the architect
 
@@ -805,7 +940,7 @@ new notes surfaced by R80-R90.
    this is permanent and not an open eval gap, matching this note. GC19 is unchanged in
    substance, with wording tightened to match.
 
-New notes from this revision, arising from R80-R90:
+New notes from the 2026-09-12 revision, arising from R80-R90:
 
 7. **R84's "dated line" has no specified format.** R84 requires the owner to append "a dated
    line" after the first deploy and after any later change to `vite.config.js`, `index.html`
@@ -859,7 +994,20 @@ New note from the 2026-09-12 B2/B3 amendment:
     what GC78 measures, so this eval fix does not depend on its outcome. GC78 is **no longer**
     "left unchanged pending that resolution."
 
+New note from the 2026-09-13 G4 rejection response:
+
+11. **The case ID space needed a rename to keep the `GCn`-maps-to-`Rn` convention for R91.**
+    The 2026-09-12 amendment claimed `GC91` as the next free integer for an R49 supplement, at
+    a time when the highest real requirement was R90. R91 and R92, added the next day, collided
+    with that choice. This agent renamed the R49 supplement to `GC93` rather than assign R91 a
+    non-sequential id, on the reasoning that a reader scanning for "the golden case for R91"
+    should find `GC91` without an exception to remember, and the R49 supplement already carries
+    an explicit exception note (matching `GC-CP`) that a second renumbering does not worsen.
+    Recommend that future exception-case ids borrow from a separate namespace (for example
+    `GC-TW` for the Tailwind supplement, following the `GC-CP` pattern already in this file)
+    instead of the next plain integer, so a later requirement never has to evict them again.
+
 No requirement was left entirely without a case, including the five (R19, R76 in its
 config-only sense, R77, R84, R86) that are permanently manual or evidence-table by nature, and
-R90, which is a review property rather than a command. Each of those has a case that states
-what it can and cannot prove, matching R90's own rule.
+R90, which is a review property rather than a command, and R91/R92, which are fully automatable.
+Each of those has a case that states what it can and cannot prove, matching R90's own rule.
