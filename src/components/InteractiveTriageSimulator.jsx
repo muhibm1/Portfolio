@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Play, RotateCcw, ShieldCheck, AlertTriangle, XCircle, CheckCircle2, Clock, Terminal, ChevronRight, Sparkles, Server } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Play, RotateCcw, CheckCircle2, Clock, Terminal, Sparkles, Server } from 'lucide-react';
 
 const PRESETS = [
   {
@@ -61,26 +61,46 @@ const PRESETS = [
   }
 ];
 
+// The presets above are invented to demonstrate the decision flow (intent G1-D5). A visitor must
+// not read them as real internal tickets, so this label sits beside both places they appear.
+const FICTIONAL_DATA_LABEL = 'Illustrative example, fictional data';
+
 export default function InteractiveTriageSimulator() {
   const [selectedPreset, setSelectedPreset] = useState(PRESETS[0]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStage, setProcessingStage] = useState(0); // 0: Idle, 1: OAuth2 auth, 2: Schema check, 3: LLM reasoning, 4: Done
   const [result, setResult] = useState(null);
+  const pendingStageTimerIds = useRef([]);
+
+  const clearPendingStages = () => {
+    pendingStageTimerIds.current.forEach((timerId) => clearTimeout(timerId));
+    pendingStageTimerIds.current = [];
+  };
+
+  const scheduleStage = (delayMs, runStage) => {
+    pendingStageTimerIds.current.push(setTimeout(runStage, delayMs));
+  };
+
+  // A run still in progress must not update the simulator after it leaves the page.
+  useEffect(() => {
+    return () => clearPendingStages();
+  }, []);
 
   const handleRunSimulation = () => {
+    clearPendingStages();
     setIsProcessing(true);
     setResult(null);
     setProcessingStage(1);
 
-    setTimeout(() => {
+    scheduleStage(400, () => {
       setProcessingStage(2);
-    }, 400);
+    });
 
-    setTimeout(() => {
+    scheduleStage(900, () => {
       setProcessingStage(3);
-    }, 900);
+    });
 
-    setTimeout(() => {
+    scheduleStage(1500, () => {
       setProcessingStage(4);
       setResult({
         decision: selectedPreset.expected,
@@ -91,30 +111,31 @@ export default function InteractiveTriageSimulator() {
         timestamp: new Date().toISOString().slice(11, 19) + ' UTC'
       });
       setIsProcessing(false);
-    }, 1500);
+    });
   };
 
   const handleReset = () => {
+    clearPendingStages();
     setIsProcessing(false);
     setProcessingStage(0);
     setResult(null);
   };
 
   return (
-    <section id="simulator" className="py-20 px-4 border-t border-[#e2e0d8] bg-[#fbfbf9]">
+    <section id="simulator" className="py-20 px-4 border-t border-[#bfbebe] bg-[#e5e4e0]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-800 font-mono text-xs font-semibold mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#1d1d1d] text-[#1d1d1d] font-mono text-xs font-semibold mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Interactive Production Prototype</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#181818] font-['Space_Grotesk',sans-serif]">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1d] font-['Space_Grotesk',sans-serif]">
               Live FDE Decision Triage Simulator
             </h2>
           </div>
-          <p className="text-sm sm:text-base text-[#615f59] max-w-md leading-relaxed">
+          <p className="text-sm sm:text-base text-[#1d1d1d]/70 max-w-md leading-relaxed">
             Test the decision logic modeled after the production system built at Apple. Select structured ticket payloads and observe how deterministic safety policies and LLM classification interact in real time.
           </p>
         </div>
@@ -123,10 +144,13 @@ export default function InteractiveTriageSimulator() {
           {/* LEFT: Preset Selector & Payload Inspector (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             {/* Preset Selector */}
-            <div className="p-5 rounded-2xl bg-white border border-[#e4e2da] shadow-2xs space-y-3">
-              <label className="text-xs font-mono uppercase tracking-widest text-[#787670] font-semibold block">
+            <div className="p-5 bg-white border border-[#bfbebe] space-y-3">
+              <label className="text-xs font-mono uppercase tracking-widest text-[#1d1d1d]/70 font-semibold block">
                 Select Scenario Preset
               </label>
+              <p className="text-[11px] font-mono text-[#1d1d1d]">
+                {FICTIONAL_DATA_LABEL}
+              </p>
 
               <div className="space-y-2">
                 {PRESETS.map((preset) => (
@@ -136,24 +160,21 @@ export default function InteractiveTriageSimulator() {
                       setSelectedPreset(preset);
                       handleReset();
                     }}
-                    className={`w-full p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                    className={`w-full p-3.5 rounded-[10px] border text-left transition-colors cursor-pointer flex flex-col gap-1 ${
                       selectedPreset.id === preset.id
-                        ? 'border-[#181818] bg-[#f6f5f1] shadow-2xs'
-                        : 'border-[#dedcd4] bg-white hover:border-[#cbc8be]'
+                        ? 'border-[#1d1d1d] bg-[#e5e4e0]'
+                        : 'border-[#bfbebe] bg-white hover:border-[#1d1d1d]'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#181818]">
+                      <span className="text-xs font-bold text-[#1d1d1d]">
                         {preset.name}
                       </span>
-                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
-                        preset.expected === 'APPROVE' ? 'bg-emerald-100 text-emerald-800' :
-                        preset.expected === 'HOLD' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
-                      }`}>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 border border-[#1d1d1d] text-[#1d1d1d]">
                         {preset.expected}
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-[#787670]">
+                    <span className="text-[11px] font-mono text-[#1d1d1d]/70">
                       System: {preset.system}
                     </span>
                   </button>
@@ -162,17 +183,20 @@ export default function InteractiveTriageSimulator() {
             </div>
 
             {/* JSON Payload Inspector */}
-            <div className="p-5 rounded-2xl bg-[#181818] text-white shadow-sm space-y-3">
-              <div className="flex items-center justify-between border-b border-[#333] pb-2">
-                <span className="text-xs font-mono text-[#aaa] flex items-center gap-1.5">
-                  <Server className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="p-5 bg-[#1d1d1d] text-white space-y-3">
+              <div className="flex items-center justify-between border-b border-white/20 pb-2">
+                <span className="text-xs font-mono text-[#bfbebe] flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5" />
                   ticket_payload.json
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400">
+                <span className="text-[10px] font-mono text-[#bfbebe]">
                   OAuth2 Signed
                 </span>
               </div>
-              <pre className="text-[11px] font-mono text-[#ddd] overflow-x-auto leading-relaxed bg-[#111] p-3 rounded-lg border border-[#262626]">
+              <p className="text-[11px] font-mono text-white">
+                {FICTIONAL_DATA_LABEL}
+              </p>
+              <pre className="text-[11px] font-mono text-[#e5e4e0] overflow-x-auto leading-relaxed p-3 border border-white/20">
                 {JSON.stringify(selectedPreset.payload, null, 2)}
               </pre>
 
@@ -180,15 +204,15 @@ export default function InteractiveTriageSimulator() {
                 <button
                   onClick={handleRunSimulation}
                   disabled={isProcessing}
-                  className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3 px-4 rounded-[10px] border border-white bg-white text-[#1d1d1d] hover:bg-transparent hover:text-white disabled:opacity-50 font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Play className="w-3.5 h-3.5 fill-black" />
+                  <Play className="w-3.5 h-3.5 fill-current" />
                   <span>{isProcessing ? 'Evaluating Gates...' : 'Run Decision Engine'}</span>
                 </button>
 
                 <button
                   onClick={handleReset}
-                  className="p-3 rounded-xl border border-[#444] text-[#ccc] hover:bg-[#252525] transition-colors cursor-pointer"
+                  className="p-3 rounded-[10px] border border-white/40 text-[#e5e4e0] hover:bg-white hover:text-[#1d1d1d] transition-colors cursor-pointer"
                   title="Reset simulator"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -200,12 +224,12 @@ export default function InteractiveTriageSimulator() {
           {/* RIGHT: Live Engine Execution & Output (7 cols) */}
           <div className="lg:col-span-7 space-y-6">
             {/* Live Pipeline Steps Bar */}
-            <div className="p-5 rounded-2xl bg-white border border-[#e4e2da] shadow-2xs space-y-4">
+            <div className="p-5 bg-white border border-[#bfbebe] space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase tracking-widest text-[#787670] font-semibold">
+                <span className="text-xs font-mono uppercase tracking-widest text-[#1d1d1d]/70 font-semibold">
                   Triage Pipeline Stages
                 </span>
-                <span className="text-xs font-mono text-[#888]">
+                <span className="text-xs font-mono text-[#1d1d1d]/70">
                   Status: {isProcessing ? 'Active Processing' : result ? 'Decision Rendered' : 'Standby'}
                 </span>
               </div>
@@ -219,17 +243,17 @@ export default function InteractiveTriageSimulator() {
                 ].map((s) => (
                   <div
                     key={s.step}
-                    className={`p-3 rounded-xl border transition-all ${
+                    className={`p-3 border transition-colors ${
                       processingStage >= s.step
-                        ? 'border-emerald-400 bg-emerald-50/50 text-emerald-950'
-                        : 'border-[#e4e2da] bg-[#fbfbf9] text-[#787670]'
+                        ? 'border-[#1d1d1d] bg-[#e5e4e0] text-[#1d1d1d]'
+                        : 'border-[#bfbebe] bg-white text-[#1d1d1d]/70'
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1 font-mono text-[10px] font-bold">
                       {processingStage >= s.step ? (
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <CheckCircle2 className="w-3 h-3 text-[#1d1d1d]" />
                       ) : (
-                        <span className="w-3 h-3 rounded-full border border-[#bbb] flex items-center justify-center text-[8px]">
+                        <span className="w-3 h-3 rounded-full border border-[#bfbebe] flex items-center justify-center text-[8px]">
                           {s.step}
                         </span>
                       )}
@@ -238,7 +262,7 @@ export default function InteractiveTriageSimulator() {
                     <span className="font-semibold block leading-tight text-[11px]">
                       {s.label}
                     </span>
-                    <span className="text-[10px] text-[#777] block mt-0.5">
+                    <span className="text-[10px] text-[#1d1d1d]/70 block mt-0.5">
                       {s.sub}
                     </span>
                   </div>
@@ -248,28 +272,25 @@ export default function InteractiveTriageSimulator() {
 
             {/* Decision Outcome Card */}
             {result ? (
-              <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#dedcd4] shadow-sm space-y-6 animate-in fade-in duration-300">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#f0eee6] pb-4">
+              <div className="p-6 sm:p-8 bg-white border border-[#bfbebe] space-y-6 animate-in fade-in duration-300">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#bfbebe] pb-4">
                   <div className="flex items-center gap-3">
-                    <span className={`w-3.5 h-3.5 rounded-full ${
-                      result.decision === 'APPROVE' ? 'bg-emerald-500 ring-4 ring-emerald-100' :
-                      result.decision === 'HOLD' ? 'bg-amber-500 ring-4 ring-amber-100' : 'bg-rose-500 ring-4 ring-rose-100'
-                    }`} />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#1d1d1d]" />
                     <div>
-                      <span className="text-xs font-mono uppercase tracking-wider text-[#787670] block">
+                      <span className="text-xs font-mono uppercase tracking-wider text-[#1d1d1d]/70 block">
                         Engine Decision
                       </span>
-                      <h4 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#181818]">
+                      <h4 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#1d1d1d]">
                         [{result.decision === 'APPROVE' ? 'AUTO-APPROVED' : result.decision === 'HOLD' ? 'HELD FOR HUMAN REVIEW' : 'REJECTED'}]
                       </h4>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-xs font-mono uppercase tracking-wider text-[#787670] block">
+                    <span className="text-xs font-mono uppercase tracking-wider text-[#1d1d1d]/70 block">
                       Confidence Score
                     </span>
-                    <span className="text-xl sm:text-2xl font-bold font-mono text-[#181818]">
+                    <span className="text-xl sm:text-2xl font-bold font-mono text-[#1d1d1d]">
                       {result.confidence}%
                     </span>
                   </div>
@@ -277,42 +298,42 @@ export default function InteractiveTriageSimulator() {
 
                 {/* Reasoning Readout */}
                 <div className="space-y-2">
-                  <span className="text-xs font-mono uppercase tracking-wider text-[#787670] block">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#1d1d1d]/70 block">
                     Model Reasoning & Safety Audit
                   </span>
-                  <p className="text-sm text-[#3d3b37] bg-[#fbfbf9] p-4 rounded-xl border border-[#e8e6de] leading-relaxed">
+                  <p className="text-sm text-[#1d1d1d] bg-[#e5e4e0] p-4 border border-[#bfbebe] leading-relaxed">
                     {result.reasoning}
                   </p>
                 </div>
 
                 {/* Automated Downstream Action */}
                 <div className="space-y-2">
-                  <span className="text-xs font-mono uppercase tracking-wider text-[#787670] block">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#1d1d1d]/70 block">
                     Downstream Automated Execution
                   </span>
-                  <p className="text-xs font-mono text-[#181818] bg-emerald-50/70 text-emerald-950 p-3 rounded-xl border border-emerald-200/80 leading-relaxed">
+                  <p className="text-xs font-mono text-[#1d1d1d] bg-[#cdcdc9] p-3 border border-[#bfbebe] leading-relaxed">
                     → {result.action}
                   </p>
                 </div>
 
                 {/* Telemetry Footer */}
-                <div className="pt-4 border-t border-[#f0eee6] flex items-center justify-between text-[11px] font-mono text-[#787670]">
+                <div className="pt-4 border-t border-[#bfbebe] flex items-center justify-between text-[11px] font-mono text-[#1d1d1d]/70">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-[#555]" />
+                    <Clock className="w-3.5 h-3.5 text-[#1d1d1d]" />
                     Total Latency: {result.latency}ms
                   </span>
                   <span>Execution Logged: {result.timestamp}</span>
                 </div>
               </div>
             ) : (
-              <div className="p-12 rounded-2xl bg-white border border-dashed border-[#dedcd4] flex flex-col items-center justify-center text-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#f6f5f1] flex items-center justify-center text-[#787670]">
+              <div className="p-12 bg-white border border-dashed border-[#bfbebe] flex flex-col items-center justify-center text-center space-y-3">
+                <div className="w-12 h-12 bg-[#e5e4e0] flex items-center justify-center text-[#1d1d1d]/70">
                   <Terminal className="w-6 h-6" />
                 </div>
-                <h4 className="text-sm font-bold text-[#181818]">
+                <h4 className="text-sm font-bold text-[#1d1d1d]">
                   Simulator Ready for Evaluation
                 </h4>
-                <p className="text-xs text-[#787670] max-w-sm leading-relaxed">
+                <p className="text-xs text-[#1d1d1d]/70 max-w-sm leading-relaxed">
                   Click "Run Decision Engine" to trigger OAuth2 validation, deterministic filter policies, and the LLM contextual reasoning layer.
                 </p>
               </div>

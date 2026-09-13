@@ -1,4 +1,4 @@
-# 0004: Pin Vitest 3.2.4 and stay on Vite 5
+# 0004: Pin Vitest 3.2.7 and stay on Vite 5
 
 Date: 2026-09-11
 Status: proposed
@@ -16,7 +16,7 @@ migration guide); Vitest 5 requires Vite >= 6.4.0 and Node >= 22.12.0 (confirmed
 
 ## Decision
 
-We pin `vitest` at 3.2.4 and leave Vite at 5.4.11. The supporting packages are
+We pin `vitest` at 3.2.7 and leave Vite on major 5. The supporting packages are
 `@testing-library/react` 16.3.0 with its required peer `@testing-library/dom` 10.4.1,
 `@testing-library/jest-dom` 6.9.1, and `jsdom` 26.1.0 as the DOM environment. All are exact
 pins with no range prefix. The Vitest configuration lives in a `test` block inside the existing
@@ -50,3 +50,15 @@ Second cost: the dev host runs Node v21.7.3, which is believed to sit outside Vi
 supported Node range. `npm install` will warn and continue because there is no `.npmrc` setting
 `engine-strict` (confirmed by glob). CI pins Node 22. Revisit when the owner moves the laptop to
 Node 22 LTS.
+
+## Amendment 2026-09-12
+
+Owner build decision B2 ("B2 and B3 as recommended", `conductor-log.md` line 35) moved the pin
+from 3.2.4 to 3.2.7 in commit `a98fdcf`, clearing critical advisory GHSA-5xrq-8626-4rwp (as
+recorded in `conductor-log.md` line 30). The decision is unchanged. Confirmed from
+`node_modules/vitest/package.json`: MIT (line 7); engines `^18.0.0 || ^20.0.0 || >=22.0.0` (line
+114), which settles the Node 21 point above, since 21 is outside it; and `vite` as
+`^5.0.0 || ^6.0.0 || ^7.0.0-0` (line 162). Vite resolves to 5.4.21 from the declared `^5.4.11`,
+not the 5.4.11 recorded in Context (confirmed, `node_modules/vite/package.json` line 3). One
+dev-only advisory, GHSA-82fw-gwwq-j7x9 in `@vitest/mocker`, needs Vitest 4.1.11 or later; ADR
+0009 accepts it along with the Vite advisories.
