@@ -1,8 +1,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import App from '../App';
 import { portfolioData } from '../data/portfolioData';
+import { REDUCED_MOTION_QUERY } from '../prefersReducedMotion';
 import ContactFooter from './ContactFooter';
+
+// R91: the footer renders on every route, so Back to Top is checked on each kind of page.
+const EVERY_KIND_OF_PAGE = ['/', '/work', '/work/apple-llm-triage', '/work/no-such-study', '/no-such-page'];
 
 // Any North American number, with or without separators. Tests never contain the owner's own
 // digits (plan rule 3), so they detect the shape instead.
@@ -89,12 +94,70 @@ describe('ContactFooter', () => {
   });
 });
 
+// The setup file replaces window.scrollTo and matchMedia before every test and restores them after.
+describe('ContactFooter Back to Top', () => {
+  it.each(EVERY_KIND_OF_PAGE)('scrolls smoothly to the top of %s without leaving the page', (path) => {
+    const scrollTo = spyOnScrollTo();
+    renderAppAt(path);
+    const headingBeforeClick = levelOneHeadingText();
+
+    fireEvent.click(backToTopButton());
+
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(levelOneHeadingText()).toBe(headingBeforeClick);
+    expect(screen.queryByRole('link', { name: /back to top/i })).toBeNull();
+  });
+
+  it('scrolls to the top without smooth scrolling when reduced motion is preferred', () => {
+    preferReducedMotion();
+    const scrollTo = spyOnScrollTo();
+    renderAppAt('/work');
+
+    fireEvent.click(backToTopButton());
+
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
+  });
+});
+
 function renderFooter() {
   return render(
     <MemoryRouter>
       <ContactFooter onOpenResume={() => {}} />
     </MemoryRouter>,
   );
+}
+
+// BrowserRouter lives in main.jsx, so tests supply their own router around App.
+function renderAppAt(path) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  );
+}
+
+function levelOneHeadingText() {
+  return screen.getByRole('heading', { level: 1 }).textContent.replace(/\s+/g, ' ').trim();
+}
+
+function backToTopButton() {
+  return screen.getByRole('button', { name: /back to top/i });
+}
+
+function spyOnScrollTo() {
+  const scrollTo = vi.fn();
+  window.scrollTo = scrollTo;
+  return scrollTo;
+}
+
+function preferReducedMotion() {
+  const originalMatchMedia = window.matchMedia;
+  window.matchMedia = (query) => ({
+    ...originalMatchMedia(query),
+    matches: query === REDUCED_MOTION_QUERY,
+  });
 }
 
 function copyEmailButton() {
