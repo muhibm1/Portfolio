@@ -2,10 +2,11 @@
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Intent: [intent.md](./intent.md)
-Status: G1, G2 and G3 approved (confirmed, `approvals.md`); in Verify, heading to G4 (confirmed,
-`conductor-log.md` line 71). Amended during Build and Verify: B2 and B3 dependency amendments
-2026-09-12, audit-command alignment 2026-09-13; see the amendment lines below and the dated notes
-inline.
+Status: G1, G2 and G3 approved (confirmed, `approvals.md`). G4 rejected twice on 2026-09-13, both
+times by the main session under the owner's delegation (confirmed, `approvals.md` lines 42 and
+51); in the second fix pass. Amended during Build and Verify: B2 and B3 dependency amendments
+2026-09-12, audit-command alignment 2026-09-13, and two G4 rejection responses 2026-09-13; see the
+amendment lines below and the dated notes inline.
 Risk tier: 2
 Policy skills applied: `wh-agent-rules`, `wh-security-baseline`, `wh-readable-code`, `wh-adr`,
 `wh-review-packet`
@@ -42,6 +43,13 @@ of the phone number in every tracked file, this one included, and rewrites R41's
 so no check carries the digits. Adds ADRs 0010 to 0012. One quote per rejection note, and what
 changed, is under [G4 rejection response](#g4-rejection-response-2026-09-13). No command was
 run: the Bash tool is absent in this session too (confirmed by the tool list).
+Amended a fifth time: 2026-09-13 by the spec architect, after the second G4 rejection. A short fix
+pass that adds no requirement. R89's text and check, and ADR 0010, gain the country-code prefix
+and the UTF-16 and undecodable-file rules. Two builder tasks are defined: F4 (script and test) and
+F5 (stale documents). The requirement count now reads 92, the remaining `public/mockup-*.jpg`
+citations point to `docs/design/`, and the two D3-era Medium audit rows are recorded as resolved.
+Everything is under [Second G4 rejection](#second-g4-rejection-2026-09-13). No command was run: the
+Bash tool is absent in this session too (confirmed by the tool list).
 
 Every factual claim below carries a label. **Confirmed** means this agent read the file or the
 tool output named. **Believed, not verified** means it was inferred, reported by an earlier
@@ -64,7 +72,7 @@ links to `/work/:slug` survive on GitHub Pages by copying the built `dist/index.
 keeps the project's absolute no-storage position intact. Everything else follows from that
 choice plus the design authority in `docs/design-brief.md`.
 
-**On size.** This change is large: 90 requirements across routing, two new page types, a canvas
+**On size.** This change is large: 92 requirements (90 when G2 approved it; corrected 2026-09-13) across routing, two new page types, a canvas
 component, a font migration, a test toolchain, a deploy pipeline, and seven debt items. It is
 not separable into independently shippable changes, because nothing here delivers value alone: a
 router with no deploy is not a portfolio, and a deploy of today's page misses the point of the
@@ -79,7 +87,7 @@ recommendation.
 
 ## Requirements
 
-90 requirements: R1 to R79 from the first draft with their numbers untouched, plus R80 to R90
+92 requirements (corrected 2026-09-13; this line said 90): R1 to R79 from the first draft with their numbers untouched, plus R80 to R90
 added by the [Response to audit](#response-to-audit). R91 and R92 were added on 2026-09-13 by the
 [G4 rejection response](#g4-rejection-response-2026-09-13), for 92 in total. Every one has an acceptance check a test,
 a grep, or a command can implement, except the five that are permanently manual and say so in
@@ -133,7 +141,7 @@ a reader could not resolve against `approvals.md`; every occurrence now carries 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
 | R21 | `/work/:slug` SHALL resolve for `apple-llm-triage`, `apple-data-health` and `neural-newsletters-llm`, and SHALL render `NotFoundPage` for any other slug. | Four tests, one per slug plus one unknown slug. | O3, M5 |
-| R22 | The page SHALL be laid out per `public/mockup-casestudy.jpg`: eyebrow line, large uppercase display title, a row of four tab chips, a flow diagram on the left, a stacked metric column on the right headed "Key enterprise metrics", then tech stack, then previous and next links. | Test asserts the four chip labels and both column headings; visual review at G4 against the mockup. | O3, design-brief 3 |
+| R22 | The page SHALL be laid out per `docs/design/mockup-casestudy.jpg` (moved from `public/` under G4-D4, R92): eyebrow line, large uppercase display title, a row of four tab chips, a flow diagram on the left, a stacked metric column on the right headed "Key enterprise metrics", then tech stack, then previous and next links. | Test asserts the four chip labels and both column headings; visual review at G4 against the mockup. | O3, design-brief 3 |
 | R23 | The four tabs SHALL be Challenge, System Architecture, Production Deployment and Measured Impact, sourced only from existing data: `challenge`, `diagramSteps`, `solution` with `techStack`, and `impact` respectively. No new prose SHALL be written into any case study. | Test asserts each tab body's text is a substring of the matching field in `portfolioData`. | O3, O9, constraints.md business constraint 1 |
 | R24 | The flow diagram SHALL be generated from `diagramSteps` for any array length, not hard-coded to one case study. | Test renders all three case studies and asserts the rendered node count equals `diagramSteps.length` for each. | O3 |
 | R25 | Previous and next links SHALL wrap around the `caseStudies` order. | Test asserts that on the last case study the next link points at the first. | design-brief 3 |
@@ -143,10 +151,10 @@ a reader could not resolve against `approvals.md`; every occurrence now carries 
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R27 | The hero SHALL match `public/mockup-home.jpg`: stacked uppercase name on two lines, the role line, the availability pill, the telemetry strip, and the orb on the right where the monogram is today. All four `telemetry` entries SHALL render; the mockup shows three because of its crop, and dropping one would delete a factual claim. | Test asserts the heading text, the pill text, all four telemetry metric strings, and the orb's presence. | O6, O9 |
+| R27 | The hero SHALL match `docs/design/mockup-home.jpg` (moved from `public/` under G4-D4, R92): stacked uppercase name on two lines, the role line, the availability pill, the telemetry strip, and the orb on the right where the monogram is today. All four `telemetry` entries SHALL render; the mockup shows three because of its crop, and dropping one would delete a factual claim. | Test asserts the heading text, the pill text, all four telemetry metric strings, and the orb's presence. | O6, O9 |
 | R28 | `src/components/MmLogo.jsx` SHALL be deleted once the orb replaces it and nothing imports it. Git history retains it. | `git ls-files` contains no `MmLogo.jsx`; `grep -rn "MmLogo" src/` returns nothing. | O6 |
 | R29 | A new `src/components/ThinkingOrbHero.jsx` SHALL render one `<canvas role="img">` whose geometry comes from `thinking-orbs/engine` using exactly two exports, `resolvePreset` and `MODE_FRAMES`, resolved as `resolvePreset('working', 64)` and painted through `MODE_FRAMES[mode](size, t, opts)`. The package's `paint`, `paintFrame`, `paintLines` and its `ThinkingOrb` component SHALL NOT be used. | `grep -n "thinking-orbs" src/components/ThinkingOrbHero.jsx` shows one import from `thinking-orbs/engine` naming only those two symbols. | O7, design-brief 2 |
-| R30 | The painter SHALL colour each dot by its depth across the stops `#facb0e`, `#f06ba8`, `#78bae6` and `#ffffff`, which are the OFF+BRAND gradient in `docs/design-brief.md` line 34 and the `--accent-amber`, `--accent-rose`, `--accent-blue` tokens in `src/index.css` lines 13 to 15, with no canvas shadow. The interpolation SHALL be a small exported pure function, `colourForDepth(z)`, taking `z` in [-1, 1] and returning a CSS colour string, so the mapping is testable without a canvas. | Unit test "maps the near, middle and far depths onto the brand stops" calls `colourForDepth` at `z = -1`, `0` and `1` and asserts the exact returned strings, plus design review at G4 against `public/mockup-home.jpg`. A grep alone cannot tell the four stops apart, which is why the pure function is required. | O7, O8, design-brief |
+| R30 | The painter SHALL colour each dot by its depth across the stops `#facb0e`, `#f06ba8`, `#78bae6` and `#ffffff`, which are the OFF+BRAND gradient in `docs/design-brief.md` line 34 and the `--accent-amber`, `--accent-rose`, `--accent-blue` tokens in `src/index.css` lines 13 to 15, with no canvas shadow. The interpolation SHALL be a small exported pure function, `colourForDepth(z)`, taking `z` in [-1, 1] and returning a CSS colour string, so the mapping is testable without a canvas. | Unit test "maps the near, middle and far depths onto the brand stops" calls `colourForDepth` at `z = -1`, `0` and `1` and asserts the exact returned strings, plus design review at G4 against `docs/design/mockup-home.jpg` (moved from `public/` under G4-D4, R92). A grep alone cannot tell the four stops apart, which is why the pure function is required. | O7, O8, design-brief |
 | R31 | The canvas CSS width SHALL be `Math.min(420, Math.max(280, viewportWidth - 48))` and SHALL be set as an inline style so it is readable without layout. That is 420 px at viewport widths of 468 px and above, `viewportWidth - 48` between 328 px and 468 px, and 280 px below that. The clamp SHALL be a small exported pure function, `canvasWidthForViewport(viewportWidth)`. | Unit test calls the helper at 1440, 1024, 700, 468 and 320 and asserts 420, 420, 420, 420 and 280; a render test asserts `canvas.style.width === '420px'` under the jsdom default viewport, which satisfies M11's 380 to 440 band. | O7, M11 |
 | R32 | Under `prefers-reduced-motion: reduce` the component SHALL paint exactly one frame at `t = 0.6` and SHALL NOT call `requestAnimationFrame` at all. | Test with a mocked `matchMedia` asserts the `requestAnimationFrame` call count is 0. | O7, M12 |
 | R33 | The component SHALL pause its loop when the canvas is not intersecting the viewport and when `document.visibilityState` is `hidden`, resume on both, and feature-detect `IntersectionObserver`, running unpaused when it is absent. | Test with a stubbed `IntersectionObserver` asserts `cancelAnimationFrame` is called when the entry reports `isIntersecting: false`. | O7 |
@@ -258,7 +266,7 @@ The five below have no other home. All ten are new; R1 to R79 keep their origina
 | R84 | `docs/hosted-config.md` SHALL carry a "Post-deploy manual check" section listing the four things no step this project can run is able to prove, and the owner SHALL work through it and append a dated line after the first deploy and after any later change to `vite.config.js`, `index.html` or `package.json`. The four: the home page renders content inside `#root` in a real browser; the orb animates and stops when the tab is hidden; a deep link pasted into a fresh tab renders the case study; the browser console shows no CSP violation and no uncaught error. | The section exists with the four items; after the first deploy the file carries at least one dated line. Owner: site owner. This is a manual control by necessity, not by preference: there is no browser in CI and adding one (Playwright) was rejected on cost in [Alternatives considered](#alternatives-considered). | audit High finding 1, [Observability](#observability) |
 | R86 | Before committing the regenerated `package-lock.json` (R71), the builder SHALL record the resolved version of every direct dependency from the pre-existing lockfile and from the regenerated one, and SHALL put both columns in the G4 evidence table. Any direct dependency whose **major** version moved SHALL be escalated to the owner before the commit, never merged silently. The transitive tree is not reviewed entry by entry; that residue is an accepted risk with a named owner in the [Risk register](#5-risk-register). | G4 evidence table contains a before-and-after row for each of the 11 direct dependencies, with a stated verdict on every row that moved. | audit Medium finding 4, security baseline supply chain |
 | R88 | The build-only `transformIndexHtml` step that injects the CSP (R65) SHALL also inject `<meta name="referrer" content="strict-origin-when-cross-origin">`. It is the only baseline header besides the CSP that a meta tag can express, and it costs nothing in a step that already exists. | `grep -c 'name="referrer"' dist/index.html dist/404.html` is 1 in each and 0 in the source `index.html`; R82 re-asserts it on the served page. | audit Medium finding 5, security baseline, ADR 0006, G2-D2 |
-| R89 | No file tracked at HEAD SHALL contain the owner's phone number in any of three forms: the full ten digits; the last seven digits (exchange plus line number); or the area code plus exchange. The last form is the redaction this requirement first prescribed, and combined with any last-seven occurrence it rebuilds the number. A form matches with any separator between its digit groups, or none. The scope includes the approved G1 text in `intent.md` and the approved G2 text in this file. Each occurrence SHALL be replaced by a form with no digit of the number, such as "the owner's phone number" or `(NNN) NNN-NNNN`. No check, test, script or workflow SHALL contain the digits. Detection SHALL use `scripts/check-phone-redaction.mjs`, which derives the number at run time from `b50497f` and never prints it. Its contract is under [G4 rejection response](#g4-rejection-response-2026-09-13), and the reasoning is in [ADR 0010](./adr/0010-detect-the-owners-phone-number-by-deriving-it-from-git-history-at-run-time.md). **Git history is out of scope**: commits from `b50497f` onward keep the number, which is accepted, not rewritten; see [Retention](#data). **Amended 2026-09-13 (G4-D3):** as approved at G2, this requirement kept the literal in this file's checks and redacted two other sites to the area-code-and-exchange form. Both positions are withdrawn. | On the dev host, on a clean working tree at HEAD: `node scripts/check-phone-redaction.mjs --self-test` exits 0, which proves each of the three forms is detected and the look-alike in `src/data/portfolioData.test.js` is not. Then `node scripts/check-phone-redaction.mjs` exits 0 and reports more than 0 files scanned. Exit 2, meaning the number could not be derived, is a failure, never a pass. The script does not run in CI, by design; see ADR 0010. | audit Medium finding 6, G1-D1, G4-D3, constraints.md technical constraint 2 |
+| R89 | No file tracked at HEAD SHALL contain the owner's phone number in any of three forms: the full ten digits; the last seven digits (exchange plus line number); or the area code plus exchange. The last form is the redaction this requirement first prescribed, and combined with any last-seven occurrence it rebuilds the number. A form matches with any separator between its digit groups, or none. The scope includes the approved G1 text in `intent.md` and the approved G2 text in this file. Each occurrence SHALL be replaced by a form with no digit of the number, such as "the owner's phone number" or `(NNN) NNN-NNNN`. No check, test, script or workflow SHALL contain the digits. Detection SHALL use `scripts/check-phone-redaction.mjs`, which derives the number at run time from `b50497f` and never prints it. Its contract is under [G4 rejection response](#g4-rejection-response-2026-09-13), and the reasoning is in [ADR 0010](./adr/0010-detect-the-owners-phone-number-by-deriving-it-from-git-history-at-run-time.md). **Git history is out of scope**: commits from `b50497f` onward keep the number, which is accepted, not rewritten; see [Retention](#data). **Amended 2026-09-13 (G4-D3):** as approved at G2, this requirement kept the literal in this file's checks and redacted two other sites to the area-code-and-exchange form. Both positions are withdrawn. **Amended 2026-09-13 (second G4 rejection):** the full-number and area-code-plus-exchange forms also match when a North American country code, `1` or `+1`, is written directly in front, with or without a separator; any other digit directly before a match still rejects it. Every file the scan reaches SHALL be read as UTF-8, UTF-16LE or UTF-16BE, or skipped as a named binary type, and a file it cannot decode SHALL fail the scan with exit 2, naming the path and printing none of its content. Contract under [Second G4 rejection](#second-g4-rejection-2026-09-13). | On the dev host, on a clean working tree at HEAD: `node scripts/check-phone-redaction.mjs --self-test` exits 0, which proves each of the three forms is detected and the look-alike in `src/data/portfolioData.test.js` is not. Then `node scripts/check-phone-redaction.mjs` exits 0 and reports more than 0 files scanned. Exit 2, meaning the number could not be derived, is a failure, never a pass. The script does not run in CI, by design; see ADR 0010. **Amended 2026-09-13 (second G4 rejection):** the self-test prints `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.`; the scan's summary reports 0 undecodable, 0 missing from disk and 5 skipped as binary at HEAD (believed, from `verification.md` line 69, which counted binary and missing together); and `npm test -- src/checkPhoneRedaction.test.js` exits 0 with 17 passing tests. Those 17 tests use a synthetic number and no git history, so they also run in CI through `npm test` (R56). | audit Medium finding 6, G1-D1, G4-D3, constraints.md technical constraint 2 |
 | R90 | No requirement in this spec SHALL claim a detection capability that the check named beside it does not have. Where a failure mode has no automatable detection in this project, the spec SHALL name it as an accepted risk with an owner rather than crediting a step that cannot see it. | Review at re-audit: [Observability](#observability), [Failure modes](#failure-modes) and the [Risk register](#5-risk-register) each name R63 and R80 to R83 only for what they assert, and name R84 for the rest. | audit High finding 1, `wh-agent-rules` "evidence before assertion" |
 
 ### P. Added by the G4 rejection response (2026-09-13)
@@ -603,7 +611,8 @@ package's own component so the behaviour matches the upstream design rather than
 
 The existing ambient glow treatment stays: the `radial-gradient` plus `.animate-iridescent`
 currently on `MmLogo.jsx` lines 7 to 13 and defined at `src/index.css` lines 53 to 67 moves to
-the orb's wrapper, so the hero still reads like `public/mockup-home.jpg`. R40's site-wide
+the orb's wrapper, so the hero still reads like `docs/design/mockup-home.jpg` (moved from `public/`
+under G4-D4, R92). R40's site-wide
 reduced-motion block neutralises that animation too.
 
 ### Fonts
@@ -1216,7 +1225,7 @@ now names all four in its requirement text, and its grep-based acceptance check 
 |---|----------|------------------|-------|
 | OQ1 | What is the one-line tagline and short description for each of `workhorse`, `Shu` and `wasl`? `docs/design-brief.md` has a phrase for the first two and nothing for `wasl`. No agent may invent this text | Ship whatever the owner writes. If he supplies nothing before the build, the three entries render as repository name plus link plus tech stack, with no prose, rather than inventing a description | Site owner (G2-D1) |
 | OQ2 | Are all three repositories public? A link to a private repository shows a 404 to every visitor | Assume public; the build phase checks each URL returns 200 before the first deploy and reports any that do not | Site owner |
-| OQ3 | `docs/design-brief.md` specifies 0 px card radius and zero shadows (OFF+BRAND); `public/mockup-home.jpg` and `public/mockup-casestudy.jpg` show rounded cards with a soft shadow, and the current code uses `rounded-2xl` and `shadow-2xs` throughout | Follow the design brief for tokens (0 px on cards, 10 px on interactive elements, no shadows) because `intent.md` names it the design authority, and follow the mockups for layout and content placement | Site owner (G2-D4) |
+| OQ3 | `docs/design-brief.md` specifies 0 px card radius and zero shadows (OFF+BRAND); `docs/design/mockup-home.jpg` and `docs/design/mockup-casestudy.jpg` (moved from `public/` under G4-D4, R92) show rounded cards with a soft shadow, and the current code uses `rounded-2xl` and `shadow-2xs` throughout | Follow the design brief for tokens (0 px on cards, 10 px on interactive elements, no shadows) because `intent.md` names it the design authority, and follow the mockups for layout and content placement | Site owner (G2-D4) |
 | OQ4 | Adding `personal.github` and `personal.githubHandle` adds a new personal-data field. `constraints.md` says not to add new personal data fields without the owner saying so | Add them. A public GitHub profile handle is already the owner's public professional identity, `docs/design-brief.md` names it, and Outcome 4 cannot be met without linking the three repositories | Site owner |
 | OQ5 | The dev host runs Node v21.7.3, which is outside Vitest 3's believed supported range and is not an LTS line | CI pins Node 22 (R62); the owner upgrades the dev host to Node 22 LTS at his convenience. `engine-strict` stays off, so the local install warns rather than fails | Site owner |
 | OQ6 | `public/` contains four design mockup JPEGs that will be published at `/Portfolio/mockup-*.jpg`, including one showing "Log in" and "Sign up" chrome this site does not have | Leave them for now and record it. Moving them to `docs/design/` would break the paths that `intent.md`, `docs/design-brief.md` and this spec all reference. **Superseded 2026-09-13 by G4-D4 and R92:** the four files move to `docs/design/`, and the design brief, the codebase map and ADR 0008 are repointed in the same change. Older `public/mockup-*.jpg` paths in this spec, `intent.md` and `evals.md` are historical and now resolve under `docs/design/` | Site owner |
@@ -1312,6 +1321,10 @@ matches substrings of hashes and lockfile integrity values. Contract for the new
 | Where it runs | On the dev host: by the verifier, and by the owner before a push. Not in CI, because CI's checkout is shallow (ADR 0010) |
 | Dependencies | Node built-ins and the `git` binary. No new package |
 
+**Amended 2026-09-13 (second G4 rejection):** the Forms, Scope, Output, Exit and `--self-test`
+rows above are superseded by the contract under
+[Second G4 rejection](#second-g4-rejection-2026-09-13). The other rows stand.
+
 The checks that must also run in CI stay generic, because history is shallow there: the unit
 test "publishes no phone number" in `src/data/portfolioData.test.js`, "shows no phone number" in
 `src/components/ContactFooter.test.jsx`, and R82's served-page step.
@@ -1387,6 +1400,273 @@ The eval designer owns these changes.
   but that is an ask-first edit and not required (ADR 0010).
 - After Back to Top, keyboard focus stays in the footer (ADR 0011).
 - The stale-document Lows in the G4 packet, such as the header's R80 to R89 count, are untouched.
+
+### Second G4 rejection (2026-09-13)
+
+Written 2026-09-13 by the spec architect in answer to the second G4 rejection in `approvals.md`
+(G4 block, `2026-09-13T03:30:20.632Z`, line 51). The main session decided it under the owner's
+delegation, and the owner has not read the packet (confirmed, line 51). This is a short fix pass:
+no requirement is added or renumbered, and the count stays 92. No command was run. The Bash tool
+is absent (confirmed by the tool list), so every "confirmed" below comes from the Read, Grep or
+Glob tool.
+
+> "Decided by Claude (main session) under the owner's instruction 'Approve every command yourself, I'm busy'; the owner has not read the packet. Short fix pass per the packet's own recommendation: (1) scripts/check-phone-redaction.mjs must also catch the number written with a +1 or 1 country-code prefix directly in front, and must read UTF-16 files (or fail loudly on files it cannot decode) instead of skipping them silently; add a test for each. (2) Correct docs/hosted-config.md lines 116-119 and every other stale doc the packet lists so no document claims the number remains in docs or that its removal is an open decision. D1 stays ratified on the owner's behalf pending his own confirmation; D2 (visibility, pushing main) stays with the owner; D5 backlog stays tracked. Re-verify on Node v22.12.0, re-run the security and conformance reviews, update review-packet.md, and present G4 again."
+
+Not changed by this pass: R41, G1-D1, and anything about publishing. D1 stays ratified under
+delegation and awaits the owner's own confirmation. D2 (repository visibility, pushing `main`)
+stays with the owner. The D5 backlog stays tracked in `review-packet.md` section 4. `intent.md`
+belongs to the intent writer and `evals.md` to the eval designer; neither is edited here.
+
+#### Item 1: the redaction script (R89, ADR 0010)
+
+This answers the two bug-reviewer Mediums in `review-packet.md` section 4. Both are confirmed by
+reading `scripts/check-phone-redaction.mjs`. First, `digitGroupsPattern` (line 141) rejects any
+digit directly before a match, so the `1` of a country code written with no separator blocks every
+form. Second, `readTextFile` (lines 205 and 206) returns null for any file with a NUL byte, so a
+UTF-16 file is counted as skipped and never read. R89 and ADR 0010 carry dated amendments pointing
+here.
+
+**How the tests reach the script: export, and run `main` only when executed directly.** The
+alternative was to extend `--self-test` and spawn it from a test, and it was rejected. A spawned
+scan derives the reference from `b50497f` before it reads any file, and CI's clone is shallow
+(ADR 0010). So a spawned test of the undecodable-file path would exit 2 for the wrong reason and
+pass without proving anything. An in-process test passes the synthetic `SELF_TEST_REFERENCE` and
+temporary file paths, and never calls git. `--self-test` still gains the new renderings, because
+GC89 runs it on the dev host.
+
+The contract below supersedes the Forms, Scope, Output, Exit and `--self-test` rows of the table
+under [D3, the phone number](#d3-the-phone-number); the other rows there stand.
+
+| Aspect | Contract |
+|---|---|
+| Forms | For the full number and the area code plus exchange, an optional North American country code, `1` or `+1`, followed by up to 3 separators, may sit directly in front of the area code. The optional group goes after the existing no-digit lookbehind: the lookbehind, then `(?:\+?1[ .()-]{0,3})?`, then the digit groups as today. So `+1NNNNNNNNNN`, `1NNNNNNNNNN`, `+1 NNN...` and `1-NNN...` all match. Any other digit directly before a match still rejects it, including a `1` that itself follows a digit (`11`, `91`). The last-seven form is unchanged |
+| Binary by extension | A path whose lower-cased extension is `.jpg`, `.png`, `.woff` or `.woff2` is skipped without being read, and counted as binary. The list is exported as `BINARY_EXTENSIONS` and names only types present today: four `.jpg` files under `docs/design/` and `src/assets/hero.png` (confirmed by glob), and the `@fontsource` font files, which ship as `.woff` and `.woff2` (confirmed by glob of `node_modules/@fontsource/space-grotesk/files/`). `dist/` is absent from this working tree, so that its 116 non-tracked skips at `verification.md` line 70 are all fonts is believed, not verified. Any other binary type fails the scan loudly until its extension is added, which is the intended direction |
+| Decoding, first rule that applies | 1. Starts `FF FE`: UTF-16LE. The rest must have an even byte count and is decoded as `utf16le`. 2. Starts `FE FF`: UTF-16BE. The rest must have an even byte count; a copy is byte-swapped with `Buffer.prototype.swap16` and decoded as `utf16le`. 3. No `0x00` byte: UTF-8, as today. 4. Holds `0x00` with no byte-order mark: UTF-16LE when all three hold: an even byte count, no `0x00` at an even offset, and `0x00` at no fewer than half of the odd offsets. It is decoded as `utf16le`. 5. Anything else is undecodable. A file under rule 1 or 2 with an odd byte count, or whose decoded text contains U+0000, is also undecodable |
+| Why rule 4 is safe | Mostly-ASCII UTF-16LE has `0x00` at every odd offset and at no even offset. A UTF-8 file with one stray NUL fails the half-of-odd-offsets test. Whatever fails goes to exit 2, never to a silent skip. Cost: BOM-less UTF-16LE text that is mostly non-Latin fails loudly, and the remedy is to save it as UTF-8. Windows PowerShell 5.1's `>` writes UTF-16LE with a byte-order mark (believed, not verified), which rule 1 covers |
+| Output | Per hit, unchanged: `path:line: form name`. Per undecodable file: `path: could not be decoded as UTF-8 or UTF-16, not scanned`. Summary: `Scanned N files (B skipped as binary, M missing from disk, U undecodable), H hits.` Never the matched text, never file content, never a digit of the reference |
+| Exit | 2 when any file is undecodable (hits in other files are still printed and counted, but the scan is incomplete), when no file was scanned, or when the reference cannot be derived. Otherwise 1 on any hit, else 0 |
+| Exports | `EXIT_CLEAN`, `EXIT_HIT`, `EXIT_CANNOT_RUN`, `SELF_TEST_REFERENCE`, `BINARY_EXTENSIONS`; `buildMatchers(referenceDigits)` and `formNamesFoundIn(line, matchers)` as today; `decodeFile(filePath, bytes)`, returning `{ kind: 'binary' }`, `{ kind: 'text', text }` or `{ kind: 'undecodable' }`; and `scanFiles(absolutePaths, matchers)`, returning `{ exitCode, reportLines }` and printing nothing. Importing the module prints nothing and sets no exit code |
+| `--self-test` | Keeps the 9 renderings and the 6 near-misses. Adds 8 renderings: the full number and the area code plus exchange, each written with `+1` and no separator, `1` and no separator, `+1` and a space, and `1` and a hyphen. For the synthetic number those are `+15555560100`, `15555560100`, `+1 555-556-0100`, `1-555-556-0100`, `+1555556`, `1555556`, `+1 555-556` and `1-555-556`. Adds 3 near-misses: `915555560100`, `115555560100` and `91555556`. Expected line: `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.` |
+| Unchanged | Reference derivation from `b50497f`, the scan scope (`git ls-files` plus directory arguments), where it runs (the dev host, not CI), and no new dependency. A tracked file missing from disk is still skipped, now counted on its own; the bug reviewer's Low on it stays open |
+
+**Tests.** A new file, `src/checkPhoneRedaction.test.js`. It lives under `src/` because Vitest
+discovers only `src/**/*.test.{js,jsx}` (confirmed, `vite.config.js` line 41), and
+`vite.config.js` is ask-first. It runs in the default jsdom environment, with no
+`// @vitest-environment node` comment. The reason is that `src/test/setup.js` stubs `window` and
+`HTMLCanvasElement` in an unguarded `beforeEach` (confirmed, lines 10 to 14), and those names do not
+exist in the node environment (believed, not verified). `src/publicDirectory.test.js` already uses
+`node:fs` under jsdom and passes (confirmed, `verification.md` line 74). The test imports `Buffer`
+from `node:buffer` and takes `SELF_TEST_REFERENCE` from the script. Fixture files go in a
+directory from `fs.mkdtempSync(path.join(os.tmpdir(), 'check-phone-redaction-'))`, removed in
+`afterEach` and never inside the repository. It needs neither `b50497f` nor git, so it passes on
+CI's shallow clone.
+
+| # | Test | Arrange and assert |
+|---|---|---|
+| 1 to 8 | `it.each`: "catches the full number written with a country code as `<text>`", and the same for the area code and exchange | For each of the 8 new renderings above, `formNamesFoundIn` on the line "Call `<text>` today." includes the expected form name |
+| 9 to 12 | `it.each`: "does not match `<text>`, which has another digit directly before the number" | `95555560100`, `915555560100`, `115555560100` and `91555556` each return `[]` |
+| 13 | "reads a UTF-16LE file that starts with a byte-order mark" | A file of bytes `FF FE` followed by "Call 555-556-0100 today." plus a newline, encoded as UTF-16LE, and a clean UTF-8 file. `scanFiles` returns exit code 1, and a report line names the fixture and ends `:1: full number` |
+| 14 | "reads a UTF-16BE file that starts with a byte-order mark" | Bytes `FE FF` followed by the same text in UTF-16BE; same assertions |
+| 15 | "reads a UTF-16LE file with no byte-order mark" | The UTF-16LE bytes alone; same assertions |
+| 16 | "fails with exit 2 and names a file it cannot decode, without printing its content" | `clean.txt` holding "No number here." in UTF-8, and `undecodable.txt` holding one `0x00` byte followed by the UTF-8 bytes of "Call 555-556-0100 today." (a NUL at offset 0 fails rule 4). Exit code 2; one report line contains `undecodable.txt` and `could not be decoded`; the summary contains `1 undecodable`; no line contains `556-0100` or `today.`. The clean file ensures the exit code cannot come from the no-file-scanned guard |
+| 17 | "skips a file with a binary extension and counts it as binary" | `image.png` holding bytes `89 50 4E 47 00` followed by the UTF-8 bytes of `555-556-0100`, plus `clean.txt`. Exit code 0; the summary contains `1 skipped as binary` and `0 hits`. Were the file read, rule 4 would make it undecodable and the exit code 2, so exit 0 proves the skip |
+
+The test file must not contain any of these, because other checks grep `src/`: any digit of the
+owner's number; the string `mockup-` (`src/publicDirectory.test.js`, R92); `Phone` with a capital
+P, or `personal` followed by any one character and then `phone` (GC41's two greps, the second of
+which is a regular expression); any of R44's no-tracking tokens; `shadow-`,
+`dangerouslySetInnerHTML`, `MmLogo`, or the email literal. `it.skip` and `it.todo` are not allowed:
+R52's CI step fails on either.
+
+#### Item 2: stale documents
+
+This answers the D4 decision row and the security Low on stale or overstated documents
+(`review-packet.md` sections 2 and 4). Outside `spec.md` and `intent.md`, those rows name four
+files. A Grep for `phone` over `docs/` and `.workhorse/` (confirmed) found two more statements with
+the same defect in `docs/sdlc/constraints.md`: the operational loop lists the phone as a contact
+route, and open question 3 still asks whether to keep it. F5 fixes those as well, because the
+rejection's test is that no document claims the number remains or that its removal is open.
+`intent.md` (its mockup paths, and the gate label at line 205) belongs to the intent writer, not
+F5.
+
+| File and place | Stale statement (confirmed by reading) | Disposition |
+|---|---|---|
+| `docs/hosted-config.md`, section 7, second bullet | Says the full number remains in this change's `spec.md` and `evals.md` and at two lines of `intent.md`, and that redacting those lines is an open owner decision. Both are false at HEAD: every form was redacted under G4-D3 (commits `1d11c97`, `545da85`, `76bcc00`, per `review-packet.md` D3), and GC89 found 0 hits (confirmed, `verification.md` line 69) | Replace, text in F5. The other bullets, which hold the git-history position, stay byte-identical |
+| `docs/sdlc/constraints.md`, business constraint 3 | The bold lead says the number is published and renders in `ContactFooter` and `ResumeModal`, false since R41; the closing "Digits fully removed" sentence is unscoped | Replace, text in F5 |
+| `docs/sdlc/constraints.md`, operational loop step 4 | Lists "the phone number" as a way recruiters contact the owner | Replace, text in F5 |
+| `docs/sdlc/constraints.md`, "Open questions only the owner can answer", item 3 | Asks whether the number should stay on the page, with no answer | Keep the question and append the G1 answer, text in F5 |
+| `.workhorse/profile.yml` line 148, `retention_notes` | Lists "phone" among the owner's published contact details | Replace, text in F5 |
+| `.workhorse/profile.yml` line 144, `data_residency` | Does not mention the phone (confirmed by reading). Its sentence that Google Fonts load from `index.html` lines 8 to 10 is stale since R37 (confirmed: 0 matches for either Google Fonts host in `index.html`), but it is not a redaction claim | **No change in this pass.** Left open below |
+| `docs/sdlc/codebase-map.md` line 180, data inventory, `personal` row | Lists "phone number" among the fields, and omits the GitHub fields R43 added (confirmed, `src/data/portfolioData.js` lines 11 and 12) | Replace, text in F5 |
+
+#### This pass's edits to this file
+
+- Header: the status line and a fifth amendment line.
+- Requirement count: the Summary and the Requirements preamble read 92. The G2 packet's
+  risk-register row reads 92 with "90 at G2 approval", and the packet header carries a dated note
+  saying the edit changes bytes, not meaning. The packet TL;DR's "90 numbered requirements" and
+  "eight ADRs" are left as the record of what G2 approved.
+- Mockup paths: R22, R27, R30, [The orb](#the-orb), OQ3, the G2-D5 row and the "Visual targets"
+  evidence row name `docs/design/`, each with a "moved under G4-D4, R92" note. The quoted rejection
+  note under D4, the F2 task row, R92, OQ6 and the first rejection's evals list keep `public/` as
+  history.
+- [Constraint audit](#constraint-audit): the two Medium rows on R82 and R89 are recorded as
+  resolved, with a note under the audit result. R89's two cells and the D3 contract table carry
+  dated pointers to this subsection.
+
+#### Builder tasks (second rejection)
+
+F4 and F5 share no file, so they can run in parallel. Both run with Node v22.12.0 first on PATH.
+
+| Task | Requirement | Files it may touch | Must not touch |
+|---|---|---|---|
+| F4 | R89 (second amendment); ADR 0010 amendment | `scripts/check-phone-redaction.mjs` (edit); `src/checkPhoneRedaction.test.js` (new) | `vite.config.js`, `package.json`, `package-lock.json`, `.github/**`, `src/test/setup.js`, every other file under `src/`, every file under `docs/` (this spec, `intent.md`, `evals.md` and the ADRs included), `.workhorse/**` |
+| F5 | Item 2 | `docs/hosted-config.md` (section 7, second bullet only); `docs/sdlc/constraints.md` (operational loop step 4, business constraint 3, open question 3); `.workhorse/profile.yml` (the `retention_notes` value only); `docs/sdlc/codebase-map.md` (the data inventory's `personal` row only) | `scripts/**`, every test file, everything under `src/`, `spec.md`, `intent.md`, `evals.md`, the ADRs, `approvals.md`, `state.json`, `review-packet.md`, `verification.md`, every other line of `.workhorse/profile.yml` (line 144 included) |
+
+**F4, for the builder.** Implement the contract under "Second G4 rejection (2026-09-13)", Item 1,
+in this spec. In `scripts/check-phone-redaction.mjs`:
+
+1. Run `main` only when this file is the script Node was started with. Importing it must print
+   nothing and set no exit code. The comparison must hold on the Windows host and on Linux (drive
+   letter case can differ on Windows, believed, not verified).
+2. Export exactly the names in the Exports row.
+3. Add the country-code group to the full-number and area-code-plus-exchange matchers only. Leave
+   the last-seven matcher as it is.
+4. Replace `readTextFile` with `decodeFile`, following the five decoding rules in order.
+   `BINARY_EXTENSIONS` is `.jpg`, `.png`, `.woff` and `.woff2`, compared lower-cased.
+5. Move the scan loop into `scanFiles(absolutePaths, matchers)`, with the report lines, summary
+   format and exit rules in the contract. `main` prints the report lines and sets the exit code.
+6. Extend the self-test lists with the 8 renderings and 3 near-misses. Update the header comment's
+   description of skipping and of exit codes.
+7. Never print a matched text, a file's content or a digit of the reference.
+
+Then write `src/checkPhoneRedaction.test.js` with exactly the 17 tests in the table, and none of the
+strings the paragraph under the table forbids. Use synthetic numbers only. Verify with Node v22.12.0
+first on PATH. Record each command, its exit code and its output line in the commit body:
+
+- `npm test -- src/checkPhoneRedaction.test.js`: exit 0, 17 passed, 0 skipped.
+- Delete the country-code group from `buildMatchers`, then re-run that file. Confirm that exactly
+  the four no-separator country-code tests fail (`+15555560100`, `15555560100`, `+1555556`,
+  `1555556`), then restore the group. Record the result and do not commit the mutation.
+- `npm test`: exit 0, 0 skipped.
+- `npm run lint`: exit 0.
+- `node scripts/check-phone-redaction.mjs --self-test`: exit 0, printing
+  `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.` Exit 0 with no output means
+  the direct-run guard never fired, and counts as a failure.
+- `node scripts/check-phone-redaction.mjs`: exit 0. The summary shows more than 0 files scanned,
+  `5 skipped as binary, 0 missing from disk, 0 undecodable` and `0 hits`. If the binary count is
+  not 5, report the extensions it covers.
+- `npm run build`, then `node scripts/check-phone-redaction.mjs dist`: exit 0, `0 undecodable`,
+  `0 hits`. The binary count must equal 5 plus the number of files under `dist/` with a listed
+  extension; report both numbers.
+
+Commit as `fix(scripts): catch country-code prefixes and read UTF-16 in the phone redaction check`.
+
+**F5, for the builder.** Edit only the places below, with the text given. Write no digit of the
+owner's phone number anywhere. Use no em-dashes.
+
+1. `docs/hosted-config.md`, section 7 ("The phone number in git history"). Replace the second
+   bullet, the one that begins "The number is removed from the site", with this, filling in the
+   date:
+   "- The number is removed from the site (R41, authorised by G1-D1, "D1 remove phone", in
+   `approvals.md`). Under G4-D3 every full and partial form of it was also redacted from every file
+   tracked on the branch of change `2026-09-11-deployed-multi-page-portfolio-on-github-pages`, the
+   approved G1 and G2 artifacts included, in commits `1d11c97`, `545da85` and `76bcc00`. No
+   document on that branch carries any form of it, and no redaction decision is open. The check
+   is `scripts/check-phone-redaction.mjs` (spec R89). It derives the number at run time from
+   `b50497f`, never prints it, and runs on a developer machine, not in CI. Confirmed on
+   YYYY-MM-DD: the script exits 0 with 0 hits on that branch. A branch that has not merged this
+   change still carries the number in its current files, `main` before the merge included
+   (conductor-confirmed in the G4 review packet, 2026-09-13). Item 2 covers publishing."
+   Leave every other bullet of section 7, and the rest of the file, byte-identical.
+2. `docs/sdlc/constraints.md`:
+   a. Operational loop, step 4. Replace "they contact the owner by the `mailto:` link, the phone
+      number, or LinkedIn." with "they contact the owner by the `mailto:` link or LinkedIn. (The
+      phone number was a third route until change 2026-09-11 removed it from the site under
+      R41.)"
+   b. Business constraint 3. Replace the whole item, from "3. **The owner's phone number is
+      published on the page.**" through the line that begins "Digits fully removed under G4-D3.",
+      with: "3. **The owner's phone number was published on the page; it no longer is.** At G0 it
+      rendered in `ContactFooter` and `ResumeModal` (confirmed at G0). Change 2026-09-11 removed it
+      from the site under G1-D1 ("D1 remove phone", spec R41) and redacted every full and partial
+      form of it from the tracked documents under G4-D3. Git history from `b50497f` onward still
+      holds it, an accepted position recorded in `docs/hosted-config.md` section 7. The site-facing
+      checks run in CI: R41's unit tests, and the generic pattern in the R82 deploy smoke step. The
+      repository check is the R89 script, `scripts/check-phone-redaction.mjs`, run on a developer
+      machine by evals GC41 and GC89." Keep the file's three-space continuation indent.
+   c. "Open questions only the owner can answer", item 3. Keep the question and append
+      " **Answered at G1 of change 2026-09-11: removed from the site (G1-D1, spec R41).**"
+3. `.workhorse/profile.yml`, `compliance.retention_notes`. Replace "(name, email, phone, city,
+   LinkedIn)" with "(name, email, city, LinkedIn and GitHub profile; the phone number was removed
+   from the site by change 2026-09-11, spec R41, and remains only in git history, see
+   docs/hosted-config.md section 7)". Change nothing else in the file, and add no double quote or
+   backslash inside the value. Line 144 (`data_residency`) is not part of this task.
+4. `docs/sdlc/codebase-map.md`, data inventory, the `personal` row. Replace "Owner's name, role,
+   email, phone number, city, LinkedIn URL, availability statement, summary" with "Owner's name,
+   role, email, city, LinkedIn URL, GitHub profile URL, availability statement, summary. The phone
+   number was removed by change 2026-09-11 (spec R41)". Before leaving "confirmed" in the Status
+   cell, read the `personal` block of `src/data/portfolioData.js` and check that it holds those
+   keys and no phone key.
+
+Verify with Node v22.12.0 first on PATH, and record the results in the commit body:
+
+- `git log --oneline -1 1d11c97`, then the same for `545da85` and `76bcc00`: each prints one
+  commit. If one does not, write "believed, not verified" beside that commit in the
+  `hosted-config.md` text rather than asserting it.
+- `grep -c "open owner decision" docs/hosted-config.md` is 0; `grep -c "full number remains"
+  docs/hosted-config.md` is 0; `grep -c "phone number is published on the page"
+  docs/sdlc/constraints.md` is 0; `grep -c "email, phone, city" .workhorse/profile.yml` is 0;
+  `grep -c "email, phone number, city" docs/sdlc/codebase-map.md` is 0.
+- `grep -n -i "phone" docs/hosted-config.md docs/sdlc/constraints.md docs/sdlc/codebase-map.md
+  .workhorse/profile.yml`: read every remaining line, confirm each one either states the
+  git-history position or records the removal, and list them in the commit body.
+- `node scripts/check-phone-redaction.mjs`: exit 0, 0 hits.
+- `git diff --name-only` lists exactly the four files. `git diff docs/hosted-config.md` changes
+  only the second bullet of section 7.
+
+Commit as `docs: correct stale phone-number statements after the G4-D3 redaction`.
+
+#### What `evals.md` must change (second rejection)
+
+The eval designer owns these changes.
+
+- GC89: the expected self-test line becomes `Self-test: 17 of 17 form renderings hit, 0 of 9
+  near-misses hit.`, which also proves the 8 country-code renderings and the 3 new near-misses.
+  The scan's expected summary splits the skip count: more than 0 scanned, 5 skipped as binary, 0
+  missing from disk, 0 undecodable, 0 hits. Exit 2 from any cause, an undecodable file included,
+  is a failure, never a pass.
+- GC41: the `dist` scan's expected summary is 0 undecodable, 0 missing from disk and 0 hits, with
+  the binary count equal to 5 plus the files under `dist/` whose extension is `.jpg`, `.png`,
+  `.woff` or `.woff2`. The last build gave 121 (`verification.md` line 70), but that count merged
+  binary and missing files, so it is believed, not a target.
+- A new golden case for R89: `npm test -- src/checkPhoneRedaction.test.js` exits 0 with 17 passed
+  and 0 skipped. It also runs in CI through `npm test`. Trace it to R89 and M8.
+- A failure-category case: a NUL-holding file of a type not in the list makes the scan exit 2 and
+  name the path. Unit test 16 implements it, and the case may point there.
+- Optional, the eval designer's call: an adversarial case in a scratch clone with full history,
+  which derives the number in memory and writes a `+1`-prefixed copy and a UTF-16LE copy into
+  scratch files, expecting exit 1. No digit may enter any artifact or log.
+- NF8 and the "Leaked (data)" failure-taxonomy row: add that the matcher and decoder tests run in
+  CI, while the whole-tree scan still runs only on the dev host.
+- Traceability: the R89 and M8 rows gain the new cases. The suite grows by 17 tests, to 191 if
+  nothing else changes (believed: 174 at `460405e`, `review-packet.md` section 3). R52's floor of
+  12 is unaffected.
+
+#### Left open by this pass
+
+- D1 awaits the owner's own confirmation. D2 awaits his decision.
+- The whole-tree scan still does not run in CI (ADR 0010). The new tests run there, but they prove
+  the matcher and the decoder, not the tree.
+- The script's remaining Lows stay open: separators outside the five it accepts (en dash, no-break
+  space, tab, underscore, HTML entities, spaced digits); an existing but empty directory argument
+  exits 0; a tracked file missing from disk is skipped, though now counted; a number drawn inside
+  an image is invisible. `tel:+1`, `tel:%2B1` and a bare leading `1` directly before the number are
+  believed caught by the new prefix rule, because the `1` follows a non-digit (not verified).
+- `.workhorse/profile.yml` line 144, and the compliance comment above it, still say Google Fonts
+  load from `index.html`. That has been stale since R37, but it is not a redaction claim.
+- The header's "R80 to R89" count (a carried Low), and the audit Low on R89's edit to `intent.md`,
+  which G4-D3 has since ordered, stay as filed.
+- `intent.md`'s mockup paths and its line-205 gate label are the intent writer's.
 
 ---
 
@@ -1563,6 +1843,11 @@ the material this revision added, and are open for the architect. As filed on 20
 the rework, the result was **blocked (2 high)**; that line is kept here rather than overwritten so
 the change of verdict is legible.
 
+**Note 2026-09-13 by the spec architect (second G4 rejection):** the 2 Medium rows filed at
+re-audit, on R82's phone assertion and on R89's acceptance check, are now recorded as resolved in
+their own Resolution cells, on the G4 security reviewer's Low that asked for exactly that. The 9
+Low rows stand as filed.
+
 Re-audit method and its limits. Each response was checked against the requirement text and the
 design sections it names, not against [Response to audit](#response-to-audit) alone. The Bash tool
 is unavailable in this session too, so no command was run; the greps cited in the new rows were
@@ -1641,8 +1926,8 @@ tracked, not verified, because `git ls-files` could not be run.
 | Low | `wh-agent-rules`, fill every section; testability of failure modes | **[Failure modes](#failure-modes).** Two rows carry five cells in a six-column table and therefore no eval category: "A Dependabot pull request is merged" and "Two pushes in quick succession". The eval designer at G3 reads this table as its input, so both failure classes would arrive at G3 with no eval. | fixed ([Failure modes](#failure-modes)). Both rows now carry six cells and a named eval, and a third row is added for the mount-failure case that says plainly it has no eval and names R84 and the accepted risk instead. Confirmed by reading the three rows |
 | Low | Testability | **R60 and R61.** The two workflow properties that decide token scope and deployment ordering are checked by "Read the file", while the less consequential R59 and R64 get greps. Both are greppable, and R60 is the subject of a Medium finding above. | fixed (R60, R61). R60 now carries three greps and R61 two. A new Low row below notes that three of R60's greps are written without a file argument, which is a defect in the check rather than in the requirement |
 | Low | Security baseline, no failure path both silent and consequential | **R66.** Of its two remedies, `build.modulePreload.polyfill: false` is self-maintaining and the SHA-256 hash branch is not: the hash stops matching on any Vite patch bump, and the symptom is a blank page in production only. No requirement re-checks the hash after an upgrade, and Dependabot (R68) will propose exactly such bumps. | fixed (R66, R82). The hash branch is removed outright and forbidden by name, the remaining remedy is `build.modulePreload.polyfill: false` with an escalation to the owner if that is not enough, and R82 re-asserts "no inline script" against the served page on every deploy. Confirmed by reading R66 and R82 |
-| Medium | Security baseline, "Verify empirically before asserting"; this spec's own R90, "no requirement SHALL claim a detection the check beside it does not have" | **R82's phone-number assertion.** R82 asserts zero occurrences of the number's last seven digits against the body fetched in R63, which is the served HTML shell. The phone number does not live in the HTML: it is in `src/data/portfolioData.js`, which Vite compiles into the JavaScript bundle, and `index.html` contains only a title, a description meta, three font links and an empty `#root` (confirmed by reading all 16 lines of `index.html`, and by a repository grep for those digits that matches `portfolioData.js` and no other file under `src/`). So this assertion passes on a deploy that reintroduced the number, and R82's own stated purpose, "a regression on either privacy removal, on the artifact that visitors actually receive", is met for the Google Fonts half, whose tags are in the shell, and not for the phone half. The build-time controls still cover it: R41's grep runs over `dist/`, and the `portfolioData` unit test runs in CI under R52. The defect is the claim, which is the exact class R90 forbids. | open (either the assertion reaches the artifact the number ships in, or it is withdrawn and the coverage credited to R41 and the data test). **Note 2026-09-13 by the spec architect:** addressed by the R82 amendment, which now names the generic pattern and also reads the module script, matching `deploy.yml` lines 300 to 310 (confirmed by reading). The finding stands as filed for the auditor or the G4 reviewer to close. The digits in this row were redacted under G4-D3 |
-| Medium | `wh-agent-rules`, artifacts are the record; testability of an acceptance check | **R89's acceptance check.** "After wave 4, a recursive grep for the number across the repository, excluding `.git` and `node_modules`, matches `spec.md` only" is already false. `evals.md` carries the number's last seven digits twice, at line 128 (the `GC41` check command) and line 301 (`NF8`), both as machine-check literals of exactly the kind R89 protects in `spec.md` (confirmed by grep at re-audit: five files match, `spec.md`, `evals.md`, `intent.md`, `docs/sdlc/constraints.md` and `src/data/portfolioData.js`). R89 names only two files to redact and one to keep, so as written wave 4 either fails its own check or forces an edit to the eval designer's artifact that nothing in this spec authorises. | open (R89 must name `evals.md` explicitly, as a literal that stays or one that is redacted, and its check must match that decision). **Note 2026-09-13 by the spec architect:** addressed by the R89 amendment under G4-D3. No tracked file may keep any form of the number, `evals.md` included, and the check is a script that carries no digits. The finding stands as filed for the auditor or the G4 reviewer to close. The digits in this row were redacted under G4-D3 |
+| Medium | Security baseline, "Verify empirically before asserting"; this spec's own R90, "no requirement SHALL claim a detection the check beside it does not have" | **R82's phone-number assertion.** R82 asserts zero occurrences of the number's last seven digits against the body fetched in R63, which is the served HTML shell. The phone number does not live in the HTML: it is in `src/data/portfolioData.js`, which Vite compiles into the JavaScript bundle, and `index.html` contains only a title, a description meta, three font links and an empty `#root` (confirmed by reading all 16 lines of `index.html`, and by a repository grep for those digits that matches `portfolioData.js` and no other file under `src/`). So this assertion passes on a deploy that reintroduced the number, and R82's own stated purpose, "a regression on either privacy removal, on the artifact that visitors actually receive", is met for the Google Fonts half, whose tags are in the shell, and not for the phone half. The build-time controls still cover it: R41's grep runs over `dist/`, and the `portfolioData` unit test runs in CI under R52. The defect is the claim, which is the exact class R90 forbids. | **resolved 2026-09-13**, see the note at the end of this cell (filed as open: either the assertion reaches the artifact the number ships in, or it is withdrawn and the coverage credited to R41 and the data test). **Note 2026-09-13 by the spec architect:** addressed by the R82 amendment, which now names the generic pattern and also reads the module script, matching `deploy.yml` lines 300 to 310 (confirmed by reading). The finding stands as filed for the auditor or the G4 reviewer to close. The digits in this row were redacted under G4-D3. **Resolved 2026-09-13**, recorded by the spec architect on the G4 security reviewer's Low (`review-packet.md` section 4, the row on `spec.md:1644-1645`): the first branch was taken. R82 names the generic pattern and reads the module script as well as the HTML body (spec amended in `1d11c97`, per `review-packet.md` D3; commit not re-checked here, no Bash), matching `deploy.yml` lines 300 to 310 as built; GC82 carries the same check. No deploy has run, so the served-page half is not verified |
+| Medium | `wh-agent-rules`, artifacts are the record; testability of an acceptance check | **R89's acceptance check.** "After wave 4, a recursive grep for the number across the repository, excluding `.git` and `node_modules`, matches `spec.md` only" is already false. `evals.md` carries the number's last seven digits twice, at line 128 (the `GC41` check command) and line 301 (`NF8`), both as machine-check literals of exactly the kind R89 protects in `spec.md` (confirmed by grep at re-audit: five files match, `spec.md`, `evals.md`, `intent.md`, `docs/sdlc/constraints.md` and `src/data/portfolioData.js`). R89 names only two files to redact and one to keep, so as written wave 4 either fails its own check or forces an edit to the eval designer's artifact that nothing in this spec authorises. | **resolved 2026-09-13**, see the note at the end of this cell (filed as open: R89 must name `evals.md` explicitly, as a literal that stays or one that is redacted, and its check must match that decision). **Note 2026-09-13 by the spec architect:** addressed by the R89 amendment under G4-D3. No tracked file may keep any form of the number, `evals.md` included, and the check is a script that carries no digits. The finding stands as filed for the auditor or the G4 reviewer to close. The digits in this row were redacted under G4-D3. **Resolved 2026-09-13**, recorded by the spec architect on the same G4 security reviewer's Low: R89 now names every tracked file, `evals.md` included, and its check is `scripts/check-phone-redaction.mjs`, which carries no digit (spec `1d11c97`, `evals.md` and `intent.md` `545da85`, script `76bcc00`, per `review-packet.md` D3; commits not re-checked here). GC89 passed at `460405e`: 0 hits across 99 scanned files (confirmed by reading `verification.md` line 69) |
 | Low | `wh-agent-rules`, artifacts are the record; approvals chain | **R89's edit to `intent.md`.** `intent.md` is the artifact G1 was approved against, at commit `a7ed6543` (confirmed by reading `approvals.md`). The G1 note reads "D1 remove phone; D4 content is mine to publish", which authorises removing the number from the published surface and says nothing about editing the approved artifact. The spec surfaces the edit on a packet checklist line rather than as a G2 decision row, and the benefit is bounded: the number stays at that commit in history, which the spec itself accepts as not worth rewriting. The redaction is defensible as data minimisation; the authorisation for it is thinner than for anything else in wave 4. | open (either raise it as a G2 decision row so `approvals.md` records it, or leave `intent.md` as approved and carry the position in `docs/hosted-config.md` under R69) |
 | Low | `wh-agent-rules`, artifacts are the record; internal consistency | **Header line 14 against line 52 and section O.** Line 14 says "the ten requirements added by this revision are R80 to R89"; line 52, the [Response to audit](#response-to-audit), the packet TL;DR and the requirement tables say eleven, R80 to R90, and section O's preamble says "All ten are new" over eleven rows (confirmed by reading all three). R90 is the requirement that falls out of the count, which is the one telling every later phase not to claim a detection it does not have. | open (one number, in three places) |
 | Low | Security baseline, "CI must actually run the security tests, and fail loudly when it cannot" | **R52's reporter shape.** The step is `npm test -- --reporter=json --outputFile=vitest-results.json`, which replaces the default reporter rather than adding to it, so a failing run's log carries the counts in a JSON file and no failing test name (believed, not verified: Vitest is not installed here and no command could be run). Two consequences. When a test fails, `npm test` exits non-zero and the `node -e` step that names the observed counts never runs, so the loud failure the requirement describes fires only for a passing suite that is too small. And the owner diagnoses a red build from an artifact rather than from the log. Vitest accepts more than one `--reporter` with a per-reporter `--outputFile.json=`, which is the shape that keeps both (believed, not verified). | open (keep the default reporter alongside the JSON one, and say what the log shows on a failing run) |
@@ -1665,6 +1950,11 @@ Branch: `main`, clean
 PR: none
 Prepared: 2026-09-11
 Revised: 2026-09-11, rework round 1 of 2, after the constraint audit blocked this gate
+Amended: 2026-09-13 by the spec architect, after the second G4 rejection. Three lines in this
+packet changed bytes, not meaning. The G2-D5 row and the "Visual targets" evidence row now give the
+mockups' current path, `docs/design/` (moved under G4-D4, R92). The risk-register row on dropped
+requirements reads 92, where the spec held 90 when G2 approved it. The approved bytes are still
+retrievable at artifact commit `bd1cd7c` (confirmed, `approvals.md` line 21).
 
 ## 1. TL;DR
 
@@ -1696,7 +1986,7 @@ waves 1, 2 and 4 deploy a working but visually unchanged site and wave 3 follows
 | G2-D2 | Fold the items from the intent's non-goals sentence that ship with the workflow into this change: a build-time CSP meta tag (R65), a `Referrer-Policy` meta tag (R88), `public/.well-known/security.txt` (R67), `.github/dependabot.yml` (R68), and the clipboard-failure fix (R48) | Include all five. They ship with the workflow, cost minutes, and each is a due-diligence question an engineering hiring manager may actually check. `docs/hosted-config.md` (R69) was in this row in the first draft and has been **taken out of it**: the first deploy fails without the Pages setting it records, so it is unconditional | Leave them out; `intent.md` listed them under non-goals | The spec drops R48, R65, R67, R68 and R88 and records five accepted risks: no CSP and no referrer policy on a public site, no disclosure contact, no dependency-update automation, and three copy buttons that report success when the clipboard refuses. R69 survives either way |
 | G2-D3 | Pin Vitest 3.2.4 and stay on Vite 5.4.11 | Pin Vitest 3.2.4. Vitest 4 requires Vite >= 6 (confirmed), and a build-tool major upgrade does not belong in the same change as the first production deploy | Upgrade to Vite 6 and Vitest 4 now | `vite.config.js`, every plugin and the whole build change in the same commit as the first deploy. Adds an unbounded debugging risk to a change already touching five sensitive paths. Vitest 3 then needs a follow-up upgrade within roughly a year |
 | G2-D4 | Card radius and shadows (R79), where `docs/design-brief.md` and the mockups disagree | Follow the design brief: 0 px on cards, 10 px on interactive elements, no shadows. `intent.md` names the brief the design authority | Follow the mockups: rounded cards with a soft shadow, which is also what the current code does | The site keeps today's `rounded-2xl` and `shadow-2xs` treatment, the OFF+BRAND "zero shadows, 0 px cards" direction in the brief is not implemented, and Outcome 8 is met only partially |
-| G2-D5 | Fidelity to `public/mockup-casestudy.jpg` | Build the flow diagram from each case study's `diagramSteps` (4 nodes, linear) rather than reproducing the mockup's 5-box fork, and do not build the mockup's "Log in" and "Sign up" controls | Reproduce the mockup exactly | The fork diagram would be hard-coded to one case study and wrong for the other two, or it would require inventing architecture detail the data does not contain, which `constraints.md` forbids. "Log in" and "Sign up" would be dead controls on a site with no accounts |
+| G2-D5 | Fidelity to `docs/design/mockup-casestudy.jpg` (under `public/` when G2 approved; moved under G4-D4, R92) | Build the flow diagram from each case study's `diagramSteps` (4 nodes, linear) rather than reproducing the mockup's 5-box fork, and do not build the mockup's "Log in" and "Sign up" controls | Reproduce the mockup exactly | The fork diagram would be hard-coded to one case study and wrong for the other two, or it would require inventing architecture detail the data does not contain, which `constraints.md` forbids. "Log in" and "Sign up" would be dead controls on a site with no accounts |
 
 Amendment 2026-09-12 to the G2-D3 row, which stays as the approved record: owner build decision
 B2 moved the pin from Vitest 3.2.4 to 3.2.7, same major, in commit `a98fdcf`. The decision itself,
@@ -1714,7 +2004,7 @@ tool, which is available.
 | Approved intent and G1 notes | read `intent.md`, `approvals.md` | n/a | G1 approved 2026-09-11, "D1 remove phone; D4 content is mine to publish" | confirmed |
 | Profile constraints, sensitive paths, parallelism | read `.workhorse/profile.yml` | n/a | 5 sensitive paths, `max_parallel: 4`, `commands.test` empty, `regimes: []` | confirmed |
 | Design authority | read `docs/design-brief.md` | n/a | OFF+BRAND palette and gradient at line 34, Reis layout at lines 44 to 49, orb direction at section 2 | confirmed |
-| Visual targets | viewed `public/mockup-home.jpg`, `public/mockup-casestudy.jpg` | n/a | hero composition and case-study composition as described in the Design section | confirmed |
+| Visual targets | viewed `mockup-home.jpg` and `mockup-casestudy.jpg`, then under `public/` and now under `docs/design/` (moved under G4-D4, R92) | n/a | hero composition and case-study composition as described in the Design section | confirmed |
 | Current app shape | read `src/App.jsx`, `src/main.jsx`, all 11 files in `src/components/`, `src/index.css`, `index.html`, `vite.config.js`, `package.json`, `.gitignore` | n/a | no router, no `base`, no test script, no `.env` pattern, Google Fonts at `index.html` lines 8 to 10 | confirmed |
 | Case-study ids that become slugs | read `src/data/portfolioData.js` lines 64 to 148 | n/a | `apple-llm-triage`, `apple-data-health`, `neural-newsletters-llm` | confirmed |
 | Phone number locations | read `portfolioData.js` line 8, `ContactFooter.jsx` line 71, `ResumeModal.jsx` lines 10 and 69 | n/a | all four present as reported | confirmed |
@@ -1843,7 +2133,7 @@ The items the spec itself flagged as where it could be wrong:
 | Nine new packages enter the supply chain at once, on top of a full lockfile re-resolution | Medium | Unreviewed transitive code on a public site | Exact pins on all nine (R49), enforced in CI on every push (R85), licences and versions read from disk with escalation (R77), direct-dependency drift reviewed before the lockfile is committed (R86), CSP `script-src 'self'`, blocking runtime audit, Dependabot | Spec and Build |
 | The orb drifts from the package's accessibility behaviour | Medium | Reduced-motion and battery regressions | R32 to R35, each with a named test; the package's own handling is confirmed and is what the contract copies | Build phase |
 | A render exception blanks the whole site, including the nav, with no signal | Low | Total outage with zero observability | Accepted and stated. No error boundary in this change (finding 2), and no smoke step can see it: R84's manual check is the only control | Site owner |
-| The site is large enough that one of the 90 requirements is quietly dropped | Medium | A silently unmet outcome | Every requirement has a machine-checkable acceptance check except the five marked permanently manual; G4 verifies against this table | Review phase |
+| The site is large enough that one of the 92 requirements (90 at G2 approval) is quietly dropped | Medium | A silently unmet outcome | Every requirement has a machine-checkable acceptance check except the five marked permanently manual; G4 verifies against this table | Review phase |
 
 ## 6. Design tour
 

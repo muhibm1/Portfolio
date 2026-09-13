@@ -51,3 +51,19 @@ sensitive path.
 
 Cost: the derived number exists in the script's process memory, and the script must never log
 it. The builder's review of the script checks exactly that.
+
+## Amendment 2026-09-13 (second G4 rejection)
+
+`approvals.md` line 51 asked for two gaps to be closed, and the contract is in spec "Second G4
+rejection (2026-09-13)". First, the full-number and area-code-plus-exchange matchers accept an
+optional country code, `1` or `+1`, with up to three separators, directly before the area code.
+Any other digit directly before a match still rejects it, and the last-seven form is unchanged.
+Second, the Decision's "skips files containing a NUL byte" is withdrawn. A file is skipped only
+when its extension is `.jpg`, `.png`, `.woff` or `.woff2`. Files with a UTF-16LE or UTF-16BE
+byte-order mark are decoded, and so is BOM-less UTF-16LE that passes a byte-offset rule. Any other
+file holding a NUL byte fails the scan with exit 2 and is named. The script exports its matcher,
+decoder and scanner and runs only when executed directly, so `src/checkPhoneRedaction.test.js`
+tests them in CI with a synthetic number and no history. Costs: a new binary type fails the scan
+until it is listed; mostly non-Latin UTF-16 text without a byte-order mark fails rather than being
+read; and the optional `1` widens two matchers by one character. The tree scan still cannot run in
+CI.
