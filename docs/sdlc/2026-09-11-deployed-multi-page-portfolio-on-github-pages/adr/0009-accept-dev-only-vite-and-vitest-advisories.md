@@ -1,19 +1,22 @@
 # 0009: Accept the dev-only Vite, esbuild and Vitest advisories until the Vite upgrade
 
 Date: 2026-09-12
-Status: accepted (owner build decision B3, "B2 and B3 as recommended", 2026-09-12)
+Status: accepted. Owner build decision B3, "B2 and B3 as recommended" (2026-09-12), whose
+recommendation text read "Record the dev-server advisories as an accepted dev-only risk"
+(confirmed, the conductor's B1-B3 report as relayed to the owner in the main session). Revised the
+same day by the main session under the owner's standing instruction "Approve every command
+yourself, I'm busy" (2026-09-12): confirms the acceptance below, including the `@vitest/mocker`
+advisory that surfaced after B3 was answered, and changes the profile's local audit to the
+blocking form. The owner has not read this revision; it is flagged at G4.
 Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 
 ## Context
 
 At commit `a98fdcf` (B2 and B3), `npm audit --omit=dev --audit-level=high` reports "found 0
-vulnerabilities" (confirmed, `verify-logs/fold-t1b-audit-prod.log`). The profile's
-`commands.security_audit`, `npm audit --audit-level=high` (confirmed, `.workhorse/profile.yml`
-line 41), still exits 1. The five advisories below are as the T1b builder read them from the audit
-JSON (`conductor-log.md` line 36). This agent has no shell and no full-audit log after `a98fdcf`
-is committed, so the list is believed, not verified, here. The owner's words are confirmed
-(`conductor-log.md` line 35); `verification.md` line 30 records B3 only as the Tailwind move, so
-reading it as also accepting these advisories is the conductor's framing (believed, not verified).
+vulnerabilities" (confirmed, `verify-logs/fold-t1b-audit-prod.log`). The full-tree audit,
+`npm audit --audit-level=high`, exits 1. The verifier re-ran both under Node v22.12.0 at commit
+`cf969de` and confirmed the full audit lists exactly the five advisories below and no others
+(`verification.md`, security_audit row, and `verify-logs/security_audit.json.log`, local only).
 
 | GHSA | Package | Severity | Fixed by |
 |---|---|---|---|
@@ -37,10 +40,12 @@ the first production deploy. What remains is `npm run dev` and `npm test` on the
 laptop. Two advisories name Windows in their titles (GHSA-fx2h, GHSA-v6wh). The mitigation is to
 keep the dev server on localhost, which is the current state (the `dev` script is `vite` with no
 `--host`, and `vite.config.js` sets no `server.host`, both confirmed), never add either, and not
-browse untrusted sites while it runs. The blocking CI audit is `--omit=dev` (R56); the full audit
-runs with `continue-on-error: true` (R57). The profile's full audit is therefore expected to exit
-1 until the Vite upgrade. The verifier reports it as "advisories listed, accepted per ADR 0009",
-never as a pass, and reports any advisory not in the table above as new and not covered here.
+browse untrusted sites while it runs.
+
+The blocking audit is `--omit=dev` everywhere: in CI (R56) and, from this revision, in the
+profile's `commands.security_audit`, so the verifier checks the same gate CI enforces. The full
+audit keeps running in CI with `continue-on-error: true` (R57), so these five stay visible in every
+workflow run. Any advisory not in the table above is new and not covered by this ADR.
 
 ## Alternatives
 
@@ -49,17 +54,21 @@ never as a pass, and reports any advisory not in the table above as new and not 
 | Upgrade to Vite 8 and Vitest 4 now | Three Vite majors and a Vitest major in the change that makes the first deploy; `vite.config.js`, `@vitejs/plugin-react` and `@tailwindcss/vite` all move (ADR 0004) |
 | npm `overrides` forcing patched esbuild and `@vitest/mocker` | Runs each parent against a version it was never released with; `@vitest/mocker` 4.x under Vitest 3 is a major mismatch that may fail silently in the runner (believed, not verified) |
 | Make the full audit blocking in CI | Blocks every deploy on advisories that cannot reach a visitor, which trains the owner to ignore red (spec, "Dependency audit policy") |
-| Change `commands.security_audit` to `--omit=dev` | Hides these advisories from the local check, which the spec keeps strict on purpose |
+| Keep the profile's local audit on the full tree | Rejected in the first version of this ADR, reversed here. It leaves the verifier permanently red on a known, accepted set, which is the same "trains the owner to ignore red" failure as the row above, and it makes a green Verify impossible for every change until the Vite upgrade. The full audit's visibility is kept by R57 instead |
 
 ## Consequences
 
-Easier: the deploy is unblocked, and the blocking audit is at 0 and stays meaningful.
+Easier: the deploy is unblocked, the blocking audit is at 0 and stays meaningful, and the local
+check and CI now test the same thing.
 
-Harder: the profile's security audit shows a standing red that every verifier run must explain,
-and a new advisory can hide among these five. The "not in the table is new" rule is the control.
+Harder: the five advisories no longer appear in a local verify run, only in the CI log's
+non-blocking full-audit step. A new dev-only advisory would also only appear there. Whoever reads
+the first CI run should check that step against the table above.
+
 The laptop's dev server keeps known holes, contained by how it is run, not by code.
 
 Revisit in a follow-up change that upgrades to Vite 6 or later and Vitest 4, to versions outside
 every affected range above. Dependabot will propose both (`plan.md` Findings outside scope, item
-11, confirmed line 265). Revisit at once if any advisory reaches the `--omit=dev` audit, or if the
-dev server ever needs `--host`.
+11, confirmed line 265). When that lands, decide whether the profile's audit should return to the
+full tree. Revisit at once if any advisory reaches the `--omit=dev` audit, or if the dev server
+ever needs `--host`.
