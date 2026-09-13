@@ -112,11 +112,15 @@ Log:
 - Position: **accepted, not rewritten.** Owner: site owner. Source: spec "Data", "Retention",
   decision 2.
 - The number is removed from the site (R41, authorised by G1-D1, "D1 remove phone", in
-  `approvals.md`). In the working tree R89 redacts it at `docs/sdlc/constraints.md` line 102
-  and at this change's `intent.md` line 199. The full number remains in this change's `spec.md`
-  and `evals.md`, where it is the literal that the checks search for. Confirmed on 2026-09-12,
-  it also remains at `intent.md` line 152 (a success-metric check) and line 311 (the G1 decision
-  row). R89 did not name those two lines; whether to redact them is an open owner decision.
+  `approvals.md`). Under G4-D3 every full and partial form of it was also redacted from every file
+  tracked on the branch of change `2026-09-11-deployed-multi-page-portfolio-on-github-pages`, the
+  approved G1 and G2 artifacts included, in commits `1d11c97`, `545da85` and `76bcc00`. No
+  document on that branch carries any form of it, and no redaction decision is open. The check
+  is `scripts/check-phone-redaction.mjs` (spec R89). It derives the number at run time from
+  `b50497f`, never prints it, and runs on a developer machine, not in CI. Confirmed on
+  2026-09-13: the script exits 0 with 0 hits on that branch. A branch that has not merged this
+  change still carries the number in its current files, `main` before the merge included
+  (conductor-confirmed in the G4 review packet, 2026-09-13). Item 2 covers publishing.
 - Commits from `b50497f` onward contain the full number. Confirmed for `b50497f` itself:
   `git grep` finds it in that commit's `src/data/portfolioData.js`. Rewriting history with
   `git filter-repo` would invalidate every commit SHA quoted in `approvals.md`, `state.json` and
