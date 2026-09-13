@@ -46,7 +46,7 @@ const pinnedCaseStudies = [
 ];
 
 // Any North American number such as (555) 555-0100, 555-555-0100 or 555.555.0100. Generic on
-// purpose: the owner's own digits must never appear in src/ (evals GC41 and GC89 grep for them).
+// purpose: the owner's own digits must never appear in src/ (GC41 and GC89 run the R89 script).
 const phoneNumberPattern = /\(?\d{3}\)?[\s.-]?\d{3}[\s.-]\d{4}/;
 
 function collectStrings(value) {
