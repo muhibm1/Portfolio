@@ -2,7 +2,10 @@
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Intent: [intent.md](./intent.md)
-Status: revised after the G2 constraint audit, awaiting re-audit
+Status: G1, G2 and G3 approved (confirmed, `approvals.md`); in Verify, heading to G4 (confirmed,
+`conductor-log.md` line 71). Amended during Build and Verify: B2 and B3 dependency amendments
+2026-09-12, audit-command alignment 2026-09-13; see the amendment lines below and the dated notes
+inline.
 Risk tier: 2
 Policy skills applied: `wh-agent-rules`, `wh-security-baseline`, `wh-readable-code`, `wh-adr`,
 `wh-review-packet`
@@ -22,6 +25,17 @@ GC78 asserting 10 `dependencies` and 10 `devDependencies` against an actual 8 an
 (`verification.md` line 139). R78 now states the B3 exception and the final section counts; six
 passages that described the pre-B3 placement or counts are annotated, not rewritten. No other
 requirement changes.
+Amended a third time: 2026-09-13 by the spec architect. An editorial amendment that changes no
+requirement's SHALL text, acceptance check or Source cell. At `26b5c0e` the main session, acting
+under the owner's delegation, confirmed ADR 0009 and set `.workhorse/profile.yml`
+`commands.security_audit` to `npm audit --omit=dev --audit-level=high`, the same command as R56
+(confirmed, profile line 41 and `conductor-log.md` line 70). Stale wording was corrected to match:
+this status line, the dependency audit policy under [Security and privacy](#security-and-privacy),
+R49's sentence on existing entries, the [Moved to development](#moved-to-development) preamble,
+findings outside scope item 11, Response to audit Low 4, one Low row's resolution cell in
+[Constraint audit](#constraint-audit), and one risk-register row. No command was run in this
+amendment: the Bash tool is not available in this session either (confirmed by its absence from
+the tool list), so every fact cited is from reading the named file.
 
 Every factual claim below carries a label. **Confirmed** means this agent read the file or the
 tool output named. **Believed, not verified** means it was inferred, reported by an earlier
@@ -164,7 +178,7 @@ a reader could not resolve against `approvals.md`; every occurrence now carries 
 
 | ID | Requirement | Acceptance check | Source |
 |----|-------------|------------------|--------|
-| R49 | `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom` and `jsdom` SHALL be added as exact-pinned devDependencies at the versions in the [Dependency table](#dependency-table). **Every package this change adds SHALL be pinned to an exact version, in `dependencies` and in `devDependencies` alike**: that is the four runtime packages `react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk` and the five devDependencies above, nine in total. No added package SHALL carry `^`, `~`, `>=`, `<`, `*`, `x`, a tag such as `latest`, or a URL or git specifier. Existing entries keep their ranges; R86 governs the drift that causes. | Two greps over `package.json`. First, `grep -c "\"\(react-router\|@fontsource/inter\|@fontsource/jetbrains-mono\|@fontsource/space-grotesk\|vitest\|@testing-library/react\|@testing-library/dom\|@testing-library/jest-dom\|jsdom\)\": \"[0-9]"` equals 9. Second, the same package alternation followed by `": "[\^~><*x]` or `": "latest` returns 0 matches. R85 runs both in CI on every push, so the pin cannot rot after G4. | O12, G1-D3, profile `style_notes`, security baseline "New third-party import in a runtime path pinned to an exact version" |
+| R49 | `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom` and `jsdom` SHALL be added as exact-pinned devDependencies at the versions in the [Dependency table](#dependency-table). **Every package this change adds SHALL be pinned to an exact version, in `dependencies` and in `devDependencies` alike**: that is the four runtime packages `react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk` and the five devDependencies above, nine in total. No added package SHALL carry `^`, `~`, `>=`, `<`, `*`, `x`, a tag such as `latest`, or a URL or git specifier. Existing entries keep their ranges, except `tailwindcss` and `@tailwindcss/vite`, which owner decision B3 pinned exact at 4.3.3 when it moved them to `devDependencies` (R78, [Moved to development](#moved-to-development)); R86 governs the drift the remaining ranges cause. **Amended 2026-09-13**, a factual correction only: this sentence first said every existing entry keeps its range, which B3 made untrue. The nine-package set and both greps are unchanged, and neither grep names a Tailwind package. | Two greps over `package.json`. First, `grep -c "\"\(react-router\|@fontsource/inter\|@fontsource/jetbrains-mono\|@fontsource/space-grotesk\|vitest\|@testing-library/react\|@testing-library/dom\|@testing-library/jest-dom\|jsdom\)\": \"[0-9]"` equals 9. Second, the same package alternation followed by `": "[\^~><*x]` or `": "latest` returns 0 matches. R85 runs both in CI on every push, so the pin cannot rot after G4. | O12, G1-D3, profile `style_notes`, security baseline "New third-party import in a runtime path pinned to an exact version" |
 | R50 | `vite.config.js` SHALL carry a `test` block with `environment: 'jsdom'`, `globals: true`, `setupFiles: ['./src/test/setup.js']`, `css: false`, `include: ['src/**/*.test.{js,jsx}']` and `restoreMocks: true`. | `npm test` exit 0 and `npm run build` exit 0, proving Vite 5 accepts the extra top-level key. | O12 |
 | R51 | `package.json` SHALL define `"test": "vitest run"` and `"test:watch": "vitest"`, both runnable on Windows PowerShell with no shell builtin, no POSIX path and no `&&`. | `npm test` exits 0 on the Windows host. | O12, constraints.md technical constraint 4 |
 | R52 | The suite SHALL report at least 12 passing tests and 0 skipped tests, and **the build job SHALL enforce that floor rather than leave it to a human reading a summary line**. The workflow's test step SHALL run `npm test -- --reporter=json --outputFile=vitest-results.json`, and the step after it SHALL fail the run unless `numPassedTests` is at least 12 and `numPendingTests` plus `numTodoTests` plus `numFailedTests` is 0, using `node -e` with no new dependency. The failure message SHALL name the observed counts. | `grep -c "numPassedTests" .github/workflows/deploy.yml` is at least 1; the first workflow run's log shows the observed counts. The floor stays at 12 because `evals.md` is written against that number. | M4, security baseline "CI must actually run the security tests" and "assert a non-zero test count" |
@@ -816,35 +830,45 @@ catch a newly introduced outbound call. R13 and R44 now name the full pattern. T
 originated in the approved intent, so it is corrected here rather than treated as a defect in
 that document; M10's target is unchanged in substance, only widened.
 
-**Dependency audit policy.** The blocking step is `npm audit --audit-level=high --omit=dev`. It
-covers everything that reaches a visitor, **and two packages that do not**: `tailwindcss` and
-`@tailwindcss/vite` sit in `dependencies` rather than `devDependencies` (confirmed,
-`package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages. The first
-draft's justification, "covers everything that reaches a visitor", was therefore inexact. It
-errs safe, so neither package is moved: relocating them would be a dependency change beyond
-R78's declared bounds, in the same change as the first production deploy, for no security gain.
-Recorded under [Findings outside scope](#findings-outside-scope) so the next dependency change
-can do it deliberately. The full-tree audit runs alongside with
-`continue-on-error: true` for visibility. The reason for the split: the deployed artifact
-contains no devDependency code, and blocking every deploy on an advisory in a jsdom or vitest
-transitive chain would train the owner to ignore a red check, which is the exact failure the
-baseline warns about in reverse. `.workhorse/profile.yml` `commands.security_audit` is left
-unchanged at the full `npm audit --audit-level=high`, because as a local check the stricter form
-is right. The divergence is deliberate and recorded here so a reader does not treat it as drift.
+**Dependency audit policy.** The blocking step is `npm audit --audit-level=high --omit=dev`
+(R56). Since owner decision B3 it audits the eight `dependencies` in `package.json` lines 14 to 23
+and no build-only package (the list is confirmed by reading `package.json`; that each of the
+eight ships code or assets to a visitor is believed, not verified against `dist/`). The full-tree
+audit runs alongside with `continue-on-error: true` for visibility (R57). The reason for the
+split: the deployed artifact contains no devDependency code, and blocking every deploy on an
+advisory in a jsdom or vitest transitive chain would train the owner to ignore a red check, which
+is the exact failure the baseline warns about in reverse. `.workhorse/profile.yml`
+`commands.security_audit` runs the same blocking command, `npm audit --omit=dev
+--audit-level=high` (confirmed, profile line 41), so the local verify and CI enforce one gate and
+do not diverge. The five dev-only advisories in Vite, esbuild and `@vitest/mocker` that the full
+audit still reports are accepted, owner: site owner, in
+[ADR 0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md), which lists them by GHSA
+id; any advisory not in that list is new and not covered.
 
-**Dependency placement, amended 2026-09-12.** The statements above that the two Tailwind
-packages sit in `dependencies`, that neither is moved, and that the next dependency change should
-move them describe the position before owner decision B3, which superseded them in this change
-(commit `a98fdcf`): both now sit in `devDependencies` at lines 25 and 34, and `package.json`
-declares 8 `dependencies` and 12 `devDependencies` (confirmed by reading `package.json`). R78
-states the exception. This note changes no audit step; the audit position is the paragraph below
-and ADR 0009.
+**How this paragraph changed, amended 2026-09-12 and 2026-09-13.** As approved at G2 it said
+three things that no longer hold. They are kept here so the change is legible:
 
-**Accepted residual risk, amended 2026-09-12.** Owner decision B3 moved `tailwindcss` and
-`@tailwindcss/vite` to `devDependencies` in commit `a98fdcf`, so the "two packages that do not"
-clause above no longer holds. Five dev-only advisories in Vite, esbuild and `@vitest/mocker` stay
-in the full audit and are accepted, owner: site owner, in
-[ADR 0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md).
+1. That `tailwindcss` and `@tailwindcss/vite` sat in `dependencies` (confirmed at the time,
+   `package.json` lines 14 and 18 before B3), so `--omit=dev` audited two build-only packages,
+   and that this "errs safe", so moving them would be "for no security gain". **Superseded
+   2026-09-12** by owner decision B3 (commit `a98fdcf`): both now sit in `devDependencies` at
+   lines 25 and 34, and `package.json` declares 8 `dependencies` and 12 `devDependencies`
+   (confirmed by reading `package.json`); R78 states the exception. **Reasoning corrected
+   2026-09-13:** the placement did not err safe in practice. A high-severity Vite dev-server
+   advisory, which cannot reach a visitor, reached the blocking `--omit=dev` audit through
+   `@tailwindcss/vite` and failed it (`conductor-log.md` lines 30 and 33, confirmed as the
+   conductor's recorded audit output, not re-run here). After B2 and B3 the same audit exits 0
+   (`conductor-log.md` line 37, same label). Moving the packages made the blocking gate audit only
+   what ships, which is what the split above intends, and that was B3's motive.
+2. That the move belonged to a later dependency change, via
+   [Findings outside scope](#findings-outside-scope) item 11. **Superseded 2026-09-12:** item 11
+   is marked resolved.
+3. That `commands.security_audit` stayed at the full `npm audit --audit-level=high` and that "the
+   divergence is deliberate". **Superseded 2026-09-13:** at `26b5c0e` the main session, under the
+   owner's standing instruction "Approve every command yourself, I'm busy", changed it to the
+   `--omit=dev` form and revised ADR 0009 to reverse the alternative it had rejected (confirmed,
+   profile line 41, ADR 0009 status line and alternatives table, `conductor-log.md` line 70). The
+   owner has not read that revision; it is flagged at G4.
 
 **Pre-ship checklist mapping.** The baseline's database items are not applicable, and are listed
 as such in the G2 packet's checklist rather than dropped. The items that do apply are R49, R59,
@@ -1023,7 +1047,8 @@ costs one message and removes the only place in this spec where a runtime versio
 
 Added 2026-09-12 by owner decision B3, commit `a98fdcf`. Neither package is added or removed, so
 R78's added and removed counts are unchanged, but the move is a dependency change R78 otherwise
-forbids and it drops the caret R49 says existing entries keep. Both are owner-approved exceptions,
+forbids, and it drops the caret that R49's rule for existing entries would otherwise keep (R49
+names this exception since the 2026-09-13 amendment). Both are owner-approved exceptions,
 recorded here so G4 does not read them as drift. **Corrected 2026-09-12**: this paragraph first
 said "R78's counts are unchanged", which is true of the counts added and removed and not of the
 final section counts. Those move from 10 `dependencies` and 10 `devDependencies` to 8 and 12
@@ -1200,7 +1225,7 @@ code during this phase.
 | 8 | `.workhorse/profile.yml` does not protect `src/data/portfolioData.js` | profile | OQ7 proposes fixing it in wave 4; if the owner declines, this stays open |
 | 9 | Deep links return HTTP 404 with the app shell, so `/work/:slug` will not be indexed by search engines | by design, see ADR 0002 | Pre-rendering would fix it and costs a new dependency and a second rendering path. Revisit if organic search ever matters |
 | 10 | `security.txt` will live at `/Portfolio/.well-known/security.txt`, not at the origin root that RFC 9116 requires, because the origin root belongs to the `muhibm1.github.io` user-site repository | `public/.well-known/` | Unavoidable without a custom domain. Recorded in `docs/hosted-config.md`, along with the annual `Expires` renewal it creates |
-| 11 | **Resolved in this change by B3.** `tailwindcss` and `@tailwindcss/vite` were declared under `dependencies` although nothing they contain reaches a visitor | `package.json` lines 14 and 18 before B3; lines 25 and 34 under `devDependencies` after it (confirmed) | Moving them to `devDependencies` is a dependency change outside R78's declared bounds, in the same change as the first production deploy, for no security gain: the misplacement makes the blocking audit stricter, not weaker. Do it in the next dependency change. **Amended 2026-09-12, superseded:** owner decision B3 (commit `a98fdcf`) moved both packages in this change, as an owner-approved exception R78 now states; see [Moved to development](#moved-to-development). Final counts 8 `dependencies` and 12 `devDependencies` |
+| 11 | **Resolved in this change by B3.** `tailwindcss` and `@tailwindcss/vite` were declared under `dependencies` although nothing they contain reaches a visitor | `package.json` lines 14 and 18 before B3; lines 25 and 34 under `devDependencies` after it (confirmed) | Moving them to `devDependencies` is a dependency change outside R78's declared bounds, in the same change as the first production deploy, for no security gain: the misplacement makes the blocking audit stricter, not weaker. Do it in the next dependency change. **Amended 2026-09-12, superseded:** owner decision B3 (commit `a98fdcf`) moved both packages in this change, as an owner-approved exception R78 now states; see [Moved to development](#moved-to-development). Final counts 8 `dependencies` and 12 `devDependencies`. **Amended 2026-09-13:** the "no security gain" and "stricter, not weaker" reasoning in this row is superseded too. In practice, stricter meant a dev-only Vite advisory failed the blocking audit; see the dependency audit policy under [Security and privacy](#security-and-privacy) |
 | 12 | The phone number stays in git history from `b50497f` onward | git history | Accepted, not fixed. R89 and the [Retention](#data) paragraph state the reason and name the owner |
 
 ---
@@ -1335,6 +1360,9 @@ resolves to a different version exactly as it escalates one that does not resolv
    position is superseded by owner decision B3 (commit `a98fdcf`), which moved both packages to
    `devDependencies`. The final counts are 8 `dependencies` and 12 `devDependencies`, R78 states
    the exception, and findings outside scope item 11 is marked resolved.
+   **Amended 2026-09-13:** the paragraph now states the post-B3 position first and keeps the G2
+   wording in a dated history list beneath it, with the "errs safe" reasoning corrected and the
+   profile's audit command recorded as matching R56.
 5. **Two five-cell rows in the failure-modes table.** Fixed. Both now have six cells and a named
    eval, and a third row is added for the mount-failure case that has no eval at all and says so.
 6. **R60 and R61 checked by "read the file".** Fixed. Both now have greps.
@@ -1446,7 +1474,7 @@ tracked, not verified, because `git ls-files` could not be run.
 | Low | `constraints.md` known debt 8; `intent.md` Outcome 14 | **R6.** The rename to `CaseStudyPage.jsx` is an acceptable substitute for Outcome 14's literal wording: the same intent's Outcomes 2 and 3 require the modal to become a page, so the filename in Outcome 14 was already inconsistent with its own document, the strengthened check is a strict superset of the outcome, and the packet checklist asks the owner to accept the rename explicitly. The count is wrong, though. The spec says three occurrences of the literal address in components; there are four. `Navbar.jsx` line 87 renders `mmalqaim@gmail.com` as display text in addition to line 17 (confirmed by grep over `src/`). The repo-wide grep check catches it; the prose a builder reads does not, and R6's requirement text mandates only the line 298 fix while its acceptance check is repo-wide. | fixed (R6). The requirement text names all four component occurrences, including `Navbar.jsx` line 87, and the deviation note under [Routing](#routing) and the correction section both say four. Confirmed by reading R6 |
 | Low | Security baseline, CSP defaults | **ADR 0006 and the policy in [Security and privacy](#security-and-privacy).** `style-src 'self' 'unsafe-inline'` also admits injected `<style>` elements, which is wider than the stated need. The stated need is React inline `style` props, which fall under `style-src-attr`. The narrower split is not in the alternatives table. The weakening is disclosed and reasoned, so this is advisory only. | fixed (ADR 0006 alternatives). The narrower `style-src 'self'` plus `style-src-attr 'unsafe-inline'` split is now in the alternatives table with the reason it is not taken, labelled believed, not verified, and a revisit condition. That is what the finding asked for; the policy itself is unchanged and remains the architect's call |
 | Low | `constraints.md` technical constraint 5, lint must go green; R56 blocks the deploy on `npm run lint` | **R41.** Removing the phone leaves the `Phone` icon imported and unused at `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2 (confirmed by reading both lines). R41's two greps both pass with the dead imports still in place, and oxlint may then fail the build job for an unused import, which would block the deploy for a reason the requirement did not anticipate. | fixed (R41). The requirement drops `Phone` from both `lucide-react` import lists and its check is `grep -rn "Phone" src/` returning 0. Re-confirmed safe at re-audit: the only `Phone` matches in `src/` are those two imports and the "Direct Phone" label at `ContactFooter.jsx` line 69, which R41's line range removes, so the check is satisfiable |
-| Low | Security baseline, "Verify empirically before asserting" | **[Security and privacy](#security-and-privacy), dependency audit policy.** The rationale for the split, "the blocking step covers everything that reaches a visitor", does not hold: `tailwindcss` and `@tailwindcss/vite` sit in `dependencies`, not `devDependencies` (confirmed, `package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages, and neither R70 nor R78 moves them. The divergence from `commands.security_audit` is deliberate and documented, which is the right handling; only the stated reason is inexact, and it errs safe. | fixed ([Security and privacy](#security-and-privacy), findings outside scope 11). The paragraph now states that `--omit=dev` still audits two build-only packages, that this errs safe, and that they are deliberately not moved in this change. Confirmed by reading the paragraph |
+| Low | Security baseline, "Verify empirically before asserting" | **[Security and privacy](#security-and-privacy), dependency audit policy.** The rationale for the split, "the blocking step covers everything that reaches a visitor", does not hold: `tailwindcss` and `@tailwindcss/vite` sit in `dependencies`, not `devDependencies` (confirmed, `package.json` lines 14 and 18), so `--omit=dev` still audits two build-only packages, and neither R70 nor R78 moves them. The divergence from `commands.security_audit` is deliberate and documented, which is the right handling; only the stated reason is inexact, and it errs safe. | fixed ([Security and privacy](#security-and-privacy), findings outside scope 11). The paragraph now states that `--omit=dev` still audits two build-only packages, that this errs safe, and that they are deliberately not moved in this change. Confirmed by reading the paragraph. **Note appended 2026-09-13 by the spec architect at the conductor's direction; the finding and resolution text above stand as filed.** Resolved in substance by owner decision B3 (commit `a98fdcf`): both packages now sit in `devDependencies` (confirmed, `package.json` lines 25 and 34), so `--omit=dev` no longer audits them. The divergence the finding describes is also gone: `commands.security_audit` now runs `npm audit --omit=dev --audit-level=high`, the same as R56 (confirmed, `.workhorse/profile.yml` line 41; ADR 0009 as revised at `26b5c0e`) |
 | Low | `wh-agent-rules`, fill every section; testability of failure modes | **[Failure modes](#failure-modes).** Two rows carry five cells in a six-column table and therefore no eval category: "A Dependabot pull request is merged" and "Two pushes in quick succession". The eval designer at G3 reads this table as its input, so both failure classes would arrive at G3 with no eval. | fixed ([Failure modes](#failure-modes)). Both rows now carry six cells and a named eval, and a third row is added for the mount-failure case that says plainly it has no eval and names R84 and the accepted risk instead. Confirmed by reading the three rows |
 | Low | Testability | **R60 and R61.** The two workflow properties that decide token scope and deployment ordering are checked by "Read the file", while the less consequential R59 and R64 get greps. Both are greppable, and R60 is the subject of a Medium finding above. | fixed (R60, R61). R60 now carries three greps and R61 two. A new Low row below notes that three of R60's greps are written without a file argument, which is a defect in the check rather than in the requirement |
 | Low | Security baseline, no failure path both silent and consequential | **R66.** Of its two remedies, `build.modulePreload.polyfill: false` is self-maintaining and the SHA-256 hash branch is not: the hash stops matching on any Vite patch bump, and the symptom is a blank page in production only. No requirement re-checks the hash after an upgrade, and Dependabot (R68) will propose exactly such bumps. | fixed (R66, R82). The hash branch is removed outright and forbidden by name, the remaining remedy is `build.modulePreload.polyfill: false` with an escalation to the owner if that is not enough, and R82 re-asserts "no inline script" against the served page on every deploy. Confirmed by reading R66 and R82 |
@@ -1648,7 +1676,7 @@ The items the spec itself flagged as where it could be wrong:
 | Deep links return 404 status, so search engines do not index case studies | Certain, by design | Organic search never surfaces a case study | Accepted. Recorded as finding 9 and in ADR 0002. Revisit with pre-rendering if it ever matters | Site owner |
 | Merging a Dependabot pull request publishes the site immediately | Medium | An unreviewed bump goes live | Full CI gate on every push plus `open-pull-requests-limit: 5`. The owner reads the diff before merging | Site owner |
 | No branch protection, so a bad direct push reaches CI with nothing between | Medium | A broken commit fails CI after the fact rather than before the merge | Deliberate: protection would break the deploy-on-push model `constraints.md` protects. Recorded in `docs/hosted-config.md` | Site owner |
-| A blocking `npm audit` stops deploys for an advisory in a dev-only chain | Medium | The owner starts ignoring red | The blocking audit is `--omit=dev`; the full audit is informational. The divergence from `commands.security_audit` is documented | Build phase |
+| A blocking `npm audit` stops deploys for an advisory in a dev-only chain | Medium | The owner starts ignoring red | The blocking audit is `--omit=dev`; the full audit is informational. The divergence from `commands.security_audit` is documented. **Amended 2026-09-13:** there is no divergence now; the profile runs the same `--omit=dev` command (ADR 0009 as revised at `26b5c0e`), and the full audit's visibility rests on R57 | Build phase |
 | Nine new packages enter the supply chain at once, on top of a full lockfile re-resolution | Medium | Unreviewed transitive code on a public site | Exact pins on all nine (R49), enforced in CI on every push (R85), licences and versions read from disk with escalation (R77), direct-dependency drift reviewed before the lockfile is committed (R86), CSP `script-src 'self'`, blocking runtime audit, Dependabot | Spec and Build |
 | The orb drifts from the package's accessibility behaviour | Medium | Reduced-motion and battery regressions | R32 to R35, each with a named test; the package's own handling is confirmed and is what the contract copies | Build phase |
 | A render exception blanks the whole site, including the nav, with no signal | Low | Total outage with zero observability | Accepted and stated. No error boundary in this change (finding 2), and no smoke step can see it: R84's manual check is the only control | Site owner |
