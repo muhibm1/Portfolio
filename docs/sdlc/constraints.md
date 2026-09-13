@@ -26,7 +26,8 @@ behaviour is unobservable by design.
 2. The link to this site goes out with the resume or in the reply.
 3. A recruiter opens it, scans the hero and headline metrics, and either leaves or goes deeper
    into a case study.
-4. If convinced, they contact the owner by the `mailto:` link, the phone number, or LinkedIn.
+4. If convinced, they contact the owner by the `mailto:` link or LinkedIn. (The phone number was a
+   third route until change 2026-09-11 removed it from the site under R41.)
    The site itself records nothing about this; the first the owner knows of a visit is an email.
 5. The owner updates content when a role, a metric, or a project changes, then pushes.
 
@@ -99,10 +100,14 @@ pattern.
    system names such as "Apple Geo Ingest API", OAuth scopes, and region identifiers. It is
    fictional demo content, **confirmed** by reading the file, but a reader cannot tell that from
    the page. The owner should decide whether it needs a visible "illustrative example" label.
-3. **The owner's phone number is published on the page.** `(512) 508-1536` renders in
-   `ContactFooter` and `ResumeModal`. **Confirmed.** That is a deliberate choice, and it also
-   means the number is scrapeable by anyone. It is the owner's call, and it should be a
-   conscious one.
+3. **The owner's phone number was published on the page; it no longer is.** At G0 it
+   rendered in `ContactFooter` and `ResumeModal` (confirmed at G0). Change 2026-09-11 removed it
+   from the site under G1-D1 ("D1 remove phone", spec R41) and redacted every full and partial
+   form of it from the tracked documents under G4-D3. Git history from `b50497f` onward still
+   holds it, an accepted position recorded in `docs/hosted-config.md` section 7. The site-facing
+   checks run in CI: R41's unit tests, and the generic pattern in the R82 deploy smoke step. The
+   repository check is the R89 script, `scripts/check-phone-redaction.mjs`, run on a developer
+   machine by evals GC41 and GC89.
 4. **Timeline pressure is job-search pressure.** The site exists to support an active move into
    FDE roles. Work that delays a shippable page is expensive in a way that is invisible in the
    repository.
@@ -177,7 +182,8 @@ Three items do apply and are open:
 1. Are the published metrics (350+ tickets/day, 50+ regions, -40% incidents, 99.9% reliability)
    yours to publish, and is any of the Apple, TCS or Neural Newsletters detail confidential?
 2. Should the simulator's invented ticket data carry a visible "illustrative example" label?
-3. Do you want the phone number to stay on a public, scrapeable page?
+3. Do you want the phone number to stay on a public, scrapeable page? **Answered at G1 of change
+   2026-09-11: removed from the site (G1-D1, spec R41).**
 4. Custom domain, or `muhibm1.github.io/Portfolio/`? This decides the `base` value and whether
    a `CNAME` file is needed.
 5. Multi-page with a router as the design brief proposes, or stay single-page with modals?

@@ -1,0 +1,315 @@
+# Builds, tests and publishes the portfolio to GitHub Pages on every push to main, then checks the
+# bytes Pages actually serves. A push to main is a release: nothing reaches Pages unless the pin
+# check, lint, tests, the test-count floor, the build and the runtime audit all pass first.
+#
+# Source of truth: docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/spec.md,
+# "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009.
+# Every action is pinned to a full commit SHA with its release tag in the trailing comment.
+# Dependabot proposes SHA updates; read each one before merging, because merging deploys.
+name: Build and deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    # Read scopes only. This job installs and runs third-party package code, and none of it needs
+    # the ability to publish (R60).
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Package lifecycle scripts run in this job, so the token stays out of .git/config.
+          persist-credentials: false
+
+      - name: Set up Node 22 with the npm cache
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Dependency pin check (R85)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const packageJsonPath = process.argv[1];
+
+            // The nine packages R49 pins to an exact version. The owner extends this list when
+            // adding a package.
+            const exactPinnedPackages = [
+              "react-router",
+              "@fontsource/inter",
+              "@fontsource/jetbrains-mono",
+              "@fontsource/space-grotesk",
+              "vitest",
+              "@testing-library/react",
+              "@testing-library/dom",
+              "@testing-library/jest-dom",
+              "jsdom",
+            ];
+            // major.minor.patch with an optional prerelease. A range, tag, URL or git specifier
+            // does not match.
+            const exactVersion = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
+
+            const manifest = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+            const offenders = [];
+            for (const name of exactPinnedPackages) {
+              const specifiers = [manifest.dependencies?.[name], manifest.devDependencies?.[name]]
+                .filter((specifier) => specifier !== undefined);
+              if (specifiers.length === 0) specifiers.push("(not declared)");
+              for (const specifier of specifiers) {
+                console.log(`${name}: ${specifier}`);
+                if (!exactVersion.test(specifier)) offenders.push(`${name} "${specifier}"`);
+              }
+            }
+            if (offenders.length > 0) {
+              console.log(`::error::Pin check failed (R85) in ${packageJsonPath}: ${offenders.join(", ")} must be exact versions.`);
+              process.exit(1);
+            }
+            console.log(`Pin check passed: all ${exactPinnedPackages.length} packages are exact versions.`);
+          ' package.json
+
+      - name: Install dependencies
+        run: "npm ci"
+
+      - name: Lint
+        run: "npm run lint"
+
+      # The default reporter keeps failing test names in the log; the JSON report feeds the floor.
+      - name: Run the tests
+        run: "npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json"
+
+      - name: Test-count floor (R52)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const reportPath = process.argv[1];
+            const minimumPassed = 12;
+
+            const { numPassedTests, numPendingTests, numTodoTests, numFailedTests } =
+              JSON.parse(fs.readFileSync(reportPath, "utf8"));
+            const counts = `numPassedTests=${numPassedTests} numPendingTests=${numPendingTests} numTodoTests=${numTodoTests} numFailedTests=${numFailedTests}`;
+            console.log(`Vitest report ${reportPath}: ${counts}`);
+
+            const hasEnoughPassed = numPassedTests >= minimumPassed;
+            const hasNoneSkippedOrFailed = numPendingTests + numTodoTests + numFailedTests === 0;
+            if (!hasEnoughPassed || !hasNoneSkippedOrFailed) {
+              console.log(`::error::Test floor failed (R52): need at least ${minimumPassed} passed and 0 pending, todo or failed; got ${counts}.`);
+              process.exit(1);
+            }
+            console.log("Test floor passed.");
+          ' vitest-results.json
+
+      - name: Build
+        run: "npm run build"
+
+      - name: Audit runtime dependencies (blocking)
+        run: "npm audit --audit-level=high --omit=dev"
+
+      # Shows the dev-only advisories ADR 0009 accepts without blocking the deploy (R57). Any
+      # advisory in this log that is not in the ADR 0009 table is new and needs a decision.
+      - name: Audit the full dependency tree (informational)
+        run: "npm audit --audit-level=high"
+        continue-on-error: true
+
+      - name: Read the Pages configuration
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          # The owner sets the Pages source to GitHub Actions by hand (R69), so there is nothing to
+          # enable. If this step fails on a permission, move it into the deploy job; do not widen
+          # this job (spec, "Deploy pipeline").
+          enablement: false
+
+      - name: Upload dist as the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+          # This action leaves out dot directories unless told otherwise, which would drop
+          # dist/.well-known/security.txt. It still excludes .git and .github.
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy and smoke-test the published site
+    needs: build
+    runs-on: ubuntu-latest
+    environment: github-pages
+    # The only write scopes in this workflow, and exactly the two a Pages deployment needs (R60).
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      # The smoke steps assert only the bytes GitHub Pages returns. None of them can tell whether
+      # the app mounted in a browser; that is the manual check in docs/hosted-config.md (R84).
+      # Each failure prints an error naming the assertion and the URL it fetched (R83).
+      - name: "Smoke R63: fetch the published page, retrying for Pages propagation"
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          root_url="${PAGE_URL%/}/"
+          echo "ROOT_URL=$root_url" >> "$GITHUB_ENV"
+          mkdir -p smoke
+          status="000"
+          for attempt in 1 2 3 4 5; do
+            if [ "$attempt" -gt 1 ]; then sleep 10; fi
+            status=$(curl -sS -o smoke/root.html -w "%{http_code}" "$root_url") || status="000"
+            echo "Attempt $attempt of 5: GET $root_url returned $status"
+            if [ "$status" = "200" ]; then break; fi
+          done
+          if [ "$status" != "200" ]; then
+            echo "::error::R63 failed: GET $root_url did not return 200 after 5 attempts (last status $status)."
+            exit 1
+          fi
+          echo "Saved the body of $root_url to smoke/root.html:"
+          cat smoke/root.html
+
+      - name: "Smoke R87: print the response headers Pages sets (informational, never asserted)"
+        run: |
+          echo "Response headers for $ROOT_URL. Copy this list into docs/hosted-config.md after the first run."
+          curl -sSI "$ROOT_URL" || echo "::warning::R87 could not fetch the headers of $ROOT_URL; nothing is asserted here."
+
+      - name: "Smoke R80: asset paths, the script, the stylesheet and one font"
+        run: |
+          failures=0
+          origin=$(printf '%s' "$ROOT_URL" | sed -E 's#^(https?://[^/]+).*#\1#')
+
+          # Fetches one asset and logs its status and content-type. Prints an error naming the asset
+          # and its URL, and returns 1, unless the answer is 200 with a matching content-type.
+          fetch_asset() {  # label, url, output file, content-type pattern
+            local result status content_type
+            result=$(curl -sS -o "$3" -w "%{http_code} %{content_type}" "$2") || result="000 (no response)"
+            status=${result%% *}
+            content_type=${result#* }
+            echo "$1: GET $2 returned $status, content-type $content_type"
+            if [ "$status" != "200" ]; then
+              echo "::error::R80 failed, $1: GET $2 returned $status, expected 200."
+              return 1
+            fi
+            if ! printf '%s' "$content_type" | grep -qiE "$4"; then
+              echo "::error::R80 failed, $1: GET $2 returned content-type $content_type, expected one matching $4."
+              return 1
+            fi
+            echo "PASS R80 $1"
+          }
+
+          # Every src= and href= value in the served shell must sit under the Pages base. The sed
+          # strips the attribute name and the quotes around the value.
+          asset_refs=$(grep -oE "(src|href)=(\"[^\"]*\"|'[^']*')" smoke/root.html | sed -E "s/^(src|href)=.//; s/.\$//" || true)
+          if [ -z "$asset_refs" ]; then
+            echo "::error::R80 failed: found no src= or href= references in the body of $ROOT_URL."
+            exit 1
+          fi
+          while IFS= read -r asset_ref; do
+            case "$asset_ref" in
+              /Portfolio/*) echo "PASS R80 asset path $asset_ref begins /Portfolio/" ;;
+              *)
+                echo "::error::R80 failed: asset path $asset_ref in the body of $ROOT_URL does not begin /Portfolio/."
+                failures=$((failures + 1))
+                ;;
+            esac
+          done <<< "$asset_refs"
+
+          module_path=$(grep -oE '<script[^>]*type="module"[^>]*>' smoke/root.html | grep -oE 'src="[^"]*"' | head -n 1 | sed -E 's/^src="//; s/"$//' || true)
+          stylesheet_path=$(grep -oE '<link[^>]*rel="stylesheet"[^>]*>' smoke/root.html | grep -oE 'href="[^"]*"' | head -n 1 | sed -E 's/^href="//; s/"$//' || true)
+          if [ -z "$module_path" ] || [ -z "$stylesheet_path" ]; then
+            echo "::error::R80 failed: the body of $ROOT_URL needs a module script and a stylesheet; found script '$module_path' and stylesheet '$stylesheet_path'."
+            exit 1
+          fi
+          module_url="$origin$module_path"
+          echo "MODULE_URL=$module_url" >> "$GITHUB_ENV"
+          fetch_asset "module script" "$module_url" smoke/module.js 'javascript' || failures=$((failures + 1))
+          fetch_asset "stylesheet" "$origin$stylesheet_path" smoke/stylesheet.css 'text/css' || failures=$((failures + 1))
+
+          # The first .woff2 the stylesheet references. Vite writes these as absolute /Portfolio/ URLs.
+          font_path=$(grep -oE 'url\([^)]*\.woff2[^)]*\)' smoke/stylesheet.css | head -n 1 | sed -E 's/^url\(//; s/\)$//' | tr -d "\"'" || true)
+          case "$font_path" in
+            /Portfolio/*)
+              fetch_asset "first woff2 font" "$origin$font_path" smoke/font.woff2 'font|woff2' || failures=$((failures + 1))
+              ;;
+            *)
+              echo "::error::R80 failed: the stylesheet at $origin$stylesheet_path has no .woff2 URL under /Portfolio/ (found '$font_path')."
+              failures=$((failures + 1))
+              ;;
+          esac
+
+          if [ "$failures" -gt 0 ]; then
+            echo "R80: $failures assertion(s) failed."
+            exit 1
+          fi
+
+      - name: "Smoke R81: a deep link serves the same body as the root"
+        run: |
+          deep_link_url="${ROOT_URL}work/apple-llm-triage"
+          # Pages answers this path with 404.html, a copy of index.html (ADR 0002), so the status is
+          # 404 by design and only the body is compared.
+          status=$(curl -sS -o smoke/deep-link.html -w "%{http_code}" "$deep_link_url") || {
+            echo "::error::R81 failed: could not fetch $deep_link_url."
+            exit 1
+          }
+          root_digest=$(sha256sum smoke/root.html | cut -d ' ' -f 1)
+          deep_link_digest=$(sha256sum smoke/deep-link.html | cut -d ' ' -f 1)
+          echo "GET $deep_link_url returned $status (not asserted)"
+          echo "sha256 $root_digest for $ROOT_URL"
+          echo "sha256 $deep_link_digest for $deep_link_url"
+          if [ "$root_digest" != "$deep_link_digest" ]; then
+            echo "::error::R81 failed: the body of $deep_link_url differs from the body of $ROOT_URL, so 404.html is missing or stale."
+            exit 1
+          fi
+          echo "PASS R81 the deep-link body matches the root body"
+
+      - name: "Smoke R82: the served HTML keeps its CSP, referrer policy and privacy removals"
+        run: |
+          failures=0
+
+          # Prints how many times an extended regular expression matches in a file, ignoring case.
+          count_matches() {  # pattern, file
+            { grep -oiE "$1" "$2" || true; } | wc -l | tr -d ' '
+          }
+
+          # Logs one PASS line, or one error naming the assertion and the URL it checked.
+          expect_count() {  # assertion, expected count, actual count, url
+            if [ "$3" = "$2" ]; then
+              echo "PASS R82 $1: found $3 at $4"
+            else
+              echo "::error::R82 failed, $1: found $3, expected $2, at $4"
+              failures=$((failures + 1))
+            fi
+          }
+
+          inline_scripts=$({ grep -oiE '<script[^>]*>' smoke/root.html || true; } | { grep -viE '[[:space:]]src=' || true; } | wc -l | tr -d ' ')
+          # A generic North American phone pattern, the one src/data/portfolioData.test.js uses.
+          # The owner's own digits never appear in this file.
+          phone_pattern='\(?[0-9]{3}\)?[[:space:].-]?[0-9]{3}[[:space:].-][0-9]{4}'
+
+          expect_count "exactly one Content-Security-Policy meta tag" 1 "$(count_matches 'http-equiv="Content-Security-Policy"' smoke/root.html)" "$ROOT_URL"
+          expect_count 'exactly one name="referrer" meta tag' 1 "$(count_matches 'name="referrer"' smoke/root.html)" "$ROOT_URL"
+          expect_count "no inline script without a src attribute" 0 "$inline_scripts" "$ROOT_URL"
+          expect_count "no fonts.googleapis.com reference" 0 "$(count_matches 'fonts\.googleapis\.com' smoke/root.html)" "$ROOT_URL"
+          expect_count "no fonts.gstatic.com reference" 0 "$(count_matches 'fonts\.gstatic\.com' smoke/root.html)" "$ROOT_URL"
+          expect_count "no phone number in the HTML" 0 "$(count_matches "$phone_pattern" smoke/root.html)" "$ROOT_URL"
+          expect_count "no phone number in the module script" 0 "$(count_matches "$phone_pattern" smoke/module.js)" "$MODULE_URL"
+
+          if [ "$failures" -gt 0 ]; then
+            echo "R82: $failures assertion(s) failed."
+            exit 1
+          fi

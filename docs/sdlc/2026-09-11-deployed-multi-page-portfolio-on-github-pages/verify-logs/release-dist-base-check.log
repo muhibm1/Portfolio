@@ -1,0 +1,6 @@
+=== dist base path check (grep src=/href= not starting /Portfolio/) ===
+href="/Portfolio/favicon.svg"
+src="/Portfolio/assets/index-McMs1o0n.js"
+href="/Portfolio/assets/index-CkNgrI9O.css"
+=== dist mockup file count ===
+(count): 0

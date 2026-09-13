@@ -5,10 +5,11 @@ export const portfolioData = {
     role: "Forward Deployed Engineer & Systems Integration",
     subtitle: "Data Engineer at Apple (via TCS) · Austin, TX",
     email: "mmalqaim@gmail.com",
-    phone: "(512) 508-1536",
     location: "Austin, TX",
     linkedin: "https://www.linkedin.com/in/muhibm1/",
     linkedinHandle: "linkedin.com/in/muhibm1",
+    github: "https://github.com/muhibm1",
+    githubHandle: "github.com/muhibm1",
     status: "Available for Forward Deployed Engineering & Solutions Eng Roles",
     summary: `Engineer targeting Forward Deployed Engineering roles, where connecting a client's real systems and shipping working software matter more than following a fixed roadmap. Built production integrations between disparate backend systems through authenticated APIs, owned the data validation layer that keeps automated decisions trustworthy, and shipped full-stack features—from backend logic to user interfaces—for a live LLM system in production. Comfortable moving fast, with judgment on where more rigor is warranted.`
   },
@@ -145,6 +146,54 @@ export const portfolioData = {
         { title: "WebSocket Push", desc: "Elixir Phoenix backend streams real-time updates directly to frontend." }
       ],
       techStack: ["Elixir Phoenix", "WebSockets", "Postgres", "Python", "LLM Prompt Tuning", "TypeScript", "React", "CI/CD"]
+    }
+  ],
+
+  workIntro: "Forward Deployed Engineer connecting a client's real-world systems and shipping trustworthy software on live production data.",
+
+  projects: [
+    {
+      id: "workhorse",
+      name: "workhorse",
+      type: "Project",
+      tagline: "An agentic software delivery lifecycle for forward-deployed engineering, packaged as a Claude Code plugin.",
+      description: "Give it a problem and an outcome inside a client repository. Single-purpose agents discover, specify, plan, build, verify, review, ship and hand over, and a human approves at gates that scale with risk. Hooks, not prompts, enforce the rules: protected paths, locked tests during fix loops, and no push while a required gate is open. This site was built through it.",
+      techStack: ["Claude Code plugin", "Node.js", "Markdown agents and skills"],
+      status: "Active",
+      repoPublic: false,
+      repo: "https://github.com/muhibm1/workhorse"
+    },
+    {
+      id: "shu",
+      name: "Shu",
+      type: "Project",
+      tagline: "An autonomous intraday trading engine built to prove a strategy has an edge before it risks a dollar.",
+      description: "A Python engine and FastAPI + React dashboard for US equities. Backtest and live run the same object graph with three ports swapped, every order passes a thirteen-check pre-trade risk gate, and no strategy trades until it clears a walk-forward, CPCV and Deflated-Sharpe validation harness. Paper only today, and nothing trades yet, by design.",
+      techStack: ["Python", "FastAPI", "React", "TypeScript", "Postgres", "Alpaca", "Docker"],
+      status: "In progress",
+      repoPublic: false,
+      repo: "https://github.com/muhibm1/Shu"
+    },
+    {
+      id: "wasl",
+      name: "wasl",
+      type: "Project",
+      tagline: "A mentorship marketplace for Muslim professionals, with mosques and student associations supplying the trust.",
+      description: "A React and Supabase progressive web app that connects someone with a career question to a professional who has already done the thing. The v2 design turns a member directory into a mentorship loop: offers instead of titles, capacity limits that protect mentors, a scheduled coffee chat on every accepted request, and community verification.",
+      techStack: ["React", "Vite", "TypeScript", "Supabase", "PWA"],
+      status: "In development",
+      repoPublic: false,
+      repo: "https://github.com/muhibm1/wasl"
+    }
+  ],
+
+  demos: [
+    {
+      id: "triage-simulator",
+      name: "Live FDE Decision Triage Simulator",
+      type: "Live demo",
+      tagline: "Test the decision logic modeled after the production system built at Apple. Select structured ticket payloads and observe how deterministic safety policies and LLM classification interact in real time.",
+      href: "/#simulator"
     }
   ],
 
