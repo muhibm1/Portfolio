@@ -6,9 +6,9 @@ export default function FdePhilosophy() {
   const { philosophy } = portfolioData;
 
   const icons = [
-    <Network className="w-6 h-6 text-[#1d1d1d]" />,
-    <ShieldCheck className="w-6 h-6 text-[#1d1d1d]" />,
-    <Activity className="w-6 h-6 text-[#1d1d1d]" />
+    <Network key="network" className="w-6 h-6 text-[#1d1d1d]" />,
+    <ShieldCheck key="shield-check" className="w-6 h-6 text-[#1d1d1d]" />,
+    <Activity key="activity" className="w-6 h-6 text-[#1d1d1d]" />
   ];
 
   return (
