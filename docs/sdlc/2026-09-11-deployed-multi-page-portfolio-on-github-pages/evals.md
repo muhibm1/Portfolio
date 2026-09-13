@@ -21,8 +21,92 @@ adds GC91 (R91), GC92 (R92), EG23 and AD17, and renames the case previously numb
 additional check against R49, added 2026-09-12) to GC93 to free the id. See the amendment
 immediately below for the full account.
 
+Revised a third time 2026-09-13 by the eval designer, answering the second G4 rejection
+(`approvals.md` G4 block, `2026-09-13T03:30:20.632Z`) and `spec.md`'s same-day answer to it,
+"Second G4 rejection (2026-09-13)". The requirement count stays 92; no requirement was added or
+renumbered. This pass rewrites GC89 and GC41 for the script's new country-code prefix handling
+and its split skip/undecodable summary, adds GC94 (a second golden case for R89, the new
+in-process unit-test suite), FL24 (a failure case for an unlisted binary type that cannot be
+decoded), and AD18 (an optional adversarial case, marked manual so no digit is ever captured in
+a log), updates NF8 and the "Leaked (data)" failure-taxonomy row to record that the matcher and
+decoder now run in CI, and updates the R89 and M8 traceability rows and the suite-size note. See
+the new amendment immediately below for the full account.
+
 Every factual claim below is labelled **confirmed** (this agent read the file or line named)
 or **believed, not verified** (inferred, or carried from an earlier agent). No em-dashes.
+
+## Amendment (2026-09-13, second G4 rejection response)
+
+G4 was rejected a second time (`approvals.md`, G4 block, `2026-09-13T03:30:20.632Z`). The spec
+architect answered it the same day in `spec.md`'s "Second G4 rejection (2026-09-13)" section,
+under the owner's delegation ("Approve every command yourself, I'm busy"); the owner has not
+read the packet (confirmed by the spec architect, `spec.md` line 1407). That section's own list,
+"What `evals.md` must change (second rejection)", is applied here item by item. No requirement
+was added, renumbered, or removed; the count stays 92. This agent has no Bash tool this session
+(the tool list is Read, Glob, Grep and Write only, confirmed by the tool list itself), so every
+"confirmed" claim below comes from reading `spec.md`'s Item 1 and Item 2 subsections directly,
+not from running any command.
+
+**Redaction, confirmed.** This amendment, like the one before it, was written without ever
+typing a digit of the owner's phone number. Every synthetic example below uses a fictional
+number in the shape `555-556-0100` or the phrase "the reference number", never the real one.
+
+- **GC89, rewritten.** The self-test's expected output line is now
+  `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.`, replacing the prior
+  three-forms wording, to prove the script's new country-code prefix handling (8 more
+  renderings) and the 3 new near-misses. The scan's expected summary now splits the skip count
+  into its two parts and adds the undecodable count: more than 0 files scanned, `5 skipped as
+  binary`, `0 missing from disk`, `0 undecodable`, `0 hits`. Exit 2 from any cause, an
+  undecodable file included, is stated as a failure, never a pass, replacing the narrower
+  "reference could not be derived" wording.
+- **GC41, rewritten.** The post-build `dist` scan's expected result is now `0 undecodable`, `0
+  missing from disk`, `0 hits`, with the binary count equal to 5 plus the number of files under
+  `dist/` whose extension is `.jpg`, `.png`, `.woff` or `.woff2`, both numbers to be reported by
+  whoever runs it. The prior expectation ("script exits 0") is kept but no longer stands alone.
+  `verification.md` line 70's combined count of 121 predates the split between binary and
+  missing files and is **believed, not a target**, per the spec's own instruction.
+- **GC94, added (R89, M8).** A new golden case asserting the 17-test unit suite,
+  `src/checkPhoneRedaction.test.js`, exits 0 with 17 passed and 0 skipped, and that it runs in
+  CI through the existing `npm test` step (R52, R56), not only on the dev host. This is the same
+  kind of documented exception `GC93` and `GC-CP` already use: a second golden case against an
+  existing requirement (R89), not a new requirement, numbered `GC94` as the next free integer
+  after `GC93`. It closes the gap the first G4 rejection left open: R89's own script only ever
+  ran on the dev host (ADR 0010); the matcher and decoder that the script depends on now have a
+  CI-enforced regression test, even though the whole-tree scan itself still does not run there.
+- **FL24, added (R89).** A failure case for a tracked file whose extension is not in
+  `BINARY_EXTENSIONS` and which holds a byte sequence that fails all four decoding rules (for
+  example, a stray NUL byte with no byte-order mark and no half-of-odd-offsets pattern). Points
+  at unit test 16 in `src/checkPhoneRedaction.test.js`, per the spec's own instruction, and may
+  additionally be run live against a scratch fixture on the dev host.
+- **AD18, added, optional (R89).** A red-team case reproducing the scenario the spec left to
+  this agent's judgement: in a scratch clone with full git history, derive the reference number
+  in memory only, write a `+1`-or-bare-`1`-prefixed copy and a UTF-16LE copy into two untracked
+  scratch files, and confirm the script exits 1 against them. This agent could not find a way to
+  make it CI-automatable without risking a digit landing in a captured log (a CI step's own
+  console output is itself a log), so it is written `manual`, run only by a human or the eval
+  runner directly on the dev host, with an explicit instruction never to paste the fixture
+  contents or the tool's output into any artifact, ticket, or chat. This satisfies the spec's
+  own condition, "include it if you can write it so no digit is recorded," by keeping the case
+  out of anything this agent or a future automated run would capture.
+- **NF8 and the "Leaked (data)" failure-taxonomy row, both amended.** Each now states that the
+  matcher and decoder are proven in CI on every push, via GC94, while the whole-tree scan itself
+  (`--self-test` then the scan) still runs only on the dev host, never in CI (ADR 0010). Neither
+  row's target or method otherwise changes.
+- **Traceability.** The R89 row of the [coverage matrix](#9-coverage-matrix) gains `GC94` under
+  Golden and `FL24` under Failure, and notes `AD18` as an optional Adversarial case. The M8 row
+  under Metrics gains `GC94`. Category totals move from 98 to 99 golden cases, 23 edge cases
+  (unchanged), 23 to 24 failure cases, and 17 to 18 adversarial cases (the 18th optional and
+  manual). Suite size: 174 tests **believed** at commit `460405e` (`review-packet.md` section 3,
+  not independently re-verified by this agent), plus the 17 new tests in
+  `src/checkPhoneRedaction.test.js`, totals **191 tests believed**, not confirmed by an actual
+  run, if nothing else changes the suite in this window. R52's CI floor of `>= 12` passed is far
+  below this figure and is unaffected either way.
+
+**Not edited in this pass, and why.** `intent.md`, `spec.md`, `constraints.md`,
+`.workhorse/profile.yml`, `docs/hosted-config.md`, `docs/sdlc/codebase-map.md`, `approvals.md`,
+`state.json`, and every source and test file are out of this agent's scope this window, per the
+conductor's instruction and `wh-agent-rules`. This agent has no shell in this session; the
+conductor runs the redaction scan on this file's own output, per the task instructions.
 
 ## Amendment (2026-09-13, G4 rejection response)
 
@@ -406,7 +490,10 @@ the hero orb's dot rendering, logged in `conductor-log.md` (the plan-phase entry
   collided with the 2026-09-12 exception case, which had been assigned the literal id `GC91`;
   that case is renamed `GC93` (the next free integer after `GC92`) so the `GCn`-maps-to-`Rn`
   rule holds for R91 without an exception. `GC93` is still the same R49 case, unchanged in
-  substance.
+  substance. **The second G4 rejection response (2026-09-13) adds one more documented
+  exception, `GC94`**, a second golden case against R89 (the new in-process unit-test suite),
+  the next free integer after `GC93`; and continues the failure and adversarial sequences with
+  `FL24` and `AD18`.
 - This revision was produced without re-running any command from the prior pass; every case
   carried unchanged from the first version keeps its original epistemic labels.
 - This 2026-09-13 pass also ran with no Bash or code-execution tool: this session's tool list is
@@ -421,7 +508,7 @@ the hero orb's dot rendering, logged in `conductor-log.md` (the plan-phase entry
 | Golden | 100% pass | Every one of R1-R92 has a golden case; the outcome does not ship without every one passing |
 | Edge | 100% pass | Boundaries on the app's few real interfaces: the URL (slug, hash), the viewport, timers, device pixel ratio, the smoke step's own asset-parsing logic, and now the Back to Top control's idempotency at scroll position 0 |
 | Failure | 100% correct handling | Every row of the spec's own failure-modes table (`spec.md` lines 830-853) becomes one case here, **including the mount-failure row, which the spec itself states has no automated detection.** That row's case (FL23) is scored on whether the accepted-risk documentation and the R84 manual compensating control exist, not on catching the failure, matching R90's rule against crediting a check with a detection it does not have |
-| Adversarial | 100% rejected or safely handled, **except AD13** | AD13 (clickjacking via a meta-only CSP) is a stated, accepted residual risk per ADR 0006, not a defect; it is scored "documented", not "rejected". Every other adversarial case, including the three red-team cases against the smoke step's own detection logic (AD14-AD16) and the new mockup-reintroduction case (AD17), targets a surface the design already claims to defend, so 100% is the right bar, not an aspiration |
+| Adversarial | 100% rejected or safely handled, **except AD13**, and **AD18 is optional and scored separately** | AD13 (clickjacking via a meta-only CSP) is a stated, accepted residual risk per ADR 0006, not a defect; it is scored "documented", not "rejected". AD18 (2026-09-13, second G4 rejection response) is optional and manual by the spec's own instruction, run only if it can be done with no digit recorded anywhere; it is not counted against the 100% bar the way AD1-AD17 are, and is scored "documented", like AD13, when it is not run. Every other adversarial case, including the three red-team cases against the smoke step's own detection logic (AD14-AD16) and the mockup-reintroduction case (AD17), targets a surface the design already claims to defend, so 100% is the right bar, not an aspiration |
 | Non-functional | see rows | One row per success metric M1-M17, each with the intent's own numeric target |
 
 ## 2. Golden cases
@@ -517,7 +604,7 @@ No case below is adjusted.
 
 | ID | Req | Scenario | Exact check | Expected | Automatable | Implemented as |
 |----|-----|----------|--------------|----------|--------------|----------------|
-| GC41 | R41 | Given the phone number is deleted (not blanked), **and the now-unused `Phone` icon import is dropped from `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2** (both confirmed present by the spec architect during this revision, because oxlint may fail the build on an unused import), when a build completes and `src/` is grepped, then no trace of the number remains anywhere the script or the greps reach | `node scripts/check-phone-redaction.mjs dist` (run after `npm run build`; **amended 2026-09-13**: this replaces the literal grep so this row carries no digit of the number, per R41's amended check and R89's script contract); `grep -rn "personal.phone" src/`; `grep -rn "Phone" src/` | Script exits 0; 0; 0 | Windows | command (post-build; shared with M8) + `src/data/portfolioData.test.js` ("publishes no phone number") |
+| GC41 | R41 | Given the phone number is deleted (not blanked), **and the now-unused `Phone` icon import is dropped from `ContactFooter.jsx` line 2 and `ResumeModal.jsx` line 2** (both confirmed present by the spec architect during this revision, because oxlint may fail the build on an unused import), when a build completes and `src/` is grepped, then no trace of the number remains anywhere the script or the greps reach | `node scripts/check-phone-redaction.mjs dist` (run after `npm run build`; **amended 2026-09-13**: this replaces the literal grep so this row carries no digit of the number, per R41's amended check and R89's script contract); `grep -rn "personal.phone" src/`; `grep -rn "Phone" src/` | Script exits 0 and its summary reads `0 undecodable`, `0 missing from disk`, `0 hits`, with the binary count equal to 5 plus however many files under `dist/` carry a `.jpg`, `.png`, `.woff` or `.woff2` extension (report both the binary count and that extension count); **amended again 2026-09-13, second G4 rejection response**: `verification.md` line 70's combined count of 121 predates the split between binary and missing files and is believed, not a target; 0; 0 | Windows | command (post-build; shared with M8) + `src/data/portfolioData.test.js` ("publishes no phone number") |
 | GC42 | R42 | Given email and LinkedIn remain reachable, when `/`, `/work`, and a case-study page render, then both are present | RTL, assert a `mailto:` link and a LinkedIn `href` on all 3 | Present on all 3 | Windows | `src/components/SiteLayout.test.jsx` |
 | GC43 | R43 | Given `personal.github`/`githubHandle` and each project's `repoPublic` flag, when `/work` renders, then a public project's card links to `https://github.com/muhibm1/<name>`; a private project's card shows "Private repository · walkthrough on request" with a mailto link to `personal.email` and no GitHub link; and, because `workhorse`, `Shu` and `wasl` are all currently marked private, every project card on the live data shows the note | RTL: a `repoPublic: true` fixture card has `getByRole('link', {name: /github/i})` with `href` `https://github.com/muhibm1/<name>`; a `repoPublic: false` fixture card has `queryByRole('link', {name: /github/i})` null, the note text present, and a `mailto:` link to `personal.email`; against the live `portfolioData.projects` (all three `repoPublic: false`), all three cards show the note and 0 GitHub links exist on `/work` | Public fixture: exact GitHub URL, no note; private fixture: note text, mailto link, no GitHub link; live data: 3 of 3 cards show the note, 0 GitHub links | Windows | `src/components/ProjectEntry.test.jsx` + `src/pages/WorkIndexPage.test.jsx` |
 | GC44 | R44 | Given no analytics, cookie, storage call, tracking pixel, embedded widget, third-party script or new outbound runtime call anywhere, when `src/` and `index.html` are grepped with the **full** pattern from `docs/sdlc/constraints.md` line 208, then none of the nine named tokens appear | `grep -rn "fetch(\|XMLHttpRequest\|axios\|localStorage\|sessionStorage\|document.cookie\|gtag\|analytics\|dataLayer" src index.html` | 0 matches | Windows | command (shared with GC13, M10) |
@@ -610,7 +697,8 @@ spec. The five below have no other home there, matching the spec's own section O
 | GC84 | R84 | Given `docs/hosted-config.md` carries a "Post-deploy manual check" section, when read, then it lists the four items no automated step this project runs can prove: the home page renders content inside `#root` in a real browser; the orb animates and stops when the tab is hidden; a deep link pasted into a fresh tab renders the case study; the browser console shows no CSP violation and no uncaught error. After the first deploy, and after any later change to `vite.config.js`, `index.html` or `package.json`, the owner appends a dated line | `grep -c` for each of the four item phrases in the file, four checks; after the first deploy, a human confirms at least one dated line exists | All 4 items present; >= 1 dated line after the first deploy | **manual**: this is the compensating control for the one failure class nothing else in this spec can detect, a runtime mount exception (see [Observability](#observability), R90, FL23); there is no browser in CI and Playwright was rejected on cost | owner, post-deploy, dated line in `docs/hosted-config.md` |
 | GC86 | R86 | Given the lockfile regeneration (R71) re-resolves every existing caret range, when the G4 evidence table is reviewed, then it has a before-and-after row for each of the **11 direct dependencies that survive the regeneration** (the 6 `dependencies` and 5 `devDependencies` that are neither newly added nor the one removed: today's 7 `dependencies` plus 5 `devDependencies`, minus `@rolldown/binding-win32-x64-msvc`), with an explicit escalation line on any row whose **major** version moved | Manual review: 11 rows, each with a pre-regeneration and post-regeneration resolved version, and a stated verdict on any row that moved a major version | 11 rows present with both versions; escalation line present on any major move, absent otherwise | **manual**: requires the owner-approved `npm install` and reading the pre- and post-regeneration lockfiles; evidence-gathering for a human-reviewed table, not a pass/fail command | G4 evidence table |
 | GC88 | R88 | Given the same `transformIndexHtml` step that injects the CSP (R65) also injects `<meta name="referrer" content="strict-origin-when-cross-origin">`, when `dist/index.html`, `dist/404.html` and source `index.html` are read, then the referrer meta is present in both built files and absent from source | `grep -c 'name="referrer"' dist/index.html dist/404.html`; `grep -c 'name="referrer"' index.html` | 1, 1; 0 | Windows | command (post-build; shared with GC65). Subject to **G2-D2**: dropped with R65, R67, R68 if the owner declines |
-| GC89 | R89 | Given `scripts/check-phone-redaction.mjs` is the sole detection method and R89 now forbids a digit of the number in any check, when the dev host runs the script against a clean working tree at HEAD, then the self-test proves all three forms are detected and the look-alike is not, and the scan finds no hit anywhere `git ls-files` reaches | `node scripts/check-phone-redaction.mjs --self-test`; then `node scripts/check-phone-redaction.mjs` | Self-test exits 0, proving each of the three forms (full, last seven digits, area code plus exchange) is detected and the look-alike at `src/data/portfolioData.test.js` line 48 is not; the scan exits 0 and reports more than 0 files scanned. Exit 2 (the reference could not be derived from `b50497f`) is a failure, never a pass. **The allowed-match set is now empty**: no file, including `evals.md`, `spec.md` and `intent.md`, is permitted a literal digit of the number anywhere | Windows | command, run by the eval runner on the dev host, not in CI (ADR 0010). **Amended 2026-09-13 (G4 rejection response, D3).** This replaces the prior version of this row, which named an allowed-match set of `spec.md`, `evals.md` and `intent.md` and adopted "option (a)" from the 2026-09-12 wave 4 amendment. Both are withdrawn: the script detects and forbids the number everywhere, so no file needs an exception to hold it as a check literal. "Option (b)" from the same withdrawn note is moot for the same reason and is not carried forward |
+| GC89 | R89 | Given `scripts/check-phone-redaction.mjs` is the sole detection method and R89 now forbids a digit of the number in any check, when the dev host runs the script against a clean working tree at HEAD, then the self-test proves all 17 renderings are detected and none of the 9 near-misses is, and the scan finds no hit anywhere `git ls-files` reaches | `node scripts/check-phone-redaction.mjs --self-test`; then `node scripts/check-phone-redaction.mjs` | Self-test prints exactly `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.` and exits 0, proving the original 9 renderings, the 8 new country-code renderings, and the exclusion of all 9 near-misses (the original 6 plus the 3 new ones, including the look-alike at `src/data/portfolioData.test.js` line 48); the scan exits 0 and its summary reads more than 0 files scanned, `5 skipped as binary`, `0 missing from disk`, `0 undecodable`, `0 hits`. **Exit 2 from any cause is a failure, never a pass**, an undecodable file included, not only a reference that could not be derived from `b50497f`. **The allowed-match set is still empty**: no file, including `evals.md`, `spec.md` and `intent.md`, is permitted a literal digit of the number anywhere | Windows | command, run by the eval runner on the dev host, not in CI (ADR 0010). **Amended 2026-09-13 (G4 rejection response, D3).** This replaces the prior version of this row, which named an allowed-match set of `spec.md`, `evals.md` and `intent.md` and adopted "option (a)" from the 2026-09-12 wave 4 amendment. Both are withdrawn: the script detects and forbids the number everywhere, so no file needs an exception to hold it as a check literal. "Option (b)" from the same withdrawn note is moot for the same reason and is not carried forward. **Amended again 2026-09-13 (second G4 rejection response, spec Item 1).** The self-test line and the scan summary are updated for the script's country-code prefix handling and its split skip/undecodable counts; see also GC94, FL24 and AD18 for the new unit-test, failure and adversarial coverage this same fix needed |
+| GC94 | R89 | Given `src/checkPhoneRedaction.test.js` implements the 17-test contract `spec.md` sets out for R89's second amendment (in-process, no git and no `b50497f` dependency, so it passes on CI's shallow clone), when it runs, then all 17 pass, 0 are skipped, and the run happens in CI through the existing `npm test` step, not only on the dev host | `npm test -- src/checkPhoneRedaction.test.js` | Exits 0, 17 passed, 0 skipped, 0 failed; the same 17 tests are exercised again by the plain `npm test` step R52 already enforces in CI | Windows + CI (via `npm test`, R52, R56) | `src/checkPhoneRedaction.test.js`. Added 2026-09-13, second G4 rejection response, as a second golden case against R89, the same documented-exception pattern `GC93` and `GC-CP` already use (an additional golden case against an existing requirement, not a new one). Numbered `GC94`, the next free integer after `GC93` |
 | GC90 | R90 | Given no requirement SHALL claim a detection capability the check named beside it does not have, when the re-audit or the G4 conformance reviewer reads [Observability](#observability), [Failure modes](#failure-modes) and the [Risk register](#5-risk-register) side by side with every requirement's acceptance-check column, then every claimed detection traces to a check that actually performs it, and every undetectable failure mode is named as an accepted risk with a named owner rather than credited to a step that cannot see it | Manual cross-reference review, spot-checked against the specific over-crediting pattern audit High finding 1 found (a `curl` step credited with checking DOM content or an owner's name): confirm R63 and R80-R83 are cited only for what they assert, and R84 is cited for the rest | 0 requirements found crediting an undetectable capability | **manual: a cross-artifact consistency property, not a single file or command.** Both the constraint auditor's re-audit and the G4 conformance reviewer are positioned to check it; either finding a violation blocks its gate | re-audit (G2) and conformance review (G4) |
 
 ### P. Added by the G4 rejection response (R91-R92)
@@ -695,6 +783,7 @@ value each adds beyond that table's own "Handling" column.
 | FL21 | R81 | `dist/404.html` missing or stale, so a deep link serves the wrong or GitHub's own 404 page. **Cross-references FL5**: same underlying defect, now also caught live | R12's `closeBundle` copy step is the build-time control (FL5's reproduction); R81's live SHA-256 comparison of the deep-link body against the R63 root body is the deploy-time control | See FL5 for the build-time fixture; live case: first workflow run's R81 step log shows a digest mismatch if the copy step regresses | Digest mismatch correctly reported live; see FL5 for the build-time reproduction | Windows (build-time, via FL5) + CI-only (live) |
 | FL22 | R63, R83 | All 5 smoke-step retries exhausted, the published page never returns 200 within the retry budget | R63's blocking failure: the run fails loudly, naming the last response, rather than silently deploying with a broken or absent smoke check; R83 guarantees no `continue-on-error` masks it | Read a run where this occurred: smoke step conclusion `failure`, log shows 5 attempts and the last response | Run fails, last response named in the log | CI-only: cannot be manufactured safely without deliberately breaking the live Pages deployment; accepted limitation, not a gap |
 | FL23 | R84, R90 | React throws during mount, or any runtime exception leaves `#root` empty, while the shell serves and every asset returns 200 | **Not detectable by any step this project can run.** No browser runs in CI; `curl` sees the identical pre-mount shell whether or not the app actually mounted. R63 and R80-R83 assert only the bytes returned, never DOM state after JavaScript execution runs | Read `docs/hosted-config.md`'s "Post-deploy manual check" section (R84) for the dated line confirming a human opened the page in a real browser and saw content inside `#root` after this deploy | A dated line exists, appended by the owner after the first deploy and after any change to `vite.config.js`, `index.html` or `package.json`. **No automated pass/fail is possible; that absence is the case's entire point**, matching spec.md's own failure-modes row and R90's rule against claiming an undetected capability | manual, with no automated detection at all |
+| FL24 | R89 | A tracked file whose extension is not in `BINARY_EXTENSIONS` (`.jpg`, `.png`, `.woff`, `.woff2`) holds a byte sequence that fails all four `decodeFile` rules, for example a stray NUL byte with no byte-order mark and no half-of-odd-offsets pattern, so it can be neither skipped as binary nor decoded as text | `decodeFile`'s rule 5 marks it undecodable rather than silently skipping it; `scanFiles` exits 2 and names the path without printing its content | Unit test 16 in `src/checkPhoneRedaction.test.js` ("fails with exit 2 and names a file it cannot decode, without printing its content"); may also be run live on the dev host as `node scripts/check-phone-redaction.mjs` against a scratch fixture placed outside the tracked tree | Exit code 2; one report line names the fixture and contains "could not be decoded"; the summary contains "1 undecodable"; no line contains any of the fixture's own text | Windows (unit test) + manual (live fixture, dev host only, ADR 0010) |
 
 ## 5. Adversarial cases
 
@@ -705,7 +794,10 @@ the mockup guard (R92) is a build-input surface anyone with write access to the 
 regress. Target is 100% rejected or safely handled, except AD13, which is a named, accepted
 residual risk. AD14-AD16 red-team the deploy-time detection instruments themselves (R85, R52,
 R82), and AD17 red-teams the mockup guard (R92), the same pattern AD11 and EG17 already use
-against GC66 and GC59.
+against GC66 and GC59. AD18 (2026-09-13, second G4 rejection response) red-teams R89's own
+country-code and UTF-16 fixes in a scratch clone, deliberately excluded from CI so no digit is
+ever captured in a run log; it is optional and scored separately, not counted toward the 100%
+bar, per [section 1](#1-targets).
 
 | ID | Req | Attack | Exact check | Expected | Automatable |
 |----|-----|--------|--------------|----------|--------------|
@@ -726,6 +818,7 @@ against GC66 and GC59.
 | AD15 | R52 | Red-team the test-floor assertion: a fixture `vitest-results.json` reports `numPassedTests: 12`, `numPendingTests: 1` (one skipped test), everything else 0 | Run R52's `node -e` assertion logic against the fixture instead of a real Vitest report | The check correctly fails, since `numPendingTests` is required to be 0, proving the floor rejects a partially-skipped suite rather than only counting passes | Windows (fixture, not a live test run) |
 | AD16 | R82 | Reuse AD11's fixture (a `dist/index.html` with a deliberately injected inline `<script>`, no `src`) framed as the served page R82 asserts against, not the build artifact GC66 checks | Run the same inline-script grep AD11 uses against the fixture, as R82's live re-check would | The grep correctly flags it (count > 0), proving R82's live re-check catches the same class of regression R66/GC66 catches at build time, closing the gap between "built correctly" and "served correctly" | Windows (fixture, shared with AD11 and GC66) |
 | AD17 | R92 | A mockup file is reintroduced: either copied back into `public/` (for example `public/mockup-home.jpg` recreated), or referenced from `src/` (for example a stray string containing `mockup-` added to a component or to `index.html`), while everything else is left as R92 requires | Run `src/publicDirectory.test.js` against a working tree with one of the two fixtures applied (a file added under `public/`, or a source file edited to contain the string `mockup-`) instead of the clean tree | The suite fails: the `public/` fixture fails the "no file under `public/` is named `mockup-*`" assertion; the `src/` fixture fails the "no file under `src/` contains the string `mockup-`" assertion. Either way, `npm test` exits non-zero before `npm run build` runs (R56's order), so the regression is caught before a deploy, not after | Windows (fixture, not the live tree) |
+| AD18 | R89 | Optional, adversarial: in a scratch clone with full git history (never the working tree this change ships), derive the reference number in memory only and write two untracked scratch fixtures, one holding it preceded directly by a `+1` or bare `1` country code with no separator, one holding the same text as UTF-16LE with a byte-order mark, then run the script against only those two paths | `node scripts/check-phone-redaction.mjs <scratch-fixture-1> <scratch-fixture-2>`, run from the scratch clone after confirming with `git status` that neither fixture is tracked or staged | Exit code 1; the summary reports 2 hits and 0 undecodable; each report line names only `path:line: form name`, never the matched text | manual, and deliberately not run in CI or captured in any log: whoever runs it must not paste the fixture contents or the tool's output into this file, a commit, a ticket, or chat, since either would contain a digit of the reference number. Included because the spec left it to this agent's judgement whether it could be written with no digit recorded; this is that answer |
 
 ## 6. Non-functional (success metrics M1-M17)
 
@@ -738,7 +831,7 @@ against GC66 and GC59.
 | NF5 | M5 | 5 of 5 named routes render without throwing: `/`, `/work`, and the 3 case-study paths | RTL render per route | GC3, GC21 |
 | NF6 | M6 | Exactly 3 case studies, 3 projects (`workhorse`, `Shu`, `wasl`), 1 simulator entry on `/work` | RTL count assertions | GC15, GC16, GC17 |
 | NF7 | M7 | `dist/404.html` exists and is byte-identical to `dist/index.html` (0 bytes different) | File existence + sha256 comparison; re-asserted live by R81's body comparison against a deep link | GC12, GC81 |
-| NF8 | M8 | 0 hits from `scripts/check-phone-redaction.mjs`, self-test then scan, across `dist/` and every path `git ls-files` reaches; 0 matches from the generic pattern in the "publishes no phone number" unit test | `node scripts/check-phone-redaction.mjs --self-test` then `node scripts/check-phone-redaction.mjs dist`; `src/data/portfolioData.test.js` ("publishes no phone number"); re-asserted live by R82's generic pattern | GC41, GC82, GC89 |
+| NF8 | M8 | 0 hits from `scripts/check-phone-redaction.mjs`, self-test then scan, across `dist/` and every path `git ls-files` reaches; 0 matches from the generic pattern in the "publishes no phone number" unit test | `node scripts/check-phone-redaction.mjs --self-test` then `node scripts/check-phone-redaction.mjs dist`; `src/data/portfolioData.test.js` ("publishes no phone number"); re-asserted live by R82's generic pattern. **Amended 2026-09-13, second G4 rejection response**: the matcher and decoder are additionally proven in CI on every push, via `npm test -- src/checkPhoneRedaction.test.js` (GC94); the whole-tree scan itself still runs only on the dev host, never in CI (ADR 0010) | GC41, GC82, GC89, GC94 |
 | NF9 | M9 | 0 matches for `fonts.googleapis.com` / `fonts.gstatic.com` in `dist/` and `index.html` | recursive grep | GC37 (existence of the call); GC39 (the deeper "actually applied" check the architect flagged, since M9 alone can pass while typography silently fails); GC82 (re-asserted live on the served page) |
 | NF10 | M10 | 0 matches for `fetch(`, `XMLHttpRequest`, `axios`, `gtag`, `analytics`, `dataLayer`, `document.cookie`, `localStorage`, `sessionStorage` in `src/` and `index.html` | the discovery analyst's own grep, re-run with the widened pattern | GC13, GC44; GC82 re-asserts the phone-number-pattern and font-origin subset of this position on the served page |
 | NF11 | M11 | Orb canvas CSS width in `[380, 440]` px inclusive | RTL reads `canvas.style.width` (inline, per R31; jsdom has no layout to read `getBoundingClientRect` from) | GC31 |
@@ -774,7 +867,7 @@ the control for what no automated step can see.
 | Missing result | A route or asset fails to load entirely (blank page, unfallen-back 404) | R80 catches an asset that 404s off the served page. R81 catches a stale or missing `dist/404.html` by comparing a live deep-link body against the live root body. **Deep-link pages beyond the one R81 checks (`/work/apple-llm-triage`) have no separate smoke coverage.** A mount failure that leaves `#root` empty behind an HTTP 200 has **no detection at all** (FL23); R84 is the only control | FL5 (stale/missing `dist/404.html`), FL7 (CSP-blocked inline script, blank page in production only), FL21 (live cross-check), FL23 (mount failure, no automated detection) |
 | Slow | The npm registry or GitHub Pages propagation is slow, delaying or failing the deploy | The GitHub Actions run's own duration and failure status; GitHub's workflow-failure email to the actor (believed, not verified). R63's retry budget converts most propagation lag into a pass, not a signal; R63's exhaustion after 5 retries (FL22) is the signal for genuine slowness | FL1 (registry down), FL16 (Pages propagation lag), FL22 (retries exhausted) |
 | Leaked (resource) | Timers, animation frames, or observers outlive their component and accumulate across navigations | **No detection in production** (no monitoring, by design); caught only pre-release by the fake-timer and mount/unmount eval cases | GC34, GC46, GC47, FL12, FL13, AD12 |
-| Leaked (data) | Personal data (the phone number) or a confidential employer claim reaches the public, permanent, scrapeable surface | R82 catches a regression of the phone number on the served page at every deploy, via a generic character-class pattern match rather than a literal digit search (GC82, amended 2026-09-12 to stop naming the owner's specific digits, per plan rule 3). `scripts/check-phone-redaction.mjs` (GC89) is the dev-host control that catches the same class of leak in the source tree, not the served page. **No detection of a leak that falls outside that pattern's shape, and no crawler or archive monitoring**, by design; the only available check beyond R82's pattern match and GC89's dev-host scan is a periodic manual grep of the deployed site, and once a search engine or archive copies it, it is unrecoverable (see below) | R41 (phone number), R82, R89, D4 (employer claims) |
+| Leaked (data) | Personal data (the phone number) or a confidential employer claim reaches the public, permanent, scrapeable surface | R82 catches a regression of the phone number on the served page at every deploy, via a generic character-class pattern match rather than a literal digit search (GC82, amended 2026-09-12 to stop naming the owner's specific digits, per plan rule 3). `scripts/check-phone-redaction.mjs` (GC89) is the dev-host control that catches the same class of leak in the source tree, not the served page. **Amended 2026-09-13, second G4 rejection response**: the script's matcher and decoder are now separately unit-tested and run in CI on every push (GC94, `src/checkPhoneRedaction.test.js`); the whole-tree scan itself still runs only on the dev host, never in CI (ADR 0010). **No detection of a leak that falls outside that pattern's shape, and no crawler or archive monitoring**, by design; the only available check beyond R82's pattern match and GC89's dev-host scan is a periodic manual grep of the deployed site, and once a search engine or archive copies it, it is unrecoverable (see below) | R41 (phone number), R82, R89, D4 (employer claims) |
 | Unauthorised | The deploy workflow or a dependency executes with more privilege or reach than intended | GitHub's own Actions permission enforcement on the per-job `permissions:` blocks (R60); the blocking `npm audit --audit-level=high --omit=dev` step; R85's pin check before `npm ci`; Dependabot alerts on the repository's Security tab | AD7, AD8, AD9, AD10, AD14, FL17 |
 | Corrupted | The build artifact is internally inconsistent (`dist/404.html` stale, `package-lock.json` out of sync, malformed workflow YAML, or a stray mockup reaching `dist/`) | The build's own exit code (`npm ci` / `npm run build` failing); GC12's build-time hash-equality check and R81's live body comparison; `src/publicDirectory.test.js` (GC92), which runs before the build; GitHub's "invalid workflow file" banner in the Actions tab | FL3, FL5, FL21, AD17 |
 | Unrecoverable | An action that cannot be undone once a visitor, search engine, or archive has copied it | **No detection after the fact.** The only control is pre-push human sign-off (D1, D4 in the G1 approval notes) and running every eval case above **before** every push, never after | The entire reason D1 and D4 exist as explicit owner decisions rather than defaults; a wrongly-published phone number or employer claim |
@@ -876,14 +969,22 @@ Every requirement maps to at least one golden case (`GCn`). Additional edge (`EG
 | R86 | GC86 (manual evidence) | - | - | - |
 | R87 | GC87 (CI-only + manual) | - | - | - |
 | R88 | GC88 (subject to G2-D2) | - | - | - |
-| R89 | GC89 | - | - | - |
+| R89 | GC89, GC94 | - | FL24 | AD18 (optional) |
 | R90 | GC90 (review property) | - | - | - |
 | R91 | GC91 | EG23 | - | - |
 | R92 | GC92 | - | - | AD17 |
 
 All 92 requirements have at least one golden case. 0 are uncovered. R49 carries two golden cases
 (`GC49`, `GC93`, renamed from `GC91` on 2026-09-13 to free that id for R91); R91 and R92 are new
-as of the same date; every other row is unchanged.
+as of the same date; every other row is unchanged, except R89. **R89 also now carries two
+golden cases (`GC89`, `GC94`), gains its first failure case (`FL24`), and gains an optional
+adversarial case (`AD18`), all added in the second G4 rejection response, same date.** Category
+totals across the whole file move from 98 to 99 golden cases, 23 edge cases (unchanged), 23 to
+24 failure cases, and 17 to 18 adversarial cases (the 18th optional and manual, not counted
+toward the 100% adversarial bar). Suite size: 174 tests **believed** at commit `460405e`
+(`review-packet.md` section 3, not independently re-verified by this agent), plus the 17 new
+tests in `src/checkPhoneRedaction.test.js`, totals **191 tests believed**, not confirmed by an
+actual run, if nothing else changes the suite in this window. R52's floor of 12 is unaffected.
 
 ### Metrics (M1-M17)
 
@@ -896,7 +997,7 @@ as of the same date; every other row is unchanged.
 | M5 | NF5 (GC3, GC21) |
 | M6 | NF6 (GC15, GC16, GC17) |
 | M7 | NF7 (GC12, GC81) |
-| M8 | NF8 (GC41, GC82, GC89) |
+| M8 | NF8 (GC41, GC82, GC89, GC94) |
 | M9 | NF9 (GC37, GC39, GC82) |
 | M10 | NF10 (GC13, GC44, GC82) |
 | M11 | NF11 (GC31) |
@@ -1006,6 +1107,16 @@ New note from the 2026-09-13 G4 rejection response:
     Recommend that future exception-case ids borrow from a separate namespace (for example
     `GC-TW` for the Tailwind supplement, following the `GC-CP` pattern already in this file)
     instead of the next plain integer, so a later requirement never has to evict them again.
+
+New note from the second G4 rejection response (2026-09-13):
+
+12. **The same collision risk applies to `GC94`.** This agent numbered the new R89 supplement
+    `GC94`, the next free plain integer, repeating the pattern note 11 already flagged as a
+    future risk. It is left as a plain integer here rather than renamed to a lettered id (for
+    example `GC-PH`) because no future requirement is known to collide with it today, and a
+    third renumbering in as many days would cost more clarity than it buys. If a future
+    requirement is ever numbered R94, this id will need to move; the recommendation in note 11
+    stands for whoever does that.
 
 No requirement was left entirely without a case, including the five (R19, R76 in its
 config-only sense, R77, R84, R86) that are permanently manual or evidence-table by nature, and
