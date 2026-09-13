@@ -58,3 +58,12 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 - Packet: `docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/review-packet.md` sha256 `e9b1b83ac8914845bd33e8506f8966f91122cafc17af36750bad8c92496e15d8`
 - Tier at decision: 2
 - Notes: Approved by Claude (main session) under the owner's instruction 'Approve every command yourself, I'm busy'; the owner has not read the packet. Conditions: D1 (ADR 0009, --omit=dev audit) remains ratified only on the owner's behalf until he confirms it himself. D2 stays with the owner: he pushes main to the private origin and decides repository visibility; never git push --all. D3: the two new mediums in scripts/check-phone-redaction.mjs (mixed-encoding files read as UTF-16; no-op exit 0 when started through a junction or symlink) are tracked as a follow-up change, not fixed here; the tree is clean today. D4 backlog stays tracked.
+
+## G5: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-13T18:03:32.929Z
+- Artifact commit: `95c27364589581ee8606e4c6690927c00f603169` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/release.md` sha256 `b64890947c9cfe33aa46e57c085aa40971cf0fadfdec293791fa75a944dc1e5b`
+- Tier at decision: 2
+- Notes: public as is; ADR 0009 confirmed
