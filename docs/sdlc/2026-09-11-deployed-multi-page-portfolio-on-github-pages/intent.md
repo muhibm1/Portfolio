@@ -13,7 +13,7 @@ Risk tier: 2 (new `.github/workflows/*.yml` deploy pipeline plus edits to `index
 **In the requester's words.** The owner has no public portfolio to link from their resume,
 LinkedIn and Forward Deployed Engineering job applications. The existing Vite/React scaffold is a
 single page with modals, shows an MM monogram where the owner chose the colourful orb
-(`public/mockup-home.jpg`), has no dedicated projects and case-studies page, no router, no tests,
+(`docs/design/mockup-home.jpg`, moved from `public/` under G4-D4, R92), has no dedicated projects and case-studies page, no router, no tests,
 a broken lint toolchain, an orphan Windows-only dependency, and is not deployable to GitHub Pages.
 
 **Restated precisely.** The repository at `main` contains a static Vite 5 + React 19 + Tailwind 4
@@ -46,12 +46,12 @@ Observable when done:
    case studies and projects), and `/work/:slug` for each case study.
 3. `/work/:slug` resolves for the three existing case-study ids `apple-llm-triage`,
    `apple-data-health`, `neural-newsletters-llm` (confirmed as the `id` values in
-   `src/data/portfolioData.js` lines 66, 94, 122), laid out per `public/mockup-casestudy.jpg`.
+   `src/data/portfolioData.js` lines 66, 94, 122), laid out per `docs/design/mockup-casestudy.jpg`.
 4. `/work` additionally lists three GitHub project entries (`workhorse`, `Shu`, `wasl`) and the
    interactive triage simulator. No other project is added.
 5. A deep link to `/Portfolio/work/apple-llm-triage` loads the correct page because `dist/404.html`
    exists as an SPA fallback.
-6. The home hero matches `public/mockup-home.jpg`: stacked name, role line, availability pill,
+6. The home hero matches `docs/design/mockup-home.jpg`: stacked name, role line, availability pill,
    telemetry stats, and on the right a live orb instead of the MM monogram.
 7. The orb is the `working` state of `thinking-orbs` drawn on a canvas roughly 380 to 440 px, using
    `thinking-orbs/engine` geometry with a custom painter that colours dots with the amber, rose and
@@ -202,7 +202,7 @@ the path floor.
   reported by the intent writer). `docs/sdlc/constraints.md` "Things that must not change without
   the owner saying so" names contact details in either direction. This alone is a tier-2 "PII
   handling" trigger under the rubric.
-  Digits redacted under G1-D1 (R89); the live checks are GC41 and GC89 in this change's `evals.md` and the R82 deploy smoke step.
+  Digits redacted from committed docs under G4-D3 (R89 widened); G1-D1 is the authority for removing the number from the site (R41); the live checks are GC41 and GC89 in this change's `evals.md` and the R82 deploy smoke step.
 - **Considered for tier 3 and rejected, first production publication and employer-derived claims:**
   the intent repeatedly calls the phone-number decision and the employer/metric publication
   "irreversible" (risk signals, TL;DR, risk register). I weighed this against the tier-3 rubric
@@ -280,7 +280,7 @@ The owner's request to the main session on 2026-09-11, quoted verbatim at the to
 Design authority: `docs/design-brief.md` (written 2026-09-10 from the owner's request, resume, the
 four mockups in `public/` and three reference sites). Prior discovery: `docs/sdlc/codebase-map.md`,
 `docs/sdlc/constraints.md` and its G0 packet, `.workhorse/profile.yml`. Mockups:
-`public/mockup-home.jpg` (hero) and `public/mockup-casestudy.jpg` (case-study page).
+`docs/design/mockup-home.jpg` (hero) and `docs/design/mockup-casestudy.jpg` (case-study page).
 
 ---
 ---
@@ -296,7 +296,10 @@ Prepared: 2026-09-11
 Amended: 2026-09-13. Every form of the owner's phone number was redacted from this file under G4
 rejection note D3. This changes the bytes of the G1 packet approved at `a7ed654`, not its meaning:
 D1 still removes the phone number from the public site and keeps email and LinkedIn. Git history
-keeps the original text and is out of scope.
+keeps the original text and is out of scope. Also amended 2026-09-13 under the second G4 rejection
+(doc accuracy): the mockup citations on four lines now point to `docs/design/`, where G4-D4 (R92) moved the
+files, and the redaction line in "Risk signals" cites G4-D3 instead of G1-D1. Again the bytes
+changed, not the meaning.
 
 ## 1. TL;DR
 
