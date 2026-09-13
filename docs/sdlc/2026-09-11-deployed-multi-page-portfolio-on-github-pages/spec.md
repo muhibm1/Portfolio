@@ -17,6 +17,11 @@ build decisions B2 and B3 (`conductor-log.md` line 35), landed as commit `a98fdc
 7.9.4 to 7.18.3 and `vitest` 3.2.4 to 3.2.7 (B2); `tailwindcss` and `@tailwindcss/vite` moved to
 `devDependencies` at exact 4.3.3 (B3); [ADR 0009](./adr/0009-accept-dev-only-vite-and-vitest-advisories.md)
 added. No requirement is renumbered, and the G2 packet is annotated, not rewritten.
+Amended again: 2026-09-12 by the spec architect, after verification at `cf969de` found golden case
+GC78 asserting 10 `dependencies` and 10 `devDependencies` against an actual 8 and 12
+(`verification.md` line 139). R78 now states the B3 exception and the final section counts; six
+passages that described the pre-B3 placement or counts are annotated, not rewritten. No other
+requirement changes.
 
 Every factual claim below carries a label. **Confirmed** means this agent read the file or the
 tool output named. **Believed, not verified** means it was inferred, reported by an earlier
@@ -214,7 +219,7 @@ a reader could not resolve against `approvals.md`; every occurrence now carries 
 | R75 | No `package.json` script SHALL use a shell builtin, a POSIX-only path separator, or `&&`. | Read `scripts`. | constraints.md technical constraint 4, profile `build` |
 | R76 | `.workhorse/profile.yml` SHALL keep `build.max_parallel: 4`, and no wave in [Build waves](#build-waves) SHALL contain a group of tasks that requires more than 4 workers running at once. The requirement is about the configured value and the wave shape, both of which are artifacts; it is deliberately not a claim about what the conductor did at run time, which no file records. | `grep -c "max_parallel: 4" .workhorse/profile.yml` is 1, and the wave table names 4 waves each of which is file-disjoint within itself. | profile `build.max_parallel`, eval note 2 |
 | R77 | Before installing, the builder SHALL resolve each added package's current version and read the `license` field from the installed `node_modules/<pkg>/package.json`, and SHALL record both in the G4 evidence table. Any pin in the [Dependency table](#dependency-table) that does not resolve, **or that resolves to a version other than the one written there**, SHALL be escalated to the owner and recorded, never silently bumped. That applies to the three `@fontsource` packages exactly as it applies to the other six; the first draft's carve-out for them is withdrawn. | G4 evidence table has one row per added package with a resolved version and a licence read from disk, plus an explicit line for any package where the resolved version differs from the table. **This check is permanently manual and that is accepted, not a gap**: reading a licence field requires an owner-approved `npm install` first (`npm install` is in profile `ask_commands`), and the evidence table is authored and reviewed by people. Owner: build phase, reviewed by the site owner at G4. | profile `style_notes`, `wh-agent-rules`, eval note 3, audit Medium finding 11 |
-| R78 | Exactly 4 runtime dependencies and 5 devDependencies SHALL be added, and exactly 1 runtime dependency removed. No other dependency change SHALL occur in `package.json`. Lockfile-level drift is out of this requirement's reach and is governed by R86. | `git diff package.json` reviewed at G4, plus R49's two greps for the pin shape and R85's CI check. | profile `style_notes` |
+| R78 | Exactly 4 runtime dependencies and 5 devDependencies SHALL be added, and exactly 1 runtime dependency removed. No other dependency change SHALL occur in `package.json`, except one owner-approved move: `tailwindcss` and `@tailwindcss/vite` SHALL sit in `devDependencies`, moved from `dependencies` with their resolved version unchanged at 4.3.3 (owner decision B3, see [Moved to development](#moved-to-development)). `package.json` SHALL therefore end with exactly 8 `dependencies` and 12 `devDependencies`, and SHALL NOT contain `@rolldown/binding-win32-x64-msvc`. Lockfile-level drift is out of this requirement's reach and is governed by R86. **Amended 2026-09-12**: the B3 exception and the final counts were added because the verifier found GC78 asserting 10 and 10 against an actual 8 and 12 at `cf969de` (`verification.md` line 139); the added and removed bounds are unchanged. | A `node -e` check over `package.json` (GC78) exits 0 only when `dependencies` has 8 keys, `devDependencies` has 12 keys, `@rolldown/binding-win32-x64-msvc` is not a key of `dependencies`, and `tailwindcss` and `@tailwindcss/vite` are both keys of `devDependencies`; R70's `grep -c rolldown package.json` covers the whole file. Plus `git diff package.json` reviewed at G4, R49's two greps for the pin shape and R85's CI check. | profile `style_notes`; owner decision B3 (`conductor-log.md` line 35) |
 
 ### N. Visual style
 
@@ -827,6 +832,14 @@ baseline warns about in reverse. `.workhorse/profile.yml` `commands.security_aud
 unchanged at the full `npm audit --audit-level=high`, because as a local check the stricter form
 is right. The divergence is deliberate and recorded here so a reader does not treat it as drift.
 
+**Dependency placement, amended 2026-09-12.** The statements above that the two Tailwind
+packages sit in `dependencies`, that neither is moved, and that the next dependency change should
+move them describe the position before owner decision B3, which superseded them in this change
+(commit `a98fdcf`): both now sit in `devDependencies` at lines 25 and 34, and `package.json`
+declares 8 `dependencies` and 12 `devDependencies` (confirmed by reading `package.json`). R78
+states the exception. This note changes no audit step; the audit position is the paragraph below
+and ADR 0009.
+
 **Accepted residual risk, amended 2026-09-12.** Owner decision B3 moved `tailwindcss` and
 `@tailwindcss/vite` to `devDependencies` in commit `a98fdcf`, so the "two packages that do not"
 clause above no longer holds. Five dev-only advisories in Vite, esbuild and `@vitest/mocker` stay
@@ -1009,9 +1022,13 @@ costs one message and removes the only place in this spec where a runtime versio
 ### Moved to development
 
 Added 2026-09-12 by owner decision B3, commit `a98fdcf`. Neither package is added or removed, so
-R78's counts are unchanged, but the move is a dependency change R78 otherwise forbids and it
-drops the caret R49 says existing entries keep. Both are owner-approved exceptions, recorded here
-so G4 does not read them as drift.
+R78's added and removed counts are unchanged, but the move is a dependency change R78 otherwise
+forbids and it drops the caret R49 says existing entries keep. Both are owner-approved exceptions,
+recorded here so G4 does not read them as drift. **Corrected 2026-09-12**: this paragraph first
+said "R78's counts are unchanged", which is true of the counts added and removed and not of the
+final section counts. Those move from 10 `dependencies` and 10 `devDependencies` to 8 and 12
+(confirmed by reading `package.json`), and R78 now states the exception and the final counts. The
+verifier's GC78 failure at `cf969de` surfaced the error (`verification.md` line 139).
 
 | Package | Version | Licence | Why |
 |---------|---------|---------|-----|
@@ -1025,7 +1042,11 @@ so G4 does not read them as drift.
 | `thinking-orbs` | 0.3.1 | MIT (**confirmed**, `node_modules/thinking-orbs/package.json` line 75) | Declared but imported by nothing today (confirmed). This change imports two symbols from its `./engine` subpath export |
 | `@vitejs/plugin-react` | ^4.3.4 | MIT (believed) | Already a devDependency; no change |
 
-Net: 4 runtime dependencies added, 1 removed, 5 devDependencies added (R78).
+Net: 4 runtime dependencies added, 1 removed, 5 devDependencies added (R78). From a baseline of 7
+`dependencies` and 5 `devDependencies`, those alone give 10 and 10; the B3 move of the two
+Tailwind packages makes the final counts 8 `dependencies` and 12 `devDependencies` (amended
+2026-09-12; final counts confirmed by reading `package.json`; baseline believed, not verified,
+because `git show` could not be run from this session).
 
 ---
 
@@ -1179,7 +1200,7 @@ code during this phase.
 | 8 | `.workhorse/profile.yml` does not protect `src/data/portfolioData.js` | profile | OQ7 proposes fixing it in wave 4; if the owner declines, this stays open |
 | 9 | Deep links return HTTP 404 with the app shell, so `/work/:slug` will not be indexed by search engines | by design, see ADR 0002 | Pre-rendering would fix it and costs a new dependency and a second rendering path. Revisit if organic search ever matters |
 | 10 | `security.txt` will live at `/Portfolio/.well-known/security.txt`, not at the origin root that RFC 9116 requires, because the origin root belongs to the `muhibm1.github.io` user-site repository | `public/.well-known/` | Unavoidable without a custom domain. Recorded in `docs/hosted-config.md`, along with the annual `Expires` renewal it creates |
-| 11 | `tailwindcss` and `@tailwindcss/vite` are declared under `dependencies` although nothing they contain reaches a visitor | `package.json` lines 14 and 18 | Moving them to `devDependencies` is a dependency change outside R78's declared bounds, in the same change as the first production deploy, for no security gain: the misplacement makes the blocking audit stricter, not weaker. Do it in the next dependency change |
+| 11 | **Resolved in this change by B3.** `tailwindcss` and `@tailwindcss/vite` were declared under `dependencies` although nothing they contain reaches a visitor | `package.json` lines 14 and 18 before B3; lines 25 and 34 under `devDependencies` after it (confirmed) | Moving them to `devDependencies` is a dependency change outside R78's declared bounds, in the same change as the first production deploy, for no security gain: the misplacement makes the blocking audit stricter, not weaker. Do it in the next dependency change. **Amended 2026-09-12, superseded:** owner decision B3 (commit `a98fdcf`) moved both packages in this change, as an owner-approved exception R78 now states; see [Moved to development](#moved-to-development). Final counts 8 `dependencies` and 12 `devDependencies` |
 | 12 | The phone number stays in git history from `b50497f` onward | git history | Accepted, not fixed. R89 and the [Retention](#data) paragraph state the reason and name the owner |
 
 ---
@@ -1310,7 +1331,10 @@ resolves to a different version exactly as it escalates one that does not resolv
 4. **The audit-split rationale was inexact.** Fixed. The paragraph now states that `tailwindcss`
    and `@tailwindcss/vite` sit in `dependencies`, so `--omit=dev` audits two build-only packages,
    that this errs safe, and that they are deliberately not moved in this change. Recorded as
-   findings outside scope item 11.
+   findings outside scope item 11. **Amended 2026-09-12:** the "not moved in this change"
+   position is superseded by owner decision B3 (commit `a98fdcf`), which moved both packages to
+   `devDependencies`. The final counts are 8 `dependencies` and 12 `devDependencies`, R78 states
+   the exception, and findings outside scope item 11 is marked resolved.
 5. **Two five-cell rows in the failure-modes table.** Fixed. Both now have six cells and a named
    eval, and a third row is added for the mount-failure case that has no eval at all and says so.
 6. **R60 and R61 checked by "read the file".** Fixed. Both now have greps.
@@ -1755,6 +1779,10 @@ R85 enforcing it in CI on every push. All thirteen Medium and all seven Low find
 in [Response to audit](#response-to-audit): fifteen fixed in the requirements, five accepted with
 a reason and a named owner (git history, the transitive lockfile tree, the `style-src` split,
 `tailwindcss` in the wrong block, and the un-provable run-time behaviour of the deployed page).
+
+**Amended 2026-09-12:** `tailwindcss` in the wrong block is no longer accepted residue. Owner
+decision B3 (commit `a98fdcf`) moved both Tailwind packages to `devDependencies` in this change,
+so the final counts are 8 `dependencies` and 12 `devDependencies` (R78).
 
 The conditions are the five decisions, unchanged in substance: the owner answers **G2-D1**,
 because `/work` cannot be built without project copy, and **G2-D2**, because five requirements

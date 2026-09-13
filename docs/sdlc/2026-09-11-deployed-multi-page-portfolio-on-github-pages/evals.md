@@ -15,6 +15,93 @@ eight ADRs, `.workhorse/profile.yml`, `docs/design-brief.md`, and the working tr
 Every factual claim below is labelled **confirmed** (this agent read the file or line named)
 or **believed, not verified** (inferred, or carried from an earlier agent). No em-dashes.
 
+## Amendment (2026-09-12, GC78 final dependency-count correction)
+
+The verifier ran at commit `cf969de` on Node v22.12.0 and reported GC78's command exiting 1:
+`node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); if(d.length!==10||v.length!==10) throw 1; if(d.includes('@rolldown/binding-win32-x64-msvc')) throw 2;"`
+found 8 `dependencies` and 12 `devDependencies` against the case's hard-coded expectation of 10
+and 10 (**confirmed**, per the verifier's report given to this agent). This amendment corrects
+GC78 and the two other places in this file that stated or relied on "10 and 10 either way." It
+does not touch `spec.md`; the spec architect is amending R78's own wording for the same figures
+in parallel, in the same window. No case ID was added, removed, or reassigned, and the
+[coverage matrix](#9-coverage-matrix) is unchanged. This amendment does not touch anything about
+the security audit (R56/R57, ADR 0009, the full `npm audit` exit code); that is being escalated
+to the owner separately.
+
+**Cause (confirmed by reading `package.json` at the current working tree).** Owner decision B3
+(2026-09-12, "B2 and B3 as recommended", commit `a98fdcf`) moved `tailwindcss` and
+`@tailwindcss/vite` from `dependencies` to `devDependencies`, both pinned exactly at `4.3.3`.
+Reading `package.json` directly: `dependencies` (lines 14-23) now holds exactly 8 keys
+(`@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk`, `lucide-react`,
+`react`, `react-dom`, `react-router`, `thinking-orbs`); `devDependencies` (lines 24-37) now holds
+exactly 12 keys (`@tailwindcss/vite`, `@testing-library/dom`, `@testing-library/jest-dom`,
+`@testing-library/react`, `@types/react`, `@types/react-dom`, `@vitejs/plugin-react`, `jsdom`,
+`oxlint`, `tailwindcss`, `vite`, `vitest`). `@rolldown/binding-win32-x64-msvc` is absent from
+both sections (**confirmed**, it does not appear anywhere in the file).
+
+**Arithmetic (confirmed).** Baseline before this change: 7 `dependencies`, 5 `devDependencies`.
+R78 adds 4 runtime packages and removes 1 runtime package (`@rolldown/binding-win32-x64-msvc`),
+and adds 5 dev packages: 7 + 4 - 1 = 10 `dependencies`, 5 + 5 = 10 `devDependencies` immediately
+after R78, before B3. B3 then moves 2 existing packages (`tailwindcss`, `@tailwindcss/vite`)
+from the `dependencies` section to the `devDependencies` section: 10 - 2 = 8 `dependencies`,
+10 + 2 = 12 `devDependencies`. The earlier amendment's sentence, "totals GC78 checks (10 and 10
+either way, since GC78 only asserts array lengths ... not package-level membership by section),"
+treated the two array lengths as invariant under a move between the two sections. **That was
+incorrect**: moving a key out of one object literal and into another changes
+`Object.keys(...).length` on each object individually, even though it changes neither the total
+number of packages in the file nor how many R78 itself added or removed. That sentence is marked
+superseded where it appears below, not deleted.
+
+**GC78, rewritten.** The command now asserts the final counts directly (8, 12) instead of a
+fixed "10 and 10" that only ever held immediately after R78 and before B3, so it does not need
+to be re-derived by hand every time a package moves sections. It keeps the rolldown-absence
+check (extended to both sections) and adds an explicit membership check that `tailwindcss` and
+`@tailwindcss/vite` are `devDependencies` keys and not `dependencies` keys, which overlaps GC91
+by design (both check the same fact from different angles: GC91 via `grep`, GC78 via `node -e`
+array membership). The command is a single Windows-safe `node -e` invocation and prints the
+actual counts and the specific failed assertion(s) on any mismatch, so a future failure is
+self-describing instead of a bare non-zero exit with no message. See the rewritten row in
+[section M](#m-non-functional-and-platform-r74-r78).
+
+```
+node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); const errs=[]; if(d.length!==8) errs.push('dependencies='+d.length+' expected 8'); if(v.length!==12) errs.push('devDependencies='+v.length+' expected 12'); if(d.includes('@rolldown/binding-win32-x64-msvc')) errs.push('rolldown present in dependencies'); if(v.includes('@rolldown/binding-win32-x64-msvc')) errs.push('rolldown present in devDependencies'); if(!v.includes('tailwindcss')) errs.push('tailwindcss missing from devDependencies'); if(d.includes('tailwindcss')) errs.push('tailwindcss present in dependencies'); if(!v.includes('@tailwindcss/vite')) errs.push('@tailwindcss/vite missing from devDependencies'); if(d.includes('@tailwindcss/vite')) errs.push('@tailwindcss/vite present in dependencies'); if(errs.length){console.error('dependencies='+d.length+' devDependencies='+v.length); console.error(errs.join('; ')); process.exit(1);}"
+```
+
+**Epistemic note on this amendment's own verification.** This agent has no Bash or
+code-execution tool in this session (the same restriction section 0 already records for the
+original pass, and the same restriction the spec architect recorded for the parallel R78
+amendment). What follows is therefore a hand-trace against the file actually read, not an
+executed run, and is labelled accordingly:
+
+- **Confirmed** (read directly): the current `package.json` has 8 `dependencies` keys, 12
+  `devDependencies` keys, `tailwindcss` and `@tailwindcss/vite` both present under
+  `devDependencies` at exact `4.3.3` and absent from `dependencies`, and
+  `@rolldown/binding-win32-x64-msvc` absent from both sections.
+- **Believed, not verified by execution**: that running the command above against the current
+  tree exits 0. Tracing the script by hand against the confirmed facts above: `d.length===8`
+  (no push), `v.length===12` (no push), neither rolldown check fires (no push), `v.includes
+  ('tailwindcss')` is true and `d.includes('tailwindcss')` is false (no push, twice), the same
+  holds for `@tailwindcss/vite` (no push, twice); `errs.length===0`, so the script falls through
+  with no `console.error` and no `process.exit(1)`, which is a normal 0 exit. This trace is
+  **confirmed** as a trace; the actual exit code has not been observed by this agent running the
+  command. **The conductor or eval runner must execute it once, on Node v22.12.0, before treating
+  GC78 as green**, per the task's own report requirement.
+- **Red-team, hand-traced, not executed.** Two adversarial fixtures, reasoned through rather than
+  run (per instruction, never by editing the real `package.json`):
+  1. *Old 10/10 layout* (the shape before B3: `tailwindcss` and `@tailwindcss/vite` under
+     `dependencies` instead of `devDependencies`, giving 10 `dependencies` keys and 10
+     `devDependencies` keys). Trace: `d.length===10!==8` pushes an error; `v.length===10!==12`
+     pushes a second; `v.includes('tailwindcss')` is false (it is under `dependencies` in this
+     fixture) so a third error pushes; `d.includes('tailwindcss')` is true so a fourth pushes;
+     the same two pushes repeat for `@tailwindcss/vite`. `errs.length===6`, so the script prints
+     both counts and all six messages and exits 1. The check correctly rejects the old layout.
+  2. *Rolldown reintroduced* (hypothetically added back to either section, counts otherwise at
+     8/12). Trace: whichever section's `.includes('@rolldown/binding-win32-x64-msvc')` is true
+     pushes one error; `errs.length>=1`, script exits 1. The check correctly rejects it.
+  Both fixtures were reasoned about, not written to disk or executed, since this agent has no
+  execution tool this session; a temporary fixture file was not created for the same reason (no
+  tool to run it against). This is weaker evidence than an actual run and is labelled as such.
+
 ## Amendment (2026-09-12, wave 4 builder findings)
 
 Wave 4 builders confirmed six eval defects while implementing the plan. This amendment fixes
@@ -119,6 +206,16 @@ unchanged.
   already does: it is an additional pin-and-audit check against R49, not a new requirement, and
   `GC91` is the next free integer after the file's highest existing golden-case number, `GC90`.
   It is cross-referenced in the [coverage matrix](#9-coverage-matrix)'s R49 row alongside GC49.
+
+**Superseded 2026-09-12 by the "GC78 final dependency-count correction" amendment above.** The
+paragraph immediately below states GC78's totals are "10 and 10 either way." That is wrong:
+moving a package's key out of one object literal (`dependencies`) and into another
+(`devDependencies`) changes `Object.keys(...).length` on each object individually, even though
+it changes neither the total package count nor how many packages R78 itself added or removed.
+The verifier's run at commit `cf969de` on Node v22.12.0 confirmed this: it found 8 and 12, not
+10 and 10, and GC78 failed as written. Kept verbatim below for the record, not deleted. GC78 is
+rewritten in [section M](#m-non-functional-and-platform-r74-r78) and is no longer "left
+unchanged pending that resolution."
 
 **Finding outside this amendment's scope, reported and not fixed here**: GC78 and R78 state
 "exactly 4 runtime dependencies and 5 devDependencies SHALL be added" against a baseline of 7
@@ -383,7 +480,7 @@ No case below is adjusted.
 | GC75 | R75 | Given no shell builtins in scripts, when `package.json` `scripts` is read, then none contains `&&`, a POSIX-only separator, or a shell builtin | `node -e "const s=require('./package.json').scripts; Object.values(s).forEach(v=>{if(/&&\|\|\||\/bin\//.test(v)) throw new Error(v)})"` | Exits 0 | Windows | command |
 | GC76 | R76 | Given `build.max_parallel: 4`, and the requirement is now explicitly stated to be about the **configured value and the wave shape**, artifacts both, and deliberately not a claim about what the conductor did at run time (a runtime property no single file records), when `.workhorse/profile.yml` and the [Build waves](#build-waves) table are read, then the value is present and each of the 4 waves is file-disjoint within itself | `grep -n "max_parallel: 4" .workhorse/profile.yml`; review of the 4-wave table for file-disjointness | Found; each wave file-disjoint | Windows | command |
 | GC77 | R77 | Given every added package, **including the three `@fontsource` packages** (the first draft's carve-out for them is withdrawn: a pin that resolves to a different version now escalates exactly like one that fails to resolve at all), when the G4 evidence table is reviewed, then it has one row per added package with a version resolved from `node_modules/<pkg>/package.json` and a licence read the same way, plus an explicit escalation line for any package whose resolved version differs from the [Dependency table](#dependency-table) | Manual review of 9 rows: `react-router`, `@fontsource/inter`, `@fontsource/jetbrains-mono`, `@fontsource/space-grotesk`, `vitest`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom`, `jsdom` | 9 rows, each with a resolved version and licence; an escalation line on any mismatch | **manual, and permanently so, accepted explicitly in R77's own row**: reading a licence field requires an owner-approved `npm install` before any version/licence can be read from disk, and the table is authored and reviewed by people. Owner: build phase, reviewed by the site owner at G4. Not a gap | G4 evidence table |
-| GC78 | R78 | Given exactly 4 runtime deps added, 5 devDeps added, 1 runtime dep removed, when `package.json` is read, then the final counts and membership match. **Lockfile-level drift is explicitly out of this requirement's reach and is governed by R86, not R78** | `node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); if(d.length!==10\|\|v.length!==10) throw 1; if(d.includes('@rolldown/binding-win32-x64-msvc')) throw 2;"` | Exits 0 (10 dependencies, 10 devDependencies; today's baseline is 7 and 5 respectively, confirmed by reading `package.json`) | Windows | command; R86 covers the transitive/lockfile drift this check cannot see, see GC86. **See the 2026-09-12 amendment's "finding outside scope"** on the Tailwind devDependencies move's effect on this row's membership, not yet reconciled here |
+| GC78 | R78 | Given B3 (approved 2026-09-12, `a98fdcf`) moved `tailwindcss` and `@tailwindcss/vite` from `dependencies` to `devDependencies` after R78 added them, when `package.json` is read, then the final section membership and counts match: exactly 8 `dependencies`, exactly 12 `devDependencies`, `@rolldown/binding-win32-x64-msvc` absent from both, and `tailwindcss`/`@tailwindcss/vite` present in `devDependencies` and absent from `dependencies`. **Lockfile-level drift is explicitly out of this requirement's reach and is governed by R86, not R78** | `node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies), v=Object.keys(p.devDependencies); const errs=[]; if(d.length!==8) errs.push('dependencies='+d.length+' expected 8'); if(v.length!==12) errs.push('devDependencies='+v.length+' expected 12'); if(d.includes('@rolldown/binding-win32-x64-msvc')) errs.push('rolldown present in dependencies'); if(v.includes('@rolldown/binding-win32-x64-msvc')) errs.push('rolldown present in devDependencies'); if(!v.includes('tailwindcss')) errs.push('tailwindcss missing from devDependencies'); if(d.includes('tailwindcss')) errs.push('tailwindcss present in dependencies'); if(!v.includes('@tailwindcss/vite')) errs.push('@tailwindcss/vite missing from devDependencies'); if(d.includes('@tailwindcss/vite')) errs.push('@tailwindcss/vite present in dependencies'); if(errs.length){console.error('dependencies='+d.length+' devDependencies='+v.length); console.error(errs.join('; ')); process.exit(1);}"` | Exits 0 (8 `dependencies`, 12 `devDependencies`, today's baseline confirmed by reading `package.json`); on any mismatch the command prints the actual counts and every failed assertion before exiting 1, rather than a bare non-zero exit | Windows | command; R86 covers the transitive/lockfile drift this check cannot see, see GC86. **Rewritten by the 2026-09-12 "GC78 final dependency-count correction" amendment**, replacing the withdrawn fixed "10 and 10" expectation that the verifier found failing at commit `cf969de` (actual: 8 and 12). See that amendment section and the superseded note in the B2/B3 amendment section, both above |
 
 ### N. Visual style (R79)
 
@@ -731,13 +828,17 @@ New notes from this revision, arising from R80-R90:
    net line and R78's counts to write GC86 and GC71 correctly. Recommend R86 state the number
    11 explicitly, so a future reader does not have to re-derive it and risk getting it wrong
    the way the timer and email counts were gotten wrong twice in this spec's own history (see
-   [Correction to a carried finding](#correction-to-a-carried-finding)).
+   [Correction to a carried finding](#correction-to-a-carried-finding)). This note is
+   unaffected by the GC78 correction below: R86's "11 survivors" are the baseline packages that
+   predate R78 (7 `dependencies` + 5 `devDependencies` - 1 removed rolldown package), not
+   `tailwindcss` or `@tailwindcss/vite`, which R78 itself added; B3's move of those two packages
+   between sections changes GC78's counts, not GC86's 11-row survivor set.
 
 New note from the 2026-09-12 B2/B3 amendment:
 
 10. **R78's "exactly 4 runtime dependencies and 5 devDependencies added" no longer matches
-    B3's outcome without a stated reconciliation.** Moving `tailwindcss` and
-    `@tailwindcss/vite` from `dependencies` to `devDependencies` is a change to which existing
+    B3's outcome without a stated reconciliation. Resolved 2026-09-12.** Moving `tailwindcss`
+    and `@tailwindcss/vite` from `dependencies` to `devDependencies` is a change to which existing
     packages sit in which section, not a change to how many packages are "added" in R78's
     sense, but R78 also states "no other dependency change SHALL occur in `package.json`" and
     the spec's own line 1149 called this exact move "a dependency change outside R78's declared
@@ -745,6 +846,18 @@ New note from the 2026-09-12 B2/B3 amendment:
     since it is a requirement-wording question for the spec architect, who is amending R78 in
     parallel; it is reported above under "Finding outside this amendment's scope" rather than
     fixed here. GC78 is left unchanged pending that resolution.
+
+    **Resolved by the 2026-09-12 "GC78 final dependency-count correction" amendment (see above
+    the Scope, method, and epistemic labels section).** The verifier ran GC78 at commit
+    `cf969de` and it failed: actual counts were 8 `dependencies` and 12 `devDependencies`, not
+    the case's hard-coded 10 and 10. GC78 is rewritten to assert the final counts (8, 12)
+    directly and to check `tailwindcss`/`@tailwindcss/vite` section membership explicitly,
+    which makes it correct regardless of which section a package sits in, without waiting on
+    R78's own wording. The wording tension this note originally raised (whether B3's move is
+    "outside R78's declared bounds") is still the spec architect's question to resolve in R78
+    itself, amended in parallel to this fix; that tension is about how R78 is worded, not about
+    what GC78 measures, so this eval fix does not depend on its outcome. GC78 is **no longer**
+    "left unchanged pending that resolution."
 
 No requirement was left entirely without a case, including the five (R19, R76 in its
 config-only sense, R77, R84, R86) that are permanently manual or evidence-table by nature, and
