@@ -1,0 +1,4 @@
+--- extracted R100 body (run-6.sh), grep for runner files / count_matches ---
+0
+--- confirm run-6.sh corresponds to the folded head's Smoke R100 step (re-extracted at verify time) ---
+IDENTICAL to verify-time re-extraction
