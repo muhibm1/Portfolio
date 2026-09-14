@@ -1,0 +1,14 @@
+--- diff removed lines count (git diff main -- deploy.yml | grep -c '^-[^-]') ---
+1
+--- which line was removed ---
+-# "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009.
+--- added lines containing uses: or continue-on-error ---
+0
+--- grep -c Smoke R100 deploy.yml ---
+1
+--- R99 diff (added lines only apart from header) sample ---
++++ b/.github/workflows/deploy.yml
++# "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009; and
++# docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/spec.md for R97, R99 and R100.
++      - name: Built CSS inlines no font (R97)
++        run: "node scripts/check-built-css-fonts.mjs"
