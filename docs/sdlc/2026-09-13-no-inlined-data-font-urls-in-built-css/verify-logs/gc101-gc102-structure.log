@@ -1,0 +1,27 @@
+--- grep -n name: .github/workflows/deploy.yml ---
+10:name: Build and deploy to GitHub Pages
+29:    name: Build and test
+37:      - name: Check out the repository
+43:      - name: Set up Node 22 with the npm cache
+49:      - name: Dependency pin check (R85)
+90:      - name: Install dependencies
+93:      - name: Lint
+97:      - name: Run the tests
+100:      - name: Test-count floor (R52)
+121:      - name: Build
+124:      - name: Built CSS inlines no font (R97)
+127:      - name: Audit runtime dependencies (blocking)
+132:      - name: Audit the full dependency tree (informational)
+136:      - name: Read the Pages configuration
+144:      - name: Upload dist as the Pages artifact
+153:    name: Deploy and smoke-test the published site
+162:      - name: Deploy to GitHub Pages
+169:      - name: "Smoke R63: fetch the published page, retrying for Pages propagation"
+190:      - name: "Smoke R87: print the response headers Pages sets (informational, never asserted)"
+195:      - name: "Smoke R80: asset paths, the script, the stylesheet and one font"
+268:      - name: "Smoke R100: the served stylesheets inline no font"
+370:      - name: "Smoke R81: a deep link serves the same body as the root"
+390:      - name: "Smoke R82: the served HTML keeps its CSP, referrer policy and privacy removals"
+--- continue-on-error count ---
+1
+EXIT_COUNT:0
