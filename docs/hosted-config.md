@@ -105,7 +105,25 @@ Log format, one line per check, newest last:
 
 Log:
 
-- No entries yet. The site has not been deployed.
+- 2026-09-11 d5ad8b0 first deploy (PR #1). 1 pass: home renders inside `#root` (confirmed, browser).
+  2 pass: canvas paints (12,020 non-transparent pixels at 420x420, role `img`, `aria-label`
+  present, confirmed by pixel read); pause-on-hide/offscreen not exercised live this pass, taken
+  from code (`ThinkingOrbHero.jsx`, `IntersectionObserver` + `visibilitychange`) and its test
+  suite. 3 pass: `/work/apple-llm-triage` opened directly, rendered the case study (confirmed).
+  4 fail: 12 `font-src 'self'` CSP violations from `data:` fonts Vite inlined into the built CSS
+  (confirmed, browser console). Filed as change `2026-09-13-no-inlined-data-font-urls-in-built-css`.
+- 2026-09-14 c3b7ca5 fix deploy (PR #8), triggered by a change to `vite.config.js`. 1 pass: home
+  renders (confirmed). 2 pass, from code and its tests: `ThinkingOrbHero.jsx`'s
+  `visibilitychange`/`IntersectionObserver` pause logic and its dedicated test file
+  (`setTabVisibility`, `installViewportObserver`) are unchanged by this fix. A live pause/resume
+  check was attempted in this session's automation browser and was inconclusive: the pane's own
+  `document.hidden` state is true even while fronted, which confounds any attempt to distinguish
+  "visible and animating" from "hidden and paused" through that tool. Not re-attempted in a normal
+  browser tab; recommend a firsthand check next time this component's code changes. 3 pass:
+  deep link body-match already covered by CI smoke R81 (confirmed, deploy run success). 4 pass:
+  built CSS has 0 `data:` font URLs (was 12, confirmed via
+  `/Portfolio/assets/index-DKKCxcjg.css`), served CSS matches (CI smoke R100 success), and the
+  live browser console shows 0 errors and 0 CSP violations (confirmed).
 
 ## 7. The phone number in git history
 
