@@ -163,7 +163,7 @@ Evidence the owner sees at G4:
 
 `git diff --name-only main...HEAD` will list `.workhorse/profile.yml`, which is outside R101's list. The owner ordered this in his G2 notes ("add both scripts to profile for me", `approvals.md`, confirmed). The main session committed it before build as `64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)` (confirmed, reflog). The conformance reviewer treats it as the owner's D6 execution, not scope drift, if three checks hold:
 1. `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` prints exactly that one commit.
-2. `git show --stat --format= 64f91c1` lists only `.workhorse/profile.yml`.
+2. `git show --stat --format= 64f91c1` lists exactly two files: `.workhorse/profile.yml` and this change's `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md` (one added line, the conductor recording its own commit, which is expected). No other file appears.
 3. `git diff 64f91c1 HEAD -- .workhorse/profile.yml` is empty, so no task edited it later.
 
 Then R101 is checked as `git diff --name-only main...HEAD -- . ':(exclude).workhorse/profile.yml'`, which must list only R101's six paths and this change's `docs/sdlc/` directory. `git diff main -- package.json package-lock.json index.html src/` must show only the two new test files.
