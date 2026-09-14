@@ -32,3 +32,12 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 - Packet: `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/plan.md` sha256 `9998fb059e23344bedf0287fdbe765e57e8b8904d4724af8c0869cfeef7418a6`
 - Tier at decision: 2
 - Notes: D1-D4 as recommended
+
+## G4: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-14T09:25:07.976Z
+- Artifact commit: `34570d4c8770dd64450e486dadf06a2572253304` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/review-packet.md` sha256 `64bb97c5c9fa33f1ccb8eb1098d4c965b7358954f71bf38198e8d19d22f1043f`
+- Tier at decision: 2
+- Notes: none
