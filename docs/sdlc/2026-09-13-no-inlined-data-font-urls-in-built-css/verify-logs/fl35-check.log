@@ -1,0 +1,3 @@
+../AppData/Local/Temp/claude/C--Users-alqai-Portfolio/d0dede8c-e802-4bb0-96b3-f53cba8c233e/scratchpad/fonts-2026-09-13/verify/fl35-outdir/assets/index-CkNgrI9O.css: 64 @font-face blocks, 128 font URLs, 12 data: font URLs
+::error::Built CSS font check failed (R97): ../AppData/Local/Temp/claude/C--Users-alqai-Portfolio/d0dede8c-e802-4bb0-96b3-f53cba8c233e/scratchpad/fonts-2026-09-13/verify/fl35-outdir/assets/index-CkNgrI9O.css has 12 data: font URL(s) and 12 @font-face URL(s) outside /Portfolio/assets/ (first: url(data:font/woff2;base64,d09GMgABAAAAAASIABAAAAAACQQAAAQuA). The CSP allows font-src 'self' only; see ADR 0001.
+EXIT:1

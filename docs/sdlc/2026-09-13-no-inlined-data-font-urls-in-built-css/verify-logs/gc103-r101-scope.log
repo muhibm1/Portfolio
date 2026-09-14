@@ -1,0 +1,26 @@
+--- 64f91c1 conformance check 1: git log main..HEAD for profile.yml ---
+64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)
+--- conformance check 2: git show --stat --format= 64f91c1 ---
+ .workhorse/profile.yml                                                | 4 +++-
+ .../conductor-log.md                                                  | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+--- conformance check 3: git diff 64f91c1 HEAD -- .workhorse/profile.yml (should be empty) ---
+(end check 3, empty means nothing after)
+--- R101 scope: git diff --name-only main...HEAD -- . excluding profile.yml ---
+.github/workflows/deploy.yml
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/adr/0001-refuse-to-inline-font-files-with-a-font-only-assetsinlinelimit-function.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/adr/0002-check-built-css-with-a-committed-node-script-run-the-same-way-in-ci-and-locally.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/approvals.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/evals.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/intent.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/plan.md
+docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/spec.md
+scripts/check-built-css-fonts.mjs
+scripts/never-inline-fonts.mjs
+src/checkBuiltCssFonts.test.js
+src/neverInlineFonts.test.js
+vite.config.js
+--- R101: git diff main -- package.json package-lock.json index.html src/ (only two new test files expected) ---
+src/checkBuiltCssFonts.test.js
+src/neverInlineFonts.test.js
