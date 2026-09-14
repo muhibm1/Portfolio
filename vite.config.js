@@ -3,6 +3,7 @@ import path from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { neverInlineFonts } from './scripts/never-inline-fonts.mjs'
 
 // GitHub Pages serves this repository as a project site under /Portfolio/. Without this prefix
 // every asset URL points at the domain root and the page loads with no CSS or JS.
@@ -33,6 +34,8 @@ export default defineConfig({
     tailwindcss(),
     githubPagesBuild(),
   ],
+  // Which assets Vite may inline as data: URLs is decided in scripts/never-inline-fonts.mjs.
+  build: { assetsInlineLimit: neverInlineFonts },
   test: {
     environment: 'jsdom',
     globals: true,
