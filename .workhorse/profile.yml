@@ -77,6 +77,8 @@ sensitive_paths:
   - "package.json"             # supply chain
   - "package-lock.json"        # supply chain
   - "src/data/portfolioData.js" # employer-derived claims: constraints.md "Employer confidentiality content control" (G3-D4, spec OQ7)
+  - "scripts/never-inline-fonts.mjs"   # decides which assets Vite may inline; the CSP font-src rule depends on it (change 2026-09-13, G2-D6)
+  - "scripts/check-built-css-fonts.mjs" # blocking CI check that no font is inlined into built CSS (change 2026-09-13, G2-D6)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -151,7 +153,7 @@ compliance:
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
 tier_floor_paths:
   3: []
-  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json"]
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs"]
 
 # Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
 # tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.
