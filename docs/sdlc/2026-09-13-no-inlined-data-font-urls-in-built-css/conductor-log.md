@@ -44,3 +44,4 @@
 2026-09-14T09:19:24.913Z | review | wh-packet-compiler | review-packet.md written: TL;DR, 5 decisions (D1-D5), evidence table, 7 findings (0 above low), risk register, 8-item diff tour, checklist incl. tier-2 security baseline (6 pass/9 n/a/0 fail), recommend approve
 2026-09-14T09:19:24.997Z | review | conductor | resumed after prior session was killed by an API rate limit immediately after dispatching the packet compiler; confirmed review-packet.md complete and well-formed on disk, backfilled log rows, proceeding to commit, push, and open the G4 PR
 2026-09-14T09:22:09.301Z | review | conductor | pushed wh/2026-09-13-no-inlined-data-font-urls-in-built-css to origin at 7a5834b; opened PR #8 against main; presenting G4 packet
+2026-09-14T09:31:46.549Z | deploy | wh-release-engineer | wrote release.md, rehearsed rollback locally (3/3 steps exit 0), recommends approve; presented G5 packet
