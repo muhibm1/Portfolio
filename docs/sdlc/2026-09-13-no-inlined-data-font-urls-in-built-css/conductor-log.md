@@ -23,3 +23,4 @@
 2026-09-14T03:03:28.403Z | spec | wh-eval-designer | FL50 and FL51 updated for L17 lower-case prefix (expect exit 1, 0 data, 2 outside); no id or count change; dispatching wh-spec-architect for packet-only fix (merge D3+D5, drop FL50/FL51 condition)
 2026-09-14T03:06:13.446Z | spec | wh-spec-architect | packet fixed: 5 decision rows (D3 and D5 merged), FL50/FL51 condition removed; recommend approve with conditions: owner chooses D6; spec.md 396 lines
 2026-09-14T03:06:25.406Z | spec | conductor | G2 required (tier 2); packet at end of spec.md presented to owner (0 high, M6 decided by owner as D6); stopping
+2026-09-14T03:09:25.931Z | spec | main session | G2-D6 executed on the owner's instruction in his G2 approval notes ('add both scripts to profile for me'): scripts/never-inline-fonts.mjs and scripts/check-built-css-fonts.mjs added to sensitive_paths and tier_floor_paths 2 in .workhorse/profile.yml; profile re-parsed with the hooks' loader
