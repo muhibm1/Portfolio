@@ -113,7 +113,7 @@ profile edit.
 |-------------|---------|------------------------|----------|
 | dev | `npm run dev` | yes | stop the process; no state changes |
 | staging | (none configured) | no | not applicable |
-| prod | `git push origin main` | no (owner performs production pushes himself, CLAUDE.md) | `git revert` of the merge commit, then the owner pushes |
+| prod | owner squash-merges the PR to `main` (`gh pr merge --squash`) | no (owner performs production merges himself, CLAUDE.md) | `git revert 7ea3583` on `main`, then the owner pushes |
 
 No secret or environment variable is touched by this change. Rehearsed in dev this session:
 `npm run dev` started cleanly (confirmed, `Local: http://localhost:5174/Portfolio/`, ready in
@@ -123,19 +123,28 @@ needed (`tasklist`, `netstat`, `wmic`) are each gated by a permission this sessi
 granted. The background dev server this session started terminates when this run ends. Not fully
 rehearsed: gap recorded as decision D15.
 
+Done by the owner by hand, outside this pipeline: pushed the branch, opened PR 11, and
+squash-merged it to `main` at `7ea3583` (confirmed, `gh pr list --state all`). See Deploy record
+below for the resulting publish.
+
 ## Clock
 
-Clock: agents 1 h 43 m of 1 h 30 m budget (OVER) · waiting on you 2 h 43 m · dead 3 h 55 m ·
-unexplained gaps 2 h 09 m · your time 0 m · wall 10 h 29 m
-
-Agent time is over the tier 2 budget of 90 minutes by 13 minutes.
+Clock: agents 1 h 43 m of 1 h 30 m budget (OVER, by 13 m) · waiting on you 2 h 43 m ·
+dead 3 h 55 m · unexplained gaps 2 h 09 m · your time 0 m · wall 10 h 29 m
 
 ## Your decision
 
-Withheld. The PR is not open: `git push -u origin wh/2026-09-20-pin-node-22-12-minimum` was
-refused by the `ask_commands` permission hook ("Command matches ask_commands entry 'git push'"),
-a true block, not a code or review problem. Every finding above is resolved or carried as an
-explicit decision row; nothing is open, todo, pending, or fix before merge. The document is
-otherwise complete. The human needs to either run the push themselves or grant the hook's
-confirmation so the branch can be pushed and `gh pr create` run, after which this document's
-header and PR line can be updated with the URL.
+Approved by the owner at G4, 2026-09-20T19:21:40Z (approvals.md), despite the PR not being open,
+with notes accepting D12, D13, D15. See Deploy record below for what ran under that approval.
+
+## Deploy record
+
+| Environment | Command | Exit code | Timestamp (UTC) | Status |
+|-------------|---------|-----------|------------------|--------|
+| dev | `npm run dev` | n/a, long-running process | 2026-09-20T19:26:47Z | confirmed: Vite 5.4.21 ready in 2877 ms, served at `http://localhost:5176/Portfolio/` (ports 5173-5175 in use by other sessions), no error output |
+| staging | (no command in profile) | - | - | not run: no deploy command configured for staging |
+| prod | owner squash-merged PR 11 (`gh pr merge --squash`) to `main` at `7ea3583`; publishing workflow run 35536692240 | 0 (workflow conclusion: success) | 2026-09-20T20:48:04Z created, 20:48:56Z completed | confirmed: `gh run view 35536692240` shows both jobs succeeded, including "Deploy to GitHub Pages" and the post-deploy smoke tests (R63, R80, R81, R82, R87, R100) |
+
+Merge and production publish confirmed complete, done by the owner outside this pipeline; the
+earlier push block is resolved. Not verified by this session: an independent fetch of the
+published URL. The workflow's own smoke test (R63) fetched it and passed, confirmed via `gh run view`.
