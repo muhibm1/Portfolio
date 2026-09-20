@@ -103,6 +103,16 @@ describe('check-phone-redaction file scan', () => {
     expect(fullNumberHits).toHaveLength(1);
   }
 
+  function fullNumberHitCountFor(fileName, reportLines) {
+    return reportLines.filter((line) => line.includes(fileName) && /:\d+: full number$/.test(line))
+      .length;
+  }
+
+  function undecodableLineCountFor(fileName, reportLines) {
+    return reportLines.filter((line) => line.includes(fileName) && line.includes('could not be decoded'))
+      .length;
+  }
+
   it('reads a UTF-16LE file that starts with a byte-order mark', () => {
     const bytes = Buffer.concat([
       Buffer.from([0xff, 0xfe]),
@@ -134,22 +144,196 @@ describe('check-phone-redaction file scan', () => {
     expectOneFullNumberHitIn('utf16le-no-bom.txt', result);
   });
 
-  it('fails with exit 2 and names a file it cannot decode, without printing its content', () => {
+  it('finds the number in a UTF-8 tail after a UTF-16LE mark and UTF-16 text', () => {
+    const cleanUtf16Text = 'x'.repeat(40);
+    const bytes = Buffer.concat([
+      Buffer.from([0xff, 0xfe]),
+      Buffer.from(`${cleanUtf16Text}\n`, 'utf16le'),
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+    ]);
+    const fixturePath = writeFixture('utf16le-mark-then-utf8-tail.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('utf16le-mark-then-utf8-tail.txt', reportLines)).toBe(1);
+  });
+
+  it('finds the number in a UTF-8 tail after a UTF-16BE mark and UTF-16 text', () => {
+    const cleanUtf16Text = 'x'.repeat(40);
+    const bigEndianText = Buffer.from(`${cleanUtf16Text}\n`, 'utf16le').swap16();
+    const bytes = Buffer.concat([
+      Buffer.from([0xfe, 0xff]),
+      bigEndianText,
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+    ]);
+    const fixturePath = writeFixture('utf16be-mark-then-utf8-tail.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('utf16be-mark-then-utf8-tail.txt', reportLines)).toBe(1);
+  });
+
+  it('finds the number in a UTF-8 head before a BOM-less UTF-16LE tail', () => {
+    const cleanUtf16Text = 'x'.repeat(40);
+    const bytes = Buffer.concat([
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+      Buffer.from(cleanUtf16Text, 'utf16le'),
+    ]);
+    const fixturePath = writeFixture('utf8-head-then-utf16le-tail.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('utf8-head-then-utf16le-tail.txt', reportLines)).toBe(1);
+  });
+
+  it('reports a hit and names the file as undecodable when a zero-byte file holds the number', () => {
     const bytes = Buffer.concat([Buffer.from([0x00]), Buffer.from(LINE_WITH_THE_NUMBER, 'utf8')]);
-    const fixturePath = writeFixture('undecodable.txt', bytes);
+    const fixturePath = writeFixture('zero-byte-with-number.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(reportLines.filter((line) => line.endsWith(':1: full number'))).toHaveLength(1);
+    expect(undecodableLineCountFor('zero-byte-with-number.txt', reportLines)).toBe(1);
+    expect(reportLines.at(-1)).toContain('1 undecodable');
+    expect(reportLines.filter((line) => line.includes('556') || line.includes('today'))).toEqual([]);
+  });
+
+  it('fails with exit 2 and names a zero-byte file it cannot recognise when it holds no number', () => {
+    const bytes = Buffer.concat([Buffer.from([0x00]), Buffer.from('No number here.\n', 'utf8')]);
+    const fixturePath = writeFixture('zero-byte-clean.txt', bytes);
 
     const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
 
     expect(exitCode).toBe(EXIT_CANNOT_RUN);
-    expect(
-      reportLines.filter(
-        (line) => line.includes('undecodable.txt') && line.includes('could not be decoded'),
-      ),
-    ).toHaveLength(1);
+    expect(undecodableLineCountFor('zero-byte-clean.txt', reportLines)).toBe(1);
     expect(reportLines.at(-1)).toContain('1 undecodable');
-    expect(reportLines.filter((line) => line.includes('556-0100') || line.includes('today.'))).toEqual(
-      [],
+    expect(reportLines.at(-1)).toContain('0 hits');
+  });
+
+  it('finds the number in UTF-16LE at odd alignment in an odd-length file', () => {
+    const bytes = Buffer.concat([
+      Buffer.from([0x41, 0x42, 0x43]),
+      Buffer.from(LINE_WITH_THE_NUMBER, 'utf16le'),
+      Buffer.from([0x00]),
+    ]);
+    const fixturePath = writeFixture('odd-length-odd-alignment.txt', bytes);
+
+    let result;
+    expect(() => {
+      result = scanAlongsideACleanFile(fixturePath);
+    }).not.toThrow();
+    const { exitCode, reportLines } = result;
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('odd-length-odd-alignment.txt', reportLines)).toBeGreaterThan(0);
+  });
+
+  it('counts an empty file as scanned', () => {
+    const fixturePath = writeFixture('empty.txt', Buffer.alloc(0));
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_CLEAN);
+    expect(reportLines.at(-1)).toContain('Scanned 2 files');
+    expect(reportLines.at(-1)).toContain('0 hits');
+  });
+
+  it('exits 1 when a run has both a hit and an undecodable file', () => {
+    const hitPath = writeFixture('hit.txt', Buffer.from(LINE_WITH_THE_NUMBER, 'utf8'));
+    const undecodablePath = writeFixture(
+      'undecodable-clean.txt',
+      Buffer.concat([Buffer.from([0x00]), Buffer.from('No number here.\n', 'utf8')]),
     );
+
+    const { exitCode, reportLines } = scanFiles([hitPath, undecodablePath], matchers);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(reportLines.at(-1)).toContain('1 undecodable');
+    expect(reportLines.at(-1)).not.toContain('0 hits');
+  });
+
+  it('finds the number in BOM-less UTF-16BE and still flags the file as incomplete', () => {
+    const bytes = Buffer.from(LINE_WITH_THE_NUMBER, 'utf16le').swap16();
+    const fixturePath = writeFixture('utf16be-no-bom.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('utf16be-no-bom.txt', reportLines)).toBeGreaterThan(0);
+    expect(undecodableLineCountFor('utf16be-no-bom.txt', reportLines)).toBe(1);
+  });
+
+  it('finds the number in UTF-8 text behind a lying UTF-16 byte-order mark', () => {
+    const bytes = Buffer.concat([
+      Buffer.from([0xff, 0xfe]),
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+    ]);
+    const fixturePath = writeFixture('lying-bom.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('lying-bom.txt', reportLines)).toBeGreaterThan(0);
+  });
+
+  it('never prints matched text or reference digits for a mixed-encoding hit', () => {
+    const cleanUtf16Text = 'x'.repeat(40);
+    const bytes = Buffer.concat([
+      Buffer.from([0xff, 0xfe]),
+      Buffer.from(`${cleanUtf16Text}\n`, 'utf16le'),
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+    ]);
+    const fixturePath = writeFixture('mixed-encoding-hit.txt', bytes);
+
+    const { reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(reportLines.filter((line) => line.includes('556') || line.includes('0100'))).toEqual([]);
+    expect(reportLines.filter((line) => line.includes('today'))).toEqual([]);
+  });
+
+  it('finds the number in a UTF-8 head when a short UTF-16 tail makes the file unrecognised', () => {
+    const bytes = Buffer.concat([
+      Buffer.from('Call 555-556-0100 today!!\n', 'utf8'),
+      Buffer.from([0x41, 0x00]),
+    ]);
+    const fixturePath = writeFixture('short-utf16-tail.txt', bytes);
+
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('short-utf16-tail.txt', reportLines)).toBeGreaterThan(0);
+    expect(undecodableLineCountFor('short-utf16-tail.txt', reportLines)).toBe(1);
+  });
+
+  it('finds the number in UTF-8 text even when a byte-order-mark-like sequence appears later in the file, not at its start', () => {
+    const bytes = Buffer.concat([
+      Buffer.from(LINE_WITH_THE_NUMBER, 'utf8'),
+      Buffer.from('More text before the marker. ', 'utf8'),
+      Buffer.from([0xff, 0xfe]),
+      Buffer.from(' and more clean text after it.\n', 'utf8'),
+    ]);
+    const fixturePath = writeFixture('mid-file-marker.txt', bytes);
+
+    const result = scanAlongsideACleanFile(fixturePath);
+
+    expectOneFullNumberHitIn('mid-file-marker.txt', result);
+  });
+
+  it('scans a 4 MB file holding zero bytes in under five seconds', () => {
+    const repeatedUtf16Text = Buffer.from('a'.repeat(2 * 1024 * 1024 - 13), 'utf16le');
+    const oneCleanUtf8Line = Buffer.from('No zero bytes on this line.\n', 'utf8');
+    const fourMegabytes = Buffer.concat([repeatedUtf16Text, oneCleanUtf8Line]);
+    const fixturePath = writeFixture('large-zero-byte.bin', fourMegabytes);
+
+    const start = performance.now();
+    scanAlongsideACleanFile(fixturePath);
+    const elapsedMs = performance.now() - start;
+
+    expect(elapsedMs).toBeLessThan(5000);
   });
 
   it('skips a file with a binary extension and counts it as binary', () => {
