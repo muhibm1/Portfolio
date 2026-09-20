@@ -94,7 +94,7 @@ deny_commands:
   - "npm publish"
   - "gh repo delete"
 ask_commands:
-  - "git push"                 # a push to the default branch publishes the public site
+  - "git push origin main"     # a push to the default branch publishes the public site; change branches push freely (the gate hook requires green verification first, and a merge needs Ship approval)
   - "npm install"
   - "npm i "
   - "npm uninstall"
