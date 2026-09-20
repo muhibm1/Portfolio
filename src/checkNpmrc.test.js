@@ -130,6 +130,42 @@ describe('check-npmrc', () => {
     expect(result.stdout).toContain('registry??');
   });
 
+  it('rejects a registry line hidden behind a lone CR inside what reads as one comment line', () => {
+    // npm's own ini parser splits on a lone "\r" as well as "\r\n"/"\n"; a guard that only strips
+    // "\r" and splits on "\n" would fold this into the preceding "#" comment and never see it.
+    writeNpmrc('# harmless comment\rregistry=https://fake.example/\nengine-strict=true\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('line 2');
+    expect(result.stdout).toContain('registry');
+    expect(result.stdout).not.toContain('fake.example');
+  });
+
+  it('rejects an auth line hidden behind a lone CR inside what reads as one ";" comment line', () => {
+    writeNpmrc('; harmless comment\r//registry.npmjs.org/:_authToken=FAKETOKEN\nengine-strict=true\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('line 2');
+    expect(result.stdout).toContain('//registry.npmjs.org/:_authToken');
+    expect(result.stdout).not.toContain('FAKETOKEN');
+  });
+
+  it('still passes the CRLF fixture, so the CR line-terminator fix does not regress plain CRLF files', () => {
+    const lines = ['# a comment', '; another comment style', '', '  engine-strict=true  '];
+    writeNpmrc(lines.join('\r\n'));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain(PASSED_PREFIX);
+  });
+
   it('rejects registry and auth lines by line number and key without printing their values', () => {
     writeNpmrc(
       [

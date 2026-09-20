@@ -59,11 +59,17 @@ function normalizeSetting(line) {
   return line.split('=').map((part) => part.trim()).join('=')
 }
 
+// npm's own ini parser (the code that actually reads this file at install time) treats a lone
+// "\r" as a line terminator, not only "\r\n" and "\n". Splitting on "\r\n|\r|\n" matches that:
+// a setting hidden behind a lone CR inside what looks like one comment line is its own line here
+// too, so it cannot slip past this guard as part of the comment text ahead of it. Each element of
+// the split is numbered in order, so "line" here means "line as npm's parser would count it",
+// which can differ from a text editor's line count for a file containing a lone CR; that is
+// deliberate, since the CI log line number exists to point a reader at what npm will read.
 function candidateLines(text) {
   return text
     .replace(/^﻿/, '')
-    .replace(/\r/g, '')
-    .split('\n')
+    .split(/\r\n|\r|\n/)
     .map((rawLine, index) => ({ number: index + 1, line: rawLine.trim() }))
     .filter(({ line }) => line !== '' && !line.startsWith('#') && !line.startsWith(';'))
 }
