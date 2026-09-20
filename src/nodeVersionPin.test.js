@@ -1,0 +1,309 @@
+// Proves the Node 22.12 floor (R105 to R109): the repository's own .nvmrc, package.json/lockfile
+// engines and .npmrc are read directly, and a set of fixture npm ci spawns prove what npm actually
+// does with those settings, both with and without the file, and under npm's own config precedence
+// (an environment variable, a user-level .npmrc). Fixtures live in os.tmpdir() and are removed in
+// afterEach; the spawn helper follows spec Interfaces (f) so a stray npm-lifecycle variable from
+// `npm test` itself never contaminates a "no .npmrc" case. The strip is case-insensitive: on
+// Windows the npm lifecycle environment arrives upper-cased (NPM_CONFIG_ENGINE_STRICT), so a
+// lowercase-only filter would strip nothing there.
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+
+const REPOSITORY_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const SPAWN_TIMEOUT_MS = 20_000;
+
+function readNormalized(filePath) {
+  return fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n');
+}
+
+function npmrcNonCommentLines(content) {
+  return content
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#') && !line.startsWith(';'));
+}
+
+// Strips every npm-lifecycle key so a fixture that holds no .npmrc is not silently governed by
+// the engine-strict setting (or the local prefix, or this repository's own engines floor)
+// `npm test` itself inherited from this repository's own .npmrc (spec Interfaces (f)). The match
+// is case-insensitive because npm's lifecycle environment arrives upper-cased on Windows
+// (NPM_CONFIG_ENGINE_STRICT, not npm_config_engine_strict), so a lowercase-only filter strips
+// nothing there and both the engine-strict override and the local prefix leak into the fixture.
+const NPM_LIFECYCLE_PREFIXES = ['npm_config_', 'npm_package_'];
+const NPM_LIFECYCLE_EXACT_KEYS = new Set([
+  'npm_execpath',
+  'npm_command',
+  'npm_lifecycle_event',
+  'npm_lifecycle_script',
+  'npm_node_execpath',
+]);
+
+function isNpmLifecycleKey(key) {
+  const lowerKey = key.toLowerCase();
+  return (
+    NPM_LIFECYCLE_PREFIXES.some((prefix) => lowerKey.startsWith(prefix)) ||
+    NPM_LIFECYCLE_EXACT_KEYS.has(lowerKey)
+  );
+}
+
+function strippedEnv(overrides = {}) {
+  const base = Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => !isNpmLifecycleKey(key)),
+  );
+  // Case-insensitive merge: an override such as npm_config_engine_strict must replace any
+  // inherited key that differs only in case (NPM_CONFIG_ENGINE_STRICT on Windows), or the two
+  // would coexist in the child's environment block with the inherited value taking precedence.
+  const overrideKeysLower = new Set(Object.keys(overrides).map((key) => key.toLowerCase()));
+  for (const key of Object.keys(base)) {
+    if (overrideKeysLower.has(key.toLowerCase())) {
+      delete base[key];
+    }
+  }
+  return { ...base, ...overrides };
+}
+
+// npm as `npm run` would start it: process.execPath plus the real npm CLI script when
+// npm_execpath is available (true under `npm test`, the project's documented test command and
+// the only path this suite actually exercises in CI), else `npm` through the shell.
+//
+// The shell fallback only runs locally, when a case is started some other way (for example
+// `npx vitest` directly). spawnSync's own `timeout` kills just the immediate shell process; on
+// Windows that does not reliably terminate the npm.cmd/node grandchildren the shell launched
+// (believed, from documented Node/Windows process-tree behaviour; not reproduced by this suite,
+// which has not observed an actual hang). Left alone, a wedged grandchild could hold a lock on
+// the fixture directory and make the following afterEach's fs.rmSync fail intermittently with
+// EBUSY/EPERM. If spawnSync reports the child was killed by a signal (which a timeout does),
+// force-kill the whole process tree behind its pid on Windows as a defensive measure; this is a
+// best-effort cleanup on an already-failed run, not a claim that it has ever fired.
+function spawnNpm(directory, args, envOverrides = {}) {
+  const env = strippedEnv(envOverrides);
+  const npmExecPath = process.env.npm_execpath;
+  const options = { cwd: directory, env, encoding: 'utf8', timeout: SPAWN_TIMEOUT_MS };
+
+  if (npmExecPath) {
+    return spawnSync(process.execPath, [npmExecPath, ...args], options);
+  }
+
+  const result = spawnSync('npm', args, { ...options, shell: true });
+  if (result.signal !== null && process.platform === 'win32' && result.pid) {
+    spawnSync('taskkill', ['/pid', String(result.pid), '/t', '/f'], { shell: true });
+  }
+  return result;
+}
+
+function runNpmCi(directory, envOverrides = {}) {
+  return spawnNpm(directory, ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], envOverrides);
+}
+
+// Matches spec Interfaces (c): npm's own engine-strict precedence, not this repository's copy of
+// the file. Used by cases that document generic npm behaviour and so must not depend on the
+// repository's own .npmrc existing yet.
+function writeSelfContainedNpmrc(directory) {
+  fs.writeFileSync(path.join(directory, '.npmrc'), 'engine-strict=true\n');
+}
+
+function writeEmptyDependencyPackage(directory, name, engines) {
+  const manifest = { name, version: '0.0.0', ...(engines ? { engines } : {}) };
+  fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify(manifest, null, 2));
+  fs.writeFileSync(
+    path.join(directory, 'package-lock.json'),
+    JSON.stringify(
+      {
+        name,
+        version: '0.0.0',
+        lockfileVersion: 3,
+        requires: true,
+        packages: { '': { name, version: '0.0.0', ...(engines ? { engines } : {}) } },
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+// The repository's own node_modules, read before and after the spawn tests below. Before
+// d5c0114, a leaked NPM_CONFIG_LOCAL_PREFIX on Windows made a fixture `npm ci` treat the
+// repository itself as its install target and delete the real node_modules while every
+// assertion in this file still passed. entryCount is deliberately undefined, not 0, when the
+// directory is absent, so a checkout with no node_modules cannot pass this check vacuously.
+const REPOSITORY_NODE_MODULES = path.join(REPOSITORY_ROOT, 'node_modules');
+
+function repositoryNodeModulesEntryCount() {
+  if (!fs.existsSync(REPOSITORY_NODE_MODULES)) {
+    return undefined;
+  }
+  return fs.readdirSync(REPOSITORY_NODE_MODULES).length;
+}
+
+describe('Node 22.12 pin', () => {
+  let fixtureDirectory;
+  let nodeModulesEntryCountBeforeSuite;
+
+  beforeAll(() => {
+    nodeModulesEntryCountBeforeSuite = repositoryNodeModulesEntryCount();
+    expect(
+      nodeModulesEntryCountBeforeSuite,
+      'this checkout has no node_modules to protect; run npm ci before trusting this suite',
+    ).not.toBeUndefined();
+    expect(nodeModulesEntryCountBeforeSuite).toBeGreaterThan(0);
+  });
+
+  afterAll(() => {
+    const entryCountAfterSuite = repositoryNodeModulesEntryCount();
+    expect(
+      entryCountAfterSuite,
+      'a fixture npm ci spawn in this file destroyed this checkout\'s node_modules; run npm ci to restore it',
+    ).toBe(nodeModulesEntryCountBeforeSuite);
+  });
+
+  beforeEach(() => {
+    fixtureDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'node-version-pin-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(fixtureDirectory, { recursive: true, force: true });
+  });
+
+  it('nvmrc holds the single line 22, the major of the engines floor', () => {
+    const nvmrcContent = readNormalized(path.join(REPOSITORY_ROOT, '.nvmrc'));
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(REPOSITORY_ROOT, 'package.json'), 'utf8'),
+    );
+
+    expect(nvmrcContent).toBe('22\n');
+    expect(nvmrcContent.startsWith('﻿')).toBe(false);
+    expect(packageJson.engines.node.startsWith('>=22.')).toBe(true);
+  });
+
+  it('package.json pins engines.node to >=22.12.0 and the lockfile root entry matches', () => {
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(REPOSITORY_ROOT, 'package.json'), 'utf8'),
+    );
+    const lockfile = JSON.parse(
+      fs.readFileSync(path.join(REPOSITORY_ROOT, 'package-lock.json'), 'utf8'),
+    );
+
+    expect(packageJson.engines).toEqual({ node: '>=22.12.0' });
+    expect(lockfile.packages[''].engines).toEqual({ node: '>=22.12.0' });
+  });
+
+  it('npmrc sets engine-strict=true and nothing else besides comments', () => {
+    const npmrcContent = fs.readFileSync(path.join(REPOSITORY_ROOT, '.npmrc'), 'utf8');
+
+    expect(npmrcNonCommentLines(npmrcContent)).toEqual(['engine-strict=true']);
+  });
+
+  it('npmrc contains no registry, auth or token setting', () => {
+    const npmrcContent = fs.readFileSync(path.join(REPOSITORY_ROOT, '.npmrc'), 'utf8');
+    const credentialPattern = /_auth|token|registry|always-auth|scope/i;
+
+    for (const line of npmrcNonCommentLines(npmrcContent)) {
+      expect(line).not.toMatch(credentialPattern);
+    }
+  });
+
+  it('npm ci exits non-zero with EBADENGINE, the required range and the running version below the floor', () => {
+    writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=999.0.0' });
+    fs.copyFileSync(path.join(REPOSITORY_ROOT, '.npmrc'), path.join(fixtureDirectory, '.npmrc'));
+
+    const result = runNpmCi(fixtureDirectory);
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+    expect(result.status).not.toBe(0);
+    expect(output).toContain('EBADENGINE');
+    expect(output).toContain('>=999.0.0');
+    expect(output).toContain(process.version);
+    expect(fs.existsSync(path.join(fixtureDirectory, 'node_modules'))).toBe(false);
+  }, SPAWN_TIMEOUT_MS);
+
+  it('npm ci exits zero when the running Node satisfies the engines floor', () => {
+    writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=22.12.0' });
+    writeSelfContainedNpmrc(fixtureDirectory);
+
+    const result = runNpmCi(fixtureDirectory);
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+    expect(result.status).toBe(0);
+    expect(output).not.toContain('EBADENGINE');
+  }, SPAWN_TIMEOUT_MS);
+
+  it('without npmrc, npm ci only warns EBADENGINE and exits zero', () => {
+    writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=999.0.0' });
+
+    // An empty scratch HOME/USERPROFILE keeps the result independent of the developer's own
+    // user-level .npmrc, which would otherwise become the highest-precedence source once the
+    // fixture has none of its own (a developer with `engine-strict=true` set globally would
+    // see this case fail; one with it unset locally would see it pass either way).
+    const scratchHome = fs.mkdtempSync(path.join(os.tmpdir(), 'node-version-pin-home-'));
+
+    try {
+      const result = runNpmCi(fixtureDirectory, { HOME: scratchHome, USERPROFILE: scratchHome });
+      const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+      expect(result.status).toBe(0);
+      expect(output).toContain('npm warn EBADENGINE');
+    } finally {
+      fs.rmSync(scratchHome, { recursive: true, force: true });
+    }
+  }, SPAWN_TIMEOUT_MS);
+
+  it('an environment variable overriding engine-strict is not blocked by the file, and this is a named residual risk', () => {
+    writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=999.0.0' });
+    writeSelfContainedNpmrc(fixtureDirectory);
+
+    const result = runNpmCi(fixtureDirectory, { npm_config_engine_strict: 'false' });
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+    // With engine-strict forced off, a mismatch still prints a warning (as in the "without
+    // npmrc" case above); the residual risk this documents is that it no longer fails the
+    // install, not that the warning text disappears.
+    expect(result.status).toBe(0);
+    expect(output).not.toContain('npm error');
+  }, SPAWN_TIMEOUT_MS);
+
+  it("a user-level npmrc with engine-strict=false does not override the project's engine-strict=true", () => {
+    writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=999.0.0' });
+    writeSelfContainedNpmrc(fixtureDirectory);
+
+    const scratchHome = fs.mkdtempSync(path.join(os.tmpdir(), 'node-version-pin-home-'));
+    fs.writeFileSync(path.join(scratchHome, '.npmrc'), 'engine-strict=false\n');
+
+    try {
+      const result = runNpmCi(fixtureDirectory, { HOME: scratchHome, USERPROFILE: scratchHome });
+      const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+      expect(result.status).not.toBe(0);
+      expect(output).toContain('EBADENGINE');
+    } finally {
+      fs.rmSync(scratchHome, { recursive: true, force: true });
+    }
+  }, SPAWN_TIMEOUT_MS);
+
+  it('npm run exports the project\'s engine-strict setting to a child lifecycle script', () => {
+    fs.writeFileSync(
+      path.join(fixtureDirectory, 'package.json'),
+      JSON.stringify(
+        {
+          name: 'fixture',
+          version: '0.0.0',
+          scripts: {
+            'print-engine-strict': 'node -e "console.log(process.env.npm_config_engine_strict)"',
+          },
+        },
+        null,
+        2,
+      ),
+    );
+    writeSelfContainedNpmrc(fixtureDirectory);
+
+    const result = spawnNpm(fixtureDirectory, ['run', 'print-engine-strict']);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('true');
+  }, SPAWN_TIMEOUT_MS);
+});

@@ -7,8 +7,9 @@ recruiters. No backend, no database, no auth, no visitor data collection.
 
 - Install: `npm ci`
 - Typecheck: none (no TypeScript)
-- Lint: `npm run lint` (oxlint) — currently fails on this machine, see Mistakes below
-- Test: none yet (add Vitest and React Testing Library in the first spec)
+- Lint: `npm run lint` (oxlint) — needs Node 22.12.0 or newer, pinned by `.nvmrc` and the
+  `engines` field; `npm ci` refuses an older Node before lint ever runs
+- Test: `npm test` (Vitest and React Testing Library)
 - Build: `npm run build` (Vite, writes `dist/`)
 - Dev: `npm run dev`
 - Audit: `npm audit --audit-level=high`
@@ -39,7 +40,7 @@ recruiters. No backend, no database, no auth, no visitor data collection.
 Never edit: `**/*.pem`, `**/*.key`, `.env*`.
 
 Ask first: `.github/workflows/**`, `index.html`, `vite.config.js`, `package.json`,
-`package-lock.json`.
+`package-lock.json`, `.npmrc`, `.nvmrc`, `scripts/check-npmrc.mjs`.
 
 Do not rewrite the factual claims in `src/data/portfolioData.js`. The employer names, dates and
 metrics are the owner's own record and only he can change them.
@@ -51,9 +52,13 @@ owner performs production pushes himself.
 
 Appended by retro after each change. Newest first.
 
-- `npm run lint` exits 1 with `Cannot find native binding` because `node_modules/@oxlint/` is
-  empty (npm optional-dependency bug). Do not treat it as a code failure. Fix by deleting
-  `node_modules` and `package-lock.json` and reinstalling.
+- The agent harness refuses to create or edit `.npmrc` at all, a built-in filename block
+  separate from the profile's ask-first gate. The repository owner must create or edit it by
+  hand.
+- `npm run lint` exits 1 with `Cannot find native binding` when the running Node is below
+  oxlint's required range, `^20.19.0 || >=22.12.0` (the real cause; it is not an npm
+  optional-dependency bug). Fix with `nvm use` to match `.nvmrc`, or read the `npm ci` error,
+  which names the required range and the version actually running.
 - `package.json` lists `@rolldown/binding-win32-x64-msvc`, a Windows-only binary nothing uses.
   Remove it before the first CI run or `npm ci` on a Linux runner is expected to fail.
 - `vite.config.js` has no `base`. A GitHub Pages project site needs `base: "/Portfolio/"` or
