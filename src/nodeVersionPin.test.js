@@ -2,8 +2,10 @@
 // engines and .npmrc are read directly, and a set of fixture npm ci spawns prove what npm actually
 // does with those settings, both with and without the file, and under npm's own config precedence
 // (an environment variable, a user-level .npmrc). Fixtures live in os.tmpdir() and are removed in
-// afterEach; the spawn helper follows spec Interfaces (f) so a stray npm_config_* variable from
-// `npm test` itself never contaminates a "no .npmrc" case.
+// afterEach; the spawn helper follows spec Interfaces (f) so a stray npm-lifecycle variable from
+// `npm test` itself never contaminates a "no .npmrc" case. The strip is case-insensitive: on
+// Windows the npm lifecycle environment arrives upper-cased (NPM_CONFIG_ENGINE_STRICT), so a
+// lowercase-only filter would strip nothing there.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -26,13 +28,42 @@ function npmrcNonCommentLines(content) {
     .filter((line) => line.length > 0 && !line.startsWith('#') && !line.startsWith(';'));
 }
 
-// Strips every npm_config_* key so a fixture that holds no .npmrc is not silently governed by the
-// engine-strict setting `npm test` itself inherited from this repository's own .npmrc (spec
-// Interfaces (f)).
+// Strips every npm-lifecycle key so a fixture that holds no .npmrc is not silently governed by
+// the engine-strict setting (or the local prefix, or this repository's own engines floor)
+// `npm test` itself inherited from this repository's own .npmrc (spec Interfaces (f)). The match
+// is case-insensitive because npm's lifecycle environment arrives upper-cased on Windows
+// (NPM_CONFIG_ENGINE_STRICT, not npm_config_engine_strict), so a lowercase-only filter strips
+// nothing there and both the engine-strict override and the local prefix leak into the fixture.
+const NPM_LIFECYCLE_PREFIXES = ['npm_config_', 'npm_package_'];
+const NPM_LIFECYCLE_EXACT_KEYS = new Set([
+  'npm_execpath',
+  'npm_command',
+  'npm_lifecycle_event',
+  'npm_lifecycle_script',
+  'npm_node_execpath',
+]);
+
+function isNpmLifecycleKey(key) {
+  const lowerKey = key.toLowerCase();
+  return (
+    NPM_LIFECYCLE_PREFIXES.some((prefix) => lowerKey.startsWith(prefix)) ||
+    NPM_LIFECYCLE_EXACT_KEYS.has(lowerKey)
+  );
+}
+
 function strippedEnv(overrides = {}) {
   const base = Object.fromEntries(
-    Object.entries(process.env).filter(([key]) => !key.startsWith('npm_config_')),
+    Object.entries(process.env).filter(([key]) => !isNpmLifecycleKey(key)),
   );
+  // Case-insensitive merge: an override such as npm_config_engine_strict must replace any
+  // inherited key that differs only in case (NPM_CONFIG_ENGINE_STRICT on Windows), or the two
+  // would coexist in the child's environment block with the inherited value taking precedence.
+  const overrideKeysLower = new Set(Object.keys(overrides).map((key) => key.toLowerCase()));
+  for (const key of Object.keys(base)) {
+    if (overrideKeysLower.has(key.toLowerCase())) {
+      delete base[key];
+    }
+  }
   return { ...base, ...overrides };
 }
 
