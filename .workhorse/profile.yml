@@ -31,7 +31,7 @@ stack:
 commands:
   install: "npm ci"
   typecheck: ""
-  lint: "npm run lint"
+  lint: "npm run lint"          # needs Node >=22.12.0 (change 2026-09-20); floor pinned by .nvmrc, .npmrc and package.json engines
   format: ""
   test: "npm test"               # Vitest, added by change 2026-09-11 (R53); supersedes "deliberately empty" above
   test_file: "npm test --"       # append one path, for example: npm test -- src/App.test.jsx
@@ -79,6 +79,9 @@ sensitive_paths:
   - "src/data/portfolioData.js" # employer-derived claims: constraints.md "Employer confidentiality content control" (G3-D4, spec OQ7)
   - "scripts/never-inline-fonts.mjs"   # decides which assets Vite may inline; the CSP font-src rule depends on it (change 2026-09-13, G2-D6)
   - "scripts/check-built-css-fonts.mjs" # blocking CI check that no font is inlined into built CSS (change 2026-09-13, G2-D6)
+  - ".npmrc"                    # npm reads it for registry, scope and auth on every command; must stay engine-strict=true only (change 2026-09-20, D7)
+  - ".nvmrc"                    # decides which Node the publishing workflow runs npm ci under (change 2026-09-20, D7)
+  - "scripts/check-npmrc.mjs"   # blocking CI check on .npmrc content before install (change 2026-09-20, D11)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -153,7 +156,7 @@ compliance:
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
 tier_floor_paths:
   3: []
-  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs"]
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs"]
 
 # Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
 # tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.
@@ -165,4 +168,4 @@ tracker:
   sync_on: [gate, phase]
 
 # Free text the discovery analyst could not fit elsewhere. Kept short.
-notes: "No test runner and no typechecker exist, so commands.test and commands.typecheck are empty on purpose; the spec should add vitest and React Testing Library so later phases have a real test command. commands.lint is declared but fails on this machine right now (confirmed): node_modules/@oxlint is empty, oxlint cannot load a native binding, and oxlint --version exits 1. That is npm cli issue 4828. Fix by removing node_modules and package-lock.json and reinstalling, before the first verify. package.json also carries @rolldown/binding-win32-x64-msvc as a direct dependency; nothing installed needs it (vite 5.4.11 bundles with rollup and esbuild, and rolldown is not installed) and because it is a direct non-optional dependency restricted to os win32 cpu x64, it is expected to fail npm ci on a Linux Actions runner (believed, not verified). hosting and ci are believed, not verified: there is no .github directory and GitHub Pages is not configured. generate_viewer.cjs at the repo root reads a path outside the repo and is dead code; delete it. Full detail in docs/sdlc/constraints.md."
+notes: "No test runner and no typechecker exist, so commands.test and commands.typecheck are empty on purpose; the spec should add vitest and React Testing Library so later phases have a real test command. commands.lint failed on this machine for a week (confirmed): the host ran Node v21.7.3, below oxlint's required range ^20.19.0 || >=22.12.0, so oxlint could not load its native binding. It was not an npm bug. The floor is now pinned by change 2026-09-20 (.nvmrc, .npmrc, package.json engines) and the host runs Node v24.19.0. package.json also carries @rolldown/binding-win32-x64-msvc as a direct dependency; nothing installed needs it (vite 5.4.11 bundles with rollup and esbuild, and rolldown is not installed) and because it is a direct non-optional dependency restricted to os win32 cpu x64, it is expected to fail npm ci on a Linux Actions runner (believed, not verified). hosting and ci are believed, not verified: there is no .github directory and GitHub Pages is not configured. generate_viewer.cjs at the repo root reads a path outside the repo and is dead code; delete it. Full detail in docs/sdlc/constraints.md."
