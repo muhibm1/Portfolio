@@ -17,3 +17,13 @@
 2026-09-20T10:33:16.973Z | build | conductor | T4 folded by rebase onto the change branch at 44e28a8; wave 1 incomplete, T1 blocked on a hook denial
 2026-09-20T10:37:03.763Z | build | conductor | resumed at build after session cut off; wave 1: T4 folded, T1 blocked on hook denial
 2026-09-20T10:41:46.338Z | build | wh-builder T3 | done: CLAUDE.md, profile.yml, codebase-map.md, constraints.md corrected; GC113/GC116/GC117 pass, lint/test/build exit 0
+2026-09-20T10:41:59.787Z | build | conductor | T3 folded; T1 and T2 blocked on sensitive-path permission denials, presenting the block
+2026-09-20T10:42:37.789Z | build | conductor | D12: FL55 assertion cannot use literal EBADENGINE (npm still warns) -> assert exit 0 and no 'npm error', builder-confirmed empirically
+2026-09-20T10:42:37.873Z | build | wh-builder T1 | blocked: permission system refuses all writes to .npmrc (built-in sensitive filename); .nvmrc, engines, lockfile and 10 tests done, 3 tests red on the missing file
+2026-09-20T10:43:56.966Z | build | conductor | blocked: T1 needs .npmrc created by the owner or a permission allow rule; wave 2 held, T1 partial preserved at 508ead0
+2026-09-20T10:45:27.105Z | build | conductor | resumed at build after the owner created .npmrc at 6730782, unblocking T1
+2026-09-20T10:51:01.442Z | build | conductor | T1 folded at 5d01402; 8 of 10 tests pass, FL53 and FL55 red
+2026-09-20T10:51:04.488Z | build | conductor | confirmed cause: on Windows npm exports NPM_CONFIG_* uppercase, so the test helper's lowercase strip leaks ENGINE_STRICT and LOCAL_PREFIX into the fixture child
+2026-09-20T10:51:07.428Z | build | conductor | D13: fix the leak in the helper or drop FL53/FL55 as unautomatable -> fix the helper, strip and override case-insensitively
+2026-09-20T10:56:42.543Z | build | conductor | wh-builder T1f done: strippedEnv now case-insensitive, 10/10 pass, node_modules intact, lint/test/build exit 0
+2026-09-20T10:56:45.300Z | build | conductor | wh-builder T2 done: deploy.yml three hunks, 5 tests pass, 28 files 227 tests, guard exits 0
