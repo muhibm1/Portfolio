@@ -14,3 +14,6 @@
 2026-09-20T10:23:41.511Z | design | conductor | resumed at design after G2 approved
 2026-09-20T10:32:33.659Z | build | wh-builder T4 | done: scripts/check-npmrc.mjs 59 lines + 4 tests green, lint/test/build exit 0, branch ...-t4 at 44e28a8
 2026-09-20T10:32:33.739Z | build | wh-builder T1 | blocked: hook denial on .npmrc create, package.json and package-lock.json edit; test file and .nvmrc written, not committed
+2026-09-20T10:33:16.973Z | build | conductor | T4 folded by rebase onto the change branch at 44e28a8; wave 1 incomplete, T1 blocked on a hook denial
+2026-09-20T10:37:03.763Z | build | conductor | resumed at build after session cut off; wave 1: T4 folded, T1 blocked on hook denial
+2026-09-20T10:41:46.338Z | build | wh-builder T3 | done: CLAUDE.md, profile.yml, codebase-map.md, constraints.md corrected; GC113/GC116/GC117 pass, lint/test/build exit 0
