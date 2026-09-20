@@ -7,3 +7,9 @@
 2026-09-20T22:02:21.253Z | design | wh-eval-designer | evals 21 -> 26 cases (E21-E25 added), plan.md tasks 1 and 2 updated
 2026-09-20T22:18:03.371Z | design | wh-designer | revision round: high audit finding resolved via scripts/check-test-floor.mjs (ADR 0004); 34 eval cases, 3 waves, 13 decisions; brief.md rewritten
 2026-09-20T22:18:03.439Z | design | conductor | G2 Design presented
+2026-09-20T22:22:56.480Z | design | conductor | resumed at design after G2 approved; entering build
+2026-09-20T22:33:32.294Z | build | conductor | wave 1 folded into change branch by rebase (677b2dd); D14: task branch suffix -t1 not /t1, git ref collision, matches repo history
+2026-09-20T22:47:01.779Z | build | wh-builder t2 | layered UTF-8/UTF-16 scan, hit-outranks-incomplete exit; 44 tests in file, suite 273 pass, lint+build 0, real scan clean 0 hits 0 undecodable
+2026-09-20T22:47:01.864Z | build | conductor | t2 builder hit its turn limit before committing; conductor ran the checks and committed the finished diff (3cbce64); worktree isolation blocked a second builder from that tree
+2026-09-20T22:57:31.549Z | build | wh-builder t3 | floor script + 9 tests committed (b0c69f0), pin 44 measured from a fresh report; E33 fails, workflow edit blocked
+2026-09-20T22:57:31.635Z | build | conductor | BLOCKED: hook denies every edit to .github/workflows/deploy.yml in subagent and main session; owner must apply the one-step edit by hand
