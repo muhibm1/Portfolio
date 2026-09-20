@@ -43,3 +43,14 @@
 2026-09-20T15:31:21.088Z | review | conductor | wh-shipper: ship.md complete at 141 lines, 3 high 7 medium all fixed with named commits; branch push refused by the ask_commands hook, PR not opened
 2026-09-20T15:31:21.154Z | review | conductor | D15: complete the dev rollback rehearsal or accept the partial one -> carried to the Ship document for the owner
 2026-09-20T15:31:23.588Z | review | conductor | G4 Ship presented
+2026-09-20T19:22:07.878Z | review | conductor | resumed at review after G4 approved; moving to deploy
+2026-09-20T19:22:54.094Z | deploy | conductor | branch push refused again by ask_commands hook; dispatching shipper in deploy mode for dev (auto) only
+2026-09-20T19:25:43.266Z | deploy | conductor | resumed at deploy after G4 approved
+2026-09-20T19:27:51.299Z | deploy | wh-shipper | deploy: dev deployed (npm run dev, confirmed running), staging not run (no command), prod not run (auto: false, owner performs production deploy). Merge blocked: ask_commands hook refuses the push command, branch not on remote, no PR exists.
+2026-09-20T19:28:21.077Z | deploy | wh-shipper | deploy mode done: dev deployed (vite ready, localhost:5176/Portfolio/), staging none, prod not run (auto false, owner pushes); deploy record added to ship.md at 149 lines
+2026-09-20T19:28:24.191Z | deploy | conductor | D16: close at done with the merge outstanding, or stop blocked -> stop blocked; branch is not on origin, no PR, main unchanged, so done would record a change that never shipped
+2026-09-20T19:28:29.367Z | deploy | conductor | BLOCKED at deploy: branch publish refused by the ask_commands hook for the third time; owner must publish the branch, open the PR and merge to main
+2026-09-20T20:49:31.918Z | deploy | conductor | resumed at deploy after blocked report; checking whether the branch publish block is still live
+2026-09-20T20:52:25.798Z | deploy | wh-shipper | deploy record corrected: prod deployed by the owner via squash merge of PR 11 to main at 7ea3583, Pages run 35536764153 success incl. .nvmrc setup-node and R113 npmrc allowlist steps; ship.md 150 lines
+2026-09-20T20:52:25.879Z | deploy | conductor | deploy block cleared outside the pipeline: branch published, PR 11 merged, production publish confirmed green; G5 not a required gate at tier 2
+2026-09-20T20:52:30.789Z | deploy | conductor | correction to the previous row: the Pages publish run id is 35536692240, not 35536764153 (that id is an unrelated dependabot run); ship.md records the right one
