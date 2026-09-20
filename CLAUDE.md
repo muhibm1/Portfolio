@@ -52,6 +52,9 @@ owner performs production pushes himself.
 
 Appended by retro after each change. Newest first.
 
+- The agent harness refuses to create or edit `.npmrc` at all, a built-in filename block
+  separate from the profile's ask-first gate. The repository owner must create or edit it by
+  hand.
 - `npm run lint` exits 1 with `Cannot find native binding` when the running Node is below
   oxlint's required range, `^20.19.0 || >=22.12.0` (the real cause; it is not an npm
   optional-dependency bug). Fix with `nvm use` to match `.nvmrc`, or read the `npm ci` error,
