@@ -11,3 +11,6 @@
 2026-09-20T05:19:29.186Z | design | conductor | D10: prove T3 profile edit comment-only -> check four control keys unchanged
 2026-09-20T05:31:19.658Z | design | conductor | G2 required at tier 2, brief presented, waiting on the human
 2026-09-20T07:40:19.660Z | design | conductor | G2 Design presented
+2026-09-20T10:23:41.511Z | design | conductor | resumed at design after G2 approved
+2026-09-20T10:32:33.659Z | build | wh-builder T4 | done: scripts/check-npmrc.mjs 59 lines + 4 tests green, lint/test/build exit 0, branch ...-t4 at 44e28a8
+2026-09-20T10:32:33.739Z | build | wh-builder T1 | blocked: hook denial on .npmrc create, package.json and package-lock.json edit; test file and .nvmrc written, not committed
