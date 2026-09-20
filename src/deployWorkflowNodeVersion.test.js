@@ -17,6 +17,19 @@ function readWorkflowLines() {
   return text.split('\n');
 }
 
+// Every `- name:` line in the workflow, in order, so a case can find which step a later line
+// belongs to.
+function stepNameLines(lines) {
+  return lines
+    .map((line, index) => ({ line: line.trim(), index }))
+    .filter(({ line }) => line.startsWith('- name:'))
+    .map(({ line, index }) => ({ name: line.replace(/^- name:\s*/, ''), index }));
+}
+
+function stepNameBefore(lines, lineIndex) {
+  return [...stepNameLines(lines)].reverse().find(({ index }) => index < lineIndex);
+}
+
 describe('deploy workflow Node version and guard step', () => {
   it('the setup-node step reads the Node version from .nvmrc and keeps the npm cache', () => {
     const lines = readWorkflowLines();
@@ -56,14 +69,10 @@ describe('deploy workflow Node version and guard step', () => {
       .filter(({ line }) => line === 'node scripts/check-npmrc.mjs')
       .map(({ index }) => index);
     const npmCiIndex = lines.findIndex((line) => line.trim() === 'run: "npm ci"');
-    const nameIndexes = lines
-      .map((line, index) => ({ line: line.trim(), index }))
-      .filter(({ line }) => line.startsWith('- name:'))
-      .map(({ line, index }) => ({ name: line.replace(/^- name:\s*/, ''), index }));
 
     expect(guardLineIndexes).toHaveLength(1);
     const [guardLineIndex] = guardLineIndexes;
-    const precedingName = [...nameIndexes].reverse().find(({ index }) => index < guardLineIndex);
+    const precedingName = stepNameBefore(lines, guardLineIndex);
 
     expect(precedingName?.name).toBe('Dependency pin check (R85) and .npmrc allowlist (R113)');
     expect(npmCiIndex).toBeGreaterThan(-1);
@@ -101,13 +110,7 @@ describe('deploy workflow Node version and guard step', () => {
       .map(({ index }) => index);
     expect(persistCredentialsIndexes).toHaveLength(1);
 
-    const nameIndexes = lines
-      .map((line, index) => ({ line: line.trim(), index }))
-      .filter(({ line }) => line.startsWith('- name:'))
-      .map(({ line, index }) => ({ name: line.replace(/^- name:\s*/, ''), index }));
-    const precedingName = [...nameIndexes]
-      .reverse()
-      .find(({ index }) => index < persistCredentialsIndexes[0]);
+    const precedingName = stepNameBefore(lines, persistCredentialsIndexes[0]);
     expect(precedingName?.name).toBe('Check out the repository');
   });
 });
