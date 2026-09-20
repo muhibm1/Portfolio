@@ -32,6 +32,13 @@ function main([directoryArgument]) {
   }
   const offenders = offendingLines(text)
   if (offenders.length === 0) {
+    if (!hasAllowedLine(text)) {
+      console.log(
+        `::error::npmrc allowlist check failed (R113): ${displayedPath} does not set ` +
+          `engine-strict=true, so the Node floor is not enforced.`,
+      )
+      return EXIT_VIOLATION
+    }
     console.log(`npmrc allowlist passed (R113): ${displayedPath} sets engine-strict=true and nothing else.`)
     return EXIT_CLEAN
   }
@@ -45,15 +52,38 @@ function main([directoryArgument]) {
   return EXIT_VIOLATION
 }
 
-function offendingLines(text) {
+// Trims each side of the first "=" so `engine-strict = true` compares equal to the allowed
+// setting without weakening the allowlist: anything besides whitespace around the "=" still
+// fails the comparison.
+function normalizeSetting(line) {
+  return line.split('=').map((part) => part.trim()).join('=')
+}
+
+function candidateLines(text) {
   return text
+    .replace(/^﻿/, '')
     .replace(/\r/g, '')
     .split('\n')
     .map((rawLine, index) => ({ number: index + 1, line: rawLine.trim() }))
-    .filter(({ line }) => line !== '' && !line.startsWith('#') && !line.startsWith(';') && line !== ALLOWED_LINE)
+    .filter(({ line }) => line !== '' && !line.startsWith('#') && !line.startsWith(';'))
+}
+
+function hasAllowedLine(text) {
+  return candidateLines(text).some(({ line }) => normalizeSetting(line) === ALLOWED_LINE)
+}
+
+function offendingLines(text) {
+  return candidateLines(text)
+    .filter(({ line }) => normalizeSetting(line) !== ALLOWED_LINE)
     .map(({ number, line }) => {
       const equalsIndex = line.indexOf('=')
-      const key = equalsIndex === -1 ? null : line.slice(0, equalsIndex).slice(0, KEY_LIMIT)
+      const key = equalsIndex === -1 ? null : sanitizeKey(line.slice(0, equalsIndex).slice(0, KEY_LIMIT))
       return { number, key }
     })
+}
+
+// Attacker-influenced key text is echoed into a public Actions annotation; strip non-printable
+// and non-ASCII characters (unicode lookalikes included) before printing it.
+function sanitizeKey(key) {
+  return key.replace(/[^\x20-\x7E]/g, '?')
 }
