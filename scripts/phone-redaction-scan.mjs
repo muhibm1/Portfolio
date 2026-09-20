@@ -109,13 +109,14 @@ export function formNamesFoundIn(line, matchers) {
 
 /**
  * Classifies one file from its path and bytes. Returns { kind: 'binary' } for a listed binary
- * extension, { kind: 'text', text } when the bytes decode as UTF-8 or UTF-16, and
- * { kind: 'undecodable' } otherwise.
+ * extension, else { kind: 'scanned', layers, undecodable }: `layers` holds every decoding of the
+ * bytes worth searching for a hit (R1, R4), and `undecodable` is true when none of the current
+ * rules recognise the buffer's layout as UTF-8 or UTF-16 (R2). An undecodable file is still
+ * searched in every layer; it is only ever reported and counted differently from a recognised one.
  */
 export function decodeFile(filePath, bytes) {
   if (hasBinaryExtension(filePath)) return { kind: 'binary' }
-  const text = decodeText(bytes)
-  return text === null ? { kind: 'undecodable' } : { kind: 'text', text }
+  return { kind: 'scanned', layers: decodingLayers(bytes), undecodable: isUndecodable(bytes) }
 }
 
 /**
@@ -131,16 +132,24 @@ export function scanFiles(absolutePaths, matchers) {
     const file = readFileForScan(absolutePath)
     if (file.kind === 'binary') {
       counts.binary += 1
-    } else if (file.kind === 'missing') {
+      continue
+    }
+    if (file.kind === 'missing') {
       counts.missing += 1
-    } else if (file.kind === 'undecodable') {
+      continue
+    }
+    const displayedPath = displayPath(absolutePath)
+    const hitLines = hitLinesAcrossLayers(file.layers, displayedPath, matchers)
+    counts.hits += hitLines.length
+    reportLines.push(...hitLines)
+    if (file.undecodable) {
       counts.undecodable += 1
-      reportLines.push(`${displayPath(absolutePath)}: could not be decoded as UTF-8 or UTF-16, not scanned`)
+      reportLines.push(
+        `${displayedPath}: could not be decoded with confidence as UTF-8 or UTF-16; scanned in ` +
+          `every layer, counted as incomplete`,
+      )
     } else {
       counts.scanned += 1
-      const hitLines = hitLinesIn(file.text, displayPath(absolutePath), matchers)
-      counts.hits += hitLines.length
-      reportLines.push(...hitLines)
     }
   }
 
@@ -238,6 +247,15 @@ function hitLinesIn(text, displayedPath, matchers) {
     )
 }
 
+/** Unions the hit lines every decoding layer finds for one file into a deduplicated report list. */
+function hitLinesAcrossLayers(layers, displayedPath, matchers) {
+  const hitLines = new Set()
+  for (const text of layers) {
+    for (const hitLine of hitLinesIn(text, displayedPath, matchers)) hitLines.add(hitLine)
+  }
+  return [...hitLines]
+}
+
 function scanExitCode({ scanned, undecodable, hits }) {
   if (hits > 0) return EXIT_HIT
   return undecodable > 0 || scanned === 0 ? EXIT_CANNOT_RUN : EXIT_CLEAN
@@ -261,16 +279,43 @@ function hasBinaryExtension(filePath) {
 }
 
 /**
- * Returns the text, or null when the bytes are undecodable. The first rule that applies decides:
- * a UTF-16LE byte-order mark, a UTF-16BE byte-order mark, no zero byte (UTF-8), then BOM-less
- * UTF-16LE.
+ * Returns every decoding of the buffer worth searching for a hit (ADR 0002): UTF-8 always, since a
+ * region of any file can be plain text; and, only when the buffer holds a zero byte, UTF-16LE and
+ * UTF-16BE starting at byte 0 and at byte 1, because a two-byte-per-character region can begin at
+ * either alignment relative to the file. A buffer with no zero byte cannot hold a UTF-16 region
+ * (every ASCII character has one), so the extra layers would only ever decode to nothing (D5).
  */
-function decodeText(bytes) {
-  if (bytes[0] === 0xff && bytes[1] === 0xfe) return decodeUtf16LittleEndian(bytes.subarray(2))
-  if (bytes[0] === 0xfe && bytes[1] === 0xff) return decodeUtf16BigEndian(bytes.subarray(2))
-  if (!bytes.includes(0)) return bytes.toString('utf8')
-  if (looksLikeUtf16LittleEndian(bytes)) return decodeUtf16LittleEndian(bytes)
-  return null
+function decodingLayers(bytes) {
+  const layers = [bytes.toString('utf8')]
+  if (!bytes.includes(0)) return layers
+  for (const offset of [0, 1]) {
+    const slice = evenLengthSlice(bytes, offset)
+    if (slice.length === 0) continue
+    layers.push(slice.toString('utf16le'))
+    layers.push(Buffer.from(slice).swap16().toString('utf16le'))
+  }
+  return layers
+}
+
+/** Drops a trailing odd byte so a UTF-16 layer never reads a half character. */
+function evenLengthSlice(bytes, offset) {
+  const available = bytes.length - offset
+  const evenLength = available - (available % 2)
+  return bytes.subarray(offset, offset + evenLength)
+}
+
+/**
+ * True when none of the current rules recognise the buffer's layout as UTF-8 or UTF-16, so the
+ * completeness of the layered scan (decodingLayers) cannot be trusted for this file (R2, D6): a
+ * UTF-16 byte-order mark whose body fails the even-length or embedded-NUL check, or a body with a
+ * zero byte that does not look like BOM-less UTF-16LE. A buffer with no zero byte is always
+ * recognised as UTF-8.
+ */
+function isUndecodable(bytes) {
+  if (bytes[0] === 0xff && bytes[1] === 0xfe) return decodeUtf16LittleEndian(bytes.subarray(2)) === null
+  if (bytes[0] === 0xfe && bytes[1] === 0xff) return decodeUtf16BigEndian(bytes.subarray(2)) === null
+  if (!bytes.includes(0)) return false
+  return !looksLikeUtf16LittleEndian(bytes)
 }
 
 function decodeUtf16BigEndian(bytes) {
@@ -282,7 +327,7 @@ function decodeUtf16BigEndian(bytes) {
 function decodeUtf16LittleEndian(bytes) {
   if (bytes.length % 2 !== 0) return null
   const text = bytes.toString('utf16le')
-  return text.includes(' ') ? null : text
+  return text.includes('\u0000') ? null : text
 }
 
 /**
