@@ -27,3 +27,19 @@
 2026-09-20T10:51:07.428Z | build | conductor | D13: fix the leak in the helper or drop FL53/FL55 as unautomatable -> fix the helper, strip and override case-insensitively
 2026-09-20T10:56:42.543Z | build | conductor | wh-builder T1f done: strippedEnv now case-insensitive, 10/10 pass, node_modules intact, lint/test/build exit 0
 2026-09-20T10:56:45.300Z | build | conductor | wh-builder T2 done: deploy.yml three hunks, 5 tests pass, 28 files 227 tests, guard exits 0
+2026-09-20T10:59:20.979Z | build | conductor | wh-polish done: one helper extraction in deployWorkflowNodeVersion.test.js, 28 files 227 tests green, node_modules intact
+2026-09-20T11:04:16.107Z | verify | conductor | wh-verifier green: 5 checks passed, 24 eval cases 100 percent, node_modules intact after the suite
+2026-09-20T11:13:57.984Z | review | conductor | reviewers: bug 1 high 1 med 4 low, conformance 11/11 clean, adoption 4/5 1 med, typescript 3 med 1 low, react n/a, silent-failure 1 med 1 low, pr-test 1 high 1 med 1 low; security hit its turn limit, resuming it
+2026-09-20T11:15:13.205Z | review | conductor | wh-security-reviewer resumed and done: 1 high 2 med 1 low; high duplicates the bug reviewer's guard-absence finding
+2026-09-20T11:15:16.949Z | review | conductor | D14: the .npmrc comment line and the setup-node ordering both need the owner -> leave both for the Ship document, fix everything else
+2026-09-20T11:25:51.032Z | review | conductor | wh-fixer done: 10 of 10 findings fixed across 4 commits, 29 files 243 tests, lint/build exit 0
+2026-09-20T11:30:51.196Z | verify | conductor | wh-verifier green after the review fix: 5 checks, 243 tests in 29 files, 24 eval cases 100 percent
+2026-09-20T11:38:28.737Z | review | wh-shipper | ship.md written, Your decision withheld: scripts/check-npmrc.mjs:62-69 CR-splitting bypass is open, not fixed; PR not opened, branch push guarded by an ask_commands hook, needs owner confirmation
+2026-09-20T11:39:08.311Z | review | conductor | wh-shipper blocked: found a new high, check-npmrc splits on newline only so a lone CR hides a registry line; reproduced with npm config get registry
+2026-09-20T11:44:27.666Z | review | conductor | wh-fixer round 2 done: CR-split hole closed at 1dbf781, shell-fallback tree kill at 7b25b72, 246 tests green
+2026-09-20T15:22:36.493Z | verify | conductor | resumed at verify after session cut off; verification.md predates the round-2 review fixes, re-verifying
+2026-09-20T15:27:20.795Z | verify | wh-verifier | green after review fix round 2: 5 checks exit 0, 246 tests in 29 files, 24 eval cases 100 percent, node_modules intact
+2026-09-20T15:30:45.432Z | review | wh-shipper | ship.md written, PR not opened: branch push refused by an ask_commands hook, needs owner
+2026-09-20T15:31:21.088Z | review | conductor | wh-shipper: ship.md complete at 141 lines, 3 high 7 medium all fixed with named commits; branch push refused by the ask_commands hook, PR not opened
+2026-09-20T15:31:21.154Z | review | conductor | D15: complete the dev rollback rehearsal or accept the partial one -> carried to the Ship document for the owner
+2026-09-20T15:31:23.588Z | review | conductor | G4 Ship presented
