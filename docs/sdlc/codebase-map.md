@@ -30,7 +30,7 @@ search of `src/` and `index.html` for `fetch(`, `XMLHttpRequest`, `axios`, `loca
 | Linter | oxlint 1.82.0 installed, config `.oxlintrc.json` | confirmed |
 | Formatter | none | confirmed (no prettier, no `.editorconfig`) |
 | Test runner | none | confirmed (no test dependency, no test file, no `test` script) |
-| Package manager | npm 10.5.0 on Node v21.7.3 | confirmed (`npm --version`, `node --version`) |
+| Package manager | npm 10.7.0 on Node v24.19.0; floor `>=22.12.0` pinned by `.nvmrc`, `.npmrc` and `package.json` `engines` (change 2026-09-20) | confirmed (`npm --version`, `node --version`) |
 | Host OS | Windows 10, PowerShell primary, Git Bash available | confirmed |
 | Hosting | GitHub Pages from `muhibm1/Portfolio` | **believed**, not configured |
 | CI | GitHub Actions | **believed**, no `.github/` directory exists |
@@ -46,18 +46,20 @@ anything.
 | Dev server | `npm run dev` (`vite`) | confirmed the script exists; not run |
 | Build | `npm run build` (`vite build`) | confirmed the script exists; not run |
 | Preview | `npm run preview` (`vite preview`) | confirmed the script exists; not run |
-| Lint | `npm run lint` (`oxlint`) | **confirmed broken on this machine**, see below |
+| Lint | `npm run lint` (`oxlint`) | confirmed passing on this machine (change 2026-09-20 pinned the Node floor), see below |
 | Security audit | `npm audit --audit-level=high` | confirmed the flag exists (`npm audit --help`); not run |
 | Typecheck | none | confirmed absent |
 | Test | none | confirmed absent |
 
-`npm run lint` currently fails for an environment reason, not a code reason. **Confirmed**:
-`node_modules/@oxlint/` is an empty directory, so oxlint cannot load any native binding;
-`./node_modules/.bin/oxlint --version` exits `1` with
-`Cannot find native binding ... Cannot find module '@oxlint/binding-wasm32-wasi'`. This is the
-npm optional-dependency bug the error message itself names (npm/cli issue 4828). The fix is to
-delete `node_modules` and `package-lock.json` and reinstall. Until then the verifier will report
-lint as failing on every change.
+`npm run lint` failed for a week for an environment reason, not a code reason, and not an npm
+bug. **Confirmed 2026-09-20**: the discovery host ran Node 21.7, below oxlint's declared
+range `^20.19.0 || >=22.12.0` (`node_modules/oxlint/package.json`), so
+`node_modules/@oxlint/` stayed empty and oxlint could not load any native binding;
+`./node_modules/.bin/oxlint --version` exited `1` with
+`Cannot find native binding ... Cannot find module '@oxlint/binding-wasm32-wasi'`. Change
+2026-09-20 pins the floor with `.nvmrc`, a committed `.npmrc` (`engine-strict=true`) and
+`package.json` `engines`, so `npm ci` now refuses an older Node before lint ever runs. This
+host now runs Node v24.19.0 and `npm run lint` exits 0.
 
 ---
 
