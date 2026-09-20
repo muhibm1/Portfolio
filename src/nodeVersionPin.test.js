@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 const REPOSITORY_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SPAWN_TIMEOUT_MS = 20_000;
@@ -110,8 +110,40 @@ function writeEmptyDependencyPackage(directory, name, engines) {
   );
 }
 
+// The repository's own node_modules, read before and after the spawn tests below. Before
+// d5c0114, a leaked NPM_CONFIG_LOCAL_PREFIX on Windows made a fixture `npm ci` treat the
+// repository itself as its install target and delete the real node_modules while every
+// assertion in this file still passed. entryCount is deliberately undefined, not 0, when the
+// directory is absent, so a checkout with no node_modules cannot pass this check vacuously.
+const REPOSITORY_NODE_MODULES = path.join(REPOSITORY_ROOT, 'node_modules');
+
+function repositoryNodeModulesEntryCount() {
+  if (!fs.existsSync(REPOSITORY_NODE_MODULES)) {
+    return undefined;
+  }
+  return fs.readdirSync(REPOSITORY_NODE_MODULES).length;
+}
+
 describe('Node 22.12 pin', () => {
   let fixtureDirectory;
+  let nodeModulesEntryCountBeforeSuite;
+
+  beforeAll(() => {
+    nodeModulesEntryCountBeforeSuite = repositoryNodeModulesEntryCount();
+    expect(
+      nodeModulesEntryCountBeforeSuite,
+      'this checkout has no node_modules to protect; run npm ci before trusting this suite',
+    ).not.toBeUndefined();
+    expect(nodeModulesEntryCountBeforeSuite).toBeGreaterThan(0);
+  });
+
+  afterAll(() => {
+    const entryCountAfterSuite = repositoryNodeModulesEntryCount();
+    expect(
+      entryCountAfterSuite,
+      'a fixture npm ci spawn in this file destroyed this checkout\'s node_modules; run npm ci to restore it',
+    ).toBe(nodeModulesEntryCountBeforeSuite);
+  });
 
   beforeEach(() => {
     fixtureDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'node-version-pin-'));
@@ -187,11 +219,21 @@ describe('Node 22.12 pin', () => {
   it('without npmrc, npm ci only warns EBADENGINE and exits zero', () => {
     writeEmptyDependencyPackage(fixtureDirectory, 'fixture', { node: '>=999.0.0' });
 
-    const result = runNpmCi(fixtureDirectory);
-    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+    // An empty scratch HOME/USERPROFILE keeps the result independent of the developer's own
+    // user-level .npmrc, which would otherwise become the highest-precedence source once the
+    // fixture has none of its own (a developer with `engine-strict=true` set globally would
+    // see this case fail; one with it unset locally would see it pass either way).
+    const scratchHome = fs.mkdtempSync(path.join(os.tmpdir(), 'node-version-pin-home-'));
 
-    expect(result.status).toBe(0);
-    expect(output).toContain('npm warn EBADENGINE');
+    try {
+      const result = runNpmCi(fixtureDirectory, { HOME: scratchHome, USERPROFILE: scratchHome });
+      const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+
+      expect(result.status).toBe(0);
+      expect(output).toContain('npm warn EBADENGINE');
+    } finally {
+      fs.rmSync(scratchHome, { recursive: true, force: true });
+    }
   }, SPAWN_TIMEOUT_MS);
 
   it('an environment variable overriding engine-strict is not blocked by the file, and this is a named residual risk', () => {
@@ -245,6 +287,7 @@ describe('Node 22.12 pin', () => {
 
     const result = spawnNpm(fixtureDirectory, ['run', 'print-engine-strict']);
 
+    expect(result.status).toBe(0);
     expect(result.stdout).toContain('true');
   }, SPAWN_TIMEOUT_MS);
 });
