@@ -3,8 +3,9 @@
 # check, lint, tests, the test-count floor, the build and the runtime audit all pass first.
 #
 # Source of truth: docs/sdlc/2026-09-11-deployed-multi-page-portfolio-on-github-pages/spec.md,
-# "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009; and
-# docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/spec.md for R97, R99 and R100.
+# "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009;
+# docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/spec.md for R97, R99 and R100; and
+# docs/sdlc/2026-09-20-pin-node-22-12-minimum/spec.md for R110, R113 and R114.
 # Every action is pinned to a full commit SHA with its release tag in the trailing comment.
 # Dependabot proposes SHA updates; read each one before merging, because merging deploys.
 name: Build and deploy to GitHub Pages
@@ -40,13 +41,13 @@ jobs:
           # Package lifecycle scripts run in this job, so the token stays out of .git/config.
           persist-credentials: false
 
-      - name: Set up Node 22 with the npm cache
+      - name: Set up Node from .nvmrc with the npm cache
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
-      - name: Dependency pin check (R85)
+      - name: Dependency pin check (R85) and .npmrc allowlist (R113)
         run: |
           node -e '
             const fs = require("fs");
@@ -86,6 +87,7 @@ jobs:
             }
             console.log(`Pin check passed: all ${exactPinnedPackages.length} packages are exact versions.`);
           ' package.json
+          node scripts/check-npmrc.mjs
 
       - name: Install dependencies
         run: "npm ci"

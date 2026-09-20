@@ -59,13 +59,16 @@ pattern.
    consent obligation and a new third party. The profile's `style_notes` and
    `sensitive_paths` entry for `index.html` exist to force that decision through a human.
 4. **Windows development host.** One laptop, PowerShell primary with Git Bash available, Node
-   v21.7.3, npm 10.5.0. `build.max_parallel` is set to 4 for this reason. Any script added must
-   run on Windows, so no bare shell scripts in `package.json` scripts. **Confirmed.**
-5. **The lint command is currently broken on this machine.** `node_modules/@oxlint/` is empty,
-   so `oxlint` exits 1 with `Cannot find native binding`. **Confirmed** by running
-   `./node_modules/.bin/oxlint --version`. Until `node_modules` and `package-lock.json` are
-   deleted and reinstalled, every verification will report lint as failing for a reason that
-   has nothing to do with the code.
+   v24.19.0, npm 10.7.0 (updated 2026-09-20; the host ran Node 21.7, npm 10.5 at discovery on
+   2026-09-11). `build.max_parallel` is set to 4 for this reason. Any script added must run
+   on Windows, so no bare shell scripts in `package.json` scripts. `.nvmrc`, `.npmrc` and
+   `package.json` `engines` (change 2026-09-20) pin the floor at `>=22.12.0`. **Confirmed.**
+5. **The lint command failed on this machine for a week, and it was a Node version, not an npm
+   bug.** The discovery host's Node 21.7 was below oxlint's required range
+   `^20.19.0 || >=22.12.0`, so `node_modules/@oxlint/` stayed empty and `oxlint` exited 1 with
+   `Cannot find native binding`. **Confirmed** by running `./node_modules/.bin/oxlint --version`
+   on the discovery host and by the fix: change 2026-09-20 pins the Node floor, and lint now
+   exits 0 on Node v24.19.0.
 6. **There is no test command and no typechecker.** The verifier will report "no check defined"
    for both. Until Vitest exists, the only automated evidence a change can produce is a
    successful `npm run build` and a lint run.
@@ -139,11 +142,11 @@ Each item is confirmed by reading the file named.
 | # | Item | Where | Why it matters |
 | --- | --- | --- | --- |
 | 1 | Dead script referencing a path outside the repository | `generate_viewer.cjs` | Reads and writes `C:\Users\alqai\.gemini\antigravity\brain\10bf30e7-...`, which exists on no other machine. Nothing imports it. Delete it. |
-| 2 | Lint cannot run | `node_modules/@oxlint/` empty | Blocks the only automated quality check the project has. |
+| 2 | Lint cannot run | `node_modules/@oxlint/` empty on Node below 22.12.0 | Closed 2026-09-20: the cause was the host's Node version, not the npm install; the floor is now pinned by `.nvmrc`, `.npmrc` and `package.json` `engines`, and `npm run lint` exits 0 on Node v24.19.0. |
 | 3 | Orphan Windows-only direct dependency | `package.json` | Expected to break `npm ci` on Linux CI. |
 | 4 | No `base` in the Vite config | `vite.config.js` | Expected to break the GitHub Pages deploy. |
 | 5 | No test runner | whole repo | Every later phase has to verify by eye. |
-| 6 | `.gitignore` has no `.env` pattern | `.gitignore` | No env file exists today, **confirmed** by `git ls-files`, so nothing is leaked. But the first `.env` anyone creates would be committable. The profile denies edits to `.env*`, which is not the same protection. Add `.env*` to `.gitignore` as a pattern. |
+| 6 | Closed 2026-09-20: this row was stale | `.gitignore` line 16 | `.gitignore` line 16 carries `.env*` as a pattern, confirmed 2026-09-20 by the constraint auditor. This row previously said the pattern was missing; it was not. |
 | 7 | README is still the create-vite template | `README.md` | Describes the scaffold, not this project. |
 | 8 | Hard-coded email in one component | `src/components/CaseStudyModal.jsx` line 298 | Every other component reads `personal.email` from the data module. Changing the address would miss this one. |
 | 9 | CSS custom properties are declared but unused | `src/index.css` lines 5 to 17 | Components hard-code hex colours. A palette change means editing every component. |
@@ -324,7 +327,7 @@ confirmations.
 | Check | Command | Exit code | Output | Status |
 |-------|---------|-----------|--------|--------|
 | Profile parses with the WorkHorse YAML reader | `node -e "require('.../hooks/scripts/lib.js').loadProfile('C:/Users/alqai/Portfolio')"` | 0 | Full object printed; every key present, `tier_floor_paths.3` an empty list, `notes` 1090 characters | confirmed |
-| Node and npm versions | `node --version`, `npm --version` | 0 | `v21.7.3`, `10.5.0` | confirmed |
+| Node and npm versions | `node --version`, `npm --version` | 0 | 2026-09-20 observation: `v24.19.0`, `10.7.0`. Discovery on 2026-09-11 saw Node 21.7 and npm 10.5 | confirmed |
 | Vite present and version | `./node_modules/.bin/vite --help` | 0 | `vite/5.4.11` | confirmed |
 | Lint runs | `./node_modules/.bin/oxlint --version` | 1 | `Cannot find native binding ... Cannot find module '@oxlint/binding-wasm32-wasi'` | confirmed failing |
 | `npm ci` subcommand exists | `npm ci --help` | 0 | Usage text | confirmed (command not run) |
@@ -348,7 +351,7 @@ are recorded so they are not lost; none of them block G0 approval.
 | Medium | discovery | `package.json:11` | `@rolldown/binding-win32-x64-msvc` is a direct dependency restricted to Windows x64 and needed by nothing | D5, remove before the first CI run |
 | Medium | discovery | `node_modules/@oxlint/` | Lint cannot execute; the project's only automated check is dead | D5, clean reinstall |
 | Medium | discovery | `vite.config.js:5` | No `base`, so a Pages project-site deploy is expected to serve a page with no assets | Set during the Build phase once D4 on the domain is settled |
-| Low | discovery | `.gitignore` | No `.env` pattern | Add `.env*` when any env file first appears |
+| Low | discovery | `.gitignore` | Closed 2026-09-20: this row was wrong. `.gitignore` line 16 carries `.env*` as a pattern, confirmed by the constraint auditor | None needed |
 | Low | discovery | `src/components/CaseStudyModal.jsx:298` | Email hard-coded instead of read from `portfolioData` | Fold into the first content change |
 | Low | discovery | `generate_viewer.cjs` | Dead script pointing outside the repository | Delete |
 | Info | discovery | `src/components/InteractiveTriageSimulator.jsx:1-60` | Invented data that reads as real internal Apple systems | Owner decision, question 2 above |
