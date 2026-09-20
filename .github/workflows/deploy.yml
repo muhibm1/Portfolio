@@ -99,26 +99,8 @@ jobs:
       - name: Run the tests
         run: "npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json"
 
-      - name: Test-count floor (R52)
-        run: |
-          node -e '
-            const fs = require("fs");
-            const reportPath = process.argv[1];
-            const minimumPassed = 12;
-
-            const { numPassedTests, numPendingTests, numTodoTests, numFailedTests } =
-              JSON.parse(fs.readFileSync(reportPath, "utf8"));
-            const counts = `numPassedTests=${numPassedTests} numPendingTests=${numPendingTests} numTodoTests=${numTodoTests} numFailedTests=${numFailedTests}`;
-            console.log(`Vitest report ${reportPath}: ${counts}`);
-
-            const hasEnoughPassed = numPassedTests >= minimumPassed;
-            const hasNoneSkippedOrFailed = numPendingTests + numTodoTests + numFailedTests === 0;
-            if (!hasEnoughPassed || !hasNoneSkippedOrFailed) {
-              console.log(`::error::Test floor failed (R52): need at least ${minimumPassed} passed and 0 pending, todo or failed; got ${counts}.`);
-              process.exit(1);
-            }
-            console.log("Test floor passed.");
-          ' vitest-results.json
+      - name: Test-count floors (R52, R11)
+        run: "node scripts/check-test-floor.mjs vitest-results.json"
 
       - name: Build
         run: "npm run build"
