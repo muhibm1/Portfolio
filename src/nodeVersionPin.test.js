@@ -68,7 +68,18 @@ function strippedEnv(overrides = {}) {
 }
 
 // npm as `npm run` would start it: process.execPath plus the real npm CLI script when
-// npm_execpath is available (true under `npm test`), else `npm` through the shell.
+// npm_execpath is available (true under `npm test`, the project's documented test command and
+// the only path this suite actually exercises in CI), else `npm` through the shell.
+//
+// The shell fallback only runs locally, when a case is started some other way (for example
+// `npx vitest` directly). spawnSync's own `timeout` kills just the immediate shell process; on
+// Windows that does not reliably terminate the npm.cmd/node grandchildren the shell launched
+// (believed, from documented Node/Windows process-tree behaviour; not reproduced by this suite,
+// which has not observed an actual hang). Left alone, a wedged grandchild could hold a lock on
+// the fixture directory and make the following afterEach's fs.rmSync fail intermittently with
+// EBUSY/EPERM. If spawnSync reports the child was killed by a signal (which a timeout does),
+// force-kill the whole process tree behind its pid on Windows as a defensive measure; this is a
+// best-effort cleanup on an already-failed run, not a claim that it has ever fired.
 function spawnNpm(directory, args, envOverrides = {}) {
   const env = strippedEnv(envOverrides);
   const npmExecPath = process.env.npm_execpath;
@@ -77,7 +88,12 @@ function spawnNpm(directory, args, envOverrides = {}) {
   if (npmExecPath) {
     return spawnSync(process.execPath, [npmExecPath, ...args], options);
   }
-  return spawnSync('npm', args, { ...options, shell: true });
+
+  const result = spawnSync('npm', args, { ...options, shell: true });
+  if (result.signal !== null && process.platform === 'win32' && result.pid) {
+    spawnSync('taskkill', ['/pid', String(result.pid), '/t', '/f'], { shell: true });
+  }
+  return result;
 }
 
 function runNpmCi(directory, envOverrides = {}) {
