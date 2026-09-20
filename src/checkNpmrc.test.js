@@ -40,7 +40,10 @@ describe('check-npmrc', () => {
   }
 
   function runCheckOn(directory) {
-    return spawnSync(process.execPath, [scriptPath, directory], { encoding: 'utf8' });
+    // Matches the 20 s timeout every spawn in src/nodeVersionPin.test.js sets: spawnSync cannot
+    // be interrupted by Vitest, so a wedged child would otherwise block the suite until the CI
+    // job limit rather than failing the case. A timed-out spawnSync reports status null.
+    return spawnSync(process.execPath, [scriptPath, directory], { encoding: 'utf8', timeout: 20_000 });
   }
 
   it('passes a fixture npmrc that sets engine-strict=true and nothing else', () => {
@@ -68,6 +71,63 @@ describe('check-npmrc', () => {
     expect(result.status).toBe(2);
     expect(result.stdout).toContain(COULD_NOT_RUN_PREFIX);
     expect(result.stdout).toContain(path.basename(fixtureDirectory));
+  });
+
+  it('fails a fixture npmrc holding only comments, since engine-strict=true is never set', () => {
+    writeNpmrc('# a comment\n; another comment style\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('does not set engine-strict=true');
+  });
+
+  it('fails a fixture npmrc that is empty, since engine-strict=true is never set', () => {
+    writeNpmrc('');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('does not set engine-strict=true');
+  });
+
+  it('passes a fixture npmrc with a leading UTF-8 byte-order mark before engine-strict=true', () => {
+    writeNpmrc('﻿engine-strict=true\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain(PASSED_PREFIX);
+  });
+
+  it('passes engine-strict=true written with spaces around the equals sign', () => {
+    writeNpmrc('engine-strict = true\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain(PASSED_PREFIX);
+  });
+
+  it('still rejects a spaced setting that is not engine-strict=true', () => {
+    writeNpmrc('engine-strict = false\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+  });
+
+  it('sanitizes non-printable and non-ASCII characters in a reported key', () => {
+    writeNpmrc('engine-strict=true\nregistry​=https://evil.example/\n');
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('registry??');
   });
 
   it('rejects registry and auth lines by line number and key without printing their values', () => {
