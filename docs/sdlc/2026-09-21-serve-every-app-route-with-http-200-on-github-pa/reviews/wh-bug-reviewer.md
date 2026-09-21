@@ -1,0 +1,22 @@
+Verdict: 2 findings (0 critical, 0 high, 0 medium, 2 low)
+
+Reviewed: `git diff main...wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` at b4d2f6e (code files only; SDLC prose not reviewed for bugs). Changed functions read in full with callers: `staticRoutePaths`, `validatedSlug` (src/routePaths.js); `sitePagePaths`, `writeRoutePages`, `resolvedTarget` (scripts/route-pages.mjs); `main`, `pageRelativePaths`, `readShell`, `missingOrStaleOffenders`, `unexpectedOffenders` (scripts/check-route-pages.mjs); `githubPagesBuild().closeBundle` (vite.config.js); the build-job check step and the "Smoke R121 and R122" step (deploy.yml, incl. R63's `ROOT_URL` and `smoke/root.html` at lines 163 to 177); the four new test files.
+
+| Severity | File:line | Finding | Failure scenario | Fix |
+|---|---|---|---|---|
+| low | src/routePaths.js:8 | The slug rule accepts a missing or null id because `RegExp.test` converts its argument to a string, so `undefined` becomes "undefined" and `null` becomes "null", and both match the slug rule. | A case study is added with no `id` (for example `slug: "x"` by mistake). `staticRoutePaths` returns `/work/undefined` without throwing (confirmed: a node probe returned `['/', '/work', '/work/undefined', '/work/null', '/work/undefined']` for `[{}, {id:null}, {slug:'x'}]`). Expected: throw naming the id, as R118 requires for any id that is not a URL-safe slug. The effect is limited (believed, not verified by a run): CI runs `npm test` before `npm run build` (deploy.yml lines 102 and 108, confirmed), and GC2 would render `/work/undefined` as "Page not found" and fail. Eval gap: FL1's list `['../x','a/b','A-B','a b','']` has no non-string id. | src/routePaths.js: in `validatedSlug`, require `typeof id === 'string' && SAFE_SLUG.test(id)` before returning the id. src/routePaths.test.jsx: add `undefined`, `null` and `123` to FL1 as `{ id: badId }` cases. |
+| low | src/routePaths.test.jsx:65 | GC3 reads `<Route` tags with `/<Route\b[^>]*\/?>/g`. That pattern stops at the first `>`, which is usually inside `element={<X />}`. So a `path` attribute written after `element`, or a `path={...}` expression, is never read. | A developer adds `<Route element={<BlogPage />} path="blog" />`. The regex captures only `<Route element={<BlogPage />` (confirmed by a node probe), so the path set is still `{work, work/:slug, *}` and GC3 passes. No page is written for `/blog`, the route check passes because it uses the same list, and `/blog` returns 404 to crawlers again. This is the case R116 says the test prevents. Expected: GC3 fails on an unknown route. | src/routePaths.test.jsx: match `path=` anywhere in the file with `/\bpath=("([^"]*)"|\{)/g`, and fail on any `{` (expression) form. Or count `<Route` occurrences and require that each one has either `index` or a captured `path`. |
+
+Checked and not a finding:
+- `writeRoutePages` escape guard: for the ids the slug rule allows, the `startsWith(resolvedOutDir + sep)` check is correct, and every target is checked before the first write. Confirmed by reading the code and AD1.
+- Check script: exit codes, byte comparison and the recursive walk behave as the spec says. It never prints file content. Confirmed by reading the code.
+- Smoke step: `set -e` does not hide a failed curl because the `|| {}` handler catches it. A 404 without `-f` still exits 0 and is then checked. Both fetches' bodies are compared with `smoke/root.html` from R63. Confirmed by reading the step.
+- `closeBundle`: only runs for builds (`apply: 'build'`), and `outDir` is an absolute path resolved from `config.root`. Confirmed.
+
+Findings outside scope: none. No embedded instructions were found in the files read.
+
+Not verified:
+- What GitHub Pages actually does for `/Portfolio/work/apple-llm-triage` with no trailing slash (believed: one 301 to the trailing-slash form, which is within `--max-redirs 2`). The first live deploy will show it.
+- CDN propagation: the deep link could briefly serve a cached 404 from the previous deploy after R63 already passed. That would fail R121 once, after the site is already live. This is believed possible, not observed. The plan accepts a re-run.
+- `Dirent.parentPath` with `readdirSync({ recursive: true, withFileTypes: true })` on CI's Node 22.12. Tests ran on local v24.19.0 (confirmed with `node -v`), not on 22.12.
+- No test suite or build was run by this reviewer. The instruction said verification is green, and this report does not repeat that check.
