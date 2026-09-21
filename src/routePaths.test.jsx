@@ -11,11 +11,17 @@ import App from './App';
 import { portfolioData } from './data/portfolioData';
 import { staticRoutePaths } from './routePaths';
 
-const NOT_FOUND_HEADING = 'Page not found';
-
 const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'App.jsx');
 
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
+
+// The heading each route renders, in the order staticRoutePaths returns them: / (the home hero
+// name), /work (the work index header) and then one entry per case study, its title from
+// portfolioData so the expectation tracks the data instead of being copied by hand.
+function expectedHeadings() {
+  const caseStudyHeadings = portfolioData.caseStudies.map((study) => study.title);
+  return ['Muhammad Muhibullah', 'Work', ...caseStudyHeadings];
+}
 
 describe('staticRoutePaths', () => {
   it('returns / then /work then /work/<id> for each case study in data order (GC1)', () => {
@@ -28,16 +34,22 @@ describe('staticRoutePaths', () => {
     ]);
   });
 
-  it.each(staticRoutePaths(portfolioData.caseStudies))(
-    'renders a level-1 heading other than "Page not found" at %s (GC2)',
-    (staticRoutePath) => {
+  // GC2 proves every path in the shared list renders the specific page it names, not merely a
+  // page other than "not found". src/routes.test.jsx owns per-route content correctness for the
+  // trailing-slash slug case and other router behaviour; this test only proves the list this
+  // module hands to the build and the check resolves to the expected page for each entry.
+  it.each(staticRoutePaths(portfolioData.caseStudies).map((staticRoutePath, index) => [staticRoutePath, expectedHeadings()[index]]))(
+    'renders the expected level-1 heading at %s (GC2)',
+    (staticRoutePath, expectedHeading) => {
       render(
         <MemoryRouter initialEntries={[staticRoutePath]}>
           <App />
         </MemoryRouter>,
       );
 
-      expect(screen.getByRole('heading', { level: 1 }).textContent).not.toBe(NOT_FOUND_HEADING);
+      expect(screen.getByRole('heading', { level: 1 }).textContent.replace(/\s+/g, ' ').trim()).toBe(
+        expectedHeading,
+      );
     },
   );
 
