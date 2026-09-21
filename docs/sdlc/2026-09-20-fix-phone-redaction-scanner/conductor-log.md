@@ -20,3 +20,15 @@
 2026-09-21T01:42:34.536Z | review | conductor | resumed at review after session cut off
 2026-09-21T01:48:47.136Z | review | wh-fixer | review mode: fixed 6 findings (5 medium, 1 low) in cc36f23; npm test exit 0 (285 passed), npm run lint exit 0
 2026-09-21T01:53:52.556Z | verify | wh-verifier | re-verify after review fix at cc36f23: green, 8 of 8 checks passed, 34 of 34 eval cases met
+2026-09-21T02:01:14.045Z | review | wh-shipper | ship.md written, PR https://github.com/muhibm1/Portfolio/pull/15
+2026-09-21T02:01:35.908Z | review | wh-shipper | ship.md written (135 lines), branch pushed, PR #15 opened, rollback rehearsed clean
+2026-09-21T02:01:38.312Z | review | conductor | G4 Ship presented
+2026-09-21T02:02:43.953Z | review | conductor | resumed at review after G4 approved; entering deploy
+2026-09-21T02:05:45.879Z | deploy | wh-shipper | deploy mode: dev npm run dev confirmed started and stopped; staging not run (no command); prod blocked, merging PR 15 is the production push per CLAUDE.md and deploy.yml, owner must run gh pr merge and the recorded rollback; ship.md updated with Deploy record
+2026-09-21T02:06:10.248Z | deploy | wh-shipper | deploy mode: dev confirmed (vite ready, localhost:5177/Portfolio/), staging none, prod not run (auto false, merge of PR 15 is the release, owner performs it); deploy record in ship.md, 149 lines
+2026-09-21T02:06:10.332Z | deploy | conductor | D17: close at done with PR 15 unmerged, or stop blocked -> stop blocked; follows D16 precedent, done would record a change that has not shipped
+2026-09-21T02:06:10.416Z | deploy | conductor | BLOCKED at deploy: owner must merge PR 15 (the production release); resume after merge to record the publish and close
+2026-09-21T02:06:48.233Z | deploy | conductor | resumed at deploy after blocked: owner merged PR 15 as 9d24286 (mergedAt 2026-09-21T02:06:07Z)
+2026-09-21T02:07:16.234Z | deploy | conductor | publish confirmed: run 35553027638 on 9d24286 success, build+test and deploy+smoke jobs green; one informational exit-1 annotation in Build and test (step 33)
+2026-09-21T02:08:41.051Z | deploy | wh-shipper | deploy record updated: prod published via owner merge 9d24286, run 35553027638 success; exit-1 annotation confirmed from informational full-tree audit step; ship.md 150 lines, c731efc pushed to change branch
+2026-09-21T02:08:49.535Z | done | conductor | done: retro dispatched in background
