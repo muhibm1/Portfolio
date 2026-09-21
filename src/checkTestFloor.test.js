@@ -119,9 +119,15 @@ describe('check-test-floor', () => {
 
     const result = runFloorOn(reportPath)
 
+    const expectedPassed = counts.passed ?? 0
+    const expectedNotPassed = Object.entries(counts)
+      .filter(([status]) => status !== 'passed')
+      .reduce((total, [, count]) => total + count, 0)
+
     expect(result.status).toBe(1)
     expect(result.stdout).toContain(REDACTION_FAILED_PREFIX)
     expect(result.stdout).toContain(`need at least ${PINNED_REDACTION_PASSED_COUNT} passed and 0 not passed`)
+    expect(result.stdout).toContain(`got ${expectedPassed} passed, ${expectedNotPassed} not passed`)
     expect(result.stdout).not.toContain(PASSED_LINE)
   })
 
@@ -151,6 +157,21 @@ describe('check-test-floor', () => {
       const notJsonPath = path.join(fixtureDirectory, 'not-json.txt')
       fs.writeFileSync(notJsonPath, 'this is not JSON', 'utf8')
       return notJsonPath
+    }],
+    ['a file holding the JSON literal null', () => {
+      const nullJsonPath = path.join(fixtureDirectory, 'null.json')
+      fs.writeFileSync(nullJsonPath, 'null', 'utf8')
+      return nullJsonPath
+    }],
+    ['a file holding a JSON array instead of an object', () => {
+      const arrayJsonPath = path.join(fixtureDirectory, 'array.json')
+      fs.writeFileSync(arrayJsonPath, '[]', 'utf8')
+      return arrayJsonPath
+    }],
+    ['a report object missing the whole-suite count keys', () => {
+      const missingCountsPath = path.join(fixtureDirectory, 'missing-counts.json')
+      fs.writeFileSync(missingCountsPath, JSON.stringify({ testResults: [] }), 'utf8')
+      return missingCountsPath
     }],
   ])('exits 2 when the report is missing or unreadable, so the floor never passes on nothing: %s', (_label, makePath) => {
     const badPath = makePath()
