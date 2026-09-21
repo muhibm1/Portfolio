@@ -1,7 +1,7 @@
 # 0002: Serve deep links by copying index.html to 404.html at build time
 
 Date: 2026-09-11
-Status: proposed
+Status: accepted; the "every path except / is 404" consequence is amended by 2026-09-21 ADR 0001
 Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 
 ## Context

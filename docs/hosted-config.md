@@ -97,7 +97,8 @@ after the first deploy, and again after any later change to `vite.config.js`, `i
 
 1. The home page renders content inside `#root` in a real browser.
 2. The orb animates and stops when the tab is hidden.
-3. A deep link pasted into a fresh tab renders the case study.
+3. A deep link pasted into a fresh tab renders the case study (CI smoke R121 proves the 200 and
+   the body; this check is for rendering).
 4. The browser console shows no CSP violation and no uncaught error.
 
 Log format, one line per check, newest last:
