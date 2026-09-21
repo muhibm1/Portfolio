@@ -133,3 +133,17 @@ manual push by the owner either way.
 /workhorse:approve G4
 /workhorse:approve G4 --reject "notes"
 ```
+
+## Deploy record
+
+G4 approved 2026-09-21T02:02:15Z (approvals.md, 6d02c39); deploy mode run 2026-09-20 UTC.
+| Environment | Command | Exit code | Note |
+|-------------|---------|-----------|------|
+| dev | `npm run dev` | confirmed started, stopped after check | ready 648 ms, `http://localhost:5177/Portfolio/`; not left running |
+| staging | (none) | not run | no deploy command in profile |
+| prod | `git push origin main` | not run: tier-policy block | see below |
+**PR #15: not merged.** `prod.auto: false`, the push is ask-first, `deploy.yml` runs on push to
+`main` ("merging deploys"), `CLAUDE.md` reserves production pushes for the owner, and a squash
+merge of #15 is that push. Neither `gh pr merge` nor `git push origin main` ran. Believed, not
+verified: PR #15's live mergeability/CI, `gh pr view` needed an unavailable approval here.
+Owner runs: `gh pr merge 15 --repo muhibm1/Portfolio --squash`; rollback: `git revert --no-edit <merge commit sha>` then `git push origin main` (five commits rehearsed reverting clean, exit 0 each, above; the squash-merge revert was not, no merge yet exists).
