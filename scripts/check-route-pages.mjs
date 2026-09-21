@@ -93,14 +93,15 @@ function missingOrStaleOffenders(directory, expectedRelativePaths, shellBytes) {
   return lines
 }
 
-/** One offender line per index.html found anywhere under the directory that the app does not define. */
+/** One offender line per .html file found anywhere under the directory that the app does not define. */
 function unexpectedOffenders(directory, expectedRelativePaths) {
   const expected = new Set(expectedRelativePaths)
+  const ignoredAtRoot = new Set(['index.html', '404.html'])
   const found = fs
     .readdirSync(directory, { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name === 'index.html')
+    .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith('.html'))
     .map((entry) => relativeSlashPath(directory, path.join(entry.parentPath, entry.name)))
-    .filter((relativePath) => relativePath !== 'index.html' && !expected.has(relativePath))
+    .filter((relativePath) => !ignoredAtRoot.has(relativePath) && !expected.has(relativePath))
     .sort()
 
   return found.map((relativePath) => offenderLine(relativePath, 'is not a page the app defines'))
