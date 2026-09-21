@@ -141,9 +141,10 @@ G4 approved 2026-09-21T02:02:15Z (approvals.md, 6d02c39); deploy mode run 2026-0
 |-------------|---------|-----------|------|
 | dev | `npm run dev` | confirmed started, stopped after check | ready 648 ms, `http://localhost:5177/Portfolio/`; not left running |
 | staging | (none) | not run | no deploy command in profile |
-| prod | `git push origin main` | not run: tier-policy block | see below |
-**PR #15: not merged.** `prod.auto: false`, the push is ask-first, `deploy.yml` runs on push to
-`main` ("merging deploys"), `CLAUDE.md` reserves production pushes for the owner, and a squash
-merge of #15 is that push. Neither `gh pr merge` nor `git push origin main` ran. Believed, not
-verified: PR #15's live mergeability/CI, `gh pr view` needed an unavailable approval here.
-Owner runs: `gh pr merge 15 --repo muhibm1/Portfolio --squash`; rollback: `git revert --no-edit <merge commit sha>` then `git push origin main` (five commits rehearsed reverting clean, exit 0 each, above; the squash-merge revert was not, no merge yet exists).
+| prod | `git push origin main` | owner-performed | see below |
+**PR #15 merged by owner, published clean.** Confirmed (`gh pr view 15`): MERGED, mergedAt
+2026-09-21T02:06:07Z, merge commit `9d24286` (origin/main tip). Confirmed (Actions run
+35553027638, headSha `9d24286`): success; both jobs green (lint, tests, floors R52/R11, build,
+scoped audit; smoke R63/R87/R80/R100/R81/R82). One annotation, exit 1 on the informational
+full-tree audit step (continue-on-error), confirmed via `gh run view --log` as that step alone,
+not gating. Rollback: `git revert --no-edit 9d24286` then push to main, owner-performed; not rehearsed (five change-commit reverts above were).
