@@ -79,6 +79,39 @@ describe('GC10: the deep-link fetch follows redirects and asserts 200 against th
     expect(readWorkflowLines().some((line) => line.includes('Smoke R81'))).toBe(false);
     expect(text).not.toContain('(not asserted)');
   });
+
+  it('refuses a downgrade to plain HTTP on the initial request or a redirect hop (M2)', () => {
+    const lines = readWorkflowLines();
+    const body = stepBody(lines, 'Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404');
+    expect(body).toBeDefined();
+    const text = body.join('\n');
+
+    expect(text).toContain("--proto '=https'");
+    expect(text).toContain("--proto-redir '=https'");
+  });
+
+  it('fails unless the effective URL still starts with ROOT_URL (M2)', () => {
+    const lines = readWorkflowLines();
+    const body = stepBody(lines, 'Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404');
+    expect(body).toBeDefined();
+    const text = body.join('\n');
+
+    expect(text).toContain('deep_link_effective_url');
+    expect(text).toMatch(/"\$\{ROOT_URL\}"\*\)/);
+    expect(text).toContain('::error::R121 failed: effective URL');
+    expect(text).toContain('does not start with $ROOT_URL');
+  });
+
+  it('asserts the root smoke file and each fetched body are non-empty before comparing digests (M2)', () => {
+    const lines = readWorkflowLines();
+    const body = stepBody(lines, 'Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404');
+    expect(body).toBeDefined();
+    const text = body.join('\n');
+
+    expect(text).toContain('[ ! -s smoke/root.html ]');
+    expect(text).toContain('[ ! -s smoke/deep-link.html ]');
+    expect(text).toContain('[ ! -s smoke/unknown.html ]');
+  });
 });
 
 describe('GC11: the unknown-path fetch asserts 404 against the root body without following redirects', () => {
