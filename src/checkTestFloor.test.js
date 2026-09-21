@@ -20,9 +20,18 @@ const workflowPath = path.join(repositoryRoot, '.github/workflows/deploy.yml')
 const PINNED_REDACTION_PASSED_COUNT = 44
 const REDACTION_SUITE_PATH = 'src/checkPhoneRedaction.test.js'
 
+// The route-page suites' own counts at merge (2026-09-21 review M3), each measured from a fresh
+// JSON report of that file alone on this branch.
+const PINNED_ROUTE_PATHS_PASSED_COUNT = 13
+const ROUTE_PATHS_SUITE_PATH = 'src/routePaths.test.jsx'
+const PINNED_ROUTE_PAGES_PASSED_COUNT = 6
+const ROUTE_PAGES_SUITE_PATH = 'src/routePages.test.js'
+const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 11
+const CHECK_ROUTE_PAGES_SUITE_PATH = 'src/checkRoutePages.test.js'
+
 const PASSED_LINE = 'Test floors passed.'
 const SUITE_FAILED_PREFIX = '::error::Test floor failed (R52):'
-const REDACTION_FAILED_PREFIX = '::error::Redaction suite floor failed (R11):'
+const PINNED_FAILED_PREFIX = '::error::Pinned suite floor failed (R11):'
 const COULD_NOT_RUN_PREFIX = '::error::Test floors could not run (R52, R11):'
 
 // Builds one entry of a fixture report's assertionResults[] for a file, one object per status
@@ -59,6 +68,16 @@ function runFloorOn(reportPath) {
   return spawnSync(process.execPath, [scriptPath, reportPath], { encoding: 'utf8', timeout: 20_000 })
 }
 
+// The three route-page suites' file entries at their pinned counts, complete and passing, so a
+// case exercising only the redaction suite's own pin does not also fail the other three pins.
+function completeRoutePageSuiteEntries() {
+  return [
+    { relativePath: ROUTE_PATHS_SUITE_PATH, counts: { passed: PINNED_ROUTE_PATHS_PASSED_COUNT } },
+    { relativePath: ROUTE_PAGES_SUITE_PATH, counts: { passed: PINNED_ROUTE_PAGES_PASSED_COUNT } },
+    { relativePath: CHECK_ROUTE_PAGES_SUITE_PATH, counts: { passed: PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT } },
+  ]
+}
+
 describe('check-test-floor', () => {
   let fixtureDirectory
   let reportPath
@@ -77,7 +96,10 @@ describe('check-test-floor', () => {
       reportPath,
       buildReport(
         { passed: 12, pending: 0, todo: 0, failed: 0 },
-        [{ relativePath: REDACTION_SUITE_PATH, counts: { passed: PINNED_REDACTION_PASSED_COUNT } }],
+        [
+          { relativePath: REDACTION_SUITE_PATH, counts: { passed: PINNED_REDACTION_PASSED_COUNT } },
+          ...completeRoutePageSuiteEntries(),
+        ],
       ),
     )
 
@@ -85,7 +107,10 @@ describe('check-test-floor', () => {
 
     expect(result.status).toBe(0)
     expect(result.stdout).toContain(PASSED_LINE)
-    expect(result.stdout).toContain(`Redaction suite ${REDACTION_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${REDACTION_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${ROUTE_PATHS_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${ROUTE_PAGES_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${CHECK_ROUTE_PAGES_SUITE_PATH}:`)
   })
 
   it('fails a report in which the redaction suite never ran, however many other tests passed', () => {
@@ -94,8 +119,32 @@ describe('check-test-floor', () => {
     const result = runFloorOn(reportPath)
 
     expect(result.status).toBe(1)
-    expect(result.stdout).toContain(REDACTION_FAILED_PREFIX)
-    expect(result.stdout).toContain('missing from the report')
+    expect(result.stdout).toContain(PINNED_FAILED_PREFIX)
+    expect(result.stdout).toContain(`${REDACTION_SUITE_PATH} is missing from the report`)
+    expect(result.stdout).not.toContain(PASSED_LINE)
+  })
+
+  it.each([
+    ['src/routePaths.test.jsx', ROUTE_PATHS_SUITE_PATH],
+    ['src/routePages.test.js', ROUTE_PAGES_SUITE_PATH],
+    ['src/checkRoutePages.test.js', CHECK_ROUTE_PAGES_SUITE_PATH],
+  ])('fails a report where %s is missing, even with the redaction suite complete (M3)', (_label, missingSuitePath) => {
+    writeReport(
+      reportPath,
+      buildReport(
+        { passed: 200, pending: 0, todo: 0, failed: 0 },
+        [
+          { relativePath: REDACTION_SUITE_PATH, counts: { passed: PINNED_REDACTION_PASSED_COUNT } },
+          ...completeRoutePageSuiteEntries().filter((entry) => entry.relativePath !== missingSuitePath),
+        ],
+      ),
+    )
+
+    const result = runFloorOn(reportPath)
+
+    expect(result.status).toBe(1)
+    expect(result.stdout).toContain(PINNED_FAILED_PREFIX)
+    expect(result.stdout).toContain(`${missingSuitePath} is missing from the report`)
     expect(result.stdout).not.toContain(PASSED_LINE)
   })
 
@@ -113,7 +162,7 @@ describe('check-test-floor', () => {
       reportPath,
       buildReport(
         { passed: 20, pending: 0, todo: 0, failed: 0 },
-        [{ relativePath: REDACTION_SUITE_PATH, counts }],
+        [{ relativePath: REDACTION_SUITE_PATH, counts }, ...completeRoutePageSuiteEntries()],
       ),
     )
 
@@ -125,8 +174,10 @@ describe('check-test-floor', () => {
       .reduce((total, [, count]) => total + count, 0)
 
     expect(result.status).toBe(1)
-    expect(result.stdout).toContain(REDACTION_FAILED_PREFIX)
-    expect(result.stdout).toContain(`need at least ${PINNED_REDACTION_PASSED_COUNT} passed and 0 not passed`)
+    expect(result.stdout).toContain(PINNED_FAILED_PREFIX)
+    expect(result.stdout).toContain(
+      `${REDACTION_SUITE_PATH} needs at least ${PINNED_REDACTION_PASSED_COUNT} passed and 0 not passed`,
+    )
     expect(result.stdout).toContain(`got ${expectedPassed} passed, ${expectedNotPassed} not passed`)
     expect(result.stdout).not.toContain(PASSED_LINE)
   })
@@ -139,6 +190,7 @@ describe('check-test-floor', () => {
       reportPath,
       buildReport(overallTotals, [
         { relativePath: REDACTION_SUITE_PATH, counts: { passed: PINNED_REDACTION_PASSED_COUNT } },
+        ...completeRoutePageSuiteEntries(),
       ]),
     )
 
