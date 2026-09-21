@@ -166,6 +166,17 @@ describe('check-route-pages', () => {
     expect(result.stdout).toContain('work/index.html');
   });
 
+  it('exits 1 naming a stray .html file that is not named index.html (M1)', () => {
+    buildCleanFixture();
+    writeFile('work/x.html', STALE_CONTENT);
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('work/x.html');
+    expect(result.stdout).toContain('is not a page the app defines');
+  });
+
   it('never prints a stray page\'s content, only its path (AD5)', () => {
     buildCleanFixture();
     writeFile('work/removed-study/index.html', MARKER);
