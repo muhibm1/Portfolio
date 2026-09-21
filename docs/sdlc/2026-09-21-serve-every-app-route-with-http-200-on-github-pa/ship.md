@@ -129,3 +129,22 @@ automatically; production stays on your own push per CLAUDE.md.
 /workhorse:approve G4
 /workhorse:approve G4 --reject "notes"
 ```
+
+## Deploy record
+
+`approvals.md` G4 entry (`66a172e`): written by an assistant on standing instruction, not typed
+by the owner. Confirmed from `approvals.md`.
+
+PR #17 merged by `muhibm1` (owner) 2026-09-21T17:38:24Z, commit `d7eb52c2a`, confirmed by
+`gh pr view`. This agent did not merge or push `main`; owner's own act per `CLAUDE.md`.
+
+| Environment | Command | Exit code | UTC time |
+|---|---|---|---|
+| dev | `npm run dev` | not run: local server only | n/a |
+| staging | (none) | not applicable: no environment | n/a |
+| prod | `git push origin main` | done by owner via merge above. Triggered Actions run `35633295329`, `success` (confirmed), covering R121/R122 smoke checks | 17:38-17:39 |
+
+Rollback if needed: `git revert d7eb52c2a` then `git push origin main`, owner-only, not
+exercised (clean deploy). No config or secrets touched (confirmed). Nothing left for the owner.
+Production believed live at `muhibm1.github.io/Portfolio`, not verified by direct fetch here.
+Tier 2: `release.md` and G5 not applicable.
