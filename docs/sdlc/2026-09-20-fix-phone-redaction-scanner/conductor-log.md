@@ -28,3 +28,6 @@
 2026-09-21T02:06:10.248Z | deploy | wh-shipper | deploy mode: dev confirmed (vite ready, localhost:5177/Portfolio/), staging none, prod not run (auto false, merge of PR 15 is the release, owner performs it); deploy record in ship.md, 149 lines
 2026-09-21T02:06:10.332Z | deploy | conductor | D17: close at done with PR 15 unmerged, or stop blocked -> stop blocked; follows D16 precedent, done would record a change that has not shipped
 2026-09-21T02:06:10.416Z | deploy | conductor | BLOCKED at deploy: owner must merge PR 15 (the production release); resume after merge to record the publish and close
+2026-09-21T02:06:48.233Z | deploy | conductor | resumed at deploy after blocked: owner merged PR 15 as 9d24286 (mergedAt 2026-09-21T02:06:07Z)
+2026-09-21T02:07:16.234Z | deploy | conductor | publish confirmed: run 35553027638 on 9d24286 success, build+test and deploy+smoke jobs green; one informational exit-1 annotation in Build and test (step 33)
+2026-09-21T02:08:41.051Z | deploy | wh-shipper | deploy record updated: prod published via owner merge 9d24286, run 35553027638 success; exit-1 annotation confirmed from informational full-tree audit step; ship.md 150 lines, c731efc pushed to change branch
