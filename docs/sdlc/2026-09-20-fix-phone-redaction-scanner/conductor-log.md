@@ -23,3 +23,8 @@
 2026-09-21T02:01:14.045Z | review | wh-shipper | ship.md written, PR https://github.com/muhibm1/Portfolio/pull/15
 2026-09-21T02:01:35.908Z | review | wh-shipper | ship.md written (135 lines), branch pushed, PR #15 opened, rollback rehearsed clean
 2026-09-21T02:01:38.312Z | review | conductor | G4 Ship presented
+2026-09-21T02:02:43.953Z | review | conductor | resumed at review after G4 approved; entering deploy
+2026-09-21T02:05:45.879Z | deploy | wh-shipper | deploy mode: dev npm run dev confirmed started and stopped; staging not run (no command); prod blocked, merging PR 15 is the production push per CLAUDE.md and deploy.yml, owner must run gh pr merge and the recorded rollback; ship.md updated with Deploy record
+2026-09-21T02:06:10.248Z | deploy | wh-shipper | deploy mode: dev confirmed (vite ready, localhost:5177/Portfolio/), staging none, prod not run (auto false, merge of PR 15 is the release, owner performs it); deploy record in ship.md, 149 lines
+2026-09-21T02:06:10.332Z | deploy | conductor | D17: close at done with PR 15 unmerged, or stop blocked -> stop blocked; follows D16 precedent, done would record a change that has not shipped
+2026-09-21T02:06:10.416Z | deploy | conductor | BLOCKED at deploy: owner must merge PR 15 (the production release); resume after merge to record the publish and close
