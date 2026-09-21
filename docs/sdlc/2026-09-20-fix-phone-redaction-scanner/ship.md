@@ -133,3 +133,18 @@ manual push by the owner either way.
 /workhorse:approve G4
 /workhorse:approve G4 --reject "notes"
 ```
+
+## Deploy record
+
+G4 approved 2026-09-21T02:02:15Z (approvals.md, 6d02c39); deploy mode run 2026-09-20 UTC.
+| Environment | Command | Exit code | Note |
+|-------------|---------|-----------|------|
+| dev | `npm run dev` | confirmed started, stopped after check | ready 648 ms, `http://localhost:5177/Portfolio/`; not left running |
+| staging | (none) | not run | no deploy command in profile |
+| prod | `git push origin main` | owner-performed | see below |
+**PR #15 merged by owner, published clean.** Confirmed (`gh pr view 15`): MERGED, mergedAt
+2026-09-21T02:06:07Z, merge commit `9d24286` (origin/main tip). Confirmed (Actions run
+35553027638, headSha `9d24286`): success; both jobs green (lint, tests, floors R52/R11, build,
+scoped audit; smoke R63/R87/R80/R100/R81/R82). One annotation, exit 1 on the informational
+full-tree audit step (continue-on-error), confirmed via `gh run view --log` as that step alone,
+not gating. Rollback: `git revert --no-edit 9d24286` then push to main, owner-performed; not rehearsed (five change-commit reverts above were).
