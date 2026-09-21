@@ -82,6 +82,8 @@ sensitive_paths:
   - ".npmrc"                    # npm reads it for registry, scope and auth on every command; must stay engine-strict=true only (change 2026-09-20, D7)
   - ".nvmrc"                    # decides which Node the publishing workflow runs npm ci under (change 2026-09-20, D7)
   - "scripts/check-npmrc.mjs"   # blocking CI check on .npmrc content before install (change 2026-09-20, D11)
+  - "scripts/route-pages.mjs"   # writes the per-route index.html copies at build time; decides what Pages serves (change 2026-09-21, D6)
+  - "scripts/check-route-pages.mjs" # blocking CI check that every app route has a page in dist (change 2026-09-21, D6)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -156,7 +158,7 @@ compliance:
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
 tier_floor_paths:
   3: []
-  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs"]
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs", "scripts/route-pages.mjs", "scripts/check-route-pages.mjs"]
 
 # Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
 # tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.
