@@ -30,3 +30,5 @@
 2026-09-21T17:37:33.183Z | review | conductor | G4 Ship presented
 2026-09-21T17:38:54.161Z | review | conductor | resumed at review after gate approved (G4)
 2026-09-21T20:52:48.316Z | deploy | conductor | resumed at deploy after gate approved (G4)
+2026-09-21T20:54:27.874Z | deploy | wh-shipper | deploy record appended to ship.md, prod already live via owner merge, PR #17 merged
+2026-09-21T20:54:52.426Z | deploy | wh-shipper | deploy: PR #17 already merged by owner (d7eb52c), deploy.yml run 35633295329 success incl. R121/R122 smoke; deploy record af348fe pushed to change branch
