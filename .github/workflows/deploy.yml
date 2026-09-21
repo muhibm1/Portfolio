@@ -6,6 +6,8 @@
 # "Deploy pipeline" (R52, R55 to R64, R80 to R83, R85, R87), and ADRs 0005, 0006 and 0009;
 # docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/spec.md for R97, R99 and R100; and
 # docs/sdlc/2026-09-20-pin-node-22-12-minimum/spec.md for R110, R113 and R114.
+# docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/spec.md for R119 to R122,
+# and ADR 0003.
 # Every action is pinned to a full commit SHA with its release tag in the trailing comment.
 # Dependabot proposes SHA updates; read each one before merging, because merging deploys.
 name: Build and deploy to GitHub Pages
@@ -107,6 +109,9 @@ jobs:
 
       - name: Built CSS inlines no font (R97)
         run: "node scripts/check-built-css-fonts.mjs"
+
+      - name: Every app route has a page (R119)
+        run: "node scripts/check-route-pages.mjs"
 
       - name: Audit runtime dependencies (blocking)
         run: "npm audit --audit-level=high --omit=dev"
@@ -351,25 +356,49 @@ jobs:
             exit 1
           fi
 
-      - name: "Smoke R81: a deep link serves the same body as the root"
+      - name: "Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404"
         run: |
-          deep_link_url="${ROOT_URL}work/apple-llm-triage"
-          # Pages answers this path with 404.html, a copy of index.html (ADR 0002), so the status is
-          # 404 by design and only the body is compared.
-          status=$(curl -sS -o smoke/deep-link.html -w "%{http_code}" "$deep_link_url") || {
-            echo "::error::R81 failed: could not fetch $deep_link_url."
+          root_digest=$(sha256sum smoke/root.html | cut -d ' ' -f 1)
+
+          # Follows at most two redirects, so the exact URL a person pastes or shares is what is
+          # proved, not only its final destination (ADR 0003). The status, redirect count and
+          # effective URL are all printed; only the status is asserted.
+          result=$(curl -sS -L --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-llm-triage") || {
+            echo "::error::R121 failed: could not fetch ${ROOT_URL}work/apple-llm-triage."
             exit 1
           }
-          root_digest=$(sha256sum smoke/root.html | cut -d ' ' -f 1)
+          deep_link_status=$(printf '%s' "$result" | cut -d ' ' -f 1)
+          deep_link_redirects=$(printf '%s' "$result" | cut -d ' ' -f 2)
+          deep_link_effective_url=$(printf '%s' "$result" | cut -d ' ' -f 3-)
           deep_link_digest=$(sha256sum smoke/deep-link.html | cut -d ' ' -f 1)
-          echo "GET $deep_link_url returned $status (not asserted)"
-          echo "sha256 $root_digest for $ROOT_URL"
-          echo "sha256 $deep_link_digest for $deep_link_url"
-          if [ "$root_digest" != "$deep_link_digest" ]; then
-            echo "::error::R81 failed: the body of $deep_link_url differs from the body of $ROOT_URL, so 404.html is missing or stale."
+          echo "GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status after $deep_link_redirects redirect(s), effective URL $deep_link_effective_url"
+          if [ "$deep_link_status" != "200" ]; then
+            echo "::error::R121 failed: GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status, expected 200 (redirects $deep_link_redirects, effective URL $deep_link_effective_url)."
             exit 1
           fi
-          echo "PASS R81 the deep-link body matches the root body"
+          if [ "$root_digest" != "$deep_link_digest" ]; then
+            echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-llm-triage differs from the body of $ROOT_URL."
+            exit 1
+          fi
+          echo "PASS R121 ${ROOT_URL}work/apple-llm-triage answers 200 with the root body"
+
+          # No -L here: an unknown path must answer 404 directly, not by redirecting somewhere
+          # that then answers 200.
+          unknown_status=$(curl -sS -o smoke/unknown.html -w "%{http_code}" "${ROOT_URL}no-such-page") || {
+            echo "::error::R122 failed: could not fetch ${ROOT_URL}no-such-page."
+            exit 1
+          }
+          unknown_digest=$(sha256sum smoke/unknown.html | cut -d ' ' -f 1)
+          echo "GET ${ROOT_URL}no-such-page returned $unknown_status"
+          if [ "$unknown_status" != "404" ]; then
+            echo "::error::R122 failed: GET ${ROOT_URL}no-such-page returned $unknown_status, expected 404."
+            exit 1
+          fi
+          if [ "$root_digest" != "$unknown_digest" ]; then
+            echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page differs from the body of $ROOT_URL, so 404.html is missing or stale."
+            exit 1
+          fi
+          echo "PASS R122 $unknown_url answers 404 with the root body"
 
       - name: "Smoke R82: the served HTML keeps its CSP, referrer policy and privacy removals"
         run: |

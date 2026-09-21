@@ -230,6 +230,8 @@ connection.
   **believed** that this will break the deploy, since no deploy exists yet to observe.
 - There is no `.github/` directory, so no workflow, no Dependabot config and no `CODEOWNERS`.
   **Confirmed** by `find`.
+- The build writes route pages under `dist/work/` and `404.html`, checked by
+  `scripts/check-route-pages.mjs` (change 2026-09-21).
 
 ---
 
