@@ -13,7 +13,8 @@
  *
  * Usage: node scripts/check-test-floor.mjs <report.json>
  * Exit: 0 both floors met; 1 either floor missed, one ::error:: line per miss; 2 the report is
- * missing, unreadable or not JSON, so the floor never reads as passed on nothing.
+ * missing, unreadable, not JSON, not a JSON object, or missing one of the four whole-suite count
+ * keys (or one is not a finite number), so the floor never reads as passed on nothing.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -32,12 +33,22 @@ function main([reportPath]) {
   let report
   try {
     report = JSON.parse(fs.readFileSync(reportPath, 'utf8'))
+    if (report === null || typeof report !== 'object') {
+      throw new TypeError('Vitest report JSON must decode to an object')
+    }
   } catch (error) {
     console.log(`::error::Test floors could not run (R52, R11): ${reportReadFailureReason(reportPath, error)}`)
     return EXIT_CANNOT_RUN
   }
 
   const suiteCounts = wholeSuiteCounts(report)
+  if (suiteCounts === undefined) {
+    console.log(
+      `::error::Test floors could not run (R52, R11): ${path.basename(reportPath)} is missing one ` +
+        'of numPassedTests, numPendingTests, numTodoTests or numFailedTests, or one is not a finite number.',
+    )
+    return EXIT_CANNOT_RUN
+  }
   const suiteCountsText =
     `numPassedTests=${suiteCounts.passed} numPendingTests=${suiteCounts.pending} ` +
     `numTodoTests=${suiteCounts.todo} numFailedTests=${suiteCounts.failed}`
@@ -59,21 +70,28 @@ function main([reportPath]) {
   return EXIT_CLEAN
 }
 
-// Sanitized to a plain basename before printing: the failure reason can come from an
-// attacker-influenced path, and this line is echoed into a public Actions annotation.
+// Sanitized before printing: the path is reduced to a basename and the error is reduced to its
+// name, never its message, because this line is echoed into a public Actions annotation and
+// V8's JSON.parse error message embeds the first characters of the file body, which could hold
+// the very content this workflow exists to keep out of a public log.
 function reportReadFailureReason(reportPath, error) {
   const basename = reportPath === undefined ? '(no report path given)' : path.basename(reportPath)
-  if (error instanceof SyntaxError) return `${basename} is not valid JSON (${error.message}).`
-  return `${basename} is missing or unreadable (${error.message}).`
+  if (error instanceof SyntaxError) return `${basename} is not valid JSON (${error.name}).`
+  return `${basename} is missing or unreadable (${error.name}).`
 }
 
+// Returns undefined, never a fabricated 0, when a count key is absent or not a finite number, so
+// a Vitest report shape change fails closed onto EXIT_CANNOT_RUN instead of reading as a clean
+// run with nothing skipped.
 function wholeSuiteCounts(report) {
-  return {
-    passed: Number(report.numPassedTests) || 0,
-    pending: Number(report.numPendingTests) || 0,
-    todo: Number(report.numTodoTests) || 0,
-    failed: Number(report.numFailedTests) || 0,
+  const counts = {
+    passed: Number(report.numPassedTests),
+    pending: Number(report.numPendingTests),
+    todo: Number(report.numTodoTests),
+    failed: Number(report.numFailedTests),
   }
+  if (!Object.values(counts).every((value) => Number.isFinite(value))) return undefined
+  return counts
 }
 
 function wholeSuitePasses(counts) {
@@ -95,7 +113,8 @@ function reportRedactionSuite(report) {
 
   console.log(
     `::error::Redaction suite floor failed (R11): need at least ${PINNED_REDACTION_PASSED_COUNT} ` +
-      `passed and 0 not passed; got ${passed} passed, ${notPassed} not passed.`,
+      `passed and 0 not passed; got ${passed} passed, ${notPassed} not passed. Update ` +
+      'PINNED_REDACTION_PASSED_COUNT in scripts/check-test-floor.mjs if this drop is intentional.',
   )
   return false
 }

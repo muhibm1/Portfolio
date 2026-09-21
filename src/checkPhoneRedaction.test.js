@@ -289,8 +289,10 @@ describe('check-phone-redaction file scan', () => {
     ]);
     const fixturePath = writeFixture('mixed-encoding-hit.txt', bytes);
 
-    const { reportLines } = scanAlongsideACleanFile(fixturePath);
+    const { exitCode, reportLines } = scanAlongsideACleanFile(fixturePath);
 
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(fullNumberHitCountFor('mixed-encoding-hit.txt', reportLines)).toBeGreaterThan(0);
     expect(reportLines.filter((line) => line.includes('556') || line.includes('0100'))).toEqual([]);
     expect(reportLines.filter((line) => line.includes('today'))).toEqual([]);
   });
