@@ -358,24 +358,41 @@ jobs:
 
       - name: "Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404"
         run: |
+          if [ ! -s smoke/root.html ]; then
+            echo "::error::R121 failed: smoke/root.html is empty or missing; nothing to compare against."
+            exit 1
+          fi
           root_digest=$(sha256sum smoke/root.html | cut -d ' ' -f 1)
 
           # Follows at most two redirects, so the exact URL a person pastes or shares is what is
-          # proved, not only its final destination (ADR 0003). The status, redirect count and
-          # effective URL are all printed; only the status is asserted.
-          result=$(curl -sS -L --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-llm-triage") || {
+          # proved, not only its final destination (ADR 0003). --proto and --proto-redir refuse a
+          # downgrade to plain HTTP on the initial request or on any redirect hop. The status,
+          # redirect count and effective URL are all printed; the effective URL is also asserted
+          # to still be on $ROOT_URL, not printed only.
+          result=$(curl -sS -L --proto '=https' --proto-redir '=https' --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-llm-triage") || {
             echo "::error::R121 failed: could not fetch ${ROOT_URL}work/apple-llm-triage."
             exit 1
           }
           deep_link_status=$(printf '%s' "$result" | cut -d ' ' -f 1)
           deep_link_redirects=$(printf '%s' "$result" | cut -d ' ' -f 2)
           deep_link_effective_url=$(printf '%s' "$result" | cut -d ' ' -f 3-)
-          deep_link_digest=$(sha256sum smoke/deep-link.html | cut -d ' ' -f 1)
           echo "GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status after $deep_link_redirects redirect(s), effective URL $deep_link_effective_url"
           if [ "$deep_link_status" != "200" ]; then
             echo "::error::R121 failed: GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status, expected 200 (redirects $deep_link_redirects, effective URL $deep_link_effective_url)."
             exit 1
           fi
+          case "$deep_link_effective_url" in
+            "${ROOT_URL}"*) ;;
+            *)
+              echo "::error::R121 failed: effective URL $deep_link_effective_url does not start with $ROOT_URL."
+              exit 1
+              ;;
+          esac
+          if [ ! -s smoke/deep-link.html ]; then
+            echo "::error::R121 failed: smoke/deep-link.html is empty; nothing to compare against the root body."
+            exit 1
+          fi
+          deep_link_digest=$(sha256sum smoke/deep-link.html | cut -d ' ' -f 1)
           if [ "$root_digest" != "$deep_link_digest" ]; then
             echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-llm-triage differs from the body of $ROOT_URL."
             exit 1
@@ -388,12 +405,16 @@ jobs:
             echo "::error::R122 failed: could not fetch ${ROOT_URL}no-such-page."
             exit 1
           }
-          unknown_digest=$(sha256sum smoke/unknown.html | cut -d ' ' -f 1)
           echo "GET ${ROOT_URL}no-such-page returned $unknown_status"
           if [ "$unknown_status" != "404" ]; then
             echo "::error::R122 failed: GET ${ROOT_URL}no-such-page returned $unknown_status, expected 404."
             exit 1
           fi
+          if [ ! -s smoke/unknown.html ]; then
+            echo "::error::R122 failed: smoke/unknown.html is empty; nothing to compare against the root body."
+            exit 1
+          fi
+          unknown_digest=$(sha256sum smoke/unknown.html | cut -d ' ' -f 1)
           if [ "$root_digest" != "$unknown_digest" ]; then
             echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page differs from the body of $ROOT_URL, so 404.html is missing or stale."
             exit 1
