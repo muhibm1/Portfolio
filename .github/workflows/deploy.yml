@@ -398,7 +398,7 @@ jobs:
             echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page differs from the body of $ROOT_URL, so 404.html is missing or stale."
             exit 1
           fi
-          echo "PASS R122 $unknown_url answers 404 with the root body"
+          echo "PASS R122 ${ROOT_URL}no-such-page answers 404 with the root body"
 
       - name: "Smoke R82: the served HTML keeps its CSP, referrer policy and privacy removals"
         run: |
