@@ -28,3 +28,5 @@
 2026-09-21T17:37:16.993Z | review | wh-shipper | ship.md written, PR https://github.com/muhibm1/Portfolio/pull/17
 2026-09-21T17:37:33.122Z | review | wh-shipper | PR #17 opened, ship.md written (131 lines), ship_blockers empty; D1-D4 need the owner
 2026-09-21T17:37:33.183Z | review | conductor | G4 Ship presented
+2026-09-21T17:38:54.161Z | review | conductor | resumed at review after gate approved (G4)
+2026-09-21T20:52:48.316Z | deploy | conductor | resumed at deploy after gate approved (G4)
