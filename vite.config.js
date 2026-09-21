@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { neverInlineFonts } from './scripts/never-inline-fonts.mjs'
+import { sitePagePaths, writeRoutePages } from './scripts/route-pages.mjs'
 
 // GitHub Pages serves this repository as a project site under /Portfolio/. Without this prefix
 // every asset URL points at the domain root and the page loads with no CSS or JS.
@@ -49,7 +50,9 @@ export default defineConfig({
 /**
  * Build-only steps GitHub Pages needs. Puts the CSP and referrer meta tags first in <head>, then
  * writes 404.html as a byte-identical copy of the finished index.html, so Pages answers deep links
- * like /Portfolio/work with the app (ADR 0002). Dev is left alone, per ADR 0006.
+ * like /Portfolio/work with the app (ADR 0002). Also writes an index.html copy per defined route
+ * (work, and work/<case-study id>), so Pages answers those routes with HTTP 200 instead of a
+ * redirect through 404.html (ADR 0001). Dev is left alone, per ADR 0006.
  */
 function githubPagesBuild() {
   let outDir = ''
@@ -77,6 +80,8 @@ function githubPagesBuild() {
     },
     closeBundle() {
       fs.copyFileSync(path.join(outDir, 'index.html'), path.join(outDir, '404.html'))
+      const written = writeRoutePages(outDir, sitePagePaths())
+      console.log(`Wrote ${written.length} route pages`)
     },
   }
 }
