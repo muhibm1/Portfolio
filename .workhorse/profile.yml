@@ -90,6 +90,7 @@ sensitive_paths:
   - "src/pageMeta.js"           # builds the title, description, canonical and Open Graph/Twitter tags written into every served page (change 2026-09-25, R139, R141)
   - "src/entry-server.jsx"      # the SSR entry the prerender script renders; decides the markup written into every served page (change 2026-09-25, R145 low finding)
   - "scripts/check-test-floor.mjs" # blocking CI script that enforces the pinned test-suite floors this task edits (change 2026-09-25, R145 low finding, R149)
+  - "scripts/check-resume-pdf.mjs" # blocking CI check that the published resume PDF's hash, revision count and inflated-stream text still match the owner's D12/D17 record (change 2026-09-25, D23, MEDIUM finding)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -164,7 +165,7 @@ compliance:
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
 tier_floor_paths:
   3: []
-  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs", "scripts/route-pages.mjs", "scripts/check-route-pages.mjs", "scripts/prerender.mjs", "scripts/forbidden-copy.mjs", "scripts/check-forbidden-copy.mjs", "src/pageMeta.js", "src/entry-server.jsx", "scripts/check-test-floor.mjs"]
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs", "scripts/route-pages.mjs", "scripts/check-route-pages.mjs", "scripts/prerender.mjs", "scripts/forbidden-copy.mjs", "scripts/check-forbidden-copy.mjs", "src/pageMeta.js", "src/entry-server.jsx", "scripts/check-test-floor.mjs", "scripts/check-resume-pdf.mjs"]
 
 # Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
 # tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.

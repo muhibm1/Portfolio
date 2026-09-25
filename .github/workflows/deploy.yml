@@ -110,6 +110,9 @@ jobs:
       - name: Build
         run: "npm run build"
 
+      - name: Resume PDF hash, revision and inflated-stream text (D23)
+        run: "node scripts/check-resume-pdf.mjs"
+
       - name: Built CSS inlines no font (R97)
         run: "node scripts/check-built-css-fonts.mjs"
 

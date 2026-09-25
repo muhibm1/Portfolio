@@ -48,7 +48,7 @@ Ask first: `.github/workflows/**`, `index.html`, `vite.config.js`, `package.json
 `package-lock.json`, `.npmrc`, `.nvmrc`, `scripts/check-npmrc.mjs`, `scripts/route-pages.mjs`,
 `scripts/check-route-pages.mjs`, `scripts/prerender.mjs`, `scripts/forbidden-copy.mjs`,
 `scripts/check-forbidden-copy.mjs`, `src/pageMeta.js`, `src/entry-server.jsx`,
-`scripts/check-test-floor.mjs`.
+`scripts/check-test-floor.mjs`, `scripts/check-resume-pdf.mjs`.
 
 Do not rewrite the factual claims in `src/data/portfolioData.js`. The employer names, dates and
 metrics are the owner's own record and only he can change them.

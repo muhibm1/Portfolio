@@ -313,6 +313,25 @@ describe('G20: the deploy workflow pins the redesign packages, scans copy and as
     expect(text).toContain("'png'");
   });
 
+  it('runs the resume PDF check once, as the step right after the build step (D23)', () => {
+    const lines = readWorkflowLines();
+
+    const checkLineIndexes = lines
+      .map((line, index) => ({ line: line.trim(), index }))
+      .filter(({ line }) => line === 'run: "node scripts/check-resume-pdf.mjs"')
+      .map(({ index }) => index);
+    expect(checkLineIndexes).toHaveLength(1);
+
+    const buildIndex = lines.findIndex((line) => line.trim() === 'run: "npm run build"');
+    expect(buildIndex).toBeGreaterThan(-1);
+
+    const steps = stepNameLines(lines);
+    const buildStep = steps.find(({ name }) => name === 'Build');
+    expect(buildStep).toBeDefined();
+    const nextStep = steps.find(({ index }) => index > buildStep.index);
+    expect(nextStep.name).toBe('Resume PDF hash, revision and inflated-stream text (D23)');
+  });
+
   it('the three permissions: blocks are unchanged', () => {
     const lines = readWorkflowLines();
 
