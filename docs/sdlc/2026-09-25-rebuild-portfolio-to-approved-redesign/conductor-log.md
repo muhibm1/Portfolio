@@ -56,3 +56,5 @@
 2026-09-25T17:38:34.960Z | verify | conductor | post-review fixes folded at bbd02a2; re-verifying
 2026-09-25T17:43:03.533Z | verify | wh-verifier | red at bbd02a2, sole cause owner-supplied PDF: test 418/419 (G18), test-floor exit 1 (all per-suite pins met), check-resume-pdf exit 2 by design; lint, build 4.3 s, audit 0, css-fonts, route-pages 109 ms, forbidden-copy 108 ms, phone-redaction exit 0; evals golden 22/23, edge 4/4, failure 2/2, adversarial 2/2
 2026-09-25T17:43:08.962Z | review | conductor | D21 stands after re-verify (PDF is the one true block); dispatching wh-shipper in ship mode
+2026-09-25T17:47:16.825Z | review | wh-shipper | ship.md written (150 lines, no Your decision section) and committed f0c9a84; push refused twice by hook: 'Pushing requires a green verification.md ... (current: red)'; no PR opened
+2026-09-25T17:47:16.911Z | review | conductor | blocked: G4 cannot be presented while verification is red; the owner must add the resume PDF (D2/D12/D17) and record its hash, then re-verify, push, PR and present G4
