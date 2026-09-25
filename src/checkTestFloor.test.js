@@ -28,7 +28,10 @@ const PINNED_ROUTE_PATHS_PASSED_COUNT = 8
 const ROUTE_PATHS_SUITE_PATH = 'src/routePaths.test.jsx'
 const PINNED_ROUTE_PAGES_PASSED_COUNT = 11
 const ROUTE_PAGES_SUITE_PATH = 'src/routePages.test.js'
-const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 15
+// 14, not 15: the "exits 0 on the real dist/ after a build" case was removed (change
+// 2026-09-25-rebuild-portfolio-to-approved-redesign, D22); the equivalent real-dist assertion is
+// the post-build CI step `node scripts/check-route-pages.mjs`.
+const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 14
 const CHECK_ROUTE_PAGES_SUITE_PATH = 'src/checkRoutePages.test.js'
 
 // The two control suites pinned by the same task (R149, audit low 4), each measured from a fresh
