@@ -118,7 +118,8 @@ export function main(args) {
     console.log(`Forbidden copy check passed (R129): ${counts.scanned} files scanned.`)
     return EXIT_CLEAN
   } catch (error) {
-    console.log(`::error::${error.message}`)
+    console.log(`::error::${error instanceof Error ? error.message : String(error)}`)
+    console.error(error instanceof Error ? error.stack : error)
     return EXIT_CANNOT_RUN
   }
 }

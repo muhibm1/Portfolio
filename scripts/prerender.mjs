@@ -48,16 +48,22 @@ async function main() {
       { pagePath: '/404', routePath: NOT_FOUND_ROUTE_PATH, url: `${BASE}${NOT_FOUND_ROUTE_PATH}` },
     ]
 
-    const written = pages.map(({ pagePath, routePath, url }) => {
+    // Render and assemble every page into memory first. Nothing is written to dist/ until every
+    // page has assembled without error, so a failure on a later page leaves no earlier pages
+    // written (R140, interface (d)).
+    const assembled = pages.map(({ pagePath, routePath, url }) => {
       const meta = pageMetaFor(routePath)
       const html = assemblePage(shellHtml, { headHtml: headTags(meta), appHtml: render(url) })
-      return writePage(DIST_DIR, pagePath, html)
+      return { pagePath, html }
     })
+
+    const written = assembled.map(({ pagePath, html }) => writePage(DIST_DIR, pagePath, html))
 
     console.log(`Prerendered ${written.length} pages`)
     return EXIT_OK
   } catch (error) {
-    console.log(`::error::Prerender failed: ${error.message}`)
+    console.log(`::error::Prerender failed: ${error instanceof Error ? error.message : String(error)}`)
+    console.error(error instanceof Error ? error.stack : error)
     return EXIT_FAILED
   }
 }
