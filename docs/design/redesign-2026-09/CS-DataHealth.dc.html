@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case study, Data Health</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#17171A;background:#ECEAE5}
+a{color:#17171A}a:hover{color:#B4400B}
+.eb{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#55534E;margin:0}
+.d1{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:64px;line-height:1.04;letter-spacing:-.025em;margin:0}
+.d2{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:34px;line-height:1.12;letter-spacing:-.015em;margin:0}
+.d4{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.3;margin:0}
+.lead{font-size:21px;line-height:1.55;color:#2B2A27;margin:0}
+.p{font-size:17px;line-height:1.7;color:#2B2A27;margin:0}
+.s{font-size:15px;line-height:1.55;color:#55534E;margin:0}
+.n{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:36px;line-height:1.05;letter-spacing:-.02em}
+.ph{background:#FBEBDD;color:#7A2E0A;border:1px dashed #B4400B;border-radius:4px;padding:1px 6px;font-family:'IBM Plex Mono',monospace;font-size:14px}
+.card{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:10px}
+.nl{font-size:15px;text-decoration:none;color:#3A3935}
+.st{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px}
+.sd{font-size:13px;line-height:1.4;color:#55534E}
+</style>
+</helmet>
+<div style="width: 1440px; height: 4200px; display: flex; flex-direction: column; background: #ECEAE5; overflow: hidden">
+
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 24px 120px; border-bottom: 1px solid #D6D3CC">
+<a href="Main.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px">Muhammad Muhibullah</span>
+<span class="eb" style="font-size: 11px">Forward Deployed Engineer</span>
+</a>
+<nav style="display: flex; align-items: center; gap: 32px">
+<a class="nl" href="Main.dc.html">Home</a>
+<a class="nl" href="Main.dc.html">All case studies</a>
+<a class="nl" href="#contact">Contact</a>
+</nav>
+</header>
+
+<section style="padding: 88px 120px 56px; display: flex; flex-direction: column; gap: 24px">
+<p class="eb">Case study · Apple (via TCS) · Data reliability · Feb 2025 to present</p>
+<h1 class="d1" style="max-width: 1050px">Keeping a 50+ region data pipeline shippable</h1>
+<p class="lead" style="max-width: 880px">Apple's Data Health team helps set the data quality and engineering standards for a pipeline spanning more than 50 regions. My part is keeping bad data from blocking releases: fixing it on live data, stopping it at the gate, and cleaning up fast when something slips through.</p>
+</section>
+
+<section style="padding: 0 120px 72px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #C9C6BE; border-bottom: 1px solid #C9C6BE">
+<div style="padding: 20px 20px 20px 0; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">My role</span><span class="p" style="font-size: 16px">Data Engineer, Data Health team</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Partners</span><span class="p" style="font-size: 16px">DataOps and the data evaluation team</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Stack</span><span class="p" style="font-size: 16px">Python, Jenkins, Spark, Iceberg on S3, Snowflake, AWS EMR and EKS</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Incident tools</span><span class="p" style="font-size: 16px">SQL, QGIS</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 16px">
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">Hundreds of thousands</span><span class="s">validation failures resolved by remediation jobs I run and tune</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">~40% fewer</span><span class="s">gating failures since I moved validation from EMR to EKS, and still falling</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">Tens of thousands</span><span class="s">buildings triaged in one incident I led</span></div>
+</div>
+</section>
+
+<section style="padding: 0 120px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px">
+<nav style="grid-column: span 3; display: flex; flex-direction: column; gap: 12px; padding-top: 8px">
+<span class="eb" style="font-size: 11px">On this page</span>
+<a class="nl" href="#live">Fixing data that's already live</a>
+<a class="nl" href="#gate">Stopping it at the gate</a>
+<a class="nl" href="#upstream">Moving checks upstream</a>
+<a class="nl" href="#incident">When it breaks at scale</a>
+<a class="nl" href="#client">What I'd bring to a client</a>
+</nav>
+<div style="grid-column: 4 / span 9; display: flex; flex-direction: column; gap: 64px; padding-bottom: 96px; max-width: 880px">
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 4px"><span class="st">Already live</span><span class="sd">Remediation jobs clean it up</span></div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 4px"><span class="st">At the gate</span><span class="sd">Validation decides what gets promoted</span></div>
+<div class="card" style="padding: 16px; background: #17171A; border-color: #17171A; display: flex; flex-direction: column; gap: 4px"><span class="st" style="color: #F7F6F3">In an incident</span><span class="sd" style="color: #B9B6AE">Find it, triage it, fix it</span></div>
+</div>
+
+<div id="live" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">Fixing data that's already live</h2>
+<p class="p">I run and continuously tune ML-driven remediation jobs, orchestrated in Jenkins, that clean up and modernize production data. Tuning means changing trigger logic, batching and retry behavior based on live results, so fixes land more accurately and jobs stop looping on failures. Those jobs have resolved hundreds of thousands of validation failures.</p></div>
+
+<div id="gate" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">Stopping it at the gate</h2>
+<p class="p">When gating or critical-path validation failures stop a repository from being promoted to production, I resolve them with DataOps and the data evaluation team so releases stay on schedule. I also maintain the quality gates, validation checkpoints and rollback logic that keep builds moving across concurrent regional deployments.</p>
+</div>
+
+<div id="upstream" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">Moving checks upstream</h2>
+<p class="p">I migrated the validation infrastructure from AWS EMR to AWS EKS, restructured how often validation runs, and moved checks earlier in the pipeline. Since the migration, gating failures have dropped by about 40%, and the number keeps improving as our data standards tighten.</p>
+</div>
+
+<div id="incident" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">When it breaks at scale</h2>
+<p class="p">A mass building-generation incident affected tens of thousands of buildings. I led the response: with SQL and QGIS, I identified the affected buildings inside restricted geospatial zones and triaged each one for deletion, correction or retention.</p></div>
+
+<div id="client" class="card" style="padding: 36px; display: flex; flex-direction: column; gap: 14px; background: #17171A; border-color: #17171A">
+<p class="eb" style="color: #B9B6AE">What I'd bring to a client</p>
+<p class="lead" style="color: #F7F6F3">Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures at the gate.</p>
+</div>
+
+<p class="s">Details are limited to what I can share publicly. Internal system names are withheld.</p>
+</div>
+</section>
+
+<section style="padding: 48px 120px; border-top: 1px solid #C9C6BE; display: flex; justify-content: space-between; align-items: center">
+<a href="CS-Integration.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 4px"><span class="eb" style="font-size: 11px">Previous</span><span class="d4">Three systems, one tool, half the turnaround</span></a>
+<a href="CS-NeuralNewsletters.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 4px; align-items: end"><span class="eb" style="font-size: 11px">Next case study</span><span class="d4">Rebuilding an LLM content pipeline that shipped broken output</span></a>
+</section>
+
+<footer id="contact" style="flex-grow: 1; background: #17171A; color: #F7F6F3; padding: 72px 120px; display: flex; justify-content: space-between; align-items: center">
+<h2 class="d2" style="color: #F7F6F3">Data you can't trust yet? Let's talk.</h2>
+<a href="#email" style="text-decoration: none; background: #F7F6F3; color: #17171A; min-height: 48px; padding: 0 22px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 500">Email mmalqaim@gmail.com</a>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4200}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

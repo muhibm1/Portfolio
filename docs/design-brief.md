@@ -89,3 +89,9 @@ It is a single page with modals, not a multi-page site, and its hero uses the mo
   2024-Feb 2025; edX ML Instructor Oct 2023-Mar 2025), skills, education (UT Dallas B.S. CS
   Dec 2022; ACC A.A.S. May 2020). Already transcribed into `src/data/portfolioData.js`.
 - Headline metrics: 30 to 350+ tickets/day, 50+ regions, about 40% fewer production incidents.
+
+## 2026-09-25 redesign handoff
+
+The current copy and layout source is `docs/design/redesign-2026-09/`: the owner's approved
+plan (redacted, D18) and the seven approved mockups. It supersedes the direction above for any
+page it covers.
