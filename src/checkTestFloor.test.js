@@ -26,12 +26,15 @@ const REDACTION_SUITE_PATH = 'src/checkPhoneRedaction.test.js'
 // count, each measured from a fresh JSON report of that file alone on this branch.
 const PINNED_ROUTE_PATHS_PASSED_COUNT = 8
 const ROUTE_PATHS_SUITE_PATH = 'src/routePaths.test.jsx'
-const PINNED_ROUTE_PAGES_PASSED_COUNT = 11
+// 14, not 11: added cases for the missing-</head>, empty-appHtml and replacement-pattern ($&,
+// $$, $') guards in assemblePage (review group 4, R140).
+const PINNED_ROUTE_PAGES_PASSED_COUNT = 14
 const ROUTE_PAGES_SUITE_PATH = 'src/routePages.test.js'
-// 14, not 15: the "exits 0 on the real dist/ after a build" case was removed (change
+// 16, not 14: the "exits 0 on the real dist/ after a build" case was removed (change
 // 2026-09-25-rebuild-portfolio-to-approved-redesign, D22); the equivalent real-dist assertion is
-// the post-build CI step `node scripts/check-route-pages.mjs`.
-const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 14
+// the post-build CI step `node scripts/check-route-pages.mjs`. Then two cases were added for the
+// non-exact #root-emptiness check (review group 4).
+const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 16
 const CHECK_ROUTE_PAGES_SUITE_PATH = 'src/checkRoutePages.test.js'
 
 // The two control suites pinned by the same task (R149, audit low 4), each measured from a fresh
