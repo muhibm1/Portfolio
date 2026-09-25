@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case study, WorkHorse and Studbook</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#17171A;background:#ECEAE5}
+a{color:#17171A}a:hover{color:#B4400B}
+.eb{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#55534E;margin:0}
+.d1{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:64px;line-height:1.04;letter-spacing:-.025em;margin:0}
+.d2{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:34px;line-height:1.12;letter-spacing:-.015em;margin:0}
+.d4{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.3;margin:0}
+.lead{font-size:21px;line-height:1.55;color:#2B2A27;margin:0}
+.p{font-size:17px;line-height:1.7;color:#2B2A27;margin:0}
+.s{font-size:15px;line-height:1.55;color:#55534E;margin:0}
+.n{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:40px;line-height:1;letter-spacing:-.02em}
+.card{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:10px}
+.nl{font-size:15px;text-decoration:none;color:#3A3935}
+.more{font-weight:500;font-size:16px;text-decoration:none;border-bottom:1.5px solid #17171A;padding-bottom:2px}
+.step{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.gate{background:#17171A;border-color:#17171A;color:#F7F6F3}
+.st{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px}
+.sd{font-size:12px;line-height:1.4;color:#55534E}
+ul.l{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+ul.l li{font-size:17px;line-height:1.6;color:#2B2A27}
+table{border-collapse:collapse;width:100%}
+th{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#55534E;text-align:left;font-weight:500;padding:10px 12px;border-bottom:1px solid #C9C6BE}
+td{font-size:15px;line-height:1.5;color:#2B2A27;padding:12px;border-bottom:1px solid #D6D3CC;vertical-align:top}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 5500px; display: flex; flex-direction: column; background: #ECEAE5; overflow: hidden">
+
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 24px 120px; border-bottom: 1px solid #D6D3CC">
+<a href="Main.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px">Muhammad Muhibullah</span>
+<span class="eb" style="font-size: 11px">Forward Deployed Engineer</span>
+</a>
+<nav style="display: flex; align-items: center; gap: 32px">
+<a class="nl" href="Main.dc.html">Home</a>
+<a class="nl" href="Main.dc.html">All case studies</a>
+<a class="nl" href="#contact">Contact</a>
+</nav>
+</header>
+
+<section style="padding: 88px 120px 56px; display: flex; flex-direction: column; gap: 24px">
+<p class="eb">Case study · Personal system · Agentic AI · Active</p>
+<h1 class="d1" style="max-width: 1050px">WorkHorse: AI-built software you can audit</h1>
+<p class="lead" style="max-width: 860px">A delivery pipeline where 28 single-purpose agents take a change from a one-line request to merged, tested and documented code. A person approves at the moments that matter, and code, not prompts, enforces the rules. This site was built with it.</p>
+</section>
+
+<section style="padding: 0 120px 72px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid #C9C6BE; border-bottom: 1px solid #C9C6BE">
+<div style="padding: 20px 20px 20px 0; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">My role</span><span class="p" style="font-size: 16px">Designed and built it end to end</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">What it is</span><span class="p" style="font-size: 16px">A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook)</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Stack</span><span class="p" style="font-size: 16px">Node.js, Python, TypeScript, Electron, Supabase Postgres with pgvector</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Quality</span><span class="p" style="font-size: 16px">224 plugin tests, 278 desktop tests, CI on every push</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding-top: 16px">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 10px"><span class="n">28</span><span class="s">single-purpose agents</span></div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 10px"><span class="n">9</span><span class="s">code hooks the AI can't override</span></div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 10px"><span class="n">5 to 2</span><span class="s">human gates, cut after measuring</span></div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 10px"><span class="n">100%</span><span class="s">faithful Studbook answers on a sealed test set</span></div>
+</div>
+</section>
+
+<section style="padding: 0 120px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px">
+<nav style="grid-column: span 3; display: flex; flex-direction: column; gap: 12px; padding-top: 8px">
+<span class="eb" style="font-size: 11px">On this page</span>
+<a class="nl" href="#why">Why I built it</a>
+<a class="nl" href="#how">How a change moves</a>
+<a class="nl" href="#rules">Rules in code</a>
+<a class="nl" href="#measured">Proven on real changes</a>
+<a class="nl" href="#studbook">Studbook</a>
+<a class="nl" href="#client">What I'd bring to a client</a>
+</nav>
+<div style="grid-column: 4 / span 9; display: flex; flex-direction: column; gap: 72px; padding-bottom: 96px">
+
+<div id="why" style="display: flex; flex-direction: column; gap: 16px; max-width: 820px">
+<h2 class="d2">Why I built it</h2>
+<p class="p">AI coding tools move fast until something goes wrong, and then there's rarely a record of what happened or why. I wanted to find out what it takes to make AI-built software trustworthy, not just fast, so I built the whole delivery process and measured it.</p>
+<p class="p">Every step writes a document, every claim in it is labelled as confirmed or believed, and approvals are pinned to the exact version a person read.</p>
+</div>
+
+<div id="how" style="display: flex; flex-direction: column; gap: 20px">
+<h2 class="d2">How a change moves through it</h2>
+<div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px">
+<div class="step gate"><span class="st">Design</span><span class="sd" style="color: #B9B6AE">Person approves</span></div>
+<div class="step"><span class="st">Plan</span><span class="sd">Tasks and eval cases</span></div>
+<div class="step"><span class="st">Build</span><span class="sd">Parallel, isolated worktrees</span></div>
+<div class="step"><span class="st">Verify</span><span class="sd">Read-only checker</span></div>
+<div class="step"><span class="st">Fix</span><span class="sd">Separate agent</span></div>
+<div class="step"><span class="st">Review ×4</span><span class="sd">Bugs, security, spec, adoption</span></div>
+<div class="step gate"><span class="st">Ship</span><span class="sd" style="color: #B9B6AE">Person approves</span></div>
+<div class="step" style="border-style: dashed"><span class="st">Deploy</span><span class="sd">Person approves at tier 3</span></div>
+</div>
+<p class="p" style="max-width: 820px">Each agent gets one job and only the tools that job needs. Builders work in parallel in isolated git worktrees so they can't collide. The verifier can read the code but can't change it, so it never grades its own fix. Four reviewers run at once, and their findings go to the fixer before a person ever sees the ship document.</p>
+<p class="p" style="max-width: 820px">Risk tiers from 0 to 3 decide how much ceremony a change gets. A low-risk change needs only the Ship approval; a tier 3 production change also needs a person to approve the deploy, with rollback rehearsed from tier 2 up.</p>
+</div>
+
+<div id="rules" style="display: flex; flex-direction: column; gap: 20px">
+<h2 class="d2">Rules in code, not in prompts</h2>
+<p class="p" style="max-width: 820px">If a rule lives in a prompt, a model can reason its way around it. So the non-negotiables are nine hooks that run before or after every tool call:</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Protected paths agents can't write to</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Tests locked during fix loops, so a failing test can't be weakened</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Builders fenced inside their own worktree</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">No merge or push while a required gate is open</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Shell commands screened before they run</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Formatting applied on every write</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Required documents checked before a phase closes</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">No stopping until verification has run</p></div>
+<div class="card" style="padding: 18px"><p class="s" style="color: #2B2A27">Every session starts with the change's context loaded</p></div>
+</div>
+<p class="p" style="max-width: 820px">A session also can't approve its own gate or grant itself permissions. A ship document with an open high-severity finding is refused when it's written and again when someone tries to approve it.</p>
+</div>
+
+<div id="measured" style="display: flex; flex-direction: column; gap: 20px">
+<h2 class="d2">Redesigned from the timestamps, then proven on real changes</h2>
+<p class="p" style="max-width: 820px">I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put four real changes through it, including one on a live web app with authentication and two on this site.</p>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px"><span class="n" style="font-size: 34px">4 of 4</span><span class="s" style="font-size: 14px">real changes merged, tested and documented</span></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px"><span class="n" style="font-size: 34px">28</span><span class="s" style="font-size: 14px">review findings fixed before a person signed off</span></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px"><span class="n" style="font-size: 34px">70</span><span class="s" style="font-size: 14px">new tests and eval cases written along the way</span></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px"><span class="n" style="font-size: 34px">0</span><span class="s" style="font-size: 14px">rejected ship documents since the redesign</span></div>
+</div>
+<table>
+<tr><th>Change</th><th>Outcome</th></tr>
+<tr><td>Live web app with auth: moderation API type fix</td><td>Merged; the build went green for the first time in 17 days; 9 findings fixed before sign-off.</td></tr>
+<tr><td>This site: Node 22.12 pin with a CI guard</td><td>Merged and published; 36 new tests; 10 findings fixed; the shipping agent caught a real high-severity issue before release.</td></tr>
+<tr><td>This site: phone-number redaction scanner</td><td>Merged and published; both defects reproduced before design; 34 eval cases; 6 findings fixed.</td></tr>
+<tr><td>Test service: README endpoints section</td><td>Done; 11 tests; 3 findings fixed before sign-off.</td></tr>
+</table>
+<p class="p" style="max-width: 820px">Every run held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect found was fixed and tested the same day, and nine plugin releases came out of those four runs.</p>
+</div>
+
+<div id="studbook" style="display: flex; flex-direction: column; gap: 20px">
+<p class="eb">Inside WorkHorse</p>
+<h2 class="d2">Studbook: answers with receipts</h2>
+<p class="p" style="max-width: 820px">The pipeline writes everything down. Studbook makes that record answerable. Ask why a design decision was made and it answers from the specs, reviews, ship documents and commit messages, cites the file and section behind every sentence, and says "Not in the record" when the record is silent.</p>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+<div class="step"><span class="st">Question</span><span class="sd">Follow-ups rewritten to stand alone</span></div>
+<div class="step"><span class="st">Vector + full text</span><span class="sd">Top 10 from each</span></div>
+<div class="step"><span class="st">Fusion</span><span class="sd">Reciprocal rank, k = 10</span></div>
+<div class="step"><span class="st">Rerank</span><span class="sd">Cross-encoder, top 5</span></div>
+<div class="step"><span class="st">Answer</span><span class="sd">Haiku 4.5, temperature 0</span></div>
+<div class="step gate"><span class="st">Receipts</span><span class="sd" style="color: #B9B6AE">Citations or "Not in the record"</span></div>
+</div>
+<p class="p" style="max-width: 820px">I built the evaluation before tuning anything: 60 gold questions across five types plus nine trap questions about things the record doesn't contain, split into a dev set for tuning and a sealed, hashed test set scored only after tuning froze. Every step in the pipeline above was chosen by measurement.</p>
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 16px">
+<div style="grid-column: span 7">
+<table>
+<tr><th>Retrieval setup (dev set)</th><th class="r">Recall@5</th></tr>
+<tr><td>Vector search only</td><td class="r">0.56</td></tr>
+<tr><td>Full text only, after fixing a query bug</td><td class="r">0.62</td></tr>
+<tr><td>Hybrid, textbook fusion setting (k = 60)</td><td class="r">0.65</td></tr>
+<tr><td>Hybrid, fusion tuned for a small corpus (k = 10)</td><td class="r">0.74</td></tr>
+<tr><td>Hybrid + reranker, pool of 20</td><td class="r">0.82</td></tr>
+<tr><td style="font-weight: 600">Hybrid + reranker, pool of 10 (shipped, half the latency)</td><td class="r" style="font-weight: 600">0.85</td></tr>
+</table>
+</div>
+<div style="grid-column: span 5; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: start">
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 6px"><span class="n" style="font-size: 32px">100%</span><span class="s" style="font-size: 13px">faithful on the sealed set: no unsupported claims</span></div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 6px"><span class="n" style="font-size: 32px">3 of 3</span><span class="s" style="font-size: 13px">trap questions refused, nothing invented</span></div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 6px"><span class="n" style="font-size: 32px">2 to 11</span><span class="s" style="font-size: 13px">of 12 follow-up questions retrieved, after rewriting</span></div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 6px"><span class="n" style="font-size: 32px">2×</span><span class="s" style="font-size: 13px">faster from a smaller rerank pool, with higher recall</span></div>
+</div>
+</div>
+<p class="p" style="max-width: 820px">Measured and rejected: splitting questions into parts, capping chunks per document, synonym expansion, hypothetical-passage search, bigger rerank pools and more passages for the generator. None beat what shipped, and I kept the code so the results can be reproduced.</p>
+<p class="p" style="max-width: 820px">Conversations work too. A follow-up like "was it ever fixed?" is rewritten into a standalone question by a small model, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.</p>
+<p class="p" style="max-width: 820px">Paddock, the desktop app, runs the same query path in TypeScript. A parity gate checks it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated.</p>
+</div>
+
+<div id="client" class="card" style="padding: 36px; display: flex; flex-direction: column; gap: 14px; background: #17171A; border-color: #17171A">
+<p class="eb" style="color: #B9B6AE">What I'd bring to a client</p>
+<p class="lead" style="color: #F7F6F3">Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.</p>
+<p class="s" style="color: #B9B6AE">Private repository · walkthrough on request</p>
+</div>
+
+</div>
+</section>
+
+<section style="padding: 48px 120px; border-top: 1px solid #C9C6BE; display: flex; justify-content: space-between; align-items: center">
+<a href="Main.dc.html" class="nl">Back to all case studies</a>
+<a href="CS-Decision.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 4px; align-items: end"><span class="eb" style="font-size: 11px">Next case study</span><span class="d4">A review backlog, turned into a decision system</span></a>
+</section>
+
+<footer id="contact" style="flex-grow: 1; background: #17171A; color: #F7F6F3; padding: 72px 120px; display: flex; justify-content: space-between; align-items: center">
+<h2 class="d2" style="color: #F7F6F3">Want the walkthrough? I reply within a day.</h2>
+<a href="#email" style="text-decoration: none; background: #F7F6F3; color: #17171A; min-height: 48px; padding: 0 22px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 500">Email mmalqaim@gmail.com</a>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5500}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
