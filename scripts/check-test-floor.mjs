@@ -40,11 +40,14 @@ const MINIMUM_SUITE_PASSED = 12
 const PINNED_SUITES = [
   { path: 'src/checkPhoneRedaction.test.js', pinnedPassedCount: 45 },
   { path: 'src/routePaths.test.jsx', pinnedPassedCount: 8 },
-  { path: 'src/routePages.test.js', pinnedPassedCount: 11 },
-  // 14, not 15: the "exits 0 on the real dist/ after a build" case was removed (change
+  // 14, not 11: added cases for the missing-</head>, empty-appHtml and replacement-pattern
+  // ($&, $$, $') guards in assemblePage (review group 4, R140).
+  { path: 'src/routePages.test.js', pinnedPassedCount: 14 },
+  // 16, not 14: the "exits 0 on the real dist/ after a build" case was removed (change
   // 2026-09-25-rebuild-portfolio-to-approved-redesign, D22); the equivalent real-dist assertion
-  // is the post-build CI step `node scripts/check-route-pages.mjs`.
-  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 14 },
+  // is the post-build CI step `node scripts/check-route-pages.mjs`. Then two cases were added for
+  // the non-exact #root-emptiness check (review group 4).
+  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 16 },
   { path: 'src/checkForbiddenCopy.test.js', pinnedPassedCount: 14 },
   { path: 'src/pageMeta.test.js', pinnedPassedCount: 11 },
 ]

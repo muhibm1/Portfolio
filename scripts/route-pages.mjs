@@ -32,15 +32,21 @@ export function assemblePage(shellHtml, { headHtml, appHtml }) {
   if (!/<meta[^>]*name=["']description["'][^>]*>/i.test(shellHtml)) {
     throw new Error('Shell is missing a <meta name="description"> element')
   }
+  if (!shellHtml.includes('</head>')) {
+    throw new Error('Shell is missing a </head> tag')
+  }
   if (!shellHtml.includes('<div id="root"></div>')) {
     throw new Error('Shell is missing an empty <div id="root"></div>')
   }
+  if (appHtml.trim() === '') {
+    throw new Error('Rendered markup is empty')
+  }
 
   return shellHtml
-    .replace(/<title>[\s\S]*?<\/title>\s*/i, '')
-    .replace(/<meta[^>]*name=["']description["'][^>]*>\s*/i, '')
-    .replace('</head>', `${headHtml}\n</head>`)
-    .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
+    .replace(/<title>[\s\S]*?<\/title>\s*/i, () => '')
+    .replace(/<meta[^>]*name=["']description["'][^>]*>\s*/i, () => '')
+    .replace('</head>', () => `${headHtml}\n</head>`)
+    .replace('<div id="root"></div>', () => `<div id="root">${appHtml}</div>`)
 }
 
 /**

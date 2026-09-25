@@ -61,6 +61,30 @@ describe('assemblePage', () => {
       /id="root"/,
     );
   });
+
+  it('throws naming the missing </head> tag when the shell has none (R140)', () => {
+    const shellWithoutHead = SHELL_HTML.replace('</head>', '');
+
+    expect(() => assemblePage(shellWithoutHead, { headHtml: '', appHtml: '<h1>Hi</h1>' })).toThrowError(
+      /<\/head>/,
+    );
+  });
+
+  it('throws naming the empty rendered markup when appHtml is blank after trim (R140)', () => {
+    expect(() => assemblePage(SHELL_HTML, { headHtml: '', appHtml: '   ' })).toThrowError(
+      /Rendered markup is empty/,
+    );
+  });
+
+  it('does not expand $&, $$ or $\' in headHtml or appHtml as replacement patterns', () => {
+    const html = assemblePage(SHELL_HTML, {
+      headHtml: '<meta name="note" content="$&">',
+      appHtml: "<p>Cost: $$5, ref $' and $&</p>",
+    });
+
+    expect(html).toContain('<meta name="note" content="$&">');
+    expect(html).toContain("<p>Cost: $$5, ref $' and $&</p>");
+  });
 });
 
 describe('writePage', () => {
