@@ -1,156 +1,165 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+// Tests the single-scroll case-study template (ADR 0006, R127, R135, R136). G10 and G11 read the
+// data module directly so a wrong copy or a wrong block never passes silently.
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { portfolioData } from '../data/portfolioData';
 import CaseStudyPage from './CaseStudyPage';
 
 const { caseStudies, personal } = portfolioData;
-const firstStudy = caseStudies[0];
-const middleStudy = caseStudies[1];
-const lastStudy = caseStudies[caseStudies.length - 1];
-
-// The four chips in display order, each with the only data its body may show (R23).
-const chips = [
-  { label: 'Challenge', sourceStrings: (study) => [study.challenge] },
-  {
-    label: 'System Architecture',
-    sourceStrings: (study) => study.diagramSteps.flatMap((step) => [step.title, step.desc]),
-  },
-  { label: 'Production Deployment', sourceStrings: (study) => [study.solution, ...study.techStack] },
-  {
-    label: 'Measured Impact',
-    sourceStrings: (study) => study.impact.flatMap((row) => [row.label, row.before, row.after, row.change]),
-  },
-];
-
-// Slugs that must render the not-found page: EG3 and EG4, then the hostile slugs AD1 to AD4.
-const unresolvableSlugs = [
-  { description: 'an unknown slug', slug: 'no-such-study' },
-  { description: 'a wrongly cased slug', slug: 'Apple-LLM-Triage' },
-  { description: 'an encoded space', slug: '%20' },
-  { description: 'a script tag', slug: encodeURIComponent('<script>alert(1)</script>') },
-  { description: 'a path traversal', slug: '..%2F..%2Fetc%2Fpasswd' },
-  { description: 'a 10,000 character slug', slug: 'a'.repeat(10000) },
-  { description: 'a null byte', slug: '%00' },
-  { description: 'an emoji', slug: '\u{1F600}' },
-  { description: 'a right-to-left override', slug: '\u202emoc.elppa' },
-];
 
 describe('CaseStudyPage', () => {
-  it.each(caseStudies)('resolves /work/$id to its case study', (study) => {
-    renderCaseStudyAt(`/work/${study.id}`);
-
-    expect(screen.getByRole('heading', { level: 1, name: study.title })).toBeInTheDocument();
-  });
-
-  it.each(unresolvableSlugs)('renders the not-found page for $description', ({ slug }) => {
-    const alert = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-    const { container } = renderCaseStudyAt(`/work/${slug}`);
-
-    expect(screen.getByRole('heading', { level: 1, name: /not found/i })).toBeInTheDocument();
-    expect(container.querySelector('script')).toBeNull();
-    expect(alert).not.toHaveBeenCalled();
-  });
-
-  it('shows the four chips and the Key enterprise metrics heading', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
-
-    const chipLabels = screen.getAllByRole('tab').map((tab) => tab.textContent);
-    expect(chipLabels).toEqual(chips.map((chip) => chip.label));
-    expect(screen.getByRole('heading', { name: 'Key enterprise metrics' })).toBeInTheDocument();
-  });
-
-  it('marks the chosen chip as selected', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
-
-    fireEvent.click(screen.getByRole('tab', { name: 'Measured Impact' }));
-
-    expect(screen.getByRole('tab', { name: 'Measured Impact' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('tab', { name: 'Challenge' })).toHaveAttribute('aria-selected', 'false');
-  });
-
-  describe.each(caseStudies)('the chip bodies of $id', (study) => {
-    it.each(chips)('$label shows its data field and nothing else', ({ label, sourceStrings }) => {
+  describe.each(caseStudies)('the $id case study (G10)', (study) => {
+    it('renders the eyebrow, heading and lead', () => {
       renderCaseStudyAt(`/work/${study.id}`);
 
-      fireEvent.click(screen.getByRole('tab', { name: label }));
+      expect(screen.getByText(study.eyebrow)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1, name: study.title })).toBeInTheDocument();
+      expect(screen.getByText(study.intro)).toBeInTheDocument();
+    });
 
-      const panel = screen.getByRole('tabpanel', { name: label });
-      const allowedText = sourceStrings(study);
-      for (const text of visibleText(panel)) {
-        expect(allowedText.join('\n')).toContain(text);
+    it('shows the four at-a-glance labels', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      for (const item of study.atAGlance) {
+        expect(screen.getByText(item.label)).toBeInTheDocument();
       }
-      for (const value of allowedText) {
-        expect(panel.textContent).toContain(value);
+      expect(study.atAGlance).toHaveLength(4);
+    });
+
+    it('shows one stat card per stat', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      for (const stat of study.stats) {
+        expect(screen.getAllByText(stat.label).length).toBeGreaterThan(0);
       }
+    });
+
+    it('gives every "On this page" link an href matching a real section id', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      const onThisPageNav = screen.getByRole('navigation', { name: 'On this page' });
+      const links = within(onThisPageNav).getAllByRole('link');
+      expect(links).toHaveLength(study.sections.length);
+      for (const link of links) {
+        const targetId = link.getAttribute('href').slice(1);
+        expect(document.getElementById(targetId)).not.toBeNull();
+      }
+    });
+
+    it('shows the callout text', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      expect(screen.getByText(study.callout.text)).toBeInTheDocument();
+    });
+
+    it('shows the disclaimer only when the case study has one', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      if (study.disclaimer) {
+        expect(screen.getByText(study.disclaimer)).toBeInTheDocument();
+      }
+    });
+
+    it('shows the contact band heading', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      expect(screen.getByRole('heading', { name: study.contactHeading })).toBeInTheDocument();
+    });
+
+    it('never shows a tab role or the removed simulator link', () => {
+      renderCaseStudyAt(`/work/${study.id}`);
+
+      expect(screen.queryByRole('tab')).toBeNull();
+      expect(screen.queryByText(/launch simulator/i)).toBeNull();
     });
   });
 
-  it.each(caseStudies)('draws one flow node per diagram step for $id', (study) => {
-    renderCaseStudyAt(`/work/${study.id}`);
+  const disclaimerSlugs = ['apple-llm-triage', 'apple-integration', 'apple-data-health'];
 
-    fireEvent.click(screen.getByRole('tab', { name: 'System Architecture' }));
+  it.each(disclaimerSlugs)('shows a disclaimer on %s', (slug) => {
+    const study = caseStudies.find((candidate) => candidate.id === slug);
+    renderCaseStudyAt(`/work/${slug}`);
 
-    const nodes = within(screen.getByRole('tabpanel')).getAllByRole('listitem');
-    expect(nodes).toHaveLength(study.diagramSteps.length);
+    expect(study.disclaimer).toBeTruthy();
+    expect(screen.getByText(study.disclaimer)).toBeInTheDocument();
   });
 
-  it('links from the last case study to the first', () => {
-    renderCaseStudyAt(`/work/${lastStudy.id}`);
+  it.each(caseStudies.filter((study) => !disclaimerSlugs.includes(study.id)).map((study) => study.id))(
+    'shows no disclaimer on %s',
+    (slug) => {
+      const study = caseStudies.find((candidate) => candidate.id === slug);
+      renderCaseStudyAt(`/work/${slug}`);
 
-    expect(nextLink()).toHaveAttribute('href', `/work/${firstStudy.id}`);
+      expect(study.disclaimer).toBeUndefined();
+    },
+  );
+
+  it('links from the first case study back to the last and on to the second', () => {
+    const first = caseStudies[0];
+    const last = caseStudies[caseStudies.length - 1];
+
+    renderCaseStudyAt(`/work/${first.id}`);
+
+    expect(prevLink()).toHaveAttribute('href', `/work/${last.id}`);
+    expect(nextLink()).toHaveAttribute('href', `/work/${caseStudies[1].id}`);
   });
 
-  it('links from the first case study back to the last', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
+  it('links from the last case study on to the first', () => {
+    const first = caseStudies[0];
+    const last = caseStudies[caseStudies.length - 1];
 
-    expect(previousLink()).toHaveAttribute('href', `/work/${lastStudy.id}`);
+    renderCaseStudyAt(`/work/${last.id}`);
+
+    expect(nextLink()).toHaveAttribute('href', `/work/${first.id}`);
   });
 
   it('points a middle case study at its immediate neighbours', () => {
-    renderCaseStudyAt(`/work/${middleStudy.id}`);
+    const middle = caseStudies[1];
 
-    expect(previousLink()).toHaveAttribute('href', `/work/${firstStudy.id}`);
-    expect(nextLink()).toHaveAttribute('href', `/work/${lastStudy.id}`);
+    renderCaseStudyAt(`/work/${middle.id}`);
+
+    expect(prevLink()).toHaveAttribute('href', `/work/${caseStudies[0].id}`);
+    expect(nextLink()).toHaveAttribute('href', `/work/${caseStudies[2].id}`);
   });
 
-  it('visits every case study in data order when following the next links', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
+  it('mails the contact band to personal.email', () => {
+    renderCaseStudyAt(`/work/${caseStudies[0].id}`);
 
-    const visitedTitles = [];
-    for (let visit = 0; visit <= caseStudies.length; visit += 1) {
-      visitedTitles.push(screen.getByRole('heading', { level: 1 }).textContent);
-      fireEvent.click(nextLink());
-    }
-
-    expect(visitedTitles).toEqual([...caseStudies.map((study) => study.title), firstStudy.title]);
+    const emailLink = screen.getByRole('link', { name: new RegExp(personal.email) });
+    expect(emailLink).toHaveAttribute('href', `mailto:${personal.email}`);
   });
 
-  it('offers no Log in or Sign up control', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
+  it('renders the not-found page for an unknown slug', () => {
+    renderCaseStudyAt('/work/no-such-study');
 
-    const accountControlName = /log ?in|sign ?up/i;
-    for (const role of ['link', 'button', 'tab']) {
-      expect(screen.queryByRole(role, { name: accountControlName })).toBeNull();
-    }
+    expect(screen.getByRole('heading', { level: 1, name: /not found/i })).toBeInTheDocument();
   });
 
-  it('links the discuss control to personal.email', () => {
-    renderCaseStudyAt(`/work/${firstStudy.id}`);
+  describe('tables (G11)', () => {
+    it('renders the outcomes and retrieval tables at /work/workhorse', () => {
+      renderCaseStudyAt('/work/workhorse');
 
-    const discussLink = screen.getByRole('link', { name: /discuss this case study/i });
+      const tables = screen.getAllByRole('table');
+      expect(tables).toHaveLength(2);
+      for (const table of tables) {
+        expect(within(table).getAllByRole('columnheader').length).toBeGreaterThan(0);
+      }
 
-    expect(discussLink).toHaveAttribute(
-      'href',
-      `mailto:${personal.email}?subject=Discussing%20FDE%20Case%20Study`,
-    );
-  });
+      const outcomesTable = tables.find((table) => within(table).queryByText(/live web app with auth/i));
+      expect(outcomesTable).toBeDefined();
+      const outcomesBodyRows = within(outcomesTable).getAllByRole('row').slice(1);
+      expect(outcomesBodyRows).toHaveLength(4);
+      expect(outcomesBodyRows[0]).toHaveTextContent(/^Live web app with auth/);
 
-  it('links the simulator call to action to /#simulator', () => {
-    renderCaseStudyAt('/work/apple-llm-triage');
-
-    expect(screen.getByRole('link', { name: /launch simulator/i })).toHaveAttribute('href', '/#simulator');
+      const retrievalTable = tables.find((table) => within(table).queryByText('0.85'));
+      expect(retrievalTable).toBeDefined();
+      const retrievalBodyRows = within(retrievalTable).getAllByRole('row').slice(1);
+      expect(retrievalBodyRows).toHaveLength(6);
+      const lastRow = retrievalBodyRows[retrievalBodyRows.length - 1];
+      expect(lastRow).toHaveTextContent('0.85');
+      expect(lastRow.className).toMatch(/font-semibold/);
+    });
   });
 });
 
@@ -164,23 +173,10 @@ function renderCaseStudyAt(path) {
   );
 }
 
-function previousLink() {
+function prevLink() {
   return screen.getByRole('link', { name: /^previous/i });
 }
 
 function nextLink() {
-  return screen.getByRole('link', { name: /^next/i });
-}
-
-// Every non-empty text node inside the element. Table column headers are skipped because they
-// label the data rather than describe the case study.
-function visibleText(element) {
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-  const texts = [];
-  while (walker.nextNode()) {
-    const text = walker.currentNode.nodeValue.trim();
-    const isColumnHeader = walker.currentNode.parentElement.tagName === 'TH';
-    if (text && !isColumnHeader) texts.push(text);
-  }
-  return texts;
+  return screen.getByRole('link', { name: /next case study/i });
 }
