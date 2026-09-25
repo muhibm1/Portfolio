@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it } from 'vitest';
+import App from '../App';
 import { portfolioData } from '../data/portfolioData';
+import { pageMetaFor } from '../pageMeta';
 import SiteLayout from './SiteLayout';
 
 // G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet
@@ -52,6 +54,34 @@ describe('SiteHeader', () => {
     expect(panelLinks()).toHaveLength(0);
   });
 });
+
+// E3. Renders the real App (not a stub outlet), so the header, the routed page and the title
+// wiring are exercised together, the way a visitor experiences them.
+describe('SiteHeader inside App (E3)', () => {
+  it('links Contact to an id="contact" element on the work index', () => {
+    renderAppAt('/work');
+
+    const contactLink = within(screen.getByRole('banner')).getByRole('link', { name: 'Contact' });
+    expect(contactLink).toHaveAttribute('href', '#contact');
+    expect(document.getElementById('contact')).not.toBeNull();
+  });
+
+  it('updates document.title after following Next case study', () => {
+    renderAppAt('/work/workhorse');
+
+    fireEvent.click(screen.getByRole('link', { name: /next case study/i }));
+
+    expect(document.title).toBe(pageMetaFor('/work/apple-llm-triage').title);
+  });
+});
+
+function renderAppAt(path) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  );
+}
 
 function renderSiteLayoutAt(path) {
   return render(
