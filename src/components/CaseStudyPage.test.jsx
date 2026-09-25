@@ -35,6 +35,19 @@ describe('CaseStudyPage', () => {
       }
     });
 
+    it('collapses the at-a-glance and stats grids to one column on mobile with no inline style', () => {
+      const { container } = renderCaseStudyAt(`/work/${study.id}`);
+
+      const atAGlanceGrid = screen.getByText(study.atAGlance[0].label).closest('div').parentElement;
+      expect(atAGlanceGrid.style.gridTemplateColumns).toBe('');
+      expect(atAGlanceGrid.className).toContain('grid-cols-1');
+      expect(atAGlanceGrid.className).toContain('sm:grid-cols-2');
+      expect(atAGlanceGrid.className).toContain(`md:grid-cols-${study.atAGlance.length}`);
+
+      const gridsWithInlineStyle = container.querySelectorAll('[style*="grid-template-columns"]');
+      expect(gridsWithInlineStyle).toHaveLength(0);
+    });
+
     it('gives every "On this page" link an href matching a real section id', () => {
       renderCaseStudyAt(`/work/${study.id}`);
 

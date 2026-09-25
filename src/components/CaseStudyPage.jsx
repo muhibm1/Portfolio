@@ -5,6 +5,16 @@ import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagra
 import CaseStudyTable from './CaseStudyTable';
 import ContactBand from './ContactBand';
 
+// Literal Tailwind class names, one per supported column count, so Tailwind's scanner sees them
+// at build time. A `style={{ gridTemplateColumns }}` here would override the mobile `grid-cols-*`
+// classes below at every breakpoint, not just the desktop one (R-review HIGH).
+const DESKTOP_COLUMNS_CLASS = {
+  1: 'md:grid-cols-1',
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+  4: 'md:grid-cols-4',
+};
+
 /**
  * The /work/:slug page: one case study rendered as a single scroll (ADR 0006), or the not-found
  * page for any other slug. Every section body is a list of content blocks whose shape is fixed by
@@ -64,12 +74,10 @@ function CaseStudyHeader({ caseStudy }) {
 }
 
 function AtAGlanceAndStats({ caseStudy }) {
+  const desktopColumnsClass = DESKTOP_COLUMNS_CLASS[caseStudy.atAGlance.length] ?? 'md:grid-cols-4';
   return (
     <section className="flex flex-col gap-4 px-4 pb-10 sm:px-8 md:px-16">
-      <div
-        className="grid grid-cols-1 border-y border-rule sm:grid-cols-2 md:grid-cols-4"
-        style={{ gridTemplateColumns: `repeat(${caseStudy.atAGlance.length}, minmax(0, 1fr))` }}
-      >
+      <div className={`grid grid-cols-1 border-y border-rule sm:grid-cols-2 ${desktopColumnsClass}`}>
         {caseStudy.atAGlance.map((item, index) => (
           <div key={item.label} className={`flex flex-col gap-1.5 py-5 ${index > 0 ? 'border-t border-rule sm:border-l sm:border-t-0 sm:pl-5' : ''}`}>
             <span className="font-mono text-xs uppercase tracking-widest text-muted">{item.label}</span>
@@ -162,11 +170,9 @@ function CardsBlock({ items }) {
 }
 
 function StatsGrid({ items }) {
+  const desktopColumnsClass = DESKTOP_COLUMNS_CLASS[Math.min(items.length, 4)] ?? 'md:grid-cols-4';
   return (
-    <div
-      className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4"
-      style={{ gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, minmax(0, 1fr))` }}
-    >
+    <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${desktopColumnsClass}`}>
       {items.map((item) => (
         <div key={item.label} className="flex flex-col gap-2 rounded-[10px] border border-border bg-surface p-5">
           <span className="font-display text-3xl font-medium tracking-tight text-ink">{item.value}</span>
