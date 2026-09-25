@@ -18,6 +18,8 @@ const OTHER_ROUTE_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const MOBILE_MENU_PANEL_ID = 'mobile-menu-panel';
+
 export default function SiteHeader() {
   const { personal } = portfolioData;
   const { pathname } = useLocation();
@@ -50,8 +52,9 @@ export default function SiteHeader() {
 
         <button
           type="button"
-          aria-label="Open menu"
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isMenuOpen}
+          aria-controls={MOBILE_MENU_PANEL_ID}
           onClick={() => setIsMenuOpen((open) => !open)}
           className="flex h-11 w-11 items-center justify-center rounded-lg border border-rule md:hidden"
         >
@@ -61,6 +64,7 @@ export default function SiteHeader() {
 
       {isMenuOpen && (
         <div
+          id={MOBILE_MENU_PANEL_ID}
           data-testid="mobile-menu-panel"
           className="flex flex-col gap-4 border-t border-border bg-ground px-1 py-4 md:hidden"
         >
