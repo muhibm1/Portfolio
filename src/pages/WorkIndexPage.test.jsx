@@ -7,6 +7,14 @@ import WorkIndexPage from './WorkIndexPage';
 const bannedNames = ['All', 'Case study', 'Project', 'Live demo'];
 
 describe('WorkIndexPage', () => {
+  it('has a visually hidden h1 naming the page for assistive tech', () => {
+    renderWorkIndexAt('/work');
+
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toHaveTextContent('Case studies');
+    expect(heading).toHaveClass('sr-only');
+  });
+
   it('lists the five case studies in R127 order, the first the featured variant', () => {
     renderWorkIndexAt('/work');
 
