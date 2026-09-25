@@ -11,6 +11,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  BINARY_EXTENSIONS,
   EXIT_CANNOT_RUN,
   EXIT_CLEAN,
   EXIT_HIT,
@@ -42,6 +43,14 @@ const AREA_CODE_AND_EXCHANGE_WITH_A_COUNTRY_CODE = ['+1555556', '1555556', '+1 5
 const DIGIT_BEFORE_THE_NUMBER = ['95555560100', '915555560100', '115555560100', '91555556'];
 
 const LINE_WITH_THE_NUMBER = 'Call 555-556-0100 today.\n';
+
+describe('check-phone-redaction binary extensions', () => {
+  // D16: the resume PDF is skipped by design, not reported as undecodable; R137 names the
+  // compensating check (D12, D17) that covers what the phone scan would otherwise catch.
+  it('lists .pdf so the resume is skipped instead of reported as undecodable', () => {
+    expect(BINARY_EXTENSIONS).toContain('.pdf');
+  });
+});
 
 describe('check-phone-redaction matchers', () => {
   it.each(FULL_NUMBER_WITH_A_COUNTRY_CODE)(
