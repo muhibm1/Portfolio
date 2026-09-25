@@ -43,6 +43,16 @@ describe('CaseStudyFlowDiagram (flow block)', () => {
     const [dashedNode, solidNode] = screen.getAllByRole('listitem');
     expect(dashedNode.className).not.toEqual(solidNode.className);
   });
+
+  it('carries no inline grid-template-columns and collapses to two columns on mobile', () => {
+    render(<CaseStudyFlowDiagram columns={8} steps={stubSteps(8)} />);
+
+    const list = screen.getByRole('list');
+    expect(list.style.gridTemplateColumns).toBe('');
+    expect(list.className).toContain('grid-cols-2');
+    expect(list.className).toContain('sm:grid-cols-4');
+    expect(list.className).toContain('md:grid-cols-8');
+  });
 });
 
 describe('CaseStudyHubDiagram (link-diagram block)', () => {

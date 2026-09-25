@@ -3,13 +3,21 @@
 // export `CaseStudyHubDiagram` draws a `link-diagram` block (one hub connected to a left node and
 // a column of right-hand nodes).
 
+// Literal Tailwind class names, one per supported `columns` value, so Tailwind's scanner sees
+// them at build time. A `style={{ gridTemplateColumns }}` here would override the mobile
+// `grid-cols-*` classes below at every breakpoint, not just the desktop one (R-review HIGH).
+const FLOW_DESKTOP_COLUMNS_CLASS = {
+  4: 'md:grid-cols-4',
+  5: 'md:grid-cols-5',
+  6: 'md:grid-cols-6',
+  8: 'md:grid-cols-8',
+};
+
 /** A `flow` block: `columns` sets the grid width, each step is `{ title, note, gate?, dashed? }`. */
 export default function CaseStudyFlowDiagram({ columns, steps }) {
+  const desktopColumnsClass = FLOW_DESKTOP_COLUMNS_CLASS[columns] ?? 'md:grid-cols-4';
   return (
-    <ol
-      className="grid grid-cols-2 gap-2 sm:grid-cols-4"
-      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-    >
+    <ol className={`grid grid-cols-2 gap-2 sm:grid-cols-4 ${desktopColumnsClass}`}>
       {steps.map((step, index) => (
         <li key={index} className={stepClasses(step)}>
           <span className="font-display text-sm font-semibold">{step.title}</span>
