@@ -90,16 +90,31 @@ Header dump from the first deploy run: not recorded yet.
 
 ## 6. Post-deploy manual check
 
-Four things that no automated step this project runs can prove. There is no browser in CI, and
-adding one (Playwright) was rejected on cost (spec R84, "Observability"). Work through all four
-after the first deploy, and again after any later change to `vite.config.js`, `index.html` or
-`package.json`, then append one dated line to the log below.
+Updated 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145):
+the redesign deleted the hero orb animation and its component, so the second check below now
+covers the mobile navigation menu instead. Four things that no automated step this project runs
+can prove. There is no browser in CI, and adding one (Playwright) was rejected on cost (spec R84,
+"Observability"). Work through all four after the first deploy, and again after any later change
+to `vite.config.js`, `index.html` or `package.json`, then append one dated line to the log below.
 
-1. The home page renders content inside `#root` in a real browser.
-2. The orb animates and stops when the tab is hidden.
+1. The home page renders content inside `#root` in a real browser, with each page's own text and
+   the mockup layout, not the pre-redesign single scroll.
+2. The mobile header menu (the "Open menu" button in `SiteHeader.jsx`) opens and closes its panel
+   below the breakpoint where the full navigation collapses.
 3. A deep link pasted into a fresh tab renders the case study (CI smoke R121 proves the 200 and
    the body; this check is for rendering).
 4. The browser console shows no CSP violation and no uncaught error.
+
+### Regenerating `og.png`
+
+`public/og.png`, the 1200 by 630 share image every page's Open Graph and Twitter tags point at, is
+rendered once from `docs/design/og.svg` by the main session's own Chromium (ADR 0005, D4), never
+at build time and never through `npx`. To regenerate it after a change to `og.svg`: open
+`docs/design/og.svg` in the Chromium already on this machine, with the IBM Plex Sans, IBM Plex
+Mono and Space Grotesk faces resolved only from the local `@fontsource` files already installed
+under `node_modules` (no font is fetched over the network at render time), screenshot the
+1200 by 630 canvas to `public/og.png`, and commit the result. `src/servedFiles.test.js` checks the
+committed file's dimensions.
 
 Log format, one line per check, newest last:
 `YYYY-MM-DD <commit sha> <trigger> 1 pass, 2 pass, 3 pass, 4 pass. <notes>`
@@ -125,6 +140,28 @@ Log:
   built CSS has 0 `data:` font URLs (was 12, confirmed via
   `/Portfolio/assets/index-DKKCxcjg.css`), served CSS matches (CI smoke R100 success), and the
   live browser console shows 0 errors and 0 CSP violations (confirmed).
+
+## 6a. The resume PDF as published personal data (D17)
+
+Added 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145).
+
+- `public/Muhammad_Muhibullah_Resume.pdf` is published personal data, like the owner's email and
+  city in `src/data/portfolioData.js`, not incidental content. All four Resume buttons link to it
+  directly; the in-page resume modal is gone (D2).
+- Before the owner adds the file, he runs the D12 check, widened by D17: contact details limited
+  to what the site already shows (name, email, city, LinkedIn, GitHub), no phone number, no street
+  address; the document properties (Author, Title, Producer, any local file path) checked or
+  stripped; the backlog wording matches the plan's November 2025 launch date. The PDF is `.pdf`,
+  so `scripts/check-phone-redaction.mjs` skips it by design (D16); this manual check is the only
+  control on its contents.
+- D17 also records here that prerendering (T11) now writes the owner's email address into the
+  served HTML of every page as plain text, readable without JavaScript, where before it was
+  reachable only inside the JS bundle. Publishing both the PDF and the plain-text email is the
+  owner's deliberate choice (plan section 4, D8). See `.workhorse/profile.yml`
+  `compliance.retention_notes` for the same fact recorded in the profile.
+- The check is run by the owner, not by CI; there is no automated proof the PDF's contents are
+  clean. Log one line here, in the same format as the log in section 6, after the owner runs the
+  D12/D17 check and again whenever the PDF is replaced.
 
 ## 7. The phone number in git history
 

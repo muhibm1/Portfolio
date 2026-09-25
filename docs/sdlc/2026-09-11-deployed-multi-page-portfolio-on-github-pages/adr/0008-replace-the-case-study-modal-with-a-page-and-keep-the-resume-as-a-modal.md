@@ -1,7 +1,9 @@
 # 0008: Replace the case-study modal with a page and keep the resume as a modal
 
 Date: 2026-09-11
-Status: proposed
+Status: proposed. Change 2026-09-25-rebuild-portfolio-to-approved-redesign supersedes the second
+half of this decision: the resume modal is deleted, and the four Resume buttons now link directly
+to a static PDF (that change's D2). The `/work/:slug` case-study page decision stays in force.
 Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 
 ## Context
