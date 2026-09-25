@@ -196,16 +196,27 @@ describe('check-forbidden-copy entry', () => {
     });
   }
 
-  // F2: a requested directory that does not exist.
+  // F2: a requested directory that does not exist. The entry resolves a directory argument
+  // against the spawned process's cwd (see scripts/forbidden-copy.mjs resolveScope), so running
+  // it from a freshly created, empty temp directory guarantees "dist" is absent there regardless
+  // of whether the checkout itself happens to carry a built dist/ at the repository root.
   it('exits 2 and names the missing directory when "dist" does not exist', () => {
-    const distPath = path.join(REPOSITORY_ROOT, 'dist');
-    expect(fs.existsSync(distPath)).toBe(false);
+    const emptyCwd = fs.mkdtempSync(path.join(os.tmpdir(), 'check-forbidden-copy-cwd-'));
+    try {
+      expect(fs.existsSync(path.join(emptyCwd, 'dist'))).toBe(false);
 
-    const result = spawnEntry(['dist']);
+      const result = spawnSync(process.execPath, [ENTRY_PATH, 'dist'], {
+        encoding: 'utf8',
+        timeout: 20_000,
+        cwd: emptyCwd,
+      });
 
-    expect(result.status).toBe(2);
-    expect(result.stdout).toContain('::error::');
-    expect(result.stdout).toContain('dist');
+      expect(result.status).toBe(2);
+      expect(result.stdout).toContain('::error::');
+      expect(result.stdout).toContain('dist');
+    } finally {
+      fs.rmSync(emptyCwd, { recursive: true, force: true });
+    }
   });
 
   it('runs under two seconds scanning the real src/ directory (as the entry, no argument)', () => {
