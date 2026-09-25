@@ -230,16 +230,9 @@ describe('check-route-pages (G19)', () => {
     expect(result.stdout).toContain(COULD_NOT_RUN_PREFIX);
   });
 
-  it('exits 0 on the real dist/ after a build', () => {
-    const distDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
-    if (!fs.existsSync(distDirectory)) {
-      // Documented, not skipped silently: this case needs a real build to have run first.
-      console.warn('Skipping real dist/ check: run npm run build first.');
-      return;
-    }
-
-    const result = runCheckOn(distDirectory);
-
-    expect(result.status).toBe(0);
-  });
+  // No "exits 0 on the real dist/ after a build" case here: tests run before the build, so
+  // dist/ never exists in CI, and a case that silently returns when its precondition is absent
+  // proves nothing there while turning red on a stale local dist/. The equivalent real-dist
+  // assertion is the post-build CI step `node scripts/check-route-pages.mjs` (conductor
+  // decision D22).
 });

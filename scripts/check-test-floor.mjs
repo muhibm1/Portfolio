@@ -41,7 +41,10 @@ const PINNED_SUITES = [
   { path: 'src/checkPhoneRedaction.test.js', pinnedPassedCount: 45 },
   { path: 'src/routePaths.test.jsx', pinnedPassedCount: 8 },
   { path: 'src/routePages.test.js', pinnedPassedCount: 11 },
-  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 15 },
+  // 14, not 15: the "exits 0 on the real dist/ after a build" case was removed (change
+  // 2026-09-25-rebuild-portfolio-to-approved-redesign, D22); the equivalent real-dist assertion
+  // is the post-build CI step `node scripts/check-route-pages.mjs`.
+  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 14 },
   { path: 'src/checkForbiddenCopy.test.js', pinnedPassedCount: 14 },
   { path: 'src/pageMeta.test.js', pinnedPassedCount: 11 },
 ]
