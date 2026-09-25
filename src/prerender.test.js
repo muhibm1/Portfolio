@@ -70,4 +70,35 @@ describe('prerender.mjs spawned on a broken build (F1)', () => {
     expect(result.stdout).toContain('id="root"');
     expect(fs.readdirSync(path.join(fixtureDirectory, 'dist'))).toEqual(['index.html']);
   });
+
+  it('writes nothing when render throws on a later page, not just the one that failed', () => {
+    const originalShell =
+      '<html><head><title>t</title><meta name="description" content="d"></head><body><div id="root"></div></body></html>';
+    writeShell(fixtureDirectory, originalShell);
+    fs.mkdirSync(path.join(fixtureDirectory, 'dist-ssr'), { recursive: true });
+    fs.writeFileSync(
+      path.join(fixtureDirectory, 'dist-ssr', 'entry-server.js'),
+      [
+        'let calls = 0;',
+        'export function render() {',
+        '  calls += 1;',
+        '  if (calls === 2) throw new Error("render failed on the second page");',
+        '  return "<h1>x</h1>";',
+        '}',
+        'export function pageMetaFor() { return { title: "t", description: "d", canonical: "https://example.test/", ogImage: "https://example.test/og.png" }; }',
+        'export function headTags() { return "<title>t</title>"; }',
+      ].join('\n'),
+      'utf8',
+    );
+
+    const result = runOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(FAILED_PREFIX);
+    expect(result.stdout).toContain('render failed on the second page');
+    // The first page renders fine in memory but must not be written: no new file or directory
+    // appears under dist/, and the shell itself (the home page's own write target) is untouched.
+    expect(fs.readdirSync(path.join(fixtureDirectory, 'dist'))).toEqual(['index.html']);
+    expect(fs.readFileSync(path.join(fixtureDirectory, 'dist', 'index.html'), 'utf8')).toBe(originalShell);
+  });
 });
