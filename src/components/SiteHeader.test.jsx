@@ -39,18 +39,26 @@ describe('SiteHeader', () => {
     renderSiteLayoutAt('/');
     const menuButton = screen.getByRole('button', { name: 'Open menu' });
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(menuButton).toHaveAttribute('aria-controls', 'mobile-menu-panel');
     expect(panelLinks()).toHaveLength(0);
 
     fireEvent.click(menuButton);
 
-    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+    const closeButton = screen.getByRole('button', { name: 'Close menu' });
+    expect(closeButton).toBe(menuButton);
+    expect(closeButton).toHaveAttribute('aria-expanded', 'true');
+    expect(closeButton).toHaveAttribute('aria-controls', 'mobile-menu-panel');
+    expect(panel()).toHaveAttribute('id', 'mobile-menu-panel');
     expect(panelLinks().map((link) => link.textContent)).toEqual(
       expect.arrayContaining(['Case studies', 'How I work', 'Experience', 'Contact']),
     );
 
-    fireEvent.click(menuButton);
+    fireEvent.click(closeButton);
 
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
     expect(panelLinks()).toHaveLength(0);
   });
 });
