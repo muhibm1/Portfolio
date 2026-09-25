@@ -162,6 +162,24 @@ Added 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (
 - The check is run by the owner, not by CI; there is no automated proof the PDF's contents are
   clean. Log one line here, in the same format as the log in section 6, after the owner runs the
   D12/D17 check and again whenever the PDF is replaced.
+- CI does carry one automated, narrower check: `scripts/check-resume-pdf.mjs`, wired into
+  `.github/workflows/deploy.yml`'s build job, confirms the published file's SHA-256 matches the
+  hash the owner records below, that the file carries a single PDF revision (exactly one `%%EOF`,
+  no `/Prev`), and that no phone-shaped number and no `C:\` or `/Users/` local path appears in text
+  that decodes plainly out of a FlateDecode stream. It reaches only what decodes cleanly, so the
+  D12/D17 eye check above stays the main control on the document's contents; the script's exit 2 on
+  a missing file or a missing hash line below is expected until the owner has done both.
+- **Hash log format**, one line per D12/D17 check, newest last, the SHA-256 the script above
+  reads: `YYYY-MM-DD <sha256, 64 lowercase hex characters> D12/D17 check passed for
+  public/Muhammad_Muhibullah_Resume.pdf. <notes>`. Owner: after running the D12/D17 check on the
+  file you are about to add or replace, compute its SHA-256 (for example `sha256sum
+  public/Muhammad_Muhibullah_Resume.pdf` or `Get-FileHash` on Windows) and append one line in this
+  format below. This agent does not write one: the hash is confirmed only once you have looked at
+  the file yourself.
+
+```
+D12/D17 hash log: not recorded yet.
+```
 
 ## 7. The phone number in git history
 
