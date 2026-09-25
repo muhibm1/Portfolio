@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router';
-import { portfolioData } from '../data/portfolioData';
+import { Outlet, useLocation } from 'react-router';
+import { pageMetaFor } from '../pageMeta';
 import SiteHeader from './SiteHeader';
 
 /**
@@ -18,10 +18,12 @@ export default function SiteLayout() {
   );
 }
 
-// T10 replaces this with pageMetaFor(pathname).title once src/pageMeta.js exists; for now every
-// route carries the site name so the tab title is never blank.
+// R139: the tab title follows route changes, sourced from the same per-route meta the prerender
+// script uses for the built page's <title> (src/pageMeta.js).
 function usePageTitle() {
+  const { pathname } = useLocation();
+
   useEffect(() => {
-    document.title = portfolioData.personal.name;
-  }, []);
+    document.title = pageMetaFor(pathname).title;
+  }, [pathname]);
 }
