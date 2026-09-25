@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from 'react-router';
 
 // Renders "01 · Case studies" (R132, R134): the first study as a dark featured card with its
 // mini stats and mobile tags, the remaining four as a 2 by 2 grid. Shared by the home page and
