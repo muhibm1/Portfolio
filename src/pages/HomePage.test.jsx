@@ -1,157 +1,129 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { Link, MemoryRouter, Outlet, Route, Routes } from 'react-router';
-import { describe, expect, it, onTestFinished, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { describe, expect, it } from 'vitest';
+import { portfolioData } from '../data/portfolioData';
+import SiteLayout from '../components/SiteLayout';
 import HomePage from './HomePage';
 
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
-const HOME_SECTION_IDS = ['overview', 'philosophy', 'case-studies', 'simulator', 'experience', 'skills'];
-
-// The setup file replaces scrollIntoView and matchMedia before every test and restores them after.
+// G6, G12. Mounted inside SiteLayout, the way the site's route table does (the SiteHeader.test.jsx
+// pattern): App itself is not rendered here because src/pages/WorkIndexPage.jsx, owned by the
+// parallel work-index task, still imports the deleted ProjectEntry component on this branch.
 describe('HomePage', () => {
-  it('renders the six home sections with their ids unchanged', () => {
-    const { container } = renderHomePageAt('/');
+  const { home, personal } = portfolioData;
+  const resumeHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
 
-    const sectionIds = [...container.querySelectorAll('section[id]')].map((section) => section.id);
-    expect(sectionIds).toEqual(HOME_SECTION_IDS);
+  it('renders the hero heading, eyebrow and the three "Right now" titles', () => {
+    renderHomePage();
+
+    expect(screen.getByRole('heading', { level: 1, name: home.hero.heading })).toBeInTheDocument();
+    expect(screen.getByText(home.hero.eyebrow)).toBeInTheDocument();
+    expect(screen.getByText('At Apple')).toBeInTheDocument();
+    expect(screen.getByText('Building WorkHorse')).toBeInTheDocument();
+    expect(screen.getByText('Looking for')).toBeInTheDocument();
   });
 
-  it('scrolls the simulator into view smoothly when the url hash names it', () => {
-    const scrollIntoView = spyOnScrollIntoView();
+  it('renders the five production stat values', () => {
+    renderHomePage();
 
-    renderHomePageAt('/#simulator');
-
-    expect(scrollIntoView).toHaveBeenCalledTimes(1);
-    expect(scrollIntoView.mock.contexts[0]).toBe(document.getElementById('simulator'));
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    for (const item of home.stats.items) {
+      expect(screen.getAllByText(item.value).length).toBeGreaterThan(0);
+    }
   });
 
-  it('scrolls the simulator into view without smooth scrolling when reduced motion is preferred', () => {
-    preferReducedMotion();
-    const scrollIntoView = spyOnScrollIntoView();
+  it('carries the mobile-only stat grid with the md:hidden class', () => {
+    renderHomePage();
 
-    renderHomePageAt('/#simulator');
-
-    expect(scrollIntoView.mock.contexts[0]).toBe(document.getElementById('simulator'));
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto' });
+    const mobileGrid = document.querySelector('[data-testid="mobile-stats-grid"]');
+    expect(mobileGrid).not.toBeNull();
+    expect(mobileGrid.className).toContain('md:hidden');
   });
 
-  it('scrolls again when the hash changes while the page is open', () => {
-    const scrollIntoView = spyOnScrollIntoView();
-    renderHomePageAt('/#simulator', { layoutLink: '/#skills' });
+  it('renders the four section eyebrows in order', () => {
+    renderHomePage();
 
-    fireEvent.click(screen.getByRole('link', { name: 'test layout link' }));
-
-    expect(scrollIntoView).toHaveBeenCalledTimes(2);
-    expect(scrollIntoView.mock.contexts[1]).toBe(document.getElementById('skills'));
+    expect(screen.getByText('01 · Case studies')).toBeInTheDocument();
+    expect(screen.getByText('02 · How I work')).toBeInTheDocument();
+    expect(screen.getByText('03 · Experience')).toBeInTheDocument();
+    expect(screen.getByText('04 · Contact')).toBeInTheDocument();
   });
 
-  it('neither throws nor scrolls when the hash names no element on the page', () => {
-    const scrollIntoView = spyOnScrollIntoView();
+  it('renders the four "How I work" principle headings', () => {
+    renderHomePage();
 
-    expect(() => renderHomePageAt('/#nonexistent-id')).not.toThrow();
-
-    expect(scrollIntoView).not.toHaveBeenCalled();
+    for (const item of home.principles.items) {
+      expect(screen.getByRole('heading', { name: item.title })).toBeInTheDocument();
+    }
   });
 
-  it('neither throws nor scrolls for a unicode hash, raw or percent-encoded', () => {
-    const scrollIntoView = spyOnScrollIntoView();
+  it('renders the five experience role headings and the two degrees', () => {
+    renderHomePage();
 
-    expect(() => renderHomePageAt('/#日本語')).not.toThrow();
-    expect(() => renderHomePageAt('/#%E6%97%A5%E6%9C%AC%E8%AA%9E')).not.toThrow();
-
-    expect(scrollIntoView).not.toHaveBeenCalled();
+    for (const role of home.experience.roles) {
+      expect(screen.getByText(`${role.title} · ${role.company}`)).toBeInTheDocument();
+    }
+    for (const item of home.education.items) {
+      expect(screen.getByText(item.degree)).toBeInTheDocument();
+    }
   });
 
-  it('neither throws nor scrolls for a malformed percent-encoded hash', () => {
-    const scrollIntoView = spyOnScrollIntoView();
+  it('renders the five toolkit headings', () => {
+    renderHomePage();
 
-    expect(() => renderHomePageAt('/#%E0%A4%A')).not.toThrow();
-
-    expect(scrollIntoView).not.toHaveBeenCalled();
+    for (const column of home.toolkit.columns) {
+      expect(screen.getByRole('heading', { name: column.title })).toBeInTheDocument();
+    }
   });
 
-  it('treats a markup injection attempt in the hash as a missing id and runs none of it', () => {
-    const scrollIntoView = spyOnScrollIntoView();
-    const alert = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    const getElementById = vi.spyOn(document, 'getElementById');
-    const payload = '"><img src=x onerror=alert(1)>';
+  it('renders the location line and a footer with md:hidden mobile-only copy', () => {
+    renderHomePage();
 
-    expect(() => renderHomePageAt(`/#${payload}`)).not.toThrow();
-
-    const payloadLookup = getElementById.mock.calls.findIndex(([id]) => id === payload);
-    expect(payloadLookup).not.toBe(-1);
-    expect(getElementById.mock.results[payloadLookup].value).toBeNull();
-    expect(scrollIntoView).not.toHaveBeenCalled();
-    expect(document.querySelector('img[onerror]')).toBeNull();
-    expect(alert).not.toHaveBeenCalled();
+    expect(screen.getByText(home.contact.location)).toBeInTheDocument();
+    const footer = screen.getByRole('contentinfo');
+    const mobileNodes = [...footer.querySelectorAll('.md\\:hidden')];
+    expect(mobileNodes.length).toBeGreaterThan(0);
   });
 
-  it('tells the layout which home section is under the scroll position', () => {
-    const setActiveSection = vi.fn();
-    renderHomePageAt('/', { setActiveSection });
-    placeOnPage(document.getElementById('philosophy'), { top: 0, height: 900 });
+  it('renders the five case-study cards linking into /work', () => {
+    renderHomePage();
 
-    act(() => {
-      window.dispatchEvent(new Event('scroll'));
-    });
-
-    expect(setActiveSection).toHaveBeenCalledWith('philosophy');
+    for (const study of portfolioData.caseStudies) {
+      expect(screen.getByRole('link', { name: new RegExp(escapeRegExp(study.card.title)) })).toHaveAttribute(
+        'href',
+        `/work/${study.id}`,
+      );
+    }
   });
 
-  it('stops reporting scroll positions once the page is unmounted', () => {
-    const setActiveSection = vi.fn();
-    const { unmount } = renderHomePageAt('/', { setActiveSection });
-    unmount();
-    // A stand-in section left on the page, so a leaked listener would have something to report.
-    const leftoverSection = document.createElement('section');
-    leftoverSection.id = 'philosophy';
-    document.body.append(leftoverSection);
-    onTestFinished(() => leftoverSection.remove());
-    placeOnPage(leftoverSection, { top: 0, height: 900 });
+  // G12: the four Resume controls all point at the same PDF path, and no modal copy remains.
+  it('links every Resume control to the same PDF, with no Curriculum Vitae text or modal', () => {
+    renderHomePage();
 
-    window.dispatchEvent(new Event('scroll'));
+    const resumeLinks = screen.getAllByRole('link', { name: 'Resume' });
+    expect(resumeLinks.length).toBeGreaterThanOrEqual(2);
+    for (const link of resumeLinks) {
+      expect(link).toHaveAttribute('href', resumeHref);
+    }
 
-    expect(setActiveSection).not.toHaveBeenCalled();
+    expect(screen.getByRole('link', { name: 'Download resume' })).toHaveAttribute('href', resumeHref);
+    expect(screen.getByRole('link', { name: 'Full resume (PDF)' })).toHaveAttribute('href', resumeHref);
+    expect(resumeHref.endsWith('/Muhammad_Muhibullah_Resume.pdf')).toBe(true);
+    expect(screen.queryByText('Curriculum Vitae')).toBeNull();
   });
 });
 
-// Mounts HomePage the way the site's layout route does: as the index child of a pathless route
-// whose Outlet hands down setActiveSection. layoutLink adds a link for in-page navigation.
-function renderHomePageAt(path, { setActiveSection = () => {}, layoutLink } = {}) {
-  const testLayout = (
-    <>
-      {layoutLink && <Link to={layoutLink}>test layout link</Link>}
-      <Outlet context={{ setActiveSection }} />
-    </>
-  );
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
+function renderHomePage() {
   return render(
-    <MemoryRouter initialEntries={[path]}>
+    <MemoryRouter initialEntries={['/']}>
       <Routes>
-        <Route element={testLayout}>
+        <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="work/:slug" element={<div>Stub outlet</div>} />
         </Route>
       </Routes>
     </MemoryRouter>,
   );
-}
-
-function spyOnScrollIntoView() {
-  const scrollIntoView = vi.fn();
-  Element.prototype.scrollIntoView = scrollIntoView;
-  return scrollIntoView;
-}
-
-function preferReducedMotion() {
-  const originalMatchMedia = window.matchMedia;
-  window.matchMedia = (query) => ({
-    ...originalMatchMedia(query),
-    matches: query === REDUCED_MOTION_QUERY,
-  });
-}
-
-// jsdom does no layout, so every element reports offsetTop and offsetHeight of 0.
-function placeOnPage(element, { top, height }) {
-  Object.defineProperty(element, 'offsetTop', { value: top, configurable: true });
-  Object.defineProperty(element, 'offsetHeight', { value: height, configurable: true });
 }
