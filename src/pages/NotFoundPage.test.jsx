@@ -23,7 +23,12 @@ describe('NotFoundPage', () => {
     expect(workLink).toHaveAttribute('href', '/work');
     expect(homeLink.className).toMatch(/rounded-full/);
     expect(workLink.className).toMatch(/rounded-full/);
-    expect(screen.getAllByRole('link')).toHaveLength(2);
+  });
+
+  it("renders the contact footer so the header's #contact link resolves", () => {
+    renderNotFoundPage();
+
+    expect(document.querySelector('#contact')).toBeInTheDocument();
   });
 });
 
