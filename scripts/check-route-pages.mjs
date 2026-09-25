@@ -53,7 +53,8 @@ function main([directoryArgument]) {
     console.log(`Route page check passed (R142): ${pages.length} pages carry their markers.`)
     return EXIT_CLEAN
   } catch (error) {
-    console.log(`::error::Route page check could not run (R142): ${error.message}`)
+    console.log(`::error::Route page check could not run (R142): ${error instanceof Error ? error.message : String(error)}`)
+    console.error(error instanceof Error ? error.stack : error)
     return EXIT_CANNOT_RUN
   }
 }
