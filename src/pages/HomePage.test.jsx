@@ -74,6 +74,16 @@ describe('HomePage', () => {
     }
   });
 
+  it('keeps a single h1 first, with every other heading an h2 or h3 and no level skipped', () => {
+    renderHomePage();
+
+    const levels = screen.getAllByRole('heading').map((heading) => Number(heading.tagName[1]));
+
+    expect(levels[0]).toBe(1);
+    expect(levels.filter((level) => level === 1)).toHaveLength(1);
+    expect(levels.slice(1).every((level) => level === 2 || level === 3)).toBe(true);
+  });
+
   it('renders the location line and a footer with md:hidden mobile-only copy', () => {
     renderHomePage();
 

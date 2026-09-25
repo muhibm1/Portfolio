@@ -8,7 +8,7 @@ export default function ProductionStats({ stats }) {
   return (
     <section className="flex flex-col gap-5 px-5 pb-10 md:px-[120px] md:pb-28">
       <div className="flex flex-col gap-1 border-t border-rule pt-5 md:flex-row md:items-baseline md:justify-between">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">{stats.eyebrow}</p>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{stats.eyebrow}</h2>
         <p className="hidden text-sm text-muted md:block">{stats.caption}</p>
       </div>
 
