@@ -134,7 +134,8 @@ function pageOffenders(directory, page, shellAssetTags) {
   if (PHONE_PATTERN.test(html)) {
     offenders.push(offenderLine(page.relativePath, 'contains a phone-shaped number'))
   }
-  if (html.includes('<div id="root"></div>')) {
+  const rootContentMatch = html.match(/<div id="root">([\s\S]*?)<\/div>\s*(?:<script|<\/body>)/i)
+  if (!rootContentMatch || rootContentMatch[1].trim() === '') {
     offenders.push(offenderLine(page.relativePath, 'has an empty #root'))
   }
 

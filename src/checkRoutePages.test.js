@@ -129,6 +129,31 @@ describe('check-route-pages (G19)', () => {
     expect(result.stdout).toContain('has an empty #root');
   });
 
+  it('does not flag a #root whose content is a nested div, only whitespace inside it', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({
+        canonical: canonicalFor('/work'),
+        root: '<div id="root"><div class="app"><h1>Nested content</h1></div></div>',
+      }),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(0);
+  });
+
+  it('exits 1 naming a page whose #root has only whitespace', () => {
+    buildCleanFixture();
+    writeFile('work/index.html', pageHtml({ canonical: canonicalFor('/work'), root: '<div id="root">   </div>' }));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('has an empty #root');
+  });
+
   it('exits 1 naming a stray html file the app does not define', () => {
     buildCleanFixture();
     writeFile('work/x.html', pageHtml({ canonical: `${SITE_URL}work/x/` }));
