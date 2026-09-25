@@ -8,6 +8,34 @@ command) or **believed** (inferred, stated by the owner, or planned but not yet 
 
 ---
 
+## 2026-09-25: rebuilt to the approved redesign
+
+Change `2026-09-25-rebuild-portfolio-to-approved-redesign` replaced the single-page, modal-driven
+shape this document otherwise describes. The sections below are unchanged from 2026-09-10 and
+describe the pre-redesign codebase; read `CLAUDE.md` "Architecture in five lines" for the current
+shape. In summary, **confirmed** by reading the tree at this change's head:
+
+- The simulator (`InteractiveTriageSimulator.jsx`) and its scripted "thinking orb" animation are
+  deleted, along with the Google Fonts link, the resume modal, and every case-study tab. Nothing
+  in the data inventory below still exists unless named again here.
+- `react-router` now provides real routes: `/`, `/work`, `/work/:slug` for each of five case
+  studies, and a catch-all rendered as `NotFoundPage`. `src/App.jsx` is the route table;
+  `SiteLayout` supplies the header, mobile menu and footer on every route.
+- `scripts/prerender.mjs` renders every route at build time through `src/entry-server.jsx`, and
+  `src/pageMeta.js` writes each page's own title, description, canonical link and Open Graph and
+  Twitter tags into the served HTML, so a non-JS reader and a link-preview bot see the real page.
+  `src/main.jsx` hydrates that markup instead of rendering from an empty root.
+- Typefaces are IBM Plex Sans, IBM Plex Mono and Space Grotesk, self-hosted through
+  `@fontsource`, never loaded from Google (ADR 0002, this change).
+- `scripts/forbidden-copy.mjs` and `scripts/check-forbidden-copy.mjs` scan source and built HTML
+  for a list of banned strings and both dash characters, so a removed claim cannot come back
+  silently.
+- The four Resume buttons link to `public/Muhammad_Muhibullah_Resume.pdf`, a file the owner
+  supplies himself (D2); `docs/hosted-config.md` section 6a records the manual check the owner
+  runs on it before it is added.
+
+---
+
 ## What this is
 
 A static single-page React application that presents the owner's experience and case studies to

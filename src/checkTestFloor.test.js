@@ -15,19 +15,28 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const scriptPath = path.join(repositoryRoot, 'scripts/check-test-floor.mjs')
 const workflowPath = path.join(repositoryRoot, '.github/workflows/deploy.yml')
 
-// The suite's count at merge (Task 3, plan.md step 1), measured from a fresh JSON report of
-// src/checkPhoneRedaction.test.js on this branch: 44 passed.
-const PINNED_REDACTION_PASSED_COUNT = 44
+// The suite's count at merge, resynced by change 2026-09-25-rebuild-portfolio-to-approved-
+// redesign (task T13) to match scripts/check-test-floor.mjs's own PINNED_SUITES entry, measured
+// from a fresh JSON report of src/checkPhoneRedaction.test.js on this branch: 45 passed.
+const PINNED_REDACTION_PASSED_COUNT = 45
 const REDACTION_SUITE_PATH = 'src/checkPhoneRedaction.test.js'
 
-// The route-page suites' own counts at merge (2026-09-21 review M3), each measured from a fresh
-// JSON report of that file alone on this branch.
-const PINNED_ROUTE_PATHS_PASSED_COUNT = 13
+// The route-page suites' own counts, resynced by the same task to match
+// scripts/check-test-floor.mjs's PINNED_SUITES after the redesign changed each file's test
+// count, each measured from a fresh JSON report of that file alone on this branch.
+const PINNED_ROUTE_PATHS_PASSED_COUNT = 8
 const ROUTE_PATHS_SUITE_PATH = 'src/routePaths.test.jsx'
-const PINNED_ROUTE_PAGES_PASSED_COUNT = 6
+const PINNED_ROUTE_PAGES_PASSED_COUNT = 11
 const ROUTE_PAGES_SUITE_PATH = 'src/routePages.test.js'
-const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 11
+const PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT = 15
 const CHECK_ROUTE_PAGES_SUITE_PATH = 'src/checkRoutePages.test.js'
+
+// The two control suites pinned by the same task (R149, audit low 4), each measured from a fresh
+// JSON report of that file alone on this branch.
+const PINNED_FORBIDDEN_COPY_PASSED_COUNT = 14
+const FORBIDDEN_COPY_SUITE_PATH = 'src/checkForbiddenCopy.test.js'
+const PINNED_PAGE_META_PASSED_COUNT = 11
+const PAGE_META_SUITE_PATH = 'src/pageMeta.test.js'
 
 const PASSED_LINE = 'Test floors passed.'
 const SUITE_FAILED_PREFIX = '::error::Test floor failed (R52):'
@@ -68,13 +77,15 @@ function runFloorOn(reportPath) {
   return spawnSync(process.execPath, [scriptPath, reportPath], { encoding: 'utf8', timeout: 20_000 })
 }
 
-// The three route-page suites' file entries at their pinned counts, complete and passing, so a
-// case exercising only the redaction suite's own pin does not also fail the other three pins.
+// Every other pinned suite's file entry at its pinned count, complete and passing, so a case
+// exercising only the redaction suite's own pin does not also fail the remaining five pins.
 function completeRoutePageSuiteEntries() {
   return [
     { relativePath: ROUTE_PATHS_SUITE_PATH, counts: { passed: PINNED_ROUTE_PATHS_PASSED_COUNT } },
     { relativePath: ROUTE_PAGES_SUITE_PATH, counts: { passed: PINNED_ROUTE_PAGES_PASSED_COUNT } },
     { relativePath: CHECK_ROUTE_PAGES_SUITE_PATH, counts: { passed: PINNED_CHECK_ROUTE_PAGES_PASSED_COUNT } },
+    { relativePath: FORBIDDEN_COPY_SUITE_PATH, counts: { passed: PINNED_FORBIDDEN_COPY_PASSED_COUNT } },
+    { relativePath: PAGE_META_SUITE_PATH, counts: { passed: PINNED_PAGE_META_PASSED_COUNT } },
   ]
 }
 
@@ -111,6 +122,8 @@ describe('check-test-floor', () => {
     expect(result.stdout).toContain(`Pinned suite ${ROUTE_PATHS_SUITE_PATH}:`)
     expect(result.stdout).toContain(`Pinned suite ${ROUTE_PAGES_SUITE_PATH}:`)
     expect(result.stdout).toContain(`Pinned suite ${CHECK_ROUTE_PAGES_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${FORBIDDEN_COPY_SUITE_PATH}:`)
+    expect(result.stdout).toContain(`Pinned suite ${PAGE_META_SUITE_PATH}:`)
   })
 
   it('fails a report in which the redaction suite never ran, however many other tests passed', () => {

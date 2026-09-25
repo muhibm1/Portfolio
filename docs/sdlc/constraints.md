@@ -185,6 +185,10 @@ Three items do apply and are open:
 1. Are the published metrics (350+ tickets/day, 50+ regions, -40% incidents, 99.9% reliability)
    yours to publish, and is any of the Apple, TCS or Neural Newsletters detail confidential?
 2. Should the simulator's invented ticket data carry a visible "illustrative example" label?
+   **Answered by change 2026-09-25-rebuild-portfolio-to-approved-redesign: the question no longer
+   applies, because the plan removed the simulator and its component,
+   `InteractiveTriageSimulator.jsx`, entirely (plan section 1, brief "Problem"); there is no
+   invented ticket data left to label.**
 3. Do you want the phone number to stay on a public, scrapeable page? **Answered at G1 of change
    2026-09-11: removed from the site (G1-D1, spec R41).**
 4. Custom domain, or `muhibm1.github.io/Portfolio/`? This decides the `base` value and whether
