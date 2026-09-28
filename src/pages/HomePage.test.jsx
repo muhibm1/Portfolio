@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { portfolioData } from '../data/portfolioData';
@@ -10,9 +10,8 @@ import HomePage from './HomePage';
 // parallel work-index task, still imports the deleted ProjectEntry component on this branch.
 describe('HomePage', () => {
   const { home, personal } = portfolioData;
-  const resumeHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
 
-  it('renders the hero heading, eyebrow and the three "Right now" titles', () => {
+  it('renders the hero heading, eyebrow, the three "Right now" titles and the code line', () => {
     renderHomePage();
 
     expect(screen.getByRole('heading', { level: 1, name: home.hero.heading })).toBeInTheDocument();
@@ -20,6 +19,7 @@ describe('HomePage', () => {
     expect(screen.getByText('At Apple')).toBeInTheDocument();
     expect(screen.getByText('Building WorkHorse')).toBeInTheDocument();
     expect(screen.getByText('Looking for')).toBeInTheDocument();
+    expect(screen.getByText(home.hero.codeLine.text)).toBeInTheDocument();
   });
 
   it('renders the five production stat values', () => {
@@ -104,20 +104,36 @@ describe('HomePage', () => {
     }
   });
 
-  // G12: the four Resume controls all point at the same PDF path, and no modal copy remains.
-  it('links every Resume control to the same PDF, with no Curriculum Vitae text or modal', () => {
+  // G12: no resume control anywhere on the page, and the footer carries exactly email and LinkedIn.
+  it('has no resume control anywhere on the page', () => {
     renderHomePage();
 
-    const resumeLinks = screen.getAllByRole('link', { name: 'Resume' });
-    expect(resumeLinks.length).toBeGreaterThanOrEqual(2);
-    for (const link of resumeLinks) {
-      expect(link).toHaveAttribute('href', resumeHref);
-    }
-
-    expect(screen.getByRole('link', { name: 'Download resume' })).toHaveAttribute('href', resumeHref);
-    expect(screen.getByRole('link', { name: 'Full resume (PDF)' })).toHaveAttribute('href', resumeHref);
-    expect(resumeHref.endsWith('/Muhammad_Muhibullah_Resume.pdf')).toBe(true);
+    expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /resume/i })).toBeNull();
     expect(screen.queryByText('Curriculum Vitae')).toBeNull();
+  });
+
+  it('links the footer to exactly email and LinkedIn', () => {
+    renderHomePage();
+
+    const footerLinks = within(screen.getByRole('contentinfo'))
+      .getAllByRole('link')
+      .map((link) => link.getAttribute('href'));
+
+    expect(footerLinks).toEqual(expect.arrayContaining([`mailto:${personal.email}`, personal.linkedin]));
+    expect(footerLinks).not.toContain(personal.github);
+  });
+
+  // R132: one primary button plus the email link, no second "Download resume" button.
+  it('renders one hero button and an email link, and no second button', () => {
+    renderHomePage();
+
+    expect(screen.getByRole('link', { name: home.hero.primaryCta })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: home.hero.emailLinkText })).toHaveAttribute(
+      'href',
+      `mailto:${personal.email}`,
+    );
+    expect(screen.queryByRole('link', { name: 'Download resume' })).toBeNull();
   });
 });
 

@@ -8,7 +8,6 @@ import { onDarkButtonClasses } from './buttonClasses';
 export default function ContactFooter() {
   const { personal, home } = portfolioData;
   const { contact } = home;
-  const resumeHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
   const emailHref = `mailto:${personal.email}`;
 
   return (
@@ -27,14 +26,8 @@ export default function ContactFooter() {
         <a href={emailHref} className="inline-flex min-h-12 items-center justify-center rounded-full bg-on-dark px-6 font-sans text-sm font-medium text-ink">
           {contact.emailButton}
         </a>
-        <a href={resumeHref} className={onDarkButtonClasses}>
-          {contact.resumeButton}
-        </a>
         <a href={personal.linkedin} target="_blank" rel="noopener noreferrer" className={onDarkButtonClasses}>
           {contact.linkedinButton}
-        </a>
-        <a href={personal.github} target="_blank" rel="noopener noreferrer" className={onDarkButtonClasses}>
-          {contact.githubButton}
         </a>
       </div>
 
