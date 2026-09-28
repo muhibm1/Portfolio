@@ -64,7 +64,20 @@ function neighboursOf(caseStudies, position) {
 function CaseStudyHeader({ caseStudy }) {
   return (
     <header className="flex flex-col gap-6 px-4 pt-24 pb-8 sm:px-8 md:px-16">
-      <p className="font-mono text-xs uppercase tracking-widest text-muted">{caseStudy.eyebrow}</p>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <p className="font-mono text-xs uppercase tracking-widest text-muted">{caseStudy.eyebrow}</p>
+        {caseStudy.codeLink && (
+          <a
+            href={caseStudy.codeLink.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${caseStudy.codeLink.label} on GitHub, public snapshot`}
+            className="font-mono text-xs uppercase tracking-widest text-soft transition-colors hover:text-ink"
+          >
+            {caseStudy.codeLink.label}
+          </a>
+        )}
+      </div>
       <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.04] tracking-tight text-ink sm:text-6xl">
         {caseStudy.title}
       </h1>
@@ -118,7 +131,11 @@ function CaseStudySection({ section }) {
 function Block({ block }) {
   switch (block.type) {
     case 'paragraph':
-      return <p className="text-base leading-relaxed text-body sm:text-lg">{block.text}</p>;
+      return (
+        <p className="text-base leading-relaxed text-body sm:text-lg">
+          {block.link ? <ParagraphWithLink text={block.text} link={block.link} /> : block.text}
+        </p>
+      );
     case 'bullets':
       return <BulletsBlock items={block.items} />;
     case 'flow':
@@ -136,6 +153,35 @@ function Block({ block }) {
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }
+}
+
+// Splits a paragraph's text around the single occurrence of `link.text` and wraps it in an
+// external anchor (interface (f), R153). A repeated or missing occurrence would silently move
+// or drop the link on a copy edit, so both throw a readable error at render instead.
+function ParagraphWithLink({ text, link }) {
+  const parts = text.split(link.text);
+  if (parts.length !== 2) {
+    throw new Error(
+      `Paragraph link text "${link.text}" must occur exactly once in its paragraph, found ${parts.length - 1} time(s).`,
+    );
+  }
+
+  const [before, after] = parts;
+  return (
+    <>
+      {before}
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${link.text} on GitHub, public snapshot`}
+        className="text-ink underline decoration-soft underline-offset-4 hover:text-ink"
+      >
+        {link.text}
+      </a>
+      {after}
+    </>
+  );
 }
 
 function BulletsBlock({ items }) {
