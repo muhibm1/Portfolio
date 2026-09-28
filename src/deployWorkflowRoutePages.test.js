@@ -300,36 +300,29 @@ describe('G20: the deploy workflow pins the redesign packages, scans copy and as
     expect(gstaticMatches.length).toBe(2);
   });
 
-  it('a step fetches the resume PDF and the share image, asserting 200 and matching content types', () => {
+  it('a step fetches the share image, asserting 200 and a matching content type, and names no PDF (R151)', () => {
     const lines = readWorkflowLines();
-    const body = stepBody(lines, 'Smoke R143: the resume PDF and the share image are served');
+    const body = stepBody(lines, 'Smoke R143: the share image is served');
     expect(body).toBeDefined();
     const text = body.join('\n');
 
-    expect(text).toContain('Muhammad_Muhibullah_Resume.pdf');
     expect(text).toContain('og.png');
     expect(text).toMatch(/=\s*"200"|==\s*"200"/);
-    expect(text).toContain("'pdf'");
     expect(text).toContain("'png'");
+    expect(text).not.toContain('.pdf');
+    expect(text).not.toContain("'pdf'");
   });
 
-  it('runs the resume PDF check once, as the step right after the build step (D23)', () => {
+  it('runs no resume PDF check anywhere in the workflow (R151)', () => {
     const lines = readWorkflowLines();
 
     const checkLineIndexes = lines
-      .map((line, index) => ({ line: line.trim(), index }))
-      .filter(({ line }) => line === 'run: "node scripts/check-resume-pdf.mjs"')
-      .map(({ index }) => index);
-    expect(checkLineIndexes).toHaveLength(1);
-
-    const buildIndex = lines.findIndex((line) => line.trim() === 'run: "npm run build"');
-    expect(buildIndex).toBeGreaterThan(-1);
+      .map((line) => line.trim())
+      .filter((line) => line === 'run: "node scripts/check-resume-pdf.mjs"');
+    expect(checkLineIndexes).toHaveLength(0);
 
     const steps = stepNameLines(lines);
-    const buildStep = steps.find(({ name }) => name === 'Build');
-    expect(buildStep).toBeDefined();
-    const nextStep = steps.find(({ index }) => index > buildStep.index);
-    expect(nextStep.name).toBe('Resume PDF hash, revision and inflated-stream text (D23)');
+    expect(steps.some(({ name }) => name.includes('Resume PDF'))).toBe(false);
   });
 
   it('the three permissions: blocks are unchanged', () => {
