@@ -266,6 +266,11 @@ export const portfolioData = {
         mobileSummary:
           "28 agents, rules enforced in code, and a retrieval system that cites the paragraph behind every sentence.",
         linkText: "Read the case study",
+        // These run-record figures are the owner's own, hand-maintained numbers. Source: the
+        // G2: rejected entries of 2026-09-28 (08:12 and 08:57 UTC) in
+        // docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/approvals.md, and ADR
+        // 0010. They go stale after the next WorkHorse run; the owner updates them here,
+        // together with their pins in src/data/portfolioData.test.js.
         stats: [
           { value: "100%", label: "faithful answers, sealed test" },
           { value: "3 of 3", label: "trap questions refused, nothing invented" },
@@ -376,6 +381,12 @@ export const portfolioData = {
           ],
         },
         {
+          // These run-record figures (paragraphs, stats and the outcomes table below) are the
+          // owner's own, hand-maintained numbers. Source: the G2: rejected entries of
+          // 2026-09-28 (08:12 and 08:57 UTC) in
+          // docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/approvals.md, and ADR
+          // 0010. They go stale after the next WorkHorse run; the owner updates them here,
+          // together with their pins in src/data/portfolioData.test.js.
           id: "measured",
           heading: "Redesigned from the timestamps, then proven on real changes",
           blocks: [
