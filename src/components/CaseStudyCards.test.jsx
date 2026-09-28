@@ -7,36 +7,69 @@ import CaseStudyCards from "./CaseStudyCards.jsx";
 const { caseStudies } = portfolioData;
 
 describe("CaseStudyCards", () => {
-  it("renders five links in R127 order, the first the featured WorkHorse card", () => {
+  it("renders five route links in R127 order, the first inside the featured article", () => {
     render(
       <MemoryRouter>
         <CaseStudyCards caseStudies={caseStudies} />
       </MemoryRouter>,
     );
 
-    const links = screen.getAllByRole("link");
-    expect(links).toHaveLength(5);
-    expect(links.map((link) => link.getAttribute("href"))).toEqual(
+    const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
+    expect(routeLinks).toHaveLength(5);
+    expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(
       caseStudies.map((study) => `/work/${study.id}`),
     );
 
-    const featuredLink = links[0];
-    expect(featuredLink.getAttribute("href")).toBe("/work/workhorse");
-    for (const stat of ["100%", "+52%", "28", "0"]) {
-      expect(within(featuredLink).getByText(stat)).toBeInTheDocument();
-    }
+    const featuredArticle = screen.getByRole("article");
+    expect(within(featuredArticle).getByRole("link", { name: /read the case study/i })).toHaveAttribute(
+      "href",
+      "/work/workhorse",
+    );
   });
 
-  it("renders the grid cards with their two tags and the read-more label", () => {
+  it("gives the featured article one external code link alongside the route link, with neither nested in the other", () => {
     render(
       <MemoryRouter>
         <CaseStudyCards caseStudies={caseStudies} />
       </MemoryRouter>,
     );
 
-    const links = screen.getAllByRole("link");
-    const gridLinks = links.slice(1);
+    const featuredArticle = screen.getByRole("article");
+    const codeLink = within(featuredArticle).getByRole("link", { name: /public snapshot/i });
+    expect(codeLink).toHaveAttribute("href", caseStudies[0].codeLink.href);
+    expect(codeLink).toHaveAttribute("target", "_blank");
+    expect(codeLink).toHaveAttribute("rel", "noopener noreferrer");
+
+    const anchors = featuredArticle.querySelectorAll("a");
+    for (const anchor of anchors) {
+      expect(anchor.querySelector("a")).toBeNull();
+    }
+  });
+
+  it("shows the featured card's four stats", () => {
+    render(
+      <MemoryRouter>
+        <CaseStudyCards caseStudies={caseStudies} />
+      </MemoryRouter>,
+    );
+
+    const featuredArticle = screen.getByRole("article");
+    for (const stat of ["100%", "3 of 3", "40", "9"]) {
+      expect(within(featuredArticle).getByText(stat)).toBeInTheDocument();
+    }
+  });
+
+  it("renders the grid cards with their two tags, the read-more label, and no code link", () => {
+    render(
+      <MemoryRouter>
+        <CaseStudyCards caseStudies={caseStudies} />
+      </MemoryRouter>,
+    );
+
     const gridStudies = caseStudies.slice(1);
+    const gridLinks = screen
+      .getAllByRole("link", { name: /read the case study/i })
+      .filter((link) => link.getAttribute("href") !== "/work/workhorse");
 
     gridLinks.forEach((link, index) => {
       const study = gridStudies[index];
@@ -45,5 +78,7 @@ describe("CaseStudyCards", () => {
       }
       expect(within(link).getByText("Read the case study")).toBeInTheDocument();
     });
+
+    expect(screen.getAllByText("View the code")).toHaveLength(1);
   });
 });
