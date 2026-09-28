@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home, phone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#17171A;background:#ECEAE5}
+a{color:#17171A}a:hover{color:#B4400B}
+.eb{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#55534E;margin:0}
+.d1{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:38px;line-height:1.06;letter-spacing:-.02em;margin:0}
+.d2{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:30px;line-height:1.1;letter-spacing:-.015em;margin:0}
+.d3{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:22px;line-height:1.2;margin:0}
+.p{font-size:16px;line-height:1.6;color:#2B2A27;margin:0}
+.s{font-size:14px;line-height:1.5;color:#55534E;margin:0}
+.n{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:28px;line-height:1;letter-spacing:-.02em}
+.card{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:10px}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3A3935;border:1px solid #C9C6BE;border-radius:999px;padding:4px 9px}
+.btn{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:8px;font-weight:500;font-size:16px;text-decoration:none}
+.more{font-weight:500;font-size:15px;text-decoration:none;border-bottom:1.5px solid #17171A;padding-bottom:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 3400px; display: flex; flex-direction: column; background: #ECEAE5; overflow: hidden">
+
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #D6D3CC">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px">Muhammad Muhibullah</span>
+<span class="eb" style="font-size: 10px">Forward Deployed Engineer</span>
+</div>
+<button type="button" aria-label="Open menu" style="width: 44px; height: 44px; border: 1px solid #C9C6BE; border-radius: 8px; background: transparent; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#17171A" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+</button>
+</header>
+
+<section style="padding: 40px 20px 36px; display: flex; flex-direction: column; gap: 18px">
+<p class="eb">Austin, TX · Open to remote and relocation</p>
+<h1 class="d1">I go where the systems are messy and ship software that works on live data.</h1>
+<p class="p">Data Engineer on Apple's Data Health team (via TCS). I connect systems that were never built to talk to each other, put LLMs to work on production data behind real guardrails, and measure what I ship.</p>
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px">
+<a class="btn" href="#work" style="background: #17171A; color: #F7F6F3">Read the case studies</a>
+<a class="btn" href="#resume" style="border: 1px solid #17171A">Download resume</a>
+</div>
+</section>
+
+<section style="padding: 0 20px 40px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb" style="border-top: 1px solid #C9C6BE; padding-top: 14px">Measured in production</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px"><span class="n">30 to 350+</span><span class="s" style="font-size: 13px">tickets a day, LLM decision system at Apple</span></div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px"><span class="n">2 weeks</span><span class="s" style="font-size: 13px">to clear 2 months of backlog</span></div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px"><span class="n">~50%</span><span class="s" style="font-size: 13px">faster permission turnaround</span></div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px"><span class="n">~40%</span><span class="s" style="font-size: 13px">fewer gating failures after EMR to EKS</span></div>
+</div>
+</section>
+
+<section id="work" style="padding: 40px 20px; background: #F7F6F3; border-top: 1px solid #D6D3CC; border-bottom: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 16px">
+<p class="eb">01 · Case studies</p>
+<h2 class="d2">Deployed, measured, still running.</h2>
+<a href="CS-WorkHorse.dc.html" style="text-decoration: none; background: #17171A; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb" style="color: #B9B6AE">Personal system · Agentic AI</p>
+<h3 class="d3" style="color: #F7F6F3">WorkHorse: AI-built software you can audit</h3>
+<p class="p" style="color: #DCDAD4; font-size: 15px">28 agents, rules enforced in code, and a retrieval system that cites the paragraph behind every sentence.</p>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="tag" style="color: #DCDAD4; border-color: #55534E">100% faithful</span><span class="tag" style="color: #DCDAD4; border-color: #55534E">28 findings fixed pre sign-off</span></div>
+</a>
+<a href="CS-Decision.dc.html" class="card" style="text-decoration: none; background: #ECEAE5; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb">Apple (via TCS) · LLM decision systems</p>
+<h3 class="d3">A review backlog, turned into a decision system</h3>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="tag">30 to 350+ tickets/day</span><span class="tag">Backlog gone in 2 weeks</span></div>
+<span class="more" style="align-self: start">Read the case study</span>
+</a>
+<a href="CS-Integration.dc.html" class="card" style="text-decoration: none; background: #ECEAE5; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb">Apple (via TCS) · Systems integration</p>
+<h3 class="d3">Three systems, one tool, half the turnaround</h3>
+<span class="more" style="align-self: start">Read the case study</span>
+</a>
+<a href="CS-DataHealth.dc.html" class="card" style="text-decoration: none; background: #ECEAE5; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb">Apple (via TCS) · Data reliability</p>
+<h3 class="d3">Keeping a 50+ region data pipeline shippable</h3>
+<span class="more" style="align-self: start">Read the case study</span>
+</a>
+<a href="CS-NeuralNewsletters.dc.html" class="card" style="text-decoration: none; background: #ECEAE5; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p class="eb">Neural Newsletters · Full stack and LLM</p>
+<h3 class="d3">Rebuilding an LLM content pipeline that shipped broken output</h3>
+<span class="more" style="align-self: start">Read the case study</span>
+</a>
+</section>
+
+<section style="padding: 40px 20px; display: flex; flex-direction: column; gap: 14px">
+<p class="eb">02 · How I work</p>
+<h2 class="d2">Start with how the work actually moves.</h2>
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 6px">
+<div style="border-top: 2px solid #17171A; padding-top: 12px"><p class="p" style="font-weight: 600">Find the step everyone waits on</p></div>
+<div style="border-top: 2px solid #17171A; padding-top: 12px"><p class="p" style="font-weight: 600">Connect what's already there</p></div>
+<div style="border-top: 2px solid #17171A; padding-top: 12px"><p class="p" style="font-weight: 600">Put the rules in code</p></div>
+<div style="border-top: 2px solid #17171A; padding-top: 12px"><p class="p" style="font-weight: 600">Measure before claiming</p></div>
+</div>
+</section>
+
+<footer style="flex-grow: 1; background: #17171A; padding: 40px 20px; display: flex; flex-direction: column; gap: 16px">
+<p class="eb" style="color: #B9B6AE">Contact</p>
+<h2 class="d2" style="color: #F7F6F3">Hiring for forward deployed engineering? Let's talk.</h2>
+<p class="p" style="color: #DCDAD4">I reply within a day.</p>
+<a class="btn" href="#email" style="background: #F7F6F3; color: #17171A">Email me</a>
+<a class="btn" href="#linkedin" style="border: 1px solid #F7F6F3; color: #F7F6F3">LinkedIn</a>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":3400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -53,7 +53,7 @@ conventions:
   docs_dir: docs
   style_notes:
     - "One default-exported function component per file under src/components"
-    - "Copy, metrics and resume content live in src/data/portfolioData.js, never inline in a component"
+    - "Copy and metrics live in src/data/portfolioData.js, never inline in a component"
     - "Styling is Tailwind utility classes in JSX; shared animation and colour tokens go in src/index.css"
     - "No new runtime dependency without naming it, its licence and its exact version in the plan"
     - "No analytics, tracking pixel, cookie, or visitor data collection of any kind"
@@ -84,6 +84,12 @@ sensitive_paths:
   - "scripts/check-npmrc.mjs"   # blocking CI check on .npmrc content before install (change 2026-09-20, D11)
   - "scripts/route-pages.mjs"   # writes the per-route index.html copies at build time; decides what Pages serves (change 2026-09-21, D6)
   - "scripts/check-route-pages.mjs" # blocking CI check that every app route has a page in dist (change 2026-09-21, D6)
+  - "scripts/prerender.mjs"     # renders every route at build time; decides the markup and per-page tags every visitor and crawler receives (change 2026-09-25, D3)
+  - "scripts/forbidden-copy.mjs" # the seventeen-string and dash scanner over src/ and built HTML; a change here can let a removed claim back in (change 2026-09-25, R129)
+  - "scripts/check-forbidden-copy.mjs" # blocking CI check that runs the scanner against dist (change 2026-09-25, R129)
+  - "src/pageMeta.js"           # builds the title, description, canonical and Open Graph/Twitter tags written into every served page (change 2026-09-25, R139, R141)
+  - "src/entry-server.jsx"      # the SSR entry the prerender script renders; decides the markup written into every served page (change 2026-09-25, R145 low finding)
+  - "scripts/check-test-floor.mjs" # blocking CI script that enforces the pinned test-suite floors this task edits (change 2026-09-25, R145 low finding, R149)
 
 # Commands hooks refuse (deny) or ask before running. Substrings, case-insensitive.
 #
@@ -152,13 +158,13 @@ compliance:
   audit_log_required: false   # No admin surface, no PHI, no cardholder data, no financial
                               # ledger. Nothing in the codebase meets any regime's audit-log
                               # trigger.
-  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, city, LinkedIn and GitHub profile; the phone number was removed from the site by change 2026-09-11, spec R41, and remains only in git history, see docs/hosted-config.md section 7), published deliberately and retained for as long as the site is live. Visitor IP addresses disclosed to Google (Google Fonts) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
+  retention_notes: "No visitor data is collected, stored or processed by this project. The only personal data is the owner's own contact detail in src/data/portfolioData.js (name, email, city, LinkedIn and GitHub profile; the phone number was removed from the site by change 2026-09-11, spec R41, and remains only in git history, see docs/hosted-config.md section 7), published deliberately and retained for as long as the site is live. Change 2026-09-25 (D17) widened this in two ways: the resume PDF planned by D17 was withdrawn on 2026-09-28 (D24) and never published; and prerendering now writes the owner's email address into the served HTML of every page as plain text, readable without JavaScript, where before it was reachable only inside the JS bundle. Both are the owner's deliberate publishing choice. Visitor IP addresses disclosed to Google (Google Fonts, no longer used) and GitHub (Pages hosting) are retained under those companies' own policies, outside this project's knowledge or control."
 
 # Risk tier overrides. Paths here force at least the given tier regardless of the classifier.
 # Nothing in this project reaches tier 3: there is no database, no auth and no payment path.
 tier_floor_paths:
   3: []
-  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs", "scripts/route-pages.mjs", "scripts/check-route-pages.mjs"]
+  2: [".github/workflows/**", "index.html", "vite.config.js", "package.json", "package-lock.json", "scripts/never-inline-fonts.mjs", "scripts/check-built-css-fonts.mjs", "scripts/check-npmrc.mjs", "scripts/route-pages.mjs", "scripts/check-route-pages.mjs", "scripts/prerender.mjs", "scripts/forbidden-copy.mjs", "scripts/check-forbidden-copy.mjs", "src/pageMeta.js", "src/entry-server.jsx", "scripts/check-test-floor.mjs"]
 
 # Optional tracker sync. Leave provider empty for repo-only. The repo stays authoritative; the
 # tracker is a one-way mirror so non-engineers can see phase, tier, and what needs a human.

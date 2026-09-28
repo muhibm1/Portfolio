@@ -156,6 +156,23 @@ Each item is confirmed by reading the file named.
 | 13 | Unused scaffold assets | `src/assets/react.svg`, `vite.svg`, `hero.png` | Imported by nothing. `hero.png` in particular may be intended for the hero and was never wired up. |
 | 14 | Stale local `dist/` | `dist/` | Untracked and git-ignored, **confirmed**, but present on disk from an earlier build and easy to mistake for current output. |
 
+### 2026-09-28 addendum: D57, phone-redaction scan not wired into CI
+
+`node scripts/check-phone-redaction.mjs`, run with no argument, is **not** run by
+`.github/workflows/deploy.yml` (**confirmed** by reading the workflow). CI's coverage of the
+phone number today is two narrower checks: R41's unit tests, and the generic phone-pattern
+regex in the R82 post-publish smoke step that runs against the already-served HTML, plus the
+`git ls-files` check for a tracked resume PDF. Neither of those is the repository-wide scan
+`check-phone-redaction.mjs` performs against the R89/GC41/GC89 reference commit.
+
+Recommendation, not yet actioned: a follow-up change should add a blocking step before Build in
+`deploy.yml`, with a checkout deep enough (`fetch-depth` covering the scanner's reference
+commit) for the scanner to read the history it needs. Until that lands, the owner runs
+`node scripts/check-phone-redaction.mjs` locally before merging any change that touches
+`src/`, `docs/`, or the workflow. `.github/workflows/deploy.yml` itself was not edited to make
+this addendum; it stays a protected-path, ask-first change for the owner to authorize
+separately.
+
 ### Security baseline items that do not yet apply, and one that does
 
 The global security baseline is written for applications with a database and auth. Most of it is
@@ -185,6 +202,10 @@ Three items do apply and are open:
 1. Are the published metrics (350+ tickets/day, 50+ regions, -40% incidents, 99.9% reliability)
    yours to publish, and is any of the Apple, TCS or Neural Newsletters detail confidential?
 2. Should the simulator's invented ticket data carry a visible "illustrative example" label?
+   **Answered by change 2026-09-25-rebuild-portfolio-to-approved-redesign: the question no longer
+   applies, because the plan removed the simulator and its component,
+   `InteractiveTriageSimulator.jsx`, entirely (plan section 1, brief "Problem"); there is no
+   invented ticket data left to label.**
 3. Do you want the phone number to stay on a public, scrapeable page? **Answered at G1 of change
    2026-09-11: removed from the site (G1-D1, spec R41).**
 4. Custom domain, or `muhibm1.github.io/Portfolio/`? This decides the `base` value and whether

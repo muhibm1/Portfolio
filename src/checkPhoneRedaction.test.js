@@ -11,6 +11,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  BINARY_EXTENSIONS,
   EXIT_CANNOT_RUN,
   EXIT_CLEAN,
   EXIT_HIT,
@@ -42,6 +43,15 @@ const AREA_CODE_AND_EXCHANGE_WITH_A_COUNTRY_CODE = ['+1555556', '1555556', '+1 5
 const DIGIT_BEFORE_THE_NUMBER = ['95555560100', '915555560100', '115555560100', '91555556'];
 
 const LINE_WITH_THE_NUMBER = 'Call 555-556-0100 today.\n';
+
+describe('check-phone-redaction binary extensions', () => {
+  // D30: no resume PDF exists in the repository any more, so the compensating skip R137 named
+  // (D12, D17) is gone too; the phone scan is back to treating every file type it does not
+  // recognise as undecodable.
+  it('lists only the design mockups, the hero image and the self-hosted fonts', () => {
+    expect(BINARY_EXTENSIONS).toEqual(['.jpg', '.png', '.woff', '.woff2']);
+  });
+});
 
 describe('check-phone-redaction matchers', () => {
   it.each(FULL_NUMBER_WITH_A_COUNTRY_CODE)(

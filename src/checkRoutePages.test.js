@@ -1,7 +1,7 @@
-// Tests scripts/check-route-pages.mjs (R119) by starting it the way CI does, with spawnSync, so
-// every case judges the exit code and the printed output. The script is never imported. Each case
-// builds its own temporary fixture directory from sitePagePaths(), so the expected pages track the
-// real case-study data, and no case reads or writes the repository's dist/.
+// Tests scripts/check-route-pages.mjs (R142) by starting it the way CI does, with spawnSync, so
+// every case judges the exit code and the printed output. The script is never imported. Each
+// case builds its own temporary fixture directory from sitePagePaths(), so the expected pages
+// track the real case-study data, and no case reads or writes the repository's dist/.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -15,21 +15,37 @@ const scriptPath = path.resolve(
   '../scripts/check-route-pages.mjs',
 );
 
-const FAILED_PREFIX = '::error::Route page check failed (R119):';
-const COULD_NOT_RUN_PREFIX = '::error::Route page check could not run (R119):';
+const FAILED_PREFIX = '::error::Route page check failed (R142):';
+const COULD_NOT_RUN_PREFIX = '::error::Route page check could not run (R142):';
+const SITE_URL = 'https://muhibm1.github.io/Portfolio/';
 
-const SHELL_CONTENT = 's'.repeat(300);
-const STALE_CONTENT = 'stale-content-different-from-the-shell';
-const MARKER = 'm'.repeat(200);
+const MODULE_SCRIPT = '<script type="module" crossorigin src="/Portfolio/assets/index-abc123.js"></script>';
+const STYLESHEET = '<link rel="stylesheet" crossorigin href="/Portfolio/assets/index-abc123.css">';
+const CSP_META = '<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">';
+const REFERRER_META = '<meta name="referrer" content="strict-origin-when-cross-origin">';
+const ROOT_WITH_CONTENT = '<div id="root"><h1>Real page content</h1></div>';
+const ROOT_EMPTY = '<div id="root"></div>';
 
-/** The relative page paths the check expects, in the shape the script writes them: <path>/index.html. */
-function pageRelativePaths() {
-  return sitePagePaths()
-    .filter((pagePath) => pagePath !== '/')
-    .map((pagePath) => `${pagePath.slice(1)}/index.html`);
+function canonicalFor(pagePath) {
+  return pagePath === '/' ? SITE_URL : `${SITE_URL}${pagePath.slice(1)}/`;
 }
 
-describe('check-route-pages', () => {
+function relativePathFor(pagePath) {
+  return pagePath === '/' ? 'index.html' : `${pagePath.slice(1)}/index.html`;
+}
+
+/** A clean page carrying every R142 marker, so a test can knock exactly one marker out. */
+function pageHtml({ canonical = null, notFound = false, root = ROOT_WITH_CONTENT, extra = '' } = {}) {
+  const canonicalTag = canonical ? `<link rel="canonical" href="${canonical}">` : '';
+  const robotsTag = notFound ? '<meta name="robots" content="noindex">' : '';
+  return (
+    `<!doctype html><html><head>${CSP_META}${REFERRER_META}<title>t</title>` +
+    `${canonicalTag}${robotsTag}${MODULE_SCRIPT}${STYLESHEET}${extra}</head>` +
+    `<body>${root}</body></html>`
+  );
+}
+
+describe('check-route-pages (G19)', () => {
   let fixtureDirectory;
 
   beforeEach(() => {
@@ -46,146 +62,202 @@ describe('check-route-pages', () => {
     fs.writeFileSync(fullPath, content, 'utf8');
   }
 
-  /** index.html, 404.html and every route page, all identical copies of the shell (GC7's fixture). */
+  /** index.html (the shell) plus one clean page per sitePagePaths() entry, plus a clean 404.html. */
   function buildCleanFixture() {
-    writeFile('index.html', SHELL_CONTENT);
-    writeFile('404.html', SHELL_CONTENT);
-    for (const relativePath of pageRelativePaths()) writeFile(relativePath, SHELL_CONTENT);
+    for (const pagePath of sitePagePaths()) {
+      writeFile(relativePathFor(pagePath), pageHtml({ canonical: canonicalFor(pagePath) }));
+    }
+    writeFile('404.html', pageHtml({ notFound: true }));
   }
 
   function runCheckOn(directory) {
     return spawnSync(process.execPath, [scriptPath, directory], { encoding: 'utf8' });
   }
 
-  it('exits 0 and prints the passed line when every route page and 404.html match index.html (GC7)', () => {
+  it('exits 0 and prints the passed line when every page carries its markers', () => {
     buildCleanFixture();
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('Route page check passed (R119): 4 route pages and 404.html match');
+    expect(result.stdout).toContain('Route page check passed (R142)');
   });
 
-  it('exits 0 when a relative directory argument resolves from the working directory (EG4)', () => {
+  it('exits 1 naming a missing page', () => {
     buildCleanFixture();
-    const parentDirectory = path.dirname(fixtureDirectory);
-    const basename = path.basename(fixtureDirectory);
+    fs.rmSync(path.join(fixtureDirectory, 'work', 'index.html'));
 
-    const result = spawnSync(process.execPath, [scriptPath, basename], {
-      cwd: parentDirectory,
-      encoding: 'utf8',
-    });
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(`${FAILED_PREFIX} work/index.html is missing`);
+  });
+
+  it('exits 1 naming a page with the wrong canonical', () => {
+    buildCleanFixture();
+    writeFile('work/index.html', pageHtml({ canonical: `${SITE_URL}wrong/` }));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(`${FAILED_PREFIX} work/index.html is missing the canonical link`);
+  });
+
+  it('exits 1 naming a page whose module script tag differs from index.html', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({ canonical: canonicalFor('/work') }).replace(
+        MODULE_SCRIPT,
+        '<script type="module" crossorigin src="/Portfolio/assets/different-hash.js"></script>',
+      ),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('is missing a script or stylesheet tag from index.html');
+  });
+
+  it('exits 1 naming a page with an empty #root', () => {
+    buildCleanFixture();
+    writeFile('work/index.html', pageHtml({ canonical: canonicalFor('/work'), root: ROOT_EMPTY }));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('has an empty #root');
+  });
+
+  it('does not flag a #root whose content is a nested div, only whitespace inside it', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({
+        canonical: canonicalFor('/work'),
+        root: '<div id="root"><div class="app"><h1>Nested content</h1></div></div>',
+      }),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('Route page check passed (R119)');
   });
 
-  it('exits 1 naming a missing route page (FL3)', () => {
+  it('exits 1 naming a page whose #root has only whitespace', () => {
     buildCleanFixture();
-    const missingPage = pageRelativePaths().find((relativePath) => relativePath.includes('apple-data-health'));
-    fs.rmSync(path.join(fixtureDirectory, missingPage));
+    writeFile('work/index.html', pageHtml({ canonical: canonicalFor('/work'), root: '<div id="root">   </div>' }));
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain(`${FAILED_PREFIX} work/apple-data-health/index.html is missing`);
+    expect(result.stdout).toContain('has an empty #root');
   });
 
-  it('exits 1 naming a stale route page that differs from index.html (FL4)', () => {
+  it('exits 1 naming a stray html file the app does not define', () => {
     buildCleanFixture();
-    writeFile('work/index.html', STALE_CONTENT);
+    writeFile('work/x.html', pageHtml({ canonical: `${SITE_URL}work/x/` }));
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('work/index.html');
-    expect(result.stdout).toContain('differs from index.html');
+    expect(result.stdout).toContain(`${FAILED_PREFIX} work/x.html is not a page the app defines`);
   });
 
-  it('exits 1 naming a missing 404.html, and separately one that differs from index.html (FL5)', () => {
+  it('exits 1 naming a 404 page without noindex', () => {
     buildCleanFixture();
-    fs.rmSync(path.join(fixtureDirectory, '404.html'));
-    const missingResult = runCheckOn(fixtureDirectory);
-    expect(missingResult.status).toBe(1);
-    expect(missingResult.stdout).toContain(`${FAILED_PREFIX} 404.html is missing`);
-
-    writeFile('404.html', STALE_CONTENT);
-    const differsResult = runCheckOn(fixtureDirectory);
-    expect(differsResult.status).toBe(1);
-    expect(differsResult.stdout).toContain('404.html');
-    expect(differsResult.stdout).toContain('differs from index.html');
-  });
-
-  it('exits 2 for a missing directory, and separately for a directory with no index.html (FL6)', () => {
-    const missingDirectory = path.join(fixtureDirectory, 'no-such-dist');
-    const missingDirectoryResult = runCheckOn(missingDirectory);
-    expect(missingDirectoryResult.status).toBe(2);
-    expect(missingDirectoryResult.stdout).toContain(COULD_NOT_RUN_PREFIX);
-    expect(missingDirectoryResult.stdout).toContain('no-such-dist');
-
-    buildCleanFixture();
-    fs.rmSync(path.join(fixtureDirectory, 'index.html'));
-    const missingShellResult = runCheckOn(fixtureDirectory);
-    expect(missingShellResult.status).toBe(2);
-    expect(missingShellResult.stdout).toContain(COULD_NOT_RUN_PREFIX);
-    expect(missingShellResult.stdout).toContain(path.basename(fixtureDirectory));
-  });
-
-  it('exits 1 naming a stray route page the app does not define (FL7)', () => {
-    buildCleanFixture();
-    writeFile('work/removed-study/index.html', STALE_CONTENT);
+    writeFile('404.html', pageHtml({ notFound: false }));
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('work/removed-study/index.html');
-    expect(result.stdout).toContain('is not a page the app defines');
+    expect(result.stdout).toContain('is missing meta name="robots" content="noindex"');
   });
 
-  it('exits 1 naming stray index.html files outside work/ and more than one level deep (FL8)', () => {
+  it('exits 1 naming a page with two CSP tags (D15)', () => {
     buildCleanFixture();
-    writeFile('unexpected-top/index.html', STALE_CONTENT);
-    writeFile('work/apple-llm-triage/nested/deep/index.html', STALE_CONTENT);
+    writeFile('work/index.html', pageHtml({ canonical: canonicalFor('/work'), extra: CSP_META }));
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('unexpected-top/index.html');
-    expect(result.stdout).toContain('work/apple-llm-triage/nested/deep/index.html');
-    expect(result.stdout).toContain('is not a page the app defines');
+    expect(result.stdout).toContain('does not have exactly one Content-Security-Policy meta tag');
   });
 
-  it('never prints a stale page\'s content, only its path and byte counts (AD4)', () => {
+  it('exits 1 naming a page with two referrer tags (D15)', () => {
     buildCleanFixture();
-    writeFile('work/index.html', MARKER);
-
-    const result = runCheckOn(fixtureDirectory);
-
-    expect(result.stdout).not.toContain(MARKER);
-    expect(result.stderr).not.toContain(MARKER);
-    expect(result.stdout).toContain('work/index.html');
-  });
-
-  it('exits 1 naming a stray .html file that is not named index.html (M1)', () => {
-    buildCleanFixture();
-    writeFile('work/x.html', STALE_CONTENT);
+    writeFile('work/index.html', pageHtml({ canonical: canonicalFor('/work'), extra: REFERRER_META }));
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('work/x.html');
-    expect(result.stdout).toContain('is not a page the app defines');
+    expect(result.stdout).toContain('does not have exactly one name="referrer" meta tag');
   });
 
-  it('never prints a stray page\'s content, only its path (AD5)', () => {
+  it('exits 1 naming a page with an inline script (D15)', () => {
     buildCleanFixture();
-    writeFile('work/removed-study/index.html', MARKER);
+    writeFile(
+      'work/index.html',
+      pageHtml({ canonical: canonicalFor('/work'), extra: '<script>alert(1)</script>' }),
+    );
 
     const result = runCheckOn(fixtureDirectory);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).not.toContain(MARKER);
-    expect(result.stderr).not.toContain(MARKER);
-    expect(result.stdout).toContain('work/removed-study/index.html');
+    expect(result.stdout).toContain('has a <script> without a src attribute');
   });
+
+  it('exits 1 naming a page referencing fonts.gstatic.com (D15)', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({
+        canonical: canonicalFor('/work'),
+        extra: '<link rel="preconnect" href="https://fonts.gstatic.com">',
+      }),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('references fonts.gstatic.com');
+  });
+
+  it('exits 1 naming a page containing a phone-shaped number (D15)', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({ canonical: canonicalFor('/work'), root: '<div id="root"><p>Call (555) 123-4567</p></div>' }),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('contains a phone-shaped number');
+  });
+
+  it('never prints file content in an offender line', () => {
+    buildCleanFixture();
+    writeFile(
+      'work/index.html',
+      pageHtml({ canonical: canonicalFor('/work'), root: '<div id="root"><p>Call (555) 123-4567</p></div>' }),
+    );
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.stdout).not.toContain('555');
+  });
+
+  it('exits 2 when the directory does not exist', () => {
+    const result = runCheckOn(path.join(fixtureDirectory, 'does-not-exist'));
+
+    expect(result.status).toBe(2);
+    expect(result.stdout).toContain(COULD_NOT_RUN_PREFIX);
+  });
+
+  // No "exits 0 on the real dist/ after a build" case here: tests run before the build, so
+  // dist/ never exists in CI, and a case that silently returns when its precondition is absent
+  // proves nothing there while turning red on a stale local dist/. The equivalent real-dist
+  // assertion is the post-build CI step `node scripts/check-route-pages.mjs` (conductor
+  // decision D22).
 });
