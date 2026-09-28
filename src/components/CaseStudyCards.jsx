@@ -19,13 +19,10 @@ export default function CaseStudyCards({ caseStudies }) {
 }
 
 function FeaturedCard({ study }) {
-  const { card } = study;
+  const { card, codeLink } = study;
 
   return (
-    <Link
-      to={`/work/${study.id}`}
-      className="grid grid-cols-1 gap-6 rounded-xl bg-ink p-8 no-underline md:grid-cols-12 md:gap-6"
-    >
+    <article className="grid grid-cols-1 gap-6 rounded-xl bg-ink p-8 md:grid-cols-12 md:gap-6">
       <div className="flex flex-col gap-4 md:col-span-7">
         <p className="hidden font-mono text-xs uppercase tracking-widest text-on-dark-tertiary md:block">
           {card.eyebrow}
@@ -33,11 +30,16 @@ function FeaturedCard({ study }) {
         <p className="font-mono text-xs uppercase tracking-widest text-on-dark-tertiary md:hidden">
           {card.mobileEyebrow}
         </p>
-        <h3 className="font-display text-2xl font-semibold text-on-dark md:text-4xl">
-          {card.title}
-        </h3>
-        <p className="hidden text-on-dark-secondary md:block">{card.summary}</p>
-        <p className="text-sm text-on-dark-secondary md:hidden">{card.mobileSummary}</p>
+        <Link to={`/work/${study.id}`} className="flex flex-col gap-4 no-underline">
+          <h3 className="font-display text-2xl font-semibold text-on-dark md:text-4xl">
+            {card.title}
+          </h3>
+          <p className="hidden text-on-dark-secondary md:block">{card.summary}</p>
+          <p className="text-sm text-on-dark-secondary md:hidden">{card.mobileSummary}</p>
+          <span className="self-start border-b border-on-dark pb-0.5 text-sm font-medium text-on-dark">
+            {card.linkText}
+          </span>
+        </Link>
         <div className="flex flex-wrap gap-2 md:hidden">
           {card.mobileTags.map((tag) => (
             <span
@@ -48,9 +50,17 @@ function FeaturedCard({ study }) {
             </span>
           ))}
         </div>
-        <span className="self-start border-b border-on-dark pb-0.5 text-sm font-medium text-on-dark">
-          {card.linkText}
-        </span>
+        {codeLink && (
+          <a
+            href={codeLink.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View the code on GitHub, public snapshot"
+            className="self-start border-b border-soft pb-0.5 text-sm font-medium text-on-dark-secondary transition-colors hover:text-on-dark"
+          >
+            View the code
+          </a>
+        )}
       </div>
       <div className="hidden grid-cols-2 content-center gap-3 md:col-span-4 md:col-start-9 md:grid">
         {card.stats.map((stat) => (
@@ -60,7 +70,7 @@ function FeaturedCard({ study }) {
           </div>
         ))}
       </div>
-    </Link>
+    </article>
   );
 }
 
