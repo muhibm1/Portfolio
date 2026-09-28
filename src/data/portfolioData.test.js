@@ -1,9 +1,16 @@
-// Pins the content module to the owner's approved plan (PORTFOLIO_REDESIGN_PLAN.md section 6)
-// and the seven mockups, word for word. A failure here means a fact or a string drifted from
-// what the owner approved; only he may change portfolioData.js (CLAUDE.md "Protected").
+// Pins the content module to the owner's approved plan (PORTFOLIO_REDESIGN_PLAN.md section 6,
+// amended by the owner's resume and the 2026-09-28 rejection notes) and the seven mockups, word
+// for word. A failure here means a fact or a string drifted from what the owner approved; only
+// he may change portfolioData.js (CLAUDE.md "Protected"). G14 (R138, R146, R153, R154, R155).
 import { describe, expect, it } from "vitest";
 import { portfolioData } from "./portfolioData.js";
 import { staticRoutePaths } from "../routePaths.js";
+// R156's term list and matcher functions live in scripts/forbidden-copy.mjs; this test imports
+// them rather than copying them, so a scan against this module stays in step with the scanner
+// (interface (h)). Until T16 folds the R156 terms into FORBIDDEN_TERMS, this import carries only
+// the built terms and the scan below passes trivially; once folded it becomes a real check with
+// no edit needed here.
+import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 
 // ADR 0006's fixed block-type set. A block outside this set is a data bug the template would
 // throw on at render.
@@ -29,6 +36,14 @@ const pinnedRoleDates = [
   "May 2022 to Sep 2022",
 ];
 
+const pinnedRoleTitles = [
+  "Data Engineer",
+  "Software Engineer",
+  "AI Instructor",
+  "Software Consultant",
+  "Software Engineering Intern",
+];
+
 const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
@@ -37,6 +52,7 @@ const pinnedToolkit = [
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
 
+// R154: the featured card's four values (D52: 40, not 28) and the WorkHorse case-study stats.
 const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
   "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
@@ -45,9 +61,10 @@ const pinnedCaseStudyStats = {
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
 };
 
+const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
+
 // Copied verbatim from the committed mockups in docs/design/redesign-2026-09/ (owner-approved
-// copy): CS-WorkHorse.dc.html, CS-Decision.dc.html, CS-Integration.dc.html,
-// CS-DataHealth.dc.html, CS-NeuralNewsletters.dc.html.
+// copy) and R155, amended where R154/R155 give an exact new string.
 const pinnedCaseStudyNarratives = {
   workhorse: {
     eyebrow: "Case study · Personal system · Agentic AI · Active",
@@ -58,24 +75,25 @@ const pinnedCaseStudyNarratives = {
       { label: "My role", value: "Designed and built it end to end" },
       {
         label: "What it is",
-        value: "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook)",
+        value:
+          "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
       },
       {
         label: "Stack",
-        value: "Node.js, Python, TypeScript, Electron, Supabase Postgres with pgvector",
+        value: "Node.js, Python, FastAPI, TypeScript, Electron, Supabase Postgres with pgvector",
       },
       { label: "Quality", value: "224 plugin tests, 278 desktop tests, CI on every push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
       "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
-    contactHeading: "Want the walkthrough? I reply within a day.",
+    contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
   },
   "apple-llm-triage": {
     eyebrow: "Case study · Apple (via TCS) · Data Health team · Feb 2025 to present",
     title: "A review backlog, turned into a decision system",
     lead:
-      "Cross-team data changes were stuck behind a manual review queue. I built a self-hosted LLM system that reads each request and decides approve, reject or hold, with every decision auditable by a person.",
+      "Cross-team data changes were stuck behind a manual review queue. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that reads each request and decides approve, reject or hold, with a reviewable audit trail.",
     atAGlance: [
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
@@ -116,7 +134,7 @@ const pinnedCaseStudyNarratives = {
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures at the gate.",
+      "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer release-blocking failures at the gate.",
     contactHeading: "Data you can't trust yet? Let's talk.",
   },
   "neural-newsletters-llm": {
@@ -137,16 +155,74 @@ const pinnedCaseStudyNarratives = {
   },
 };
 
-const bannedSkillWords = [
-  "Kubernetes",
-  "Databricks",
-  "Delta Lake",
-  "FastAPI",
-  "fine-tuning",
-  "TensorFlow",
-  "NiFi",
-  "MLOps",
+// R154's seven MCP paragraphs, in order, word for word.
+const pinnedMcpParagraphs = [
+  "Studbook also runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it. The server lives in the Studbook repository.",
+  "Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
+  "The first version missed a requirement written before the work started, and my own ship gate rejected it.",
+  "The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with the results proved identical over the same 40 test questions.",
+  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact.",
+  "WorkHorse built it end to end, with 12 of 12 review findings fixed before approval.",
+  "Every query runs as a read-only Postgres role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
 ];
+
+// R154, D44: the mockup's line 177, verbatim.
+const pinnedPaddockParagraph =
+  "Paddock, the desktop app, runs the same query path in TypeScript. A parity gate checks it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated.";
+
+// R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
+const pinnedMeasuredFirstParagraph =
+  "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.";
+const pinnedMeasuredLastParagraph =
+  "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine plugin releases came out of those four runs.";
+
+// R154: the four `measured` stat cards, D41/D47/D50/D51/D53/D42.
+const pinnedMeasuredStats = [
+  { value: "5 of 5", label: "real changes merged, tested and documented" },
+  { value: "40", label: "review findings fixed before a person signed off" },
+  { value: "70", label: "new tests and eval cases written in the first four runs" },
+  { value: "1 of 5", label: "rejected at the ship gate, then reworked and merged" },
+];
+
+// R154, D50: the first and fourth rows are the mockup's, unchanged; the fifth row is new.
+const pinnedMeasuredTableRow1 = [
+  "Live web app with auth: moderation API type fix",
+  "Merged; the build went green for the first time in 17 days; 9 findings fixed before sign-off.",
+];
+const pinnedMeasuredTableRow4 = [
+  "Test service: README endpoints section",
+  "Done; 11 tests; 3 findings fixed before sign-off.",
+];
+const pinnedMeasuredTableRow5 = [
+  "Studbook: MCP server for agents",
+  "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
+];
+
+// D32 as amended by D52 (the owner did not keep 28) and the mockup's mobile tag.
+const pinnedFeaturedMobileTags = ["100% faithful", "40 findings fixed pre sign-off"];
+
+// D32: the Studbook split stats.
+const pinnedStudbookSplitStats = ["100%", "3 of 3", "2 to 11", "9 of 12"];
+
+const pinnedRepositories = {
+  workhorse: "https://github.com/muhibm1/workhorse-snapshot",
+  studbook: "https://github.com/muhibm1/studbook-snapshot",
+  paddock: "https://github.com/muhibm1/paddock-snapshot",
+};
+
+// R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
+// banned because it names no approved fact.
+const bannedSkillWords = ["Kubernetes", "Databricks", "Delta Lake", "fine-tuning", "TensorFlow", "NiFi", "MLOps"];
+
+// R138, D50: never "my", "mine" or "client" in the run record; the one "my own" the page keeps
+// (D55, the MCP paragraph "my own ship gate") sits outside the `measured` block, so this regex
+// is only ever run against `measured` paragraphs, stat labels and table cells.
+const NO_OWNERSHIP_OR_CLIENT_WORDS = /\b(my|mine|client)\b/i;
+
+// Overlay 8.5: no string about WorkHorse or Studbook implies users, a team or adoption.
+const NO_USERS_WORDS = /\b(users|customers|adopted|used by|team|teams|our)\b/i;
+
+const NO_PERCENTAGE_OTHER_THAN_100 = /(?<!100)%|\bpercent\b/i;
 
 function collectStrings(value) {
   if (typeof value === "string") return [value];
@@ -156,6 +232,40 @@ function collectStrings(value) {
 
 function collectBlocks(caseStudy) {
   return caseStudy.sections.flatMap((section) => section.blocks);
+}
+
+function findSection(caseStudy, id) {
+  return caseStudy.sections.find((section) => section.id === id);
+}
+
+// The `measured` section's own paragraphs, stat labels and table cells only (D50's ownership
+// ban is scoped here; it never reaches the `mcp` paragraphs or the "My role" at-a-glance labels).
+function measuredStrings(workhorse) {
+  const measured = findSection(workhorse, "measured");
+  return measured.blocks.flatMap((block) => {
+    if (block.type === "paragraph") return [block.text];
+    if (block.type === "stats") return block.items.map((item) => item.label);
+    if (block.type === "table") return block.rows.flatMap((row) => row.cells);
+    return [];
+  });
+}
+
+// Overlay 8.5's scope: the WorkHorse case study, the featured card, the "Building WorkHorse"
+// line and principles 03 and 04.
+function workhorseAndStudbookStrings(data) {
+  const workhorse = data.caseStudies.find((study) => study.id === "workhorse");
+  const buildingWorkHorse = data.home.hero.rightNow.items.find(
+    (item) => item.title === "Building WorkHorse",
+  );
+  const principles03and04 = data.home.principles.items.filter((item) =>
+    ["03", "04"].includes(item.number),
+  );
+
+  return [
+    ...collectStrings(workhorse),
+    ...collectStrings(buildingWorkHorse),
+    ...collectStrings(principles03and04),
+  ];
 }
 
 describe("portfolioData", () => {
@@ -185,13 +295,25 @@ describe("portfolioData", () => {
     expect(portfolioData).not.toHaveProperty("philosophy");
   });
 
+  it("has no resume key or control text anywhere in the module (R151)", () => {
+    expect(portfolioData.personal).not.toHaveProperty("resumeFileName");
+    expect(portfolioData.home.hero).not.toHaveProperty("secondaryCta");
+    expect(portfolioData.home.experience).not.toHaveProperty("resumeLinkText");
+    expect(portfolioData.home.contact).not.toHaveProperty("resumeButton");
+    expect(portfolioData.home.contact).not.toHaveProperty("githubButton");
+    expect(collectStrings(portfolioData).join(" ")).not.toMatch(/\bresume\b/i);
+  });
+
   it("carries the five pinned home stat values in order (R138, G14)", () => {
     expect(portfolioData.home.stats.items.map((item) => item.value)).toEqual(pinnedHomeStats);
   });
 
-  it("carries the five pinned role date strings in order (R138, G14)", () => {
+  it("carries the five pinned role date strings and titles in order (R138, G14)", () => {
     expect(portfolioData.home.experience.roles.map((role) => role.period)).toEqual(
       pinnedRoleDates,
+    );
+    expect(portfolioData.home.experience.roles.map((role) => role.title)).toEqual(
+      pinnedRoleTitles,
     );
   });
 
@@ -207,6 +329,12 @@ describe("portfolioData", () => {
     }
   });
 
+  it("carries the featured WorkHorse card's four pinned stat values and mobile tag (R154, D52, G7)", () => {
+    const workhorse = portfolioData.caseStudies[0];
+    expect(workhorse.card.stats.map((stat) => stat.value)).toEqual(pinnedFeaturedCardStats);
+    expect(workhorse.card.mobileTags).toEqual(pinnedFeaturedMobileTags);
+  });
+
   it("carries each case study's pinned eyebrow, title, lead, at-a-glance, callout and contact heading, word for word from the mockups (G14)", () => {
     for (const study of portfolioData.caseStudies) {
       const narrative = pinnedCaseStudyNarratives[study.id];
@@ -218,6 +346,152 @@ describe("portfolioData", () => {
       expect(study.callout.eyebrow).toBe(narrative.calloutEyebrow);
       expect(study.callout.text).toBe(narrative.calloutText);
       expect(study.contactHeading).toBe(narrative.contactHeading);
+    }
+  });
+
+  it("carries no callout note on the WorkHorse study (D24, D25)", () => {
+    expect(portfolioData.caseStudies[0].callout).not.toHaveProperty("note");
+  });
+
+  it("carries the seven pinned MCP paragraphs in order, after the studbook section (R154)", () => {
+    const workhorse = portfolioData.caseStudies[0];
+    const mcp = findSection(workhorse, "mcp");
+
+    expect(workhorse.sections.map((section) => section.id)).toContain("mcp");
+    expect(workhorse.sections.findIndex((s) => s.id === "mcp")).toBeGreaterThan(
+      workhorse.sections.findIndex((s) => s.id === "studbook"),
+    );
+    expect(mcp.eyebrow).toBe("Inside WorkHorse");
+    expect(mcp.heading).toBe("An MCP server over the record");
+    expect(mcp.blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
+  });
+
+  it("carries the Paddock paragraph verbatim, with Paddock linked to its snapshot (R154, D44)", () => {
+    const studbook = findSection(portfolioData.caseStudies[0], "studbook");
+    const paddockBlock = studbook.blocks.find((block) => block.text === pinnedPaddockParagraph);
+
+    expect(paddockBlock).toBeDefined();
+    expect(paddockBlock.link).toEqual({ text: "Paddock", href: pinnedRepositories.paddock });
+  });
+
+  it("carries the `measured` first and last paragraphs verbatim, five runs and the first-four-run closing sentence (R154, D41, D43, D47, D50, D53)", () => {
+    const measured = findSection(portfolioData.caseStudies[0], "measured");
+    const paragraphs = measured.blocks.filter((block) => block.type === "paragraph");
+
+    expect(paragraphs[0].text).toBe(pinnedMeasuredFirstParagraph);
+    expect(paragraphs[paragraphs.length - 1].text).toBe(pinnedMeasuredLastParagraph);
+  });
+
+  it("carries the `measured` section's four pinned stat cards (R154, D41, D42, D47, D50, D51, D53)", () => {
+    const measured = findSection(portfolioData.caseStudies[0], "measured");
+    const statsBlock = measured.blocks.find((block) => block.type === "stats");
+
+    expect(statsBlock.items).toEqual(pinnedMeasuredStats);
+  });
+
+  it("carries the `measured` table's five rows, the first, fourth and fifth as pinned (R154, D50)", () => {
+    const measured = findSection(portfolioData.caseStudies[0], "measured");
+    const tableBlock = measured.blocks.find((block) => block.type === "table");
+
+    expect(tableBlock.rows).toHaveLength(5);
+    expect(tableBlock.rows[0].cells).toEqual(pinnedMeasuredTableRow1);
+    expect(tableBlock.rows[3].cells).toEqual(pinnedMeasuredTableRow4);
+    expect(tableBlock.rows[4].cells).toEqual(pinnedMeasuredTableRow5);
+  });
+
+  it("never says my, mine or client in the `measured` section's paragraphs, stat labels or table cells (R138, D50)", () => {
+    for (const text of measuredStrings(portfolioData.caseStudies[0])) {
+      expect(text).not.toMatch(NO_OWNERSHIP_OR_CLIENT_WORDS);
+    }
+  });
+
+  it("keeps 'my own ship gate' in the MCP story, the one exception D55 names", () => {
+    const mcp = findSection(portfolioData.caseStudies[0], "mcp");
+    const allMcpText = mcp.blocks.map((block) => block.text).join(" ");
+
+    expect(allMcpText).toContain("my own ship gate");
+  });
+
+  it("keeps the five 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+    const myRoleLabels = portfolioData.caseStudies.map(
+      (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
+    );
+
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(5);
+  });
+
+  it("carries the Studbook split stats in order (D32, G14)", () => {
+    const studbook = findSection(portfolioData.caseStudies[0], "studbook");
+    const splitBlock = studbook.blocks.find((block) => block.type === "split");
+
+    expect(splitBlock.stats.items.map((item) => item.value)).toEqual(pinnedStudbookSplitStats);
+    expect(splitBlock.table.rows.at(-1).cells[0]).toBe("Hybrid + reranker, pool of 10 (shipped)");
+  });
+
+  it("names personal.repositories with the three snapshot URLs, held once (R153)", () => {
+    expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
+  });
+
+  it("carries the WorkHorse case study's codeLink and the hero's codeLine (R153, R154)", () => {
+    expect(portfolioData.caseStudies[0].codeLink).toEqual({
+      label: "Code: workhorse-snapshot",
+      href: pinnedRepositories.workhorse,
+    });
+    expect(portfolioData.home.hero.codeLine).toEqual({
+      text: "The code is public on GitHub",
+      href: portfolioData.personal.github,
+    });
+  });
+
+  it("has every paragraph link.text occur exactly once in its own text (interface (f), R153)", () => {
+    for (const study of portfolioData.caseStudies) {
+      for (const block of collectBlocks(study)) {
+        if (block.type !== "paragraph" || !block.link) continue;
+
+        const occurrences = block.text.split(block.link.text).length - 1;
+        expect(occurrences).toBe(1);
+      }
+    }
+  });
+
+  it("never implies WorkHorse or Studbook has users, a team or adoption (overlay 8.5, R138)", () => {
+    for (const text of workhorseAndStudbookStrings(portfolioData)) {
+      expect(text).not.toMatch(NO_USERS_WORDS);
+    }
+  });
+
+  it("never writes a percentage other than 100% about WorkHorse or Studbook (R138)", () => {
+    for (const text of workhorseAndStudbookStrings(portfolioData)) {
+      expect(text).not.toMatch(NO_PERCENTAGE_OTHER_THAN_100);
+    }
+  });
+
+  it("matches no R156 term already carried by scripts/forbidden-copy.mjs, timing and Paddock patterns included once T16 folds them (R129, R156, G14)", () => {
+    const matchers = forbiddenCopy.buildMatchers(forbiddenCopy.FORBIDDEN_TERMS);
+    const allText = collectStrings(portfolioData).join("\n");
+
+    expect(forbiddenCopy.termsFoundIn(allText, matchers)).toEqual([]);
+  });
+
+  it("writes no absolute timing figure of the owner's own tools anywhere in the module (D26, D36)", () => {
+    // Mirrors R156's "timing figure" pattern definition directly, so this check is real today
+    // and does not depend on scripts/forbidden-copy.mjs exporting the pattern under a given name.
+    const timingFigure = /\b\d+(?:\.\d+)?\s?(?:ms|milliseconds?|seconds?)\b|\b\d+\.\d+s\b/i;
+    const allText = collectStrings(portfolioData).join("\n");
+
+    expect(allText).not.toMatch(timingFigure);
+  });
+
+  it("never says Paddock is retired, deprecated or dropped (R138, R156, D44)", () => {
+    // Mirrors R156's "Paddock retirement wording" pattern: paddock and a retirement word in the
+    // same sentence, either order, case-insensitive.
+    const retirementWords = /retired|retire\b|retirement|deprecated|dropped|dropping|discontinued|abandoned/i;
+    const sentences = collectStrings(portfolioData).join(" ").split(/(?<=[.!?])\s+/);
+
+    for (const sentence of sentences) {
+      if (/paddock/i.test(sentence)) {
+        expect(sentence).not.toMatch(retirementWords);
+      }
     }
   });
 
@@ -237,6 +511,10 @@ describe("portfolioData", () => {
       expect(allText).not.toContain(bannedWord);
     }
     expect(allText).not.toMatch(/\bGo\b/);
+  });
+
+  it("permits FastAPI as an approved fact (overlay rule 6, R138)", () => {
+    expect(collectStrings(portfolioData).join(" ")).toContain("FastAPI");
   });
 
   it("uses only block types from the ADR 0006 fixed set (ADR 0006, G14)", () => {

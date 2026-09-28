@@ -1,12 +1,26 @@
 // The site's one content module. Every string here is copied verbatim from the owner's approved
 // plan (portfolio-redesign-handoff/PORTFOLIO_REDESIGN_PLAN.md, section 6 binding for facts) and
-// the seven mockups (word for word, ADR 0006). Nothing here is paraphrased, rounded or added.
+// the seven mockups (word for word, ADR 0006), amended per the 2026-09-28 revision (resume
+// withdrawn, contact narrowed to email and LinkedIn, GitHub snapshots linked, an MCP section
+// added, the WorkHorse run record brought to five runs; spec R138, R146, R153, R154, R155).
+// Nothing here is paraphrased, rounded or added beyond what those requirements give verbatim.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
-// Shape: personal (contact and header facts), home (hero, rightNow, stats, caseStudiesIntro,
-// principles, workingWithPeople, experience, education, toolkit, contact), caseStudies (five, in
-// the plan's reading order, each carrying card, atAGlance, stats, intro, sections of content
-// blocks, callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
+// Shape: personal (contact, header facts and the three public snapshot repositories), home
+// (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
+// toolkit, contact), caseStudies (five, in the plan's reading order, each carrying card,
+// atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
+// may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
+
+// The three public snapshot repositories, held once (R153) and referenced from every place the
+// work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
+const REPOSITORIES = {
+  workhorse: "https://github.com/muhibm1/workhorse-snapshot",
+  studbook: "https://github.com/muhibm1/studbook-snapshot",
+  paddock: "https://github.com/muhibm1/paddock-snapshot",
+};
+
+const GITHUB_PROFILE = "https://github.com/muhibm1";
 
 export const portfolioData = {
   personal: {
@@ -15,8 +29,8 @@ export const portfolioData = {
     email: "mmalqaim@gmail.com",
     location: "Austin, TX",
     linkedin: "https://www.linkedin.com/in/muhibm1/",
-    github: "https://github.com/muhibm1",
-    resumeFileName: "Muhammad_Muhibullah_Resume.pdf",
+    github: GITHUB_PROFILE,
+    repositories: REPOSITORIES,
   },
 
   home: {
@@ -29,8 +43,8 @@ export const portfolioData = {
       mobileLead:
         "Data Engineer on Apple's Data Health team (via TCS). I connect systems that were never built to talk to each other, put LLMs to work on production data behind real guardrails, and measure what I ship.",
       primaryCta: "Read the case studies",
-      secondaryCta: "Download resume",
       emailLinkText: "mmalqaim@gmail.com",
+      codeLine: { text: "The code is public on GitHub", href: GITHUB_PROFILE },
       rightNow: {
         eyebrow: "Right now",
         items: [
@@ -75,9 +89,9 @@ export const portfolioData = {
         },
         {
           value: "~40%",
-          label: "Fewer gating failures",
-          context: "After I moved validation from EMR to EKS",
-          mobileText: "fewer gating failures after EMR to EKS",
+          label: "Fewer release-blocking failures",
+          context: "After validation moved from EMR to EKS, with DataOps",
+          mobileText: "fewer release-blocking failures after EMR to EKS",
         },
         {
           value: "100%",
@@ -128,13 +142,12 @@ export const portfolioData = {
     workingWithPeople: {
       eyebrow: "Working with people",
       text:
-        "I've managed feature delivery for a client product, taught Python and machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
+        "I've taken a client's goals for an education platform redesign through to a beta-ready launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
     },
 
     experience: {
       eyebrow: "03 · Experience",
       heading: "Where the work happened.",
-      resumeLinkText: "Full resume (PDF)",
       roles: [
         {
           company: "Apple (via TCS)",
@@ -142,10 +155,10 @@ export const portfolioData = {
           period: "Feb 2025 to present",
           subheading: "Data Health team · Austin, TX",
           highlights: [
-            "Built and own a self-hosted LLM system that decides approve, reject or hold on review tickets; throughput from 30 to 350+ a day.",
+            "Identified a review bottleneck, scoped the fix with the requesting teams, and deployed a self-hosted LLM system that decides approve, reject or hold with a reviewable audit trail; throughput from 30 to 350+ tickets a day.",
             "Built a Python tool linking ticketing, repository and geo-data systems through OAuth2 APIs, cutting permission turnaround by about 50%.",
             "Run and tune ML-driven remediation jobs that have resolved hundreds of thousands of validation failures across 50+ regions.",
-            "Moved validation infrastructure from AWS EMR to EKS, cutting gating failures by about 40%, and led response to a building-generation incident affecting tens of thousands of buildings.",
+            "Worked with DataOps and data evaluation to migrate data validation from AWS EMR to AWS EKS and move checks upstream, cutting release-blocking failures by about 40%, and led response to a building-generation incident affecting tens of thousands of buildings.",
           ],
         },
         {
@@ -160,19 +173,19 @@ export const portfolioData = {
         },
         {
           company: "edX",
-          title: "Machine Learning Instructor",
+          title: "AI Instructor",
           period: "Oct 2023 to Mar 2025",
           highlights: [
-            "Taught a full-lifecycle ML curriculum (ingestion, ETL, training, evaluation, deployment) to two cohorts of about 30, mostly new to code.",
+            "Taught machine learning, neural networks, deep learning and NLP to two cohorts of about 30, most new to code.",
             "Ran 4.5 hours a week of office hours and 1:1 mentorship with hands-on code review.",
           ],
         },
         {
           company: "Freelance",
-          title: "Project Manager",
+          title: "Software Consultant",
           period: "Dec 2022 to May 2024",
           highlights: [
-            "Managed platform feature delivery for an education product, and introduced QA and reporting workflows that improved delivery reliability and stakeholder visibility.",
+            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through to a beta-ready platform they could launch and demo. QA and reporting workflows kept delivery visible to the client.",
           ],
         },
         {
@@ -230,14 +243,11 @@ export const portfolioData = {
     contact: {
       eyebrow: "04 · Contact",
       heading: "Hiring for forward deployed engineering? Let's talk.",
-      lead:
-        "I reply to email within a day. My resume, references and a walkthrough of any private repository are available on request.",
+      lead: "I reply to email within a day. References are available on request.",
       mobileLead: "I reply within a day.",
       emailButton: "Email mmalqaim@gmail.com",
       mobileEmailButton: "Email me",
-      resumeButton: "Resume",
       linkedinButton: "LinkedIn",
-      githubButton: "GitHub",
       location: "Austin, TX · Open to relocation and remote",
     },
   },
@@ -257,12 +267,13 @@ export const portfolioData = {
         linkText: "Read the case study",
         stats: [
           { value: "100%", label: "faithful answers, sealed test" },
-          { value: "+52%", label: "retrieval recall from tuning" },
-          { value: "28", label: "review findings fixed before sign-off" },
-          { value: "0", label: "rejected ship documents" },
+          { value: "3 of 3", label: "trap questions refused, nothing invented" },
+          { value: "40", label: "review findings fixed before sign-off" },
+          { value: "9", label: "code hooks the AI can't override" },
         ],
-        mobileTags: ["100% faithful", "28 findings fixed pre sign-off"],
+        mobileTags: ["100% faithful", "40 findings fixed pre sign-off"],
       },
+      codeLink: { label: "Code: workhorse-snapshot", href: REPOSITORIES.workhorse },
       eyebrow: "Case study · Personal system · Agentic AI · Active",
       title: "WorkHorse: AI-built software you can audit",
       intro:
@@ -271,11 +282,12 @@ export const portfolioData = {
         { label: "My role", value: "Designed and built it end to end" },
         {
           label: "What it is",
-          value: "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook)",
+          value:
+            "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
         },
         {
           label: "Stack",
-          value: "Node.js, Python, TypeScript, Electron, Supabase Postgres with pgvector",
+          value: "Node.js, Python, FastAPI, TypeScript, Electron, Supabase Postgres with pgvector",
         },
         { label: "Quality", value: "224 plugin tests, 278 desktop tests, CI on every push" },
       ],
@@ -369,15 +381,15 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put four real changes through it, including one on a live web app with authentication and two on this site.",
+                "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.",
             },
             {
               type: "stats",
               items: [
-                { value: "4 of 4", label: "real changes merged, tested and documented" },
-                { value: "28", label: "review findings fixed before a person signed off" },
-                { value: "70", label: "new tests and eval cases written along the way" },
-                { value: "0", label: "rejected ship documents since the redesign" },
+                { value: "5 of 5", label: "real changes merged, tested and documented" },
+                { value: "40", label: "review findings fixed before a person signed off" },
+                { value: "70", label: "new tests and eval cases written in the first four runs" },
+                { value: "1 of 5", label: "rejected at the ship gate, then reworked and merged" },
               ],
             },
             {
@@ -408,12 +420,18 @@ export const portfolioData = {
                     "Done; 11 tests; 3 findings fixed before sign-off.",
                   ],
                 },
+                {
+                  cells: [
+                    "Studbook: MCP server for agents",
+                    "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
+                  ],
+                },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Every run held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect found was fixed and tested the same day, and nine plugin releases came out of those four runs.",
+                "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine plugin releases came out of those four runs.",
             },
           ],
         },
@@ -426,6 +444,7 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "The pipeline writes everything down. Studbook makes that record answerable. Ask why a design decision was made and it answers from the specs, reviews, ship documents and commit messages, cites the file and section behind every sentence, and says \"Not in the record\" when the record is silent.",
+              link: { text: "Studbook", href: REPOSITORIES.studbook },
             },
             {
               type: "flow",
@@ -455,7 +474,7 @@ export const portfolioData = {
                   { cells: ["Hybrid, fusion tuned for a small corpus (k = 10)", "0.74"] },
                   { cells: ["Hybrid + reranker, pool of 20", "0.82"] },
                   {
-                    cells: ["Hybrid + reranker, pool of 10 (shipped, half the latency)", "0.85"],
+                    cells: ["Hybrid + reranker, pool of 10 (shipped)", "0.85"],
                     emphasis: true,
                   },
                 ],
@@ -465,7 +484,7 @@ export const portfolioData = {
                   { value: "100%", label: "faithful on the sealed set: no unsupported claims" },
                   { value: "3 of 3", label: "trap questions refused, nothing invented" },
                   { value: "2 to 11", label: "of 12 follow-up questions retrieved, after rewriting" },
-                  { value: "2×", label: "faster from a smaller rerank pool, with higher recall" },
+                  { value: "9 of 12", label: "follow-ups with the thread, 1 of 12 without" },
                 ],
               },
             },
@@ -483,6 +502,48 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Paddock, the desktop app, runs the same query path in TypeScript. A parity gate checks it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated.",
+              link: { text: "Paddock", href: REPOSITORIES.paddock },
+            },
+          ],
+        },
+        {
+          id: "mcp",
+          heading: "An MCP server over the record",
+          eyebrow: "Inside WorkHorse",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Studbook also runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it. The server lives in the Studbook repository.",
+              link: { text: "Studbook repository", href: REPOSITORIES.studbook },
+            },
+            {
+              type: "paragraph",
+              text:
+                "Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
+            },
+            {
+              type: "paragraph",
+              text: "The first version missed a requirement written before the work started, and my own ship gate rejected it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with the results proved identical over the same 40 test questions.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact.",
+            },
+            {
+              type: "paragraph",
+              text: "WorkHorse built it end to end, with 12 of 12 review findings fixed before approval.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Every query runs as a read-only Postgres role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
             },
           ],
         },
@@ -491,9 +552,8 @@ export const portfolioData = {
         eyebrow: "What I'd bring to a client",
         text:
           "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
-        note: "Private repository · walkthrough on request",
       },
-      contactHeading: "Want the walkthrough? I reply within a day.",
+      contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
     },
 
     {
@@ -503,7 +563,7 @@ export const portfolioData = {
         eyebrow: "Apple (via TCS) · LLM decision systems",
         title: "A review backlog, turned into a decision system",
         summary:
-          "Cross-team data changes were stuck behind manual review. I built and run a self-hosted LLM system that decides approve, reject or hold on each ticket, with every decision auditable by a person.",
+          "Cross-team data changes were stuck behind manual review. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that decides approve, reject or hold on each ticket, with a reviewable audit trail.",
         linkText: "Read the case study",
         tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
         mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
@@ -511,7 +571,7 @@ export const portfolioData = {
       eyebrow: "Case study · Apple (via TCS) · Data Health team · Feb 2025 to present",
       title: "A review backlog, turned into a decision system",
       intro:
-        "Cross-team data changes were stuck behind a manual review queue. I built a self-hosted LLM system that reads each request and decides approve, reject or hold, with every decision auditable by a person.",
+        "Cross-team data changes were stuck behind a manual review queue. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that reads each request and decides approve, reject or hold, with a reviewable audit trail.",
       atAGlance: [
         { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
         { label: "Live since", value: "November 2025" },
@@ -519,7 +579,7 @@ export const portfolioData = {
         { label: "Status", value: "In production" },
       ],
       stats: [
-        { value: "30 to 350+", label: "tickets a day, more than eleven times the manual rate" },
+        { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
         { value: "2 weeks", label: "to clear two months of accumulated tickets" },
         { value: "Zero", label: "backlog since launch" },
       ],
@@ -702,9 +762,9 @@ export const portfolioData = {
         eyebrow: "Apple (via TCS) · Data reliability",
         title: "Keeping a 50+ region data pipeline shippable",
         summary:
-          "Remediation jobs that fix validation failures on live data, gates that decide when a repository can be promoted, a move from EMR to EKS that pushed validation upstream, and incident response when something breaks at scale.",
+          "Remediation jobs that fix validation failures on live data, gates that decide when a repository can be promoted, a move from EMR to EKS, done with DataOps, that pushed validation upstream, and incident response when something breaks at scale.",
         linkText: "Read the case study",
-        tags: ["~40% fewer gating failures", "Hundreds of thousands of failures resolved"],
+        tags: ["~40% fewer release-blocking failures", "Hundreds of thousands of failures resolved"],
       },
       eyebrow: "Case study · Apple (via TCS) · Data reliability · Feb 2025 to present",
       title: "Keeping a 50+ region data pipeline shippable",
@@ -723,7 +783,7 @@ export const portfolioData = {
         },
         {
           value: "~40% fewer",
-          label: "gating failures since I moved validation from EMR to EKS, and still falling",
+          label: "release-blocking failures since the move from EMR to EKS, done with DataOps, and still falling",
         },
         { value: "Tens of thousands", label: "buildings triaged in one incident I led" },
       ],
@@ -765,7 +825,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I migrated the validation infrastructure from AWS EMR to AWS EKS, restructured how often validation runs, and moved checks earlier in the pipeline. Since the migration, gating failures have dropped by about 40%, and the number keeps improving as our data standards tighten.",
+                "Working with DataOps and the data evaluation team, I migrated data validation from AWS EMR to AWS EKS, restructured how often validation runs, and moved checks earlier in the pipeline. Since the migration, release-blocking failures have dropped by about 40%, and the number keeps improving as our data standards tighten.",
             },
           ],
         },
@@ -784,7 +844,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures at the gate.",
+          "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer release-blocking failures at the gate.",
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Data you can't trust yet? Let's talk.",
