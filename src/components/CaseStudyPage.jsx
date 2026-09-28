@@ -15,6 +15,12 @@ const DESKTOP_COLUMNS_CLASS = {
   4: 'md:grid-cols-4',
 };
 
+// Every link off this page to a repository points at a fixed public snapshot, not the source
+// repository itself; the aria-label says so.
+function githubSnapshotLabel(linkText) {
+  return `${linkText} on GitHub, public snapshot`;
+}
+
 /**
  * The /work/:slug page: one case study rendered as a single scroll (ADR 0006), or the not-found
  * page for any other slug. Every section body is a list of content blocks whose shape is fixed by
@@ -71,7 +77,7 @@ function CaseStudyHeader({ caseStudy }) {
             href={caseStudy.codeLink.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${caseStudy.codeLink.label} on GitHub, public snapshot`}
+            aria-label={githubSnapshotLabel(caseStudy.codeLink.label)}
             className="font-mono text-xs uppercase tracking-widest text-soft transition-colors hover:text-ink"
           >
             {caseStudy.codeLink.label}
@@ -174,7 +180,7 @@ function ParagraphWithLink({ text, link }) {
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`${link.text} on GitHub, public snapshot`}
+        aria-label={githubSnapshotLabel(link.text)}
         className="text-ink underline decoration-soft underline-offset-4 hover:text-ink"
       >
         {link.text}
