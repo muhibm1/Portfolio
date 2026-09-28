@@ -119,8 +119,8 @@ Not rehearsed pre-merge: no staging command exists, dev does not exercise the re
 
 G4 approved at `9ef261b` (confirmed). Conductor's earlier wh-shipper dispatch to merge PR #19 was
 refused by the permission classifier as a production deploy (conductor-log, 2026-09-28T17:47:24Z).
-Owner told the main session to merge and deploy himself; it ran
-`gh pr merge 19 --merge --match-head-commit 2705a6f`.
+The owner then told the main session in chat to merge and deploy it itself; the main session
+(not the owner) ran `gh pr merge 19 --merge --match-head-commit 2705a6f`.
 
 | Step | Detail | Result | Label |
 |---|---|---|---|
