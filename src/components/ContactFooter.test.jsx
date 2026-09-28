@@ -17,6 +17,7 @@ describe('ContactFooter', () => {
     render(<ContactFooter />);
 
     const hrefs = footerLinkHrefs();
+    expect(hrefs).toHaveLength(2);
     expect(hrefs).toContain(`mailto:${personal.email}`);
     expect(hrefs).toContain(personal.linkedin);
     expect(hrefs).not.toContain(personal.github);

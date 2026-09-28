@@ -39,6 +39,11 @@ describe("CaseStudyCards", () => {
     expect(codeLink).toHaveAttribute("href", caseStudies[0].codeLink.href);
     expect(codeLink).toHaveAttribute("target", "_blank");
     expect(codeLink).toHaveAttribute("rel", "noopener noreferrer");
+    // R153/WCAG 2.5.3: the accessible name must name the repository, not just "View the code".
+    expect(codeLink).toHaveAttribute(
+      "aria-label",
+      expect.stringContaining(caseStudies[0].codeLink.label),
+    );
 
     const anchors = featuredArticle.querySelectorAll("a");
     for (const anchor of anchors) {

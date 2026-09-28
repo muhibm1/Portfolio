@@ -7,9 +7,8 @@ import { portfolioData } from "./portfolioData.js";
 import { staticRoutePaths } from "../routePaths.js";
 // R156's term list and matcher functions live in scripts/forbidden-copy.mjs; this test imports
 // them rather than copying them, so a scan against this module stays in step with the scanner
-// (interface (h)). Until T16 folds the R156 terms into FORBIDDEN_TERMS, this import carries only
-// the built terms and the scan below passes trivially; once folded it becomes a real check with
-// no edit needed here.
+// (interface (h)). The R156 terms are folded into FORBIDDEN_TERMS, so the scan below is a real
+// check, not a trivial pass.
 import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 
 // ADR 0006's fixed block-type set. A block outside this set is a data bug the template would
