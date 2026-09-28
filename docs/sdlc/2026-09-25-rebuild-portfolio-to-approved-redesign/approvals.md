@@ -41,3 +41,12 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 - Packet: `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/brief.md` sha256 `44bebd3ce69a14057efb267635816805574059476b51703b017c8b83ee1b73eb`
 - Tier at decision: 2
 - Notes: D42: recommendation accepted; D43: recommendation accepted; D44: recommendation accepted; D45: recommendation accepted; D46: recommendation accepted; D48: recommendation accepted; D49: recommendation accepted; D51: recommendation accepted; D52: recommendation accepted; D53: recommendation accepted; D54: recommendation accepted; D55: recommendation accepted
+
+## G4: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-28T17:30:11.564Z
+- Artifact commit: `6ccfde61dec29836bc0ec8c5e117266f4bd66df3` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/ship.md` sha256 `b179747133ffc6411845961d3c3c31407edbc94ea1876c4cd847dee0775a8db7`
+- Tier at decision: 2
+- Notes: D59: recommendation accepted; D60: recommendation accepted; D57: recommendation accepted; D56: recommendation accepted; D58: recommendation accepted; D38: recommendation accepted
