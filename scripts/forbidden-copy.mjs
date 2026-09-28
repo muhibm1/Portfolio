@@ -13,6 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { BINARY_EXTENSIONS } from './phone-redaction-scan.mjs'
 
 export const EXIT_CLEAN = 0
 export const EXIT_HIT = 1
@@ -31,10 +32,6 @@ const DASH_ENTITIES = {
   [EM_DASH]: ['&mdash;', '&#8212;'],
   [EN_DASH]: ['&ndash;', '&#8211;'],
 }
-
-// The only string term matched on word boundaries although it is not letters-only (interface (h),
-// A3): without this, "text-2xl" and "2x2" would be false hits.
-const WORD_BOUNDARY_STRING_TERMS = ['2x']
 
 const RETIREMENT_WORDS = [
   'retired',
@@ -70,6 +67,19 @@ export const PADDOCK_RETIREMENT_TERM = {
   skipExtensions: [],
 }
 
+// R156 review fix: a plain "2x" substring match false-hit an `@2x` asset-name suffix
+// (`shot@2x.png`) and any digit run ending in "2x" or "11x" (a version string, a scaling factor,
+// "S211X"). Each becomes its own boundary-aware pattern term instead of a plain string. The "2x"
+// pattern excludes only the character directly in front being "@" or a word character; a `srcset`
+// density descriptor such as "hero.png 2x" is preceded by a space, which this pattern cannot tell
+// apart from "2x faster" without missing the banned claim, so that case is not excluded (review
+// group 1b).
+export const TWO_X_TERM = { label: '2x', pattern: /(?<![@\w])2x\b/i, skipExtensions: [] }
+export const ELEVEN_X_TERM = { label: '11x', pattern: /(?<!\d)11x\b/i, skipExtensions: [] }
+
+// R156 review fix: a plain "4 of 4" substring hit inside a larger count such as "24 of 45".
+export const FOUR_OF_FOUR_TERM = { label: '4 of 4', pattern: /(?<!\d)4 of 4(?!\d)/i, skipExtensions: [] }
+
 /**
  * Plan section 1's seventeen removed strings, deduplicated to their unique case-insensitive form
  * (matching is already case-insensitive, so "simulator"/"Simulator" and "Wasl"/"wasl" would
@@ -79,12 +89,13 @@ export const PADDOCK_RETIREMENT_TERM = {
  * invented names `Apple Geo Ingest`, `dataops-service` and `GEO-92841` are already present in
  * the tree today (constraints "Business constraints" 2); listing them here is not new exposure.
  *
- * R156 adds 14 more strings and two pattern terms, against the stale run count, unproven timing
+ * R156 adds 14 more strings and five pattern terms, against the stale run count, unproven timing
  * and speed claims, the withdrawn resume, and the false "0 rejected ship documents" and Paddock
- * retirement wording (D24, D26, D36, D41, D42, D44): `100% Automated`, `11x`, `sub-10ms`,
- * `Release Continuity`, `Production Outage Drop`, `Private repository`, `resume`, `4 of 4`,
- * `four real changes`, `rejected ship`, `half the latency`, `2×`, `2x`, `+52%`, plus
- * TIMING_FIGURE_TERM and PADDOCK_RETIREMENT_TERM.
+ * retirement wording (D24, D26, D36, D41, D42, D44): `100% Automated`, `sub-10ms`,
+ * `Release Continuity`, `Production Outage Drop`, `Private repository`, `resume`,
+ * `four real changes`, `rejected ship`, `half the latency`, `2×`, `+52%`, plus
+ * TIMING_FIGURE_TERM, PADDOCK_RETIREMENT_TERM, TWO_X_TERM, ELEVEN_X_TERM and FOUR_OF_FOUR_TERM
+ * (the last three were plain strings until a review fix moved them to boundary-aware patterns).
  */
 export const FORBIDDEN_TERMS = [
   '99.9',
@@ -103,30 +114,29 @@ export const FORBIDDEN_TERMS = [
   EM_DASH,
   EN_DASH,
   '100% Automated',
-  '11x',
   'sub-10ms',
   'Release Continuity',
   'Production Outage Drop',
   'Private repository',
   'resume',
-  '4 of 4',
   'four real changes',
   'rejected ship',
   'half the latency',
   `2${MULTIPLICATION_SIGN}`,
-  '2x',
   '+52%',
   TIMING_FIGURE_TERM,
   PADDOCK_RETIREMENT_TERM,
+  TWO_X_TERM,
+  ELEVEN_X_TERM,
+  FOUR_OF_FOUR_TERM,
 ]
 
 const LETTERS_ONLY = /^[a-zA-Z]+$/
 
-/** Builds one case-insensitive matcher per term: a word-boundary pattern for a letters-only term
- * or the "2x" exception (so "Shutdown" is not "Shu" and "text-2xl" is not "2x"), a substring
- * pattern for any other string, and for a dash character a pattern that also matches its HTML
- * entity spellings. A `{ label, pattern, skipExtensions }` term (interface (h)) carries its own
- * pattern and reports its label; `skipExtensions` defaults to none. */
+/** Builds one case-insensitive matcher per term: a word-boundary pattern for a letters-only term,
+ * a substring pattern for any other string, and for a dash character a pattern that also matches
+ * its HTML entity spellings. A `{ label, pattern, skipExtensions }` term (interface (h)) carries
+ * its own pattern and reports its label; `skipExtensions` defaults to none. */
 export function buildMatchers(terms) {
   return terms.map((term) =>
     typeof term === 'string'
@@ -143,16 +153,24 @@ export function termsFoundIn(line, matchers) {
 /**
  * Scans each file and returns { exitCode, hitLines, counts }. `hitLines` holds one
  * `::error::<path>:<line>: <term>` line per hit (R129). A path matching a test-file glob
- * (`*.test.*`) is skipped and counted, never scanned. Exit 1 if any hit, else exit 2 if nothing
- * was scanned (every path skipped, missing, or the list was empty), else exit 0.
+ * (`*.test.*`) is skipped and counted, never scanned. A path with a listed binary extension
+ * (BINARY_EXTENSIONS, shared with scripts/phone-redaction-scan.mjs) is skipped and counted the
+ * same way, never read as text, so an image cannot false-hit a term match on its raw bytes
+ * (review group 1a); it is not counted as scanned, so a scope of only binaries still fails closed
+ * onto EXIT_CANNOT_RUN rather than reading as a clean run over nothing. Exit 1 if any hit, else
+ * exit 2 if nothing was scanned (every path skipped, missing, or the list was empty), else exit 0.
  */
 export function scanFiles(absolutePaths, matchers) {
-  const counts = { scanned: 0, skippedAsTest: 0, missing: 0, hits: 0 }
+  const counts = { scanned: 0, skippedAsTest: 0, skippedAsBinary: 0, missing: 0, hits: 0 }
   const hitLines = []
 
   for (const absolutePath of absolutePaths) {
     if (isTestFile(absolutePath)) {
       counts.skippedAsTest += 1
+      continue
+    }
+    if (isBinaryFile(absolutePath)) {
+      counts.skippedAsBinary += 1
       continue
     }
     const text = readFileIfPresent(absolutePath)
@@ -203,7 +221,7 @@ function buildPattern(term) {
     const entityAlternatives = DASH_ENTITIES[term].map(escapeRegExp).join('|')
     return new RegExp(`${escapeRegExp(term)}|${entityAlternatives}`, 'i')
   }
-  if (LETTERS_ONLY.test(term) || WORD_BOUNDARY_STRING_TERMS.includes(term)) {
+  if (LETTERS_ONLY.test(term)) {
     return new RegExp(`\\b${escapeRegExp(term)}\\b`, 'i')
   }
   return new RegExp(escapeRegExp(term), 'i')
@@ -243,6 +261,10 @@ function resolveScope(args) {
 function isTestFile(filePath) {
   const fileName = path.basename(filePath)
   return fileName.split('.').includes('test')
+}
+
+function isBinaryFile(filePath) {
+  return BINARY_EXTENSIONS.includes(path.extname(filePath).toLowerCase())
 }
 
 function readFileIfPresent(absolutePath) {
