@@ -24,11 +24,50 @@ const REPOSITORY_ROOT = fs.realpathSync.native(
 
 const EM_DASH = '—'
 const EN_DASH = '–'
+const MULTIPLICATION_SIGN = '×'
 
 // The entity spellings ADR 0004 says count as a hit on the matching dash character.
 const DASH_ENTITIES = {
   [EM_DASH]: ['&mdash;', '&#8212;'],
   [EN_DASH]: ['&ndash;', '&#8211;'],
+}
+
+// The only string term matched on word boundaries although it is not letters-only (interface (h),
+// A3): without this, "text-2xl" and "2x2" would be false hits.
+const WORD_BOUNDARY_STRING_TERMS = ['2x']
+
+const RETIREMENT_WORDS = [
+  'retired',
+  'retire',
+  'retirement',
+  'deprecated',
+  'dropped',
+  'dropping',
+  'discontinued',
+  'abandoned',
+]
+
+// R156: a number with an optional decimal part, an optional space, then ms/millisecond(s) or
+// second(s), or a decimal number then a bare "s", all on word boundaries, case-insensitive. Skips
+// .css and .svg (src/index.css carries 0.01ms in its reduced-motion rule, src/assets/react.svg an
+// animation duration). The absolute figures D26 withholds are written nowhere in the repository;
+// this pattern catches them and any successor (D36).
+export const TIMING_FIGURE_TERM = {
+  label: 'timing figure',
+  pattern: /\b\d+(?:\.\d+)? ?(?:ms|milliseconds?|seconds?)\b|\b\d+\.\d+s\b/i,
+  skipExtensions: ['.css', '.svg'],
+}
+
+// R156, D44: "paddock" and a retirement word in the same sentence (no ".", "!" or "?" between
+// them), in either order, case-insensitive, no skipped extensions. Owner rule: Paddock is current.
+export const PADDOCK_RETIREMENT_TERM = {
+  label: 'Paddock retirement wording',
+  pattern: new RegExp(
+    `\\bpaddock\\b(?:(?!\\.|!|\\?).)*?\\b(?:${RETIREMENT_WORDS.join('|')})\\b|` +
+      `\\b(?:${RETIREMENT_WORDS.join('|')})\\b(?:(?!\\.|!|\\?).)*?\\bpaddock\\b`,
+    'i',
+  ),
+  skipExtensions: [],
 }
 
 /**
@@ -39,6 +78,13 @@ const DASH_ENTITIES = {
  * `Apple Geo Ingest`, `dataops-service`, `GEO-92841`, and the em and en dash characters. The
  * invented names `Apple Geo Ingest`, `dataops-service` and `GEO-92841` are already present in
  * the tree today (constraints "Business constraints" 2); listing them here is not new exposure.
+ *
+ * R156 adds 14 more strings and two pattern terms, against the stale run count, unproven timing
+ * and speed claims, the withdrawn resume, and the false "0 rejected ship documents" and Paddock
+ * retirement wording (D24, D26, D36, D41, D42, D44): `100% Automated`, `11x`, `sub-10ms`,
+ * `Release Continuity`, `Production Outage Drop`, `Private repository`, `resume`, `4 of 4`,
+ * `four real changes`, `rejected ship`, `half the latency`, `2×`, `2x`, `+52%`, plus
+ * TIMING_FIGURE_TERM and PADDOCK_RETIREMENT_TERM.
  */
 export const FORBIDDEN_TERMS = [
   '99.9',
@@ -56,15 +102,37 @@ export const FORBIDDEN_TERMS = [
   'GEO-92841',
   EM_DASH,
   EN_DASH,
+  '100% Automated',
+  '11x',
+  'sub-10ms',
+  'Release Continuity',
+  'Production Outage Drop',
+  'Private repository',
+  'resume',
+  '4 of 4',
+  'four real changes',
+  'rejected ship',
+  'half the latency',
+  `2${MULTIPLICATION_SIGN}`,
+  '2x',
+  '+52%',
+  TIMING_FIGURE_TERM,
+  PADDOCK_RETIREMENT_TERM,
 ]
 
 const LETTERS_ONLY = /^[a-zA-Z]+$/
 
 /** Builds one case-insensitive matcher per term: a word-boundary pattern for a letters-only term
- * (so "Shutdown" is not "Shu"), a substring pattern for any other term, and for a dash character
- * a pattern that also matches its HTML entity spellings. */
+ * or the "2x" exception (so "Shutdown" is not "Shu" and "text-2xl" is not "2x"), a substring
+ * pattern for any other string, and for a dash character a pattern that also matches its HTML
+ * entity spellings. A `{ label, pattern, skipExtensions }` term (interface (h)) carries its own
+ * pattern and reports its label; `skipExtensions` defaults to none. */
 export function buildMatchers(terms) {
-  return terms.map((term) => ({ term: termLabel(term), pattern: buildPattern(term) }))
+  return terms.map((term) =>
+    typeof term === 'string'
+      ? { term: termLabel(term), pattern: buildPattern(term), skipExtensions: [] }
+      : { term: term.label, pattern: term.pattern, skipExtensions: term.skipExtensions ?? [] },
+  )
 }
 
 /** Returns every term whose pattern matches the line, in matcher order. */
@@ -135,7 +203,9 @@ function buildPattern(term) {
     const entityAlternatives = DASH_ENTITIES[term].map(escapeRegExp).join('|')
     return new RegExp(`${escapeRegExp(term)}|${entityAlternatives}`, 'i')
   }
-  if (LETTERS_ONLY.test(term)) return new RegExp(`\\b${term}\\b`, 'i')
+  if (LETTERS_ONLY.test(term) || WORD_BOUNDARY_STRING_TERMS.includes(term)) {
+    return new RegExp(`\\b${escapeRegExp(term)}\\b`, 'i')
+  }
   return new RegExp(escapeRegExp(term), 'i')
 }
 
@@ -185,10 +255,12 @@ function readFileIfPresent(absolutePath) {
 }
 
 function hitLinesIn(text, displayedPath, matchers) {
+  const extension = path.extname(displayedPath).toLowerCase()
+  const applicableMatchers = matchers.filter((matcher) => !matcher.skipExtensions.includes(extension))
   return text
     .split('\n')
     .flatMap((line, index) =>
-      termsFoundIn(line, matchers).map(
+      termsFoundIn(line, applicableMatchers).map(
         (term) => `::error::${displayedPath}:${index + 1}: ${term}`,
       ),
     )
