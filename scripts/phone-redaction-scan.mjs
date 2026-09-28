@@ -29,12 +29,10 @@ export const EXIT_CANNOT_RUN = 2
 // src/data/portfolioData.test.js line 48, so that example is a near-miss in every form.
 export const SELF_TEST_REFERENCE = '5555560100'
 
-// Only the binary types present today: the design mockups, the hero image, the self-hosted
-// fonts, and the resume PDF (R137). The PDF is skipped by design, not reported as undecodable:
-// D12 and D17 are the compensating check, run by the owner on the supplied file before it is
-// published. Any other binary type fails the scan as undecodable until its extension is added
-// here.
-export const BINARY_EXTENSIONS = ['.jpg', '.png', '.woff', '.woff2', '.pdf']
+// Only the binary types present today: the design mockups, the hero image and the self-hosted
+// fonts (D30; no resume PDF exists in the repository). Any other binary type fails the scan as
+// undecodable until its extension is added here.
+export const BINARY_EXTENSIONS = ['.jpg', '.png', '.woff', '.woff2']
 
 const REFERENCE_COMMIT = 'b50497f'
 const REFERENCE_FILE = 'src/data/portfolioData.js'

@@ -45,10 +45,11 @@ const DIGIT_BEFORE_THE_NUMBER = ['95555560100', '915555560100', '115555560100', 
 const LINE_WITH_THE_NUMBER = 'Call 555-556-0100 today.\n';
 
 describe('check-phone-redaction binary extensions', () => {
-  // D16: the resume PDF is skipped by design, not reported as undecodable; R137 names the
-  // compensating check (D12, D17) that covers what the phone scan would otherwise catch.
-  it('lists .pdf so the resume is skipped instead of reported as undecodable', () => {
-    expect(BINARY_EXTENSIONS).toContain('.pdf');
+  // D30: no resume PDF exists in the repository any more, so the compensating skip R137 named
+  // (D12, D17) is gone too; the phone scan is back to treating every file type it does not
+  // recognise as undecodable.
+  it('lists only the design mockups, the hero image and the self-hosted fonts', () => {
+    expect(BINARY_EXTENSIONS).toEqual(['.jpg', '.png', '.woff', '.woff2']);
   });
 });
 
