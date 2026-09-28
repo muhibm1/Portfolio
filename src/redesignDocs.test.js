@@ -69,6 +69,10 @@ describe('G22: CLAUDE.md describes the redesigned site', () => {
       expect(claudeMd).toContain(newPath);
     }
   });
+
+  it('names no check-resume-pdf.mjs, withdrawn with the resume PDF (D24)', () => {
+    expect(claudeMd).not.toContain('check-resume-pdf.mjs');
+  });
 });
 
 describe('G22: the profile guards the six new redesign paths (R145)', () => {
@@ -92,10 +96,15 @@ describe('G22: the profile guards the six new redesign paths (R145)', () => {
     }
   });
 
-  it('retention_notes names the published resume PDF and the served email (D17)', () => {
+  it('retention_notes records the resume PDF withdrawal (D24) and no hash log', () => {
     expect(profileText).toContain('D17');
-    expect(profileText.toLowerCase()).toContain('resume');
-    expect(profileText.toLowerCase()).toContain('pdf');
+    expect(profileText).toContain('withdrawn');
+    expect(profileText).toContain('D24');
+    expect(profileText.toLowerCase()).not.toContain('hash log');
+  });
+
+  it('names no check-resume-pdf.mjs, withdrawn with the resume PDF (D24)', () => {
+    expect(profileText).not.toContain('check-resume-pdf.mjs');
   });
 });
 
@@ -110,16 +119,27 @@ describe('G22: docs/hosted-config.md checks the new pages instead of the orb', (
     expect(section6).toContain('og.png');
   });
 
-  it('lists the PDF as published personal data with the D17 check', () => {
-    expect(hostedConfig).toContain('D17');
-    expect(hostedConfig.toLowerCase()).toContain('resume');
-    expect(hostedConfig.toLowerCase()).toContain('pdf');
+  it('section 6a records the resume PDF withdrawal (D24), no hash log', () => {
+    const sectionStart = hostedConfig.indexOf('## 6a.');
+    const sectionEnd = hostedConfig.indexOf('\n## ', sectionStart + 1);
+    const section6a = hostedConfig.slice(sectionStart, sectionEnd === -1 ? undefined : sectionEnd);
+
+    expect(section6a).toContain('withdrawn');
+    expect(section6a).toContain('D24');
+    expect(section6a.toLowerCase()).not.toContain('hash log');
   });
 });
 
 describe('G22: docs/sdlc/codebase-map.md gains a dated block for this change', () => {
+  const codebaseMap = read('docs/sdlc/codebase-map.md');
+
   it('contains 2026-09-25', () => {
-    expect(read('docs/sdlc/codebase-map.md')).toContain('2026-09-25');
+    expect(codebaseMap).toContain('2026-09-25');
+  });
+
+  it('names the public snapshot repositories, not the withdrawn Resume buttons', () => {
+    expect(codebaseMap).toContain('snapshot');
+    expect(codebaseMap).not.toContain('Resume buttons');
   });
 });
 
@@ -148,4 +168,14 @@ describe('G22: the four prior ADR status lines cite this change', () => {
       expect(statusLine).toContain('2026-09-25');
     });
   }
+});
+
+describe('G22: the 2026-09-11 ADR 0008 status line records the 2026-09-28 resume withdrawal', () => {
+  it('status line contains 2026-09-28', () => {
+    const adrPath = FOUR_PRIOR_ADRS[1];
+    const adrText = read(adrPath);
+    const statusLine = adrText.split('\n').find((line) => line.startsWith('Status:'));
+    expect(statusLine, `expected a Status: line in ${adrPath}`).toBeDefined();
+    expect(statusLine).toContain('2026-09-28');
+  });
 });

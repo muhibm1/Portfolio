@@ -141,45 +141,19 @@ Log:
   `/Portfolio/assets/index-DKKCxcjg.css`), served CSS matches (CI smoke R100 success), and the
   live browser console shows 0 errors and 0 CSP violations (confirmed).
 
-## 6a. The resume PDF as published personal data (D17)
+## 6a. The resume PDF (withdrawn, D24)
 
-Added 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145).
+Added 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145);
+updated 2026-09-28 by the same change's revision (task T21, D24).
 
-- `public/Muhammad_Muhibullah_Resume.pdf` is published personal data, like the owner's email and
-  city in `src/data/portfolioData.js`, not incidental content. All four Resume buttons link to it
-  directly; the in-page resume modal is gone (D2).
-- Before the owner adds the file, he runs the D12 check, widened by D17: contact details limited
-  to what the site already shows (name, email, city, LinkedIn, GitHub), no phone number, no street
-  address; the document properties (Author, Title, Producer, any local file path) checked or
-  stripped; the backlog wording matches the plan's November 2025 launch date. The PDF is `.pdf`,
-  so `scripts/check-phone-redaction.mjs` skips it by design (D16); this manual check is the only
-  control on its contents.
+- The resume PDF planned by D17 was withdrawn on 2026-09-28 (D24) and never published. No PDF is
+  served from the site or committed to this repository; the four Resume buttons, the served file,
+  `scripts/check-resume-pdf.mjs`, its workflow step and the owner's D12/D17 eye check are all
+  removed with it.
 - D17 also records here that prerendering (T11) now writes the owner's email address into the
   served HTML of every page as plain text, readable without JavaScript, where before it was
-  reachable only inside the JS bundle. Publishing both the PDF and the plain-text email is the
-  owner's deliberate choice (plan section 4, D8). See `.workhorse/profile.yml`
+  reachable only inside the JS bundle. See `.workhorse/profile.yml`
   `compliance.retention_notes` for the same fact recorded in the profile.
-- The check is run by the owner, not by CI; there is no automated proof the PDF's contents are
-  clean. Log one line here, in the same format as the log in section 6, after the owner runs the
-  D12/D17 check and again whenever the PDF is replaced.
-- CI does carry one automated, narrower check: `scripts/check-resume-pdf.mjs`, wired into
-  `.github/workflows/deploy.yml`'s build job, confirms the published file's SHA-256 matches the
-  hash the owner records below, that the file carries a single PDF revision (exactly one `%%EOF`,
-  no `/Prev`), and that no phone-shaped number and no `C:\` or `/Users/` local path appears in text
-  that decodes plainly out of a FlateDecode stream. It reaches only what decodes cleanly, so the
-  D12/D17 eye check above stays the main control on the document's contents; the script's exit 2 on
-  a missing file or a missing hash line below is expected until the owner has done both.
-- **Hash log format**, one line per D12/D17 check, newest last, the SHA-256 the script above
-  reads: `YYYY-MM-DD <sha256, 64 lowercase hex characters> D12/D17 check passed for
-  public/Muhammad_Muhibullah_Resume.pdf. <notes>`. Owner: after running the D12/D17 check on the
-  file you are about to add or replace, compute its SHA-256 (for example `sha256sum
-  public/Muhammad_Muhibullah_Resume.pdf` or `Get-FileHash` on Windows) and append one line in this
-  format below. This agent does not write one: the hash is confirmed only once you have looked at
-  the file yourself.
-
-```
-D12/D17 hash log: not recorded yet.
-```
 
 ## 7. The phone number in git history
 

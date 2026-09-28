@@ -5,6 +5,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { TIMING_FIGURE_TERM } from '../scripts/forbidden-copy.mjs';
 
 const THIS_TEST_FILE = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(THIS_TEST_FILE), '..');
@@ -53,23 +54,28 @@ describe('design mockups stay out of the published site', () => {
   });
 });
 
-// R144, ADR 0007: the redesign handoff (the owner's plan and the seven approved mockups) is
-// committed as the design record, with two passages redacted because the repository is public.
+// R144, R157, ADR 0007: the redesign handoff (the owner's plan, the redacted overlay and the
+// seven approved mockups) is committed as the design record, with the owner's tool timings, the
+// resume text and the private repository notes withheld because the repository is public.
 describe('the redesign handoff is committed as the design record (G21)', () => {
   const HANDOFF_DIR = fromRoot('docs', 'design', 'redesign-2026-09');
+  const PLAN_FILE = 'PORTFOLIO_REDESIGN_PLAN.md';
+  const OVERLAY_FILE = 'PORTFOLIO_ALIGNMENT_PASS.md';
+  const WORKHORSE_MOCKUP = 'CS-WorkHorse.dc.html';
   const HANDOFF_FILES = [
-    'PORTFOLIO_REDESIGN_PLAN.md',
+    PLAN_FILE,
+    OVERLAY_FILE,
     'CS-DataHealth.dc.html',
     'CS-Decision.dc.html',
     'CS-Integration.dc.html',
     'CS-NeuralNewsletters.dc.html',
-    'CS-WorkHorse.dc.html',
+    WORKHORSE_MOCKUP,
     'Home-Mobile.dc.html',
     'Main.dc.html',
   ];
 
-  // The owner keeps these figures off the public site; the redacted plan copy must not carry
-  // them, and the mockups never carried them (confirmed by grep at authoring time).
+  // The owner keeps these figures off the public site; the redacted plan copy, the redacted
+  // overlay and the mockups must not carry them (confirmed by grep at authoring time).
   const WITHHELD_STRINGS = [
     '0.71',
     '75% fully correct',
@@ -77,15 +83,22 @@ describe('the redesign handoff is committed as the design record (G21)', () => {
     'agent-minute',
     'over budget',
     'weak spot',
+    'half the latency',
+    'faster from a smaller rerank pool',
+    '2× faster',
   ];
 
-  it('commits the plan and all seven mockups under docs/design/redesign-2026-09/', () => {
+  function readHandoffFile(name) {
+    return fs.readFileSync(path.join(HANDOFF_DIR, name), 'utf8');
+  }
+
+  it('commits the plan, the overlay and all seven mockups under docs/design/redesign-2026-09/', () => {
     const missing = HANDOFF_FILES.filter((name) => !fs.existsSync(path.join(HANDOFF_DIR, name)));
 
     expect(missing).toEqual([]);
   });
 
-  it('withholds the six redacted figures from every committed handoff file', () => {
+  it('withholds the nine redacted figures from every committed handoff file', () => {
     const hits = [];
 
     for (const name of HANDOFF_FILES) {
@@ -101,6 +114,63 @@ describe('the redesign handoff is committed as the design record (G21)', () => {
     expect(hits).toEqual([]);
   });
 
+  it('matches the R156 timing pattern nowhere in the nine files, except the two scripted lines it excepts', () => {
+    const hits = [];
+
+    for (const name of HANDOFF_FILES) {
+      const filePath = path.join(HANDOFF_DIR, name);
+      if (!fs.existsSync(filePath)) continue;
+
+      const lines = fs.readFileSync(filePath, 'utf8').split('\n');
+      lines.forEach((line, index) => {
+        if (line.includes('sub-10ms') || line.includes('48 ms')) return;
+        if (TIMING_FIGURE_TERM.pattern.test(line)) hits.push(`${name}:${index + 1}`);
+      });
+    }
+
+    expect(hits).toEqual([]);
+  });
+
+  it('carries the overlay\'s three withheld notes and no "resume, verbatim" heading', () => {
+    const overlay = readHandoffFile(OVERLAY_FILE);
+
+    expect(overlay).not.toMatch(/resume, verbatim/i);
+    for (const heading of ['## Appendix A', '## Appendix B', '## 7. Owner action before the links go live']) {
+      const headingIndex = overlay.indexOf(heading);
+      expect(headingIndex, `expected to find heading ${heading}`).not.toBe(-1);
+      const followingText = overlay.slice(headingIndex, headingIndex + 400);
+      expect(followingText).toContain('Withheld from the committed copy');
+    }
+  });
+
+  it('says "withheld" in the plan\'s Studbook row, its search paragraph and the WorkHorse mockup', () => {
+    const plan = readHandoffFile(PLAN_FILE);
+    const planLines = plan.split('\n');
+    const studbookRow = planLines.find((line) => line.startsWith('| Studbook |'));
+    const searchParagraph = planLines.find((line) => line.startsWith('After removal, search the whole repo'));
+
+    expect(studbookRow, 'expected the plan copy Studbook row').toBeDefined();
+    expect(studbookRow.toLowerCase()).toContain('withheld');
+    expect(searchParagraph, 'expected the section 1 search paragraph').toBeDefined();
+    expect(searchParagraph.toLowerCase()).toContain('withheld');
+    expect(readHandoffFile(WORKHORSE_MOCKUP).toLowerCase()).toContain('withheld');
+  });
+
+  it('redacts the line 44 parenthetical without leaving either of its phrases behind (D54)', () => {
+    const plan = readHandoffFile(PLAN_FILE);
+
+    expect(plan).not.toContain('that run is described as');
+    expect(plan).not.toContain('case study is also a failure');
+  });
+
+  it('keeps the run tallies in the plan copy and the overlay, since only the timings are withheld (D45)', () => {
+    const plan = readHandoffFile(PLAN_FILE);
+    const overlay = readHandoffFile(OVERLAY_FILE);
+
+    expect(plan).toContain('4 of 4 real changes merged');
+    expect(overlay).toContain('5 of 5');
+  });
+
   it('leaves no portfolio-redesign-handoff directory at the repository root', () => {
     expect(fs.existsSync(fromRoot('portfolio-redesign-handoff'))).toBe(false);
   });
@@ -113,19 +183,21 @@ describe('the redesign handoff is committed as the design record (G21)', () => {
     expect(dcFiles.map(toRepoPath)).toEqual([]);
   });
 
-  it('tracks no .zip file in the repository', () => {
+  it('tracks no .zip or .pdf file in the repository', () => {
     const trackedFiles = execFileSync('git', ['ls-files'], { cwd: REPO_ROOT, encoding: 'utf8' })
       .split('\n')
       .filter(Boolean);
-    const zipFiles = trackedFiles.filter((file) => file.endsWith('.zip'));
+    const bannedFiles = trackedFiles.filter((file) => file.endsWith('.zip') || file.endsWith('.pdf'));
 
-    expect(zipFiles).toEqual([]);
+    expect(bannedFiles).toEqual([]);
   });
 
-  it('points docs/design-brief.md at the handoff folder', () => {
+  it('points docs/design-brief.md at the handoff folder and names both documents', () => {
     const designBrief = fs.readFileSync(fromRoot('docs', 'design-brief.md'), 'utf8');
 
     expect(designBrief).toContain('docs/design/redesign-2026-09/');
+    expect(designBrief).toContain(PLAN_FILE);
+    expect(designBrief).toContain(OVERLAY_FILE);
   });
 });
 

@@ -92,6 +92,7 @@ It is a single page with modals, not a multi-page site, and its hero uses the mo
 
 ## 2026-09-25 redesign handoff
 
-The current copy and layout source is `docs/design/redesign-2026-09/`: the owner's approved
-plan (redacted, D18) and the seven approved mockups. It supersedes the direction above for any
-page it covers.
+The current copy and layout source is `docs/design/redesign-2026-09/`: the owner's approved plan
+`PORTFOLIO_REDESIGN_PLAN.md` (redacted, D18), the redacted overlay `PORTFOLIO_ALIGNMENT_PASS.md`
+(D31, D36, D37), and the seven approved mockups. It supersedes the direction above for any page
+it covers.

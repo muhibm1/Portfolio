@@ -41,7 +41,7 @@ This folder contains:
 | "Architected" as a verb | Case study summaries | Replaced by the mockup copy |
 | `/work` filter chips (All / Case study / Project / Live demo) | `/work` | Only case studies remain |
 
-After removal, search the whole repo (source, not just rendered pages) for: `99.9`, `unauthorized`, `95%`, `Enterprise Compliant`, `Zero Data Corruption`, `schema drift`, `sub-10ms`, `simulator`, `Simulator`, `thinking-orbs`, `Shu`, `Wasl`, `wasl`, `Apple Geo Ingest`, `dataops-service`, `GEO-92841`, `—`, `–`. Nothing should match in rendered copy. (A Wasl match inside the WorkHorse case study is also a failure: that run is described as "Live web app with auth".)
+After removal, search the whole repo (source, not just rendered pages) for: `99.9`, `unauthorized`, `95%`, `Enterprise Compliant`, `Zero Data Corruption`, `schema drift`, `sub-10ms`, `simulator`, `Simulator`, `thinking-orbs`, `Shu`, `Wasl`, `wasl`, `Apple Geo Ingest`, `dataops-service`, `GEO-92841`, `—`, `–`. Nothing should match in rendered copy. (One note about a search term withheld from the committed copy, D54.)
 
 ---
 
@@ -134,7 +134,7 @@ Page-specific notes:
 | Emerald Labs | Software Engineering Intern, May 2022 to Sep 2022; frontend components and backend APIs, Web3.js; integration testing | Resume |
 | Education | B.S. Computer Science, UT Dallas, Dec 2022; A.A.S. Business Administration, Austin Community College, May 2020 | Resume |
 | WorkHorse | 28 agents; 9 hooks; 5 to 2 human gates (plus Deploy at tier 3); 224 plugin tests, 278 desktop tests; 4 of 4 real changes merged; 28 review findings fixed before sign-off; 70 new tests and eval cases (36 + 34); 0 rejected ship documents since the redesign; build green for the first time in 17 days (live app); 9 plugin releases | WorkHorse interview brief |
-| Studbook | 100% faithful on the sealed test set; 3 of 3 trap questions refused; recall@5 0.56 to 0.85 (+52%); pool-10 rerank about 2× faster than pool 20, with higher recall; follow-up retrieval 2 to 11 of 12; 9 of 12 follow-ups fully correct with the thread vs 1 of 12 without | WorkHorse interview brief |
+| Studbook | 100% faithful on the sealed test set; 3 of 3 trap questions refused; recall@5 0.56 to 0.85 (+52%); pool-10 rerank speed withheld from this copy (D45); follow-up retrieval 2 to 11 of 12; 9 of 12 follow-ups fully correct with the thread vs 1 of 12 without | WorkHorse interview brief |
 
 ---
 
