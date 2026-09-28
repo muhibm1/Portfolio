@@ -90,16 +90,31 @@ Header dump from the first deploy run: not recorded yet.
 
 ## 6. Post-deploy manual check
 
-Four things that no automated step this project runs can prove. There is no browser in CI, and
-adding one (Playwright) was rejected on cost (spec R84, "Observability"). Work through all four
-after the first deploy, and again after any later change to `vite.config.js`, `index.html` or
-`package.json`, then append one dated line to the log below.
+Updated 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145):
+the redesign deleted the hero orb animation and its component, so the second check below now
+covers the mobile navigation menu instead. Four things that no automated step this project runs
+can prove. There is no browser in CI, and adding one (Playwright) was rejected on cost (spec R84,
+"Observability"). Work through all four after the first deploy, and again after any later change
+to `vite.config.js`, `index.html` or `package.json`, then append one dated line to the log below.
 
-1. The home page renders content inside `#root` in a real browser.
-2. The orb animates and stops when the tab is hidden.
+1. The home page renders content inside `#root` in a real browser, with each page's own text and
+   the mockup layout, not the pre-redesign single scroll.
+2. The mobile header menu (the "Open menu" button in `SiteHeader.jsx`) opens and closes its panel
+   below the breakpoint where the full navigation collapses.
 3. A deep link pasted into a fresh tab renders the case study (CI smoke R121 proves the 200 and
    the body; this check is for rendering).
 4. The browser console shows no CSP violation and no uncaught error.
+
+### Regenerating `og.png`
+
+`public/og.png`, the 1200 by 630 share image every page's Open Graph and Twitter tags point at, is
+rendered once from `docs/design/og.svg` by the main session's own Chromium (ADR 0005, D4), never
+at build time and never through `npx`. To regenerate it after a change to `og.svg`: open
+`docs/design/og.svg` in the Chromium already on this machine, with the IBM Plex Sans, IBM Plex
+Mono and Space Grotesk faces resolved only from the local `@fontsource` files already installed
+under `node_modules` (no font is fetched over the network at render time), screenshot the
+1200 by 630 canvas to `public/og.png`, and commit the result. `src/servedFiles.test.js` checks the
+committed file's dimensions.
 
 Log format, one line per check, newest last:
 `YYYY-MM-DD <commit sha> <trigger> 1 pass, 2 pass, 3 pass, 4 pass. <notes>`
@@ -125,6 +140,20 @@ Log:
   built CSS has 0 `data:` font URLs (was 12, confirmed via
   `/Portfolio/assets/index-DKKCxcjg.css`), served CSS matches (CI smoke R100 success), and the
   live browser console shows 0 errors and 0 CSP violations (confirmed).
+
+## 6a. The resume PDF (withdrawn, D24)
+
+Added 2026-09-25 by change `2026-09-25-rebuild-portfolio-to-approved-redesign` (task T13, R145);
+updated 2026-09-28 by the same change's revision (task T21, D24).
+
+- The resume PDF planned by D17 was withdrawn on 2026-09-28 (D24) and never published. No PDF is
+  served from the site or committed to this repository; the four Resume buttons, the served file,
+  `scripts/check-resume-pdf.mjs`, its workflow step and the owner's D12/D17 eye check are all
+  removed with it.
+- D17 also records here that prerendering (T11) now writes the owner's email address into the
+  served HTML of every page as plain text, readable without JavaScript, where before it was
+  reachable only inside the JS bundle. See `.workhorse/profile.yml`
+  `compliance.retention_notes` for the same fact recorded in the profile.
 
 ## 7. The phone number in git history
 

@@ -1,116 +1,43 @@
-import React from 'react';
-import { Mail, ArrowUpRight, Check, CircleAlert, Copy, FileText } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';
-import { useClipboardCopy } from '../hooks/useClipboardCopy';
-import { prefersReducedMotion } from '../prefersReducedMotion';
+import { onDarkButtonClasses } from './buttonClasses';
 
-const copyStatusIcons = { idle: Copy, copied: Check, failed: CircleAlert };
-
-export default function ContactFooter({ onOpenResume }) {
-  const { personal } = portfolioData;
-  const [copyStatus, copyText] = useClipboardCopy();
-
-  const CopyStatusIcon = copyStatusIcons[copyStatus];
+/**
+ * The dark "04 · Contact" footer (R132). Rendered by HomePage and WorkIndexPage, not by
+ * SiteLayout: case-study pages carry their own ContactBand instead (R135).
+ */
+export default function ContactFooter() {
+  const { personal, home } = portfolioData;
+  const { contact } = home;
+  const emailHref = `mailto:${personal.email}`;
 
   return (
-    <footer id="contact" className="py-20 px-4 border-t border-[#bfbebe] bg-[#e5e4e0]">
-      <div className="max-w-6xl mx-auto space-y-16">
-        {/* Contact Banner */}
-        <div className="p-8 sm:p-12 bg-white border border-[#bfbebe] flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="space-y-3 max-w-xl">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#1d1d1d]/70 block">
-              Initiate Contact // Forward Deployed Roles
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1d] font-['Space_Grotesk',sans-serif]">
-              Let's talk systems, integrations, and shipping.
-            </h2>
-            <p className="text-sm text-[#1d1d1d]/70 leading-relaxed">
-              Open to Forward Deployed Engineer (FDE), Solutions Architect, and Systems Integration opportunities where direct client impact and resilient software matter.
-            </p>
-          </div>
+    <footer id="contact" className="bg-ink px-5 py-16 text-on-dark md:px-[120px] md:py-28">
+      <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-on-dark-tertiary">
+        {contact.eyebrow}
+      </p>
+      <h2 className="mt-4 max-w-3xl font-display text-3xl font-medium md:text-5xl">
+        {contact.heading}
+      </h2>
 
-          <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
-            <button
-              onClick={() => copyText(personal.email)}
-              className="px-5 py-3 rounded-[10px] border border-[#1d1d1d] bg-[#1d1d1d] text-white text-xs font-semibold hover:bg-white hover:text-[#1d1d1d] transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <CopyStatusIcon className="w-4 h-4" />
-              <span>{copyButtonLabel(copyStatus, personal.email)}</span>
-            </button>
+      <p className="mt-4 hidden max-w-xl text-on-dark-secondary md:block">{contact.lead}</p>
+      <p className="mt-4 max-w-xl text-on-dark-secondary md:hidden">{contact.mobileLead}</p>
 
-            <a
-              href={`mailto:${personal.email}?subject=Forward%20Deployed%20Engineering%20Opportunity`}
-              className="px-5 py-3 rounded-[10px] bg-white border border-[#1d1d1d] text-[#1d1d1d] text-xs font-semibold hover:bg-[#1d1d1d] hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Send Direct Email</span>
-            </a>
-
-            <button
-              onClick={onOpenResume}
-              className="px-5 py-3 rounded-[10px] bg-[#e5e4e0] border border-[#bfbebe] text-[#1d1d1d] text-xs font-semibold hover:bg-[#cdcdc9] transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <FileText className="w-4 h-4" />
-              <span>View Full Resume</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Contact Links & Info Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-xs text-[#1d1d1d]/70">
-          <div className="space-y-1.5">
-            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">Direct Email</span>
-            <a href={`mailto:${personal.email}`} className="font-mono text-sm font-semibold text-[#1d1d1d] hover:underline">
-              {personal.email}
-            </a>
-          </div>
-
-          <div className="space-y-1.5">
-            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">LinkedIn Profile</span>
-            <a
-              href={personal.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-sm font-semibold text-[#1d1d1d] hover:underline inline-flex items-center gap-1"
-            >
-              <span>{personal.linkedinHandle}</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          <div className="space-y-1.5">
-            <span className="font-mono text-[#1d1d1d]/70 uppercase tracking-wider block">Location</span>
-            <span className="font-mono text-sm font-semibold text-[#1d1d1d]">
-              {personal.location} (Open to Relocation / Remote)
-            </span>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#bfbebe] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#1d1d1d]/70">
-          <div>
-            © {new Date().getFullYear()} Muhammad Muhibullah · Forward Deployed Engineering & Systems Integration
-          </div>
-          <div className="flex items-center gap-4">
-            <button type="button" onClick={scrollToTopOfPage} className="font-mono hover:text-[#1d1d1d] cursor-pointer">
-              Back to Top ↑
-            </button>
-          </div>
-        </div>
+      {/* G12: exactly two links in the footer. One anchor per destination; only the label text
+          swaps by viewport, so the link itself is never duplicated in the DOM. */}
+      <div className="mt-8 flex flex-col gap-3 md:mt-8 md:flex-row md:items-center md:gap-3">
+        <a
+          href={emailHref}
+          className="inline-flex min-h-12 items-center justify-center rounded-full bg-on-dark px-6 font-sans text-sm font-medium text-ink"
+        >
+          <span className="hidden md:inline">{contact.emailButton}</span>
+          <span className="md:hidden">{contact.mobileEmailButton}</span>
+        </a>
+        <a href={personal.linkedin} target="_blank" rel="noopener noreferrer" className={onDarkButtonClasses}>
+          {contact.linkedinButton}
+        </a>
       </div>
+
+      <p className="mt-8 font-sans text-sm text-on-dark-tertiary">{contact.location}</p>
     </footer>
   );
-}
-
-function copyButtonLabel(copyStatus, email) {
-  if (copyStatus === 'copied') return `Copied ${email}`;
-  if (copyStatus === 'failed') return 'Copy failed';
-  return 'Copy Email Address';
-}
-
-// The footer renders on every route, so this scrolls the page the visitor is on rather than
-// linking to a section that exists only on the home page (R91, ADR 0011). 'auto' defers to CSS
-// scroll-behavior, which src/index.css forces to instant under reduced motion.
-function scrollToTopOfPage() {
-  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }

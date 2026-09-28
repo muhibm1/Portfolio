@@ -1,62 +1,55 @@
-// The "/" route: the six home sections in their fixed order. It tells the layout's navbar which
-// section is on screen, and scrolls to the section a link such as /#simulator names, because
-// React Router does not scroll to hashes (ADR 0001).
+// The "/" route (R132): the mockup sections in order, composed from home in the data module.
+// useScrollToHashTarget makes a header link such as #work, #approach or #experience land on the
+// right section; React Router does not scroll to hashes on its own.
 import { useEffect } from 'react';
-import { useLocation, useOutletContext } from 'react-router';
-import Hero from '../components/Hero';
-import FdePhilosophy from '../components/FdePhilosophy';
-import CaseStudiesSection from '../components/CaseStudiesSection';
-import InteractiveTriageSimulator from '../components/InteractiveTriageSimulator';
-import ExperienceTimeline from '../components/ExperienceTimeline';
-import SkillsMatrix from '../components/SkillsMatrix';
+import { useLocation } from 'react-router';
+import { portfolioData } from '../data/portfolioData';
 import { prefersReducedMotion } from '../prefersReducedMotion';
-
-// In page order. 'contact' is the footer, which the layout renders below this page.
-const SPIED_SECTION_IDS = ['overview', 'philosophy', 'case-studies', 'simulator', 'experience', 'skills', 'contact'];
-
-// The current section is the one under a line this many pixels below the top of the viewport,
-// so a section's navbar link lights up just before its heading reaches the top.
-const ACTIVE_LINE_OFFSET = 200;
+import CaseStudyCards from '../components/CaseStudyCards';
+import ContactFooter from '../components/ContactFooter';
+import ExperienceSection from '../components/ExperienceSection';
+import HomeHero from '../components/HomeHero';
+import HowIWork from '../components/HowIWork';
+import ProductionStats from '../components/ProductionStats';
+import Toolkit from '../components/Toolkit';
 
 export default function HomePage() {
-  const { setActiveSection } = useOutletContext();
-  useActiveSectionSpy(setActiveSection);
   useScrollToHashTarget();
+  const { personal, home, caseStudies } = portfolioData;
+  const emailHref = `mailto:${personal.email}`;
 
   return (
     <main>
-      <Hero />
-      <FdePhilosophy />
-      <CaseStudiesSection />
-      <InteractiveTriageSimulator />
-      <ExperienceTimeline />
-      <SkillsMatrix />
+      <HomeHero hero={home.hero} emailHref={emailHref} />
+      <ProductionStats stats={home.stats} />
+
+      <section
+        id="work"
+        className="flex flex-col gap-12 border-y border-border bg-surface px-5 py-16 md:px-[120px] md:py-28"
+      >
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
+          <div className="flex flex-col gap-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              {home.caseStudiesIntro.eyebrow}
+            </p>
+            <h2 className="font-display text-3xl font-medium text-ink md:text-5xl">
+              {home.caseStudiesIntro.heading}
+            </h2>
+          </div>
+          <p className="max-w-md text-base text-body">{home.caseStudiesIntro.lead}</p>
+        </div>
+        <CaseStudyCards caseStudies={caseStudies} />
+      </section>
+
+      <HowIWork principles={home.principles} workingWithPeople={home.workingWithPeople} />
+      <ExperienceSection experience={home.experience} education={home.education} />
+      <Toolkit toolkit={home.toolkit} />
+      <ContactFooter />
     </main>
   );
 }
 
-// Moved here from App.jsx (R9) so it listens only while the home page is open.
-function useActiveSectionSpy(setActiveSection) {
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentSectionId = findSectionAt(window.scrollY + ACTIVE_LINE_OFFSET);
-      if (currentSectionId) setActiveSection(currentSectionId);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [setActiveSection]);
-}
-
-function findSectionAt(pagePosition) {
-  return SPIED_SECTION_IDS.find((sectionId) => {
-    const section = document.getElementById(sectionId);
-    if (!section) return false;
-    return pagePosition >= section.offsetTop && pagePosition < section.offsetTop + section.offsetHeight;
-  });
-}
-
-// R8: runs on mount and whenever the hash changes. A hash naming no element does nothing.
+// Runs on mount and whenever the hash changes. A hash naming no element does nothing.
 function useScrollToHashTarget() {
   const { hash } = useLocation();
 

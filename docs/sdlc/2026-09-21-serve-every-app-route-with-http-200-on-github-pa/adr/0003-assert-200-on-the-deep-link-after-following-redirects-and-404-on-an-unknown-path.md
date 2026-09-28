@@ -1,7 +1,10 @@
 # 0003: Assert 200 on the deep link after following redirects, and 404 on an unknown path
 
 Date: 2026-09-21
-Status: proposed
+Status: proposed. Change 2026-09-25-rebuild-portfolio-to-approved-redesign keeps this decision in
+force and repeats its per-page assertions on the case-study and not-found pages, not only the
+home page, because prerendering (that change's D3) made the pages stop being byte-identical
+(that change's D15).
 Change: 2026-09-21-serve-every-app-route-with-http-200-on-github-pa
 
 ## Context

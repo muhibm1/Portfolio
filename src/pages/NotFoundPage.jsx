@@ -1,25 +1,28 @@
 import { Link } from 'react-router';
-
-const linkClass = 'px-4 py-2 rounded-[10px] border border-[#1d1d1d] text-xs font-semibold transition-colors';
+import { primaryButtonClasses, secondaryButtonClasses } from '../components/buttonClasses';
+import ContactFooter from '../components/ContactFooter';
 
 /** The page for any address the site does not serve, including an unknown case-study slug. */
 export default function NotFoundPage() {
   return (
-    <main className="pt-32 pb-20 px-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight uppercase text-[#1d1d1d] font-['Space_Grotesk',sans-serif]">
-          Page not found
-        </h1>
-        <p className="text-base text-[#1d1d1d]/70">There is no page at this address.</p>
-        <div className="flex flex-wrap gap-3">
-          <Link to="/" className={`${linkClass} bg-[#1d1d1d] text-white hover:bg-white hover:text-[#1d1d1d]`}>
-            Back to home
-          </Link>
-          <Link to="/work" className={`${linkClass} bg-white text-[#1d1d1d] hover:bg-[#1d1d1d] hover:text-white`}>
-            Browse all work
-          </Link>
+    <>
+      <main className="min-h-screen bg-ground px-5 pt-40 pb-20 md:px-[120px]">
+        <div className="mx-auto flex max-w-3xl flex-col gap-6">
+          <h1 className="font-display text-4xl font-medium tracking-tight text-ink sm:text-6xl">
+            Page not found
+          </h1>
+          <p className="text-base text-body">There is no page at this address.</p>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/" className={primaryButtonClasses}>
+              Back to home
+            </Link>
+            <Link to="/work" className={secondaryButtonClasses}>
+              Browse all work
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <ContactFooter />
+    </>
   );
 }

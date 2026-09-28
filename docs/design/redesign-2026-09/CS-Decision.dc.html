@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case study, LLM decision system</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#17171A;background:#ECEAE5}
+a{color:#17171A}a:hover{color:#B4400B}
+.eb{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#55534E;margin:0}
+.d1{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:64px;line-height:1.04;letter-spacing:-.025em;margin:0}
+.d2{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:34px;line-height:1.12;letter-spacing:-.015em;margin:0}
+.d4{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.3;margin:0}
+.lead{font-size:21px;line-height:1.55;color:#2B2A27;margin:0}
+.p{font-size:17px;line-height:1.7;color:#2B2A27;margin:0}
+.s{font-size:15px;line-height:1.55;color:#55534E;margin:0}
+.n{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:40px;line-height:1;letter-spacing:-.02em}
+.ph{background:#FBEBDD;color:#7A2E0A;border:1px dashed #B4400B;border-radius:4px;padding:1px 6px;font-family:'IBM Plex Mono',monospace;font-size:14px}
+.card{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:10px}
+.nl{font-size:15px;text-decoration:none;color:#3A3935}
+.step{background:#F7F6F3;border:1px solid #D6D3CC;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.gate{background:#17171A;border-color:#17171A;color:#F7F6F3}
+.st{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px}
+.sd{font-size:13px;line-height:1.4;color:#55534E}
+ul.l{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+ul.l li{font-size:17px;line-height:1.6;color:#2B2A27}
+</style>
+</helmet>
+<div style="width: 1440px; height: 4100px; display: flex; flex-direction: column; background: #ECEAE5; overflow: hidden">
+
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 24px 120px; border-bottom: 1px solid #D6D3CC">
+<a href="Main.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px">Muhammad Muhibullah</span>
+<span class="eb" style="font-size: 11px">Forward Deployed Engineer</span>
+</a>
+<nav style="display: flex; align-items: center; gap: 32px">
+<a class="nl" href="Main.dc.html">Home</a>
+<a class="nl" href="Main.dc.html">All case studies</a>
+<a class="nl" href="#contact">Contact</a>
+</nav>
+</header>
+
+<section style="padding: 88px 120px 56px; display: flex; flex-direction: column; gap: 24px">
+<p class="eb">Case study · Apple (via TCS) · Data Health team · Feb 2025 to present</p>
+<h1 class="d1" style="max-width: 1050px">A review backlog, turned into a decision system</h1>
+<p class="lead" style="max-width: 860px">Cross-team data changes were stuck behind a manual review queue. I built a self-hosted LLM system that reads each request and decides approve, reject or hold, with every decision auditable by a person.</p>
+</section>
+
+<section style="padding: 0 120px 72px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #C9C6BE; border-bottom: 1px solid #C9C6BE">
+<div style="padding: 20px 20px 20px 0; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">My role</span><span class="p" style="font-size: 16px">Self-initiated; selected the model, built, deployed and own it</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Live since</span><span class="p" style="font-size: 16px">November 2025</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Stack</span><span class="p" style="font-size: 16px">Python, open-source LLM self-hosted with Ollama, REST APIs</span></div>
+<div style="padding: 20px; border-left: 1px solid #D6D3CC; display: flex; flex-direction: column; gap: 6px"><span class="eb" style="font-size: 11px">Status</span><span class="p" style="font-size: 16px">In production</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 16px">
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">30 to 350+</span><span class="s">tickets a day, more than eleven times the manual rate</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">2 weeks</span><span class="s">to clear two months of accumulated tickets</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><span class="n">Zero</span><span class="s">backlog since launch</span></div>
+</div>
+</section>
+
+<section style="padding: 0 120px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px">
+<nav style="grid-column: span 3; display: flex; flex-direction: column; gap: 12px; padding-top: 8px">
+<span class="eb" style="font-size: 11px">On this page</span>
+<a class="nl" href="#situation">The situation</a>
+<a class="nl" href="#built">What I built</a>
+<a class="nl" href="#safe">How it stays safe</a>
+<a class="nl" href="#people">Working with the teams</a>
+<a class="nl" href="#changed">What changed</a>
+<a class="nl" href="#client">What I'd bring to a client</a>
+</nav>
+<div style="grid-column: 4 / span 9; display: flex; flex-direction: column; gap: 64px; padding-bottom: 96px; max-width: 880px">
+
+<div id="situation" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">The situation</h2>
+<p class="p">Changes to certain map data needed a person to review the request before work could continue. The queue grew faster than people could clear it. About two months of tickets had piled up, and teams across the pipeline were waiting on them.</p>
+<p class="p">Building a fix wasn't part of my assigned role. I took it on anyway.</p>
+</div>
+
+<div id="built" style="display: flex; flex-direction: column; gap: 20px">
+<h2 class="d2">What I built</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<div class="step"><span class="st">Ticket</span><span class="sd">Structured request data</span></div>
+<div class="step"><span class="st">Model reads it</span><span class="sd">Self-hosted, open source</span></div>
+<div class="step"><span class="st">Decision</span><span class="sd">Approve, reject or hold</span></div>
+<div class="step gate"><span class="st">Audit trail</span><span class="sd" style="color: #B9B6AE">Reviewable by a person</span></div>
+</div>
+<ul class="l">
+<li>A decision layer that reads the structured data on each ticket and returns one of three outcomes: approve, reject or hold.</li>
+<li>I selected an open-source model, deployed it self-hosted through Ollama, and own it end to end.</li>
+<li>Launch wasn't the end of the work. I keep tuning the prompt logic and the system's scope against how it performs on live tickets.</li>
+</ul>
+</div>
+
+<div id="safe" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">How it stays safe</h2>
+<p class="p">Every decision is logged and reviewable by a person, so automation can act on live data without acting blind.</p>
+<p class="p">The system has three outcomes, not two. Hold gives it a way to decline a call instead of forcing a yes or no.</p>
+</div>
+
+<div id="people" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">Working with the teams</h2>
+<p class="p">I worked directly with the stakeholder teams who own these requests to decide what the system should handle, and changed its scope as live results came in.</p>
+</div>
+
+<div id="changed" style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="d2">What changed</h2>
+<p class="p">Since going live in November 2025: two months of backlog cleared in two weeks, and the queue has stayed at zero since. Throughput went from about 30 tickets a day to over 350 while cutting the risk that comes with manual review.</p></div>
+
+<div id="client" class="card" style="padding: 36px; display: flex; flex-direction: column; gap: 14px; background: #17171A; border-color: #17171A">
+<p class="eb" style="color: #B9B6AE">What I'd bring to a client</p>
+<p class="lead" style="color: #F7F6F3">Find the review step everyone waits on. Separate the calls a system can make with a trail from the ones a person should make. Automate the first, keep people on the second, and keep tuning against live results.</p>
+</div>
+
+<p class="s">Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.</p>
+
+</div>
+</section>
+
+<section style="padding: 48px 120px; border-top: 1px solid #C9C6BE; display: flex; justify-content: space-between; align-items: center">
+<a href="CS-WorkHorse.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 4px"><span class="eb" style="font-size: 11px">Previous</span><span class="d4">WorkHorse: AI-built software you can audit</span></a>
+<a href="CS-Integration.dc.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 4px; align-items: end"><span class="eb" style="font-size: 11px">Next case study</span><span class="d4">Three systems, one tool, half the turnaround</span></a>
+</section>
+
+<footer id="contact" style="flex-grow: 1; background: #17171A; color: #F7F6F3; padding: 72px 120px; display: flex; justify-content: space-between; align-items: center">
+<h2 class="d2" style="color: #F7F6F3">Have a queue like this? I reply within a day.</h2>
+<a href="#email" style="text-decoration: none; background: #F7F6F3; color: #17171A; min-height: 48px; padding: 0 22px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 500">Email mmalqaim@gmail.com</a>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4100}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

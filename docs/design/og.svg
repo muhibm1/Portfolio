@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Share-image source (R141, D4, ADR 0005). Rendered once outside the build, in a local
+  Chromium, to public/og.png at exactly 1200 by 630; regenerating it after a hero-copy change
+  is a documented manual step in docs/hosted-config.md. Tokens are the plan's design system
+  (plan.md section 2): ground, ink, muted, accent.
+
+  Font paths are relative to this file (docs/design/og.svg), pointing at the @fontsource woff2
+  files under node_modules so the render contacts no third-party host. Space Grotesk is
+  installed on this branch (confirmed). IBM Plex Sans and IBM Plex Mono are added by a parallel
+  task (T1) and are not installed on this branch; their paths and file-naming convention below
+  are believed, not verified here.
+-->
+<svg
+  width="1200"
+  height="630"
+  viewBox="0 0 1200 630"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Muhammad Muhibullah, Forward Deployed Engineer. 30 to 350 plus tickets decided a day."
+>
+  <title>Muhammad Muhibullah, Forward Deployed Engineer</title>
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'Space Grotesk';
+        font-style: normal;
+        font-weight: 600;
+        src: url('../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-600-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: normal;
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+      }
+
+      .name {
+        font-family: 'Space Grotesk', Arial, sans-serif;
+        font-weight: 600;
+        font-size: 44px;
+        fill: #17171a;
+      }
+      .eyebrow {
+        font-family: 'IBM Plex Mono', 'Courier New', monospace;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        fill: #55534e;
+      }
+      .stat {
+        font-family: 'Space Grotesk', Arial, sans-serif;
+        font-weight: 600;
+        font-size: 156px;
+        letter-spacing: -0.02em;
+        fill: #17171a;
+      }
+      .stat-label {
+        font-family: 'IBM Plex Sans', Arial, sans-serif;
+        font-weight: 500;
+        font-size: 30px;
+        fill: #55534e;
+      }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="630" fill="#ECEAE5" />
+
+  <rect x="80" y="80" width="56" height="6" fill="#B4400B" />
+
+  <text x="80" y="150" class="name">Muhammad Muhibullah</text>
+  <text x="80" y="185" class="eyebrow">Forward Deployed Engineer</text>
+
+  <text x="76" y="440" class="stat">30 to 350+</text>
+  <text x="82" y="486" class="stat-label">Tickets decided a day</text>
+</svg>
