@@ -1,8 +1,9 @@
 // The site's one content module. Every string here is copied verbatim from the owner's approved
 // plan (portfolio-redesign-handoff/PORTFOLIO_REDESIGN_PLAN.md, section 6 binding for facts) and
-// the seven mockups (word for word, ADR 0006), amended per the 2026-09-28 revision (resume
-// withdrawn, contact narrowed to email and LinkedIn, GitHub snapshots linked, an MCP section
-// added, the WorkHorse run record brought to five runs; spec R138, R146, R153, R154, R155).
+// the seven mockups (word for word, ADR 0006), amended per the 2026-09-28 revision (the
+// downloadable document withdrawn, contact narrowed to email and LinkedIn, GitHub snapshots
+// linked, an MCP section added, the WorkHorse run record brought to five runs; spec R138, R146,
+// R153, R154, R155).
 // Nothing here is paraphrased, rounded or added beyond what those requirements give verbatim.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
