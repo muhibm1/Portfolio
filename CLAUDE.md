@@ -24,7 +24,7 @@ recruiters. No backend, no database, no auth, no visitor data collection.
    `SiteLayout`, which supplies the header, the mobile menu and the footer on every route.
 3. Every page and section is one default-exported component in `src/pages/` or
    `src/components/`, one file each.
-4. All copy, metrics, case studies and resume content come from `src/data/portfolioData.js`.
+4. All copy, metrics and case studies come from `src/data/portfolioData.js`.
    Nothing is fetched at runtime.
 5. The only outbound calls are the self-hosted IBM Plex and Space Grotesk typefaces (served from
    this site, not Google), a LinkedIn link, and `mailto:` links. Full detail in
@@ -48,7 +48,7 @@ Ask first: `.github/workflows/**`, `index.html`, `vite.config.js`, `package.json
 `package-lock.json`, `.npmrc`, `.nvmrc`, `scripts/check-npmrc.mjs`, `scripts/route-pages.mjs`,
 `scripts/check-route-pages.mjs`, `scripts/prerender.mjs`, `scripts/forbidden-copy.mjs`,
 `scripts/check-forbidden-copy.mjs`, `src/pageMeta.js`, `src/entry-server.jsx`,
-`scripts/check-test-floor.mjs`, `scripts/check-resume-pdf.mjs`.
+`scripts/check-test-floor.mjs`.
 
 Do not rewrite the factual claims in `src/data/portfolioData.js`. The employer names, dates and
 metrics are the owner's own record and only he can change them.

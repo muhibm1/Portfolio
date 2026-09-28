@@ -48,7 +48,10 @@ const PINNED_SUITES = [
   // is the post-build CI step `node scripts/check-route-pages.mjs`. Then two cases were added for
   // the non-exact #root-emptiness check (review group 4).
   { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 16 },
-  { path: 'src/checkForbiddenCopy.test.js', pinnedPassedCount: 14 },
+  // 26, not 14: the R156 revision (an earlier task on this branch) added cases for
+  // TIMING_FIGURE_TERM and PADDOCK_RETIREMENT_TERM without this pin being re-synced; T21 (R149)
+  // catches it up, measured from a fresh report of this file alone on this branch.
+  { path: 'src/checkForbiddenCopy.test.js', pinnedPassedCount: 26 },
   { path: 'src/pageMeta.test.js', pinnedPassedCount: 11 },
 ]
 
