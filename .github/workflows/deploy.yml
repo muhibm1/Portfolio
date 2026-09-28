@@ -110,9 +110,6 @@ jobs:
       - name: Build
         run: "npm run build"
 
-      - name: Resume PDF hash, revision and inflated-stream text (D23)
-        run: "node scripts/check-resume-pdf.mjs"
-
       - name: Built CSS inlines no font (R97)
         run: "node scripts/check-built-css-fonts.mjs"
 
@@ -493,7 +490,7 @@ jobs:
             exit 1
           fi
 
-      - name: "Smoke R143: the resume PDF and the share image are served"
+      - name: "Smoke R143: the share image is served"
         run: |
           failures=0
 
@@ -516,7 +513,6 @@ jobs:
             echo "PASS R143 $1"
           }
 
-          fetch_and_check "resume PDF" "${ROOT_URL}Muhammad_Muhibullah_Resume.pdf" smoke/resume.pdf 'pdf' || failures=$((failures + 1))
           fetch_and_check "share image" "${ROOT_URL}og.png" smoke/og.png 'png' || failures=$((failures + 1))
 
           if [ "$failures" -gt 0 ]; then

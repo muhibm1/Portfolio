@@ -1,7 +1,9 @@
-// Tests the three files a served page depends on (R137, R141): the resume PDF and the share
-// image, both supplied by people rather than written by a builder (D2, D4), and the share-image
-// source committed in this repository. A missing supplied file fails with a message naming its
-// decision, never a stub or a fake file (plan Approach, "T10's test stays red and is reported").
+// Tests the served files a page depends on (R137, R141, R151): the share image, supplied by a
+// person rather than written by a builder (D4), and its source committed in this repository. A
+// missing supplied file fails with a message naming its decision, never a stub or a fake file
+// (plan Approach, "T10's test stays red and is reported"). No resume PDF is served: R151
+// withdraws it, and this file asserts none is tracked (R143).
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,8 +11,8 @@ import { describe, expect, it } from 'vitest';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OG_PNG_PATH = path.join(REPO_ROOT, 'public', 'og.png');
-const RESUME_PDF_PATH = path.join(REPO_ROOT, 'public', 'Muhammad_Muhibullah_Resume.pdf');
 const OG_SVG_PATH = path.join(REPO_ROOT, 'docs', 'design', 'og.svg');
+const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
@@ -29,21 +31,21 @@ describe('served files (G18)', () => {
     expect(buffer.readUInt32BE(20)).toBe(630);
   });
 
-  it('serves the resume as a PDF beginning %PDF- (D2)', () => {
-    if (!fs.existsSync(RESUME_PDF_PATH)) {
-      throw new Error(
-        'D2: public/Muhammad_Muhibullah_Resume.pdf is missing. The owner supplies this file ' +
-          'after the D12 and D17 checks; a builder never creates or fakes it.',
-      );
-    }
-
-    const header = fs.readFileSync(RESUME_PDF_PATH, { encoding: 'latin1', flag: 'r' }).slice(0, 5);
-    expect(header).toBe('%PDF-');
-  });
-
   it('keeps the share-image source at 1200 by 630', () => {
     const svg = fs.readFileSync(OG_SVG_PATH, 'utf8');
 
     expect(svg).toContain('viewBox="0 0 1200 630"');
+  });
+
+  it('serves no PDF: no public/*.pdf file exists and git tracks no .pdf file (R151)', () => {
+    const publicPdfFiles = fs.existsSync(PUBLIC_DIR)
+      ? fs.readdirSync(PUBLIC_DIR).filter((name) => name.toLowerCase().endsWith('.pdf'))
+      : [];
+    expect(publicPdfFiles).toEqual([]);
+
+    const trackedFiles = execFileSync('git', ['ls-files'], { cwd: REPO_ROOT, encoding: 'utf8' })
+      .split('\n')
+      .filter((name) => name.toLowerCase().endsWith('.pdf'));
+    expect(trackedFiles).toEqual([]);
   });
 });
