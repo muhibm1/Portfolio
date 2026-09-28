@@ -238,6 +238,49 @@ describe('forbidden-copy file scan', () => {
     expect(hitLines.filter((line) => line.includes('ascii-2x-faster.txt') && line.includes('2x'))).toHaveLength(1);
   });
 
+  // Review group 1: a binary-extension file is skipped without being read as text, even when its
+  // bytes happen to spell a forbidden term, and is counted as skipped rather than scanned.
+  it('skips a binary-extension file holding the bytes "2x faster" and counts it, not scans it', () => {
+    const binaryPath = writeFixture('shot.png', '2x faster');
+
+    const { exitCode, hitLines, counts } = scanFiles([binaryPath], matchers);
+
+    expect(exitCode).toBe(EXIT_CANNOT_RUN);
+    expect(hitLines).toEqual([]);
+    expect(counts.skippedAsBinary).toBe(1);
+    expect(counts.scanned).toBe(0);
+  });
+
+  // Review group 1: an "@2x" asset-name suffix is not the banned "2x" relative-speed claim.
+  it('does not match "shot@2x.png" in an import line, but still matches "2x faster"', () => {
+    const assetNamePath = writeFixture('asset-name.txt', 'import hero from "./assets/shot@2x.png"\n');
+    const hitPath = writeFixture('two-x-review.txt', '2x faster than before.\n');
+
+    const { hitLines } = scanFiles([assetNamePath, hitPath], matchers);
+
+    expect(hitLines.some((line) => line.includes('asset-name.txt'))).toBe(false);
+    expect(hitLines.filter((line) => line.includes('two-x-review.txt') && line.includes('2x'))).toHaveLength(1);
+  });
+
+  // Review group 1: "11x" and "4 of 4" anchored against adjacent digits, so a larger number that
+  // merely contains the digits is not a hit, while the bare term still is.
+  it('does not match "24 of 40 questions" or "S211X model", but matches "4 of 4" and "11x" alone', () => {
+    const questionsPath = writeFixture('questions.txt', '24 of 40 questions answered\n');
+    const modelPath = writeFixture('model.txt', 'the S211X model shipped\n');
+    const fourOfFourPath = writeFixture('four-of-four-review.txt', '4 of 4 runs passed\n');
+    const elevenXPath = writeFixture('eleven-x-review.txt', '11x faster in testing\n');
+
+    const { hitLines } = scanFiles(
+      [questionsPath, modelPath, fourOfFourPath, elevenXPath],
+      matchers,
+    );
+
+    expect(hitLines.some((line) => line.includes('questions.txt'))).toBe(false);
+    expect(hitLines.some((line) => line.includes('model.txt'))).toBe(false);
+    expect(hitLines.filter((line) => line.includes('four-of-four-review.txt') && line.includes('4 of 4'))).toHaveLength(1);
+    expect(hitLines.filter((line) => line.includes('eleven-x-review.txt') && line.includes('11x'))).toHaveLength(1);
+  });
+
   // E4: the timing pattern requires a decimal number before a bare "s", or ms/second(s); a bare
   // integer before "s" is not a hit.
   it('does not match "the 1990s" or "in 30s" for the timing pattern', () => {
