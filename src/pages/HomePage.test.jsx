@@ -120,6 +120,7 @@ describe('HomePage', () => {
       .getAllByRole('link')
       .map((link) => link.getAttribute('href'));
 
+    expect(footerLinks).toHaveLength(2);
     expect(footerLinks).toEqual(expect.arrayContaining([`mailto:${personal.email}`, personal.linkedin]));
     expect(footerLinks).not.toContain(personal.github);
   });
