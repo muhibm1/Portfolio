@@ -42,6 +42,9 @@ describe('SiteHeader', () => {
     const menuButton = screen.getByRole('button', { name: 'Open menu' });
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
     expect(menuButton).toHaveAttribute('aria-controls', 'mobile-menu-panel');
+    expect(panel()).toHaveAttribute('id', 'mobile-menu-panel');
+    expect(panel()).toHaveAttribute('hidden');
+    expect(panel()).not.toBeVisible();
     expect(panelLinks()).toHaveLength(0);
 
     fireEvent.click(menuButton);
@@ -117,7 +120,9 @@ function panel() {
 
 function panelLinks() {
   const node = panel();
-  return node ? within(node).getAllByRole('link') : [];
+  // The panel stays mounted (hidden, not removed) when closed, so accessible-role queries
+  // correctly find nothing; use queryAllByRole, which does not throw on an empty result.
+  return node ? within(node).queryAllByRole('link') : [];
 }
 
 // R133: the header's GitHub link, in the nav or the mobile panel, points at personal.github,
