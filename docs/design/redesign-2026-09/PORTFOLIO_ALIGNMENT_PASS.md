@@ -62,7 +62,7 @@ Replace these rows in the plan's section 6 approved facts table. Everything not 
 Two numbers in the plan's table are still approved but should **not** appear on the site in that form, because the owner found them unreadable and cut them from the resume:
 
 - "recall@5 0.85 (0.56 vector only)" and the derived "+52%". If a slot needs a retrieval stat, use "3 of 3 traps refused" or "every claim tied to a source" instead. The retrieval table on the WorkHorse case study may keep its numbers, since a reader who scrolls that far is looking for them.
-- "75% fully correct" stays off the site, as the plan already says.
+- The quality figure the plan already withholds from its committed copy (D18) stays off the site too.
 
 ---
 

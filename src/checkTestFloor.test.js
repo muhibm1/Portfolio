@@ -39,7 +39,10 @@ const CHECK_ROUTE_PAGES_SUITE_PATH = 'src/checkRoutePages.test.js'
 
 // The two control suites pinned by the same task (R149, audit low 4), each measured from a fresh
 // JSON report of that file alone on this branch.
-const PINNED_FORBIDDEN_COPY_PASSED_COUNT = 14
+// 26, not 14: the R156 revision (an earlier task on this branch) added cases for
+// TIMING_FIGURE_TERM and PADDOCK_RETIREMENT_TERM without this pin being re-synced; T21 (R149)
+// catches it up, mirroring scripts/check-test-floor.mjs's own PINNED_SUITES entry (D20).
+const PINNED_FORBIDDEN_COPY_PASSED_COUNT = 26
 const FORBIDDEN_COPY_SUITE_PATH = 'src/checkForbiddenCopy.test.js'
 const PINNED_PAGE_META_PASSED_COUNT = 11
 const PAGE_META_SUITE_PATH = 'src/pageMeta.test.js'

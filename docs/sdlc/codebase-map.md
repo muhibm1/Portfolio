@@ -30,9 +30,11 @@ shape. In summary, **confirmed** by reading the tree at this change's head:
 - `scripts/forbidden-copy.mjs` and `scripts/check-forbidden-copy.mjs` scan source and built HTML
   for a list of banned strings and both dash characters, so a removed claim cannot come back
   silently.
-- The four Resume buttons link to `public/Muhammad_Muhibullah_Resume.pdf`, a file the owner
-  supplies himself (D2); `docs/hosted-config.md` section 6a records the manual check the owner
-  runs on it before it is added.
+- The resume PDF planned during the build was withdrawn on 2026-09-28 and never published (D24);
+  no PDF is served from the site or committed to this repository; `docs/hosted-config.md`
+  section 6a records the withdrawal. GitHub appears instead as a code link: three public snapshot
+  repositories (WorkHorse, Studbook, Paddock) are linked wherever that work is discussed, and the
+  header carries a GitHub link on every page.
 
 ---
 
