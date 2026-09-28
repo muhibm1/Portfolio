@@ -1,7 +1,7 @@
 # 0003: Serve the resume as a static PDF under public/ and remove the resume modal
 
 Date: 2026-09-25
-Status: proposed. Amends 2026-09-11 ADR 0008 (the resume no longer stays a modal).
+Status: superseded by 0008 on 2026-09-28. The owner decided that no resume is served from the site at all (D24); the modal deletion below stands, the static PDF, its test and its deploy checks are withdrawn. Amended 2026-09-11 ADR 0008 (the resume no longer stays a modal).
 Change: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
 ## Context
