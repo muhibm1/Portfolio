@@ -1,8 +1,7 @@
 /**
- * "03 · Experience" (R132): the five roles with their highlights, the two degrees, and the
- * "Full resume (PDF)" link.
+ * "03 · Experience" (R132): the five roles with their highlights and the two degrees.
  */
-export default function ExperienceSection({ experience, education, resumeHref }) {
+export default function ExperienceSection({ experience, education }) {
   return (
     <section
       id="experience"
@@ -11,9 +10,6 @@ export default function ExperienceSection({ experience, education, resumeHref })
       <div className="flex flex-col gap-4 md:col-span-4">
         <p className="font-mono text-xs uppercase tracking-widest text-muted">{experience.eyebrow}</p>
         <h2 className="font-display text-3xl font-medium text-ink md:text-5xl">{experience.heading}</h2>
-        <a href={resumeHref} className="mt-2 self-start border-b border-ink pb-0.5 text-sm font-medium text-ink">
-          {experience.resumeLinkText}
-        </a>
       </div>
 
       <div className="flex flex-col gap-9 md:col-span-7 md:col-start-6">

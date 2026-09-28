@@ -16,12 +16,11 @@ import Toolkit from '../components/Toolkit';
 export default function HomePage() {
   useScrollToHashTarget();
   const { personal, home, caseStudies } = portfolioData;
-  const resumeHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
   const emailHref = `mailto:${personal.email}`;
 
   return (
     <main>
-      <HomeHero hero={home.hero} resumeHref={resumeHref} emailHref={emailHref} />
+      <HomeHero hero={home.hero} emailHref={emailHref} />
       <ProductionStats stats={home.stats} />
 
       <section
@@ -43,7 +42,7 @@ export default function HomePage() {
       </section>
 
       <HowIWork principles={home.principles} workingWithPeople={home.workingWithPeople} />
-      <ExperienceSection experience={home.experience} education={home.education} resumeHref={resumeHref} />
+      <ExperienceSection experience={home.experience} education={home.education} />
       <Toolkit toolkit={home.toolkit} />
       <ContactFooter />
     </main>

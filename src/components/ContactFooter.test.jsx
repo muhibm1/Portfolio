@@ -13,18 +13,14 @@ describe('ContactFooter', () => {
     expect(footerLinkHrefs()).toContain(`mailto:${personal.email}`);
   });
 
-  it('links Resume to the PDF path', () => {
+  it('links to exactly email and LinkedIn, with no resume or GitHub control', () => {
     render(<ContactFooter />);
 
-    const expectedHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
-    expect(footerLinkHrefs()).toContain(expectedHref);
-  });
-
-  it('links to LinkedIn and GitHub', () => {
-    render(<ContactFooter />);
-
-    expect(footerLinkHrefs()).toContain(personal.linkedin);
-    expect(footerLinkHrefs()).toContain(personal.github);
+    const hrefs = footerLinkHrefs();
+    expect(hrefs).toContain(`mailto:${personal.email}`);
+    expect(hrefs).toContain(personal.linkedin);
+    expect(hrefs).not.toContain(personal.github);
+    expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
   });
 
   it('shows the location line', () => {
