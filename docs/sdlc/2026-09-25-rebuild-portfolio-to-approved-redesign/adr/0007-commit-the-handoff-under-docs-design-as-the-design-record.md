@@ -1,7 +1,7 @@
 # 0007: Commit the handoff under docs/design as the design record
 
 Date: 2026-09-25
-Status: proposed
+Status: proposed. Amended 2026-09-28 (revision, R157, D31): the owner's alignment overlay `PORTFOLIO_ALIGNMENT_PASS.md` joins the record in the same folder, redacted the same way (its MCP timing figures withheld, its void resume section replaced by a note); the plan copy's section 6 Studbook row loses its rerank-speed phrase for the same reason. Amended again the same day on audit (D36, D37): the overlay copy also withholds its Appendix A (the resume text), Appendix B (the owner's private notes), section 7 (where private names had sat in the snapshots) and its run tally; the plan copy's WorkHorse row loses its tallies; the WorkHorse mockup's withheld strings are replaced in place by withheld notes; the other six mockups stay verbatim. Amended a third time after the G2 rejection (D45): the run tallies and the release count are approved site copy again, so the overlay copy's section 2 row, the plan copy's WorkHorse row and the mockup's tally sentence, "4 of 4" card and releases sentence stay as the owner wrote them; only the timing strings are withheld (the mockup's "half the latency" cell and rerank-speed card, the plan copy's rerank-speed phrase). The overlay copy's Paddock rows carry a note that the owner superseded them (D44).
 Change: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
 ## Context
