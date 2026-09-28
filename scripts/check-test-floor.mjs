@@ -16,6 +16,12 @@
  * a pin the whole-suite floor would not notice one of them going missing, the same gap the
  * security baseline names for the redaction suite (2026-09-21 constraint audit, low finding).
  *
+ * src/checkForbiddenCopy.test.js (the R129 forbidden-copy scanner) and src/pageMeta.test.js (the
+ * A1 head-tag escaping guard) were pinned by change 2026-09-25-rebuild-portfolio-to-approved-
+ * redesign (R149, audit low 4): the whole-suite floor of 12 would stay comfortably green if
+ * either of these two new control suites were deleted or skipped, the same false-green shape
+ * every other pin here exists to close.
+ *
  * Usage: node scripts/check-test-floor.mjs <report.json>
  * Exit: 0 both floors met; 1 either floor missed, one ::error:: line per miss; 2 the report is
  * missing, unreadable, not JSON, not a JSON object, or missing one of the four whole-suite count
@@ -32,10 +38,20 @@ const MINIMUM_SUITE_PASSED = 12
 // Each entry's pinnedPassedCount is that file's own passed count at merge, confirmed from a
 // fresh report on this branch; not derived at run time.
 const PINNED_SUITES = [
-  { path: 'src/checkPhoneRedaction.test.js', pinnedPassedCount: 44 },
-  { path: 'src/routePaths.test.jsx', pinnedPassedCount: 13 },
-  { path: 'src/routePages.test.js', pinnedPassedCount: 6 },
-  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 11 },
+  { path: 'src/checkPhoneRedaction.test.js', pinnedPassedCount: 45 },
+  { path: 'src/routePaths.test.jsx', pinnedPassedCount: 8 },
+  // 14, not 11: added cases for the missing-</head>, empty-appHtml and replacement-pattern
+  // ($&, $$, $') guards in assemblePage (review group 4, R140).
+  { path: 'src/routePages.test.js', pinnedPassedCount: 14 },
+  // 16, not 14: the "exits 0 on the real dist/ after a build" case was removed (change
+  // 2026-09-25-rebuild-portfolio-to-approved-redesign, D22); the equivalent real-dist assertion
+  // is the post-build CI step `node scripts/check-route-pages.mjs`. Then two cases were added for
+  // the non-exact #root-emptiness check (review group 4).
+  { path: 'src/checkRoutePages.test.js', pinnedPassedCount: 16 },
+  // 29, not 26: review group 1 (binary-extension skip, the `@2x`/`11x`/`4 of 4` boundary fixes)
+  // added three cases, measured from a fresh report of this file alone on this branch.
+  { path: 'src/checkForbiddenCopy.test.js', pinnedPassedCount: 29 },
+  { path: 'src/pageMeta.test.js', pinnedPassedCount: 11 },
 ]
 
 process.exitCode = main(process.argv.slice(2))

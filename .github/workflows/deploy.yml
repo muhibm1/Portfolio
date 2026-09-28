@@ -55,12 +55,15 @@ jobs:
             const fs = require("fs");
             const packageJsonPath = process.argv[1];
 
-            // The nine packages R49 pins to an exact version. The owner extends this list when
-            // adding a package.
+            // The eleven packages R49 pins to an exact version. `react` and `react-dom` are
+            // pinned here too because `react-dom/server` now writes every served page (D19,
+            // R143). The owner extends this list when adding a package.
             const exactPinnedPackages = [
               "react-router",
-              "@fontsource/inter",
-              "@fontsource/jetbrains-mono",
+              "react",
+              "react-dom",
+              "@fontsource/ibm-plex-sans",
+              "@fontsource/ibm-plex-mono",
               "@fontsource/space-grotesk",
               "vitest",
               "@testing-library/react",
@@ -112,6 +115,9 @@ jobs:
 
       - name: Every app route has a page (R119)
         run: "node scripts/check-route-pages.mjs"
+
+      - name: Copy carries no removed claim (R129)
+        run: "node scripts/check-forbidden-copy.mjs dist"
 
       - name: Audit runtime dependencies (blocking)
         run: "npm audit --audit-level=high --omit=dev"
@@ -205,9 +211,13 @@ jobs:
             echo "PASS R80 $1"
           }
 
-          # Every src= and href= value in the served shell must sit under the Pages base. The sed
-          # strips the attribute name and the quotes around the value.
-          asset_refs=$(grep -oE "(src|href)=(\"[^\"]*\"|'[^']*')" smoke/root.html | sed -E "s/^(src|href)=.//; s/.\$//" || true)
+          # Every built-asset reference in the served shell must sit under the Pages base: the
+          # module script, stylesheets, the favicon and modulepreload links. Body links (the
+          # canonical, mailto:, LinkedIn, GitHub, # fragments) are no longer read here (D14):
+          # the prerendered root body now carries them, and R143's per-page marker checks (the
+          # build job's route-page check and this job's R82 counts) cover them instead.
+          asset_tags=$(grep -oE '<script[^>]*src="[^"]*"[^>]*>|<link[^>]*rel="(stylesheet|icon|modulepreload)"[^>]*>' smoke/root.html || true)
+          asset_refs=$(printf '%s\n' "$asset_tags" | grep -oE '(src|href)="[^"]*"' | sed -E 's/^(src|href)="//; s/"$//' || true)
           if [ -z "$asset_refs" ]; then
             echo "::error::R80 failed: found no src= or href= references in the body of $ROOT_URL."
             exit 1
@@ -359,16 +369,17 @@ jobs:
       - name: "Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404"
         run: |
           if [ ! -s smoke/root.html ]; then
-            echo "::error::R121 failed: smoke/root.html is empty or missing; nothing to compare against."
+            echo "::error::R121 failed: smoke/root.html is empty or missing; nothing to check."
             exit 1
           fi
-          root_digest=$(sha256sum smoke/root.html | cut -d ' ' -f 1)
 
           # Follows at most two redirects, so the exact URL a person pastes or shares is what is
           # proved, not only its final destination (ADR 0003). --proto and --proto-redir refuse a
           # downgrade to plain HTTP on the initial request or on any redirect hop. The status,
           # redirect count and effective URL are all printed; the effective URL is also asserted
-          # to still be on $ROOT_URL, not printed only.
+          # to still be on $ROOT_URL, not printed only. Prerendering gives each page its own head
+          # tags (R139, R143), so the pages are no longer byte-identical; this step greps for the
+          # deep link's own canonical marker instead of comparing digests against the root (D15).
           result=$(curl -sS -L --proto '=https' --proto-redir '=https' --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-llm-triage") || {
             echo "::error::R121 failed: could not fetch ${ROOT_URL}work/apple-llm-triage."
             exit 1
@@ -389,15 +400,14 @@ jobs:
               ;;
           esac
           if [ ! -s smoke/deep-link.html ]; then
-            echo "::error::R121 failed: smoke/deep-link.html is empty; nothing to compare against the root body."
+            echo "::error::R121 failed: smoke/deep-link.html is empty; nothing to check for its own page markers."
             exit 1
           fi
-          deep_link_digest=$(sha256sum smoke/deep-link.html | cut -d ' ' -f 1)
-          if [ "$root_digest" != "$deep_link_digest" ]; then
-            echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-llm-triage differs from the body of $ROOT_URL."
+          if ! grep -qE 'rel="canonical"[^>]*work/apple-llm-triage/"' smoke/deep-link.html; then
+            echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-llm-triage carries no canonical link to work/apple-llm-triage/."
             exit 1
           fi
-          echo "PASS R121 ${ROOT_URL}work/apple-llm-triage answers 200 with the root body"
+          echo "PASS R121 ${ROOT_URL}work/apple-llm-triage answers 200 with its own canonical link"
 
           # No -L here: an unknown path must answer 404 directly, not by redirecting somewhere
           # that then answers 200.
@@ -411,15 +421,18 @@ jobs:
             exit 1
           fi
           if [ ! -s smoke/unknown.html ]; then
-            echo "::error::R122 failed: smoke/unknown.html is empty; nothing to compare against the root body."
+            echo "::error::R122 failed: smoke/unknown.html is empty; nothing to check for the not-found page's own markers."
             exit 1
           fi
-          unknown_digest=$(sha256sum smoke/unknown.html | cut -d ' ' -f 1)
-          if [ "$root_digest" != "$unknown_digest" ]; then
-            echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page differs from the body of $ROOT_URL, so 404.html is missing or stale."
+          if ! grep -q 'Page not found' smoke/unknown.html; then
+            echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page does not contain \"Page not found\"."
             exit 1
           fi
-          echo "PASS R122 ${ROOT_URL}no-such-page answers 404 with the root body"
+          if ! grep -q 'name="robots" content="noindex"' smoke/unknown.html; then
+            echo "::error::R122 failed: the body of ${ROOT_URL}no-such-page carries no noindex robots meta tag."
+            exit 1
+          fi
+          echo "PASS R122 ${ROOT_URL}no-such-page answers 404 with the not-found page's own markers"
 
       - name: "Smoke R82: the served HTML keeps its CSP, referrer policy and privacy removals"
         run: |
@@ -453,7 +466,56 @@ jobs:
           expect_count "no phone number in the HTML" 0 "$(count_matches "$phone_pattern" smoke/root.html)" "$ROOT_URL"
           expect_count "no phone number in the module script" 0 "$(count_matches "$phone_pattern" smoke/module.js)" "$MODULE_URL"
 
+          # D15: prerendering gives every page its own head and body, so the five counts above
+          # are no longer proved for the whole site by the root alone. This repeats them against
+          # the deep-link body and the 404 body already fetched by the previous step.
+          for smoke_target in "deep link:smoke/deep-link.html:${ROOT_URL}work/apple-llm-triage" "404:smoke/unknown.html:${ROOT_URL}no-such-page"; do
+            target_label=${smoke_target%%:*}
+            rest=${smoke_target#*:}
+            target_file=${rest%%:*}
+            target_url=${rest#*:}
+
+            target_inline_scripts=$({ grep -oiE '<script[^>]*>' "$target_file" || true; } | { grep -viE '[[:space:]]src=' || true; } | wc -l | tr -d ' ')
+
+            expect_count "exactly one Content-Security-Policy meta tag ($target_label)" 1 "$(count_matches 'http-equiv="Content-Security-Policy"' "$target_file")" "$target_url"
+            expect_count "exactly one name=\"referrer\" meta tag ($target_label)" 1 "$(count_matches 'name="referrer"' "$target_file")" "$target_url"
+            expect_count "no inline script without a src attribute ($target_label)" 0 "$target_inline_scripts" "$target_url"
+            expect_count "no fonts.googleapis.com reference ($target_label)" 0 "$(count_matches 'fonts\.googleapis\.com' "$target_file")" "$target_url"
+            expect_count "no fonts.gstatic.com reference ($target_label)" 0 "$(count_matches 'fonts\.gstatic\.com' "$target_file")" "$target_url"
+            expect_count "no phone number in the HTML ($target_label)" 0 "$(count_matches "$phone_pattern" "$target_file")" "$target_url"
+          done
+
           if [ "$failures" -gt 0 ]; then
             echo "R82: $failures assertion(s) failed."
+            exit 1
+          fi
+
+      - name: "Smoke R143: the share image is served"
+        run: |
+          failures=0
+
+          # Fetches one asset and logs its status and content-type. Prints an error naming the
+          # asset and its URL, and returns 1, unless the answer is 200 with a matching type.
+          fetch_and_check() {  # label, url, output file, content-type pattern
+            local result status content_type
+            result=$(curl -sS -o "$3" -w "%{http_code} %{content_type}" "$2") || result="000 (no response)"
+            status=${result%% *}
+            content_type=${result#* }
+            echo "$1: GET $2 returned $status, content-type $content_type"
+            if [ "$status" != "200" ]; then
+              echo "::error::R143 failed, $1: GET $2 returned $status, expected 200."
+              return 1
+            fi
+            if ! printf '%s' "$content_type" | grep -qiE "$4"; then
+              echo "::error::R143 failed, $1: GET $2 returned content-type $content_type, expected one matching $4."
+              return 1
+            fi
+            echo "PASS R143 $1"
+          }
+
+          fetch_and_check "share image" "${ROOT_URL}og.png" smoke/og.png 'png' || failures=$((failures + 1))
+
+          if [ "$failures" -gt 0 ]; then
+            echo "R143: $failures assertion(s) failed."
             exit 1
           fi

@@ -1,7 +1,10 @@
 # 0007: Self-host the typefaces with @fontsource and wire them into the Tailwind theme
 
 Date: 2026-09-11
-Status: proposed
+Status: proposed. Change 2026-09-25-rebuild-portfolio-to-approved-redesign swaps the specific
+families this ADR named (Inter, JetBrains Mono, Space Grotesk) for IBM Plex Sans, IBM Plex Mono
+and Space Grotesk (that change's ADR 0002); the decision to self-host through `@fontsource`
+rather than load from Google stays in force.
 Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 
 ## Context

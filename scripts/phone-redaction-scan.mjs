@@ -30,7 +30,8 @@ export const EXIT_CANNOT_RUN = 2
 export const SELF_TEST_REFERENCE = '5555560100'
 
 // Only the binary types present today: the design mockups, the hero image and the self-hosted
-// fonts. Any other binary type fails the scan as undecodable until its extension is added here.
+// fonts (D30; no resume PDF exists in the repository). Any other binary type fails the scan as
+// undecodable until its extension is added here.
 export const BINARY_EXTENSIONS = ['.jpg', '.png', '.woff', '.woff2']
 
 const REFERENCE_COMMIT = 'b50497f'

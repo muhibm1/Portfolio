@@ -1,7 +1,7 @@
 # 0001: Write a directory index.html copy for every defined route and keep 404.html for the rest
 
 Date: 2026-09-21
-Status: proposed. Amends the consequences of change 2026-09-11 ADR 0002, which stays in force for undefined paths.
+Status: proposed. Amends the consequences of change 2026-09-11 ADR 0002, which stays in force for undefined paths. Change 2026-09-25-rebuild-portfolio-to-approved-redesign builds on this decision rather than replacing it: `scripts/prerender.mjs` now writes each route's server-rendered markup into the same directory-index-per-route layout this ADR established, instead of the byte-identical shell copy `scripts/route-pages.mjs` wrote before (that change's ADR 0001).
 Change: 2026-09-21-serve-every-app-route-with-http-200-on-github-pa
 
 ## Context

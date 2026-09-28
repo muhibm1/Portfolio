@@ -16,14 +16,19 @@ recruiters. No backend, no database, no auth, no visitor data collection.
 
 ## Architecture in five lines
 
-1. `index.html` mounts `src/main.jsx`, which renders `src/App.jsx` into `#root`.
-2. `App.jsx` holds all shared state (three `useState`) and renders eight sections in a fixed
-   order, plus two modals opened by that state.
-3. Every section is one default-exported component in `src/components/`, one file each.
-4. All copy, metrics, case studies and resume content come from `src/data/portfolioData.js`.
+1. `scripts/prerender.mjs` renders every route in `src/routePaths.js` at build time through
+   `src/entry-server.jsx`, writing each page's own markup and, from `src/pageMeta.js`, its title,
+   description, canonical link and Open Graph and Twitter tags into the served HTML; `src/main.jsx`
+   then hydrates that markup in the browser instead of rendering from empty.
+2. `src/App.jsx` is the route table: home, `/work` and each `/work/:slug` case study render inside
+   `SiteLayout`, which supplies the header, the mobile menu and the footer on every route.
+3. Every page and section is one default-exported component in `src/pages/` or
+   `src/components/`, one file each.
+4. All copy, metrics and case studies come from `src/data/portfolioData.js`.
    Nothing is fetched at runtime.
-5. The only outbound calls are Google Fonts in `index.html`, a LinkedIn link, and `mailto:`
-   links. Full detail in `docs/sdlc/codebase-map.md`.
+5. The only outbound calls are the self-hosted IBM Plex and Space Grotesk typefaces (served from
+   this site, not Google), a LinkedIn link, and `mailto:` links. Full detail in
+   `docs/sdlc/codebase-map.md`.
 
 ## Conventions
 
@@ -34,6 +39,8 @@ recruiters. No backend, no database, no auth, no visitor data collection.
   it pass
 - No analytics, cookies, tracking pixels, embedded widgets or hosted forms. Ever.
 - No new dependency without naming it, its licence and its exact version in the plan
+- Banned site copy is enforced by `scripts/forbidden-copy.mjs` (`FORBIDDEN_TERMS`), extended
+  there with a test in `src/checkForbiddenCopy.test.js`; `npm test` and the deploy fail on a hit
 
 ## Protected
 
@@ -41,7 +48,9 @@ Never edit: `**/*.pem`, `**/*.key`, `.env*`.
 
 Ask first: `.github/workflows/**`, `index.html`, `vite.config.js`, `package.json`,
 `package-lock.json`, `.npmrc`, `.nvmrc`, `scripts/check-npmrc.mjs`, `scripts/route-pages.mjs`,
-`scripts/check-route-pages.mjs`.
+`scripts/check-route-pages.mjs`, `scripts/prerender.mjs`, `scripts/forbidden-copy.mjs`,
+`scripts/check-forbidden-copy.mjs`, `src/pageMeta.js`, `src/entry-server.jsx`,
+`scripts/check-test-floor.mjs`.
 
 Do not rewrite the factual claims in `src/data/portfolioData.js`. The employer names, dates and
 metrics are the owner's own record and only he can change them.
