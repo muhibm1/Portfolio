@@ -5,7 +5,7 @@ verification was red on a missing resume PDF. The resume is now withdrawn from t
 (D24); this is a fresh document for the revision that followed.
 
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign` · Tier 2 · Branch
-`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `b885d83` · PR: see below
+`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `95ecf64` · PR: https://github.com/muhibm1/Portfolio/pull/19
 Design approved: [approvals.md](./approvals.md) (G2, four rounds, last approved 09-28 09:32 UTC)
 
 ## The short version
