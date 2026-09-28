@@ -39,6 +39,8 @@ recruiters. No backend, no database, no auth, no visitor data collection.
   it pass
 - No analytics, cookies, tracking pixels, embedded widgets or hosted forms. Ever.
 - No new dependency without naming it, its licence and its exact version in the plan
+- Banned site copy is enforced by `scripts/forbidden-copy.mjs` (`FORBIDDEN_TERMS`), extended
+  there with a test in `src/checkForbiddenCopy.test.js`; `npm test` and the deploy fail on a hit
 
 ## Protected
 
