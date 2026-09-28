@@ -4,8 +4,8 @@ This replaces the blocked draft of 2026-09-25 (`f0c9a84`), which could not push 
 verification was red on a missing resume PDF. The resume is now withdrawn from the site entirely
 (D24); this is a fresh document for the revision that followed.
 
-Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign` · Tier 2 · Branch
-`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `95ecf64` · PR: https://github.com/muhibm1/Portfolio/pull/19
+Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`, tier 2, branch
+`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `95ecf64`. PR: https://github.com/muhibm1/Portfolio/pull/19
 Design approved: [approvals.md](./approvals.md) (G2, four rounds, last approved 09-28 09:32 UTC)
 
 ## The short version
@@ -13,23 +13,28 @@ Design approved: [approvals.md](./approvals.md) (G2, four rounds, last approved 
 This revision removes the resume and its PDF from the site and repository, narrows contact to
 email and LinkedIn, links three public code snapshots wherever the work is discussed, adds an
 MCP-server story to WorkHorse, and brings its run record to five runs using the owner's own
-figures. You decide whether it is ready to merge and publish.
+figures. Of 26 shared claim pairs between the site and the resume, 5 differ in substance; no
+factual claim in the content module was changed by an agent, so the owner decides each one. You
+decide whether it is ready to merge and publish.
 
 ## What changed
 
 136 files (`git diff main...HEAD --stat`, confirmed). By risk:
 
-1. `.github/workflows/deploy.yml` (sensitive) — resume PDF fetch/hash steps removed; no new
+1. `.github/workflows/deploy.yml` (sensitive): resume PDF fetch and hash steps removed, no new
    secret, permission or action (security review, confirmed).
-2. `scripts/forbidden-copy.mjs` + `check-forbidden-copy.mjs` (sensitive) — scanner blocking resume
-   text, stale counts, owner-tool timings, Paddock words; 31 terms, two patterns. `phone-
-   redaction-scan.mjs` no longer skips `.pdf` (D30).
-3. `src/data/portfolioData.js` (sensitive, content) — every resume-derived claim rewritten;
-   run-record stats now carry source/staleness comments (`f7be231`).
+2. `scripts/forbidden-copy.mjs` plus `check-forbidden-copy.mjs` (sensitive): scanner blocking
+   resume text, stale counts, owner-tool timings, Paddock words; 31 terms (26 plain strings, 5
+   boundary-aware pattern terms, confirmed by reading the file). `phone-redaction-scan.mjs` no
+   longer skips `.pdf` (D30).
+3. `src/data/portfolioData.js` (sensitive, content): every resume-derived claim rewritten,
+   run-record stats now carry source and staleness comments (`f7be231`).
 4. `SiteHeader.jsx`, `ContactFooter.jsx`, `CaseStudyCards.jsx`, `CaseStudyPage.jsx`, `HomeHero.jsx`,
-   `ExperienceSection.jsx` — resume controls deleted, GitHub code links added, footer narrowed to
-   two links, MCP content rendered. `ResumeModal.jsx` and three PDFs deleted.
-5. Docs/profile (`CLAUDE.md`, `profile.yml`, `hosted-config.md`, `codebase-map.md`,
+   `ExperienceSection.jsx`: resume controls deleted, GitHub code links added, footer narrowed to
+   two links, MCP content rendered. This revision deleted three PDF scripts
+   (`scripts/check-resume-pdf.mjs`, `scripts/resume-pdf.mjs`, `src/checkResumePdf.test.js`); no
+   PDF was ever committed. `ResumeModal.jsx` was deleted in the original build, before this fix.
+5. Docs and profile (`CLAUDE.md`, `profile.yml`, `hosted-config.md`, `codebase-map.md`,
    `constraints.md`) record the withdrawal and D57 deferral; test files widened to match (largest
    share of the diff by line count).
 
@@ -47,41 +52,30 @@ figures. You decide whether it is ready to merge and publish.
 Evals: golden 23/23, edge 4/4, failure 2/2, adversarial 3/3. N1, N2 met. No known pre-existing
 failures. M1-M5, N4 manual, recorded below.
 
-## Numbers per page (R146, M4)
+## Numbers and side-by-side claims (R146, R158, M4, M5, D59, D60)
 
-| Page | Numbers shown | Source |
-|---|---|---|
-| Home, Work index | 30 to 350+; 2 weeks; ~50%; ~40%; 100% (stats); featured card 100%, 3 of 3, 40, 9; grid tags 2 weeks, ~50%, ~40%, 15-20% | Approved facts; 40 from G2: rejected 09-28 08:57 UTC |
-| WorkHorse case study | 28, 9, 5-to-2, 100%, 5 of 5, 40, 70, 1 of 5, 224/278 tests; outcomes-row figures; Studbook 100%, 3 of 3, recall 0.56-0.85; MCP 40 questions, 12 of 12 | Approved facts, except 5 of 5/1 of 5 (08:12 UTC) and 40 (08:57 UTC); 70 and nine releases first-four-run (D47, D53) |
-| Apple: decision system | 30 to 350+; 2 weeks; tenfold; zero backlog | Approved facts |
-| Apple: integration | ~50%; 3 systems | Approved facts |
-| Apple: data reliability | hundreds of thousands; ~40%; tens of thousands | Approved facts |
-| Neural Newsletters | ~40%; 15 to 20% | Approved facts |
-| Not found | none | n/a |
+Every number and every shared claim pair, read from the built pages (`npm run build` ran clean,
+confirmed, then each `dist/*.html` file was read as rendered text) and cross-checked against
+`src/data/portfolioData.js`, is in
+[ship-claims.md](./ship-claims.md) (D60: a companion file, because the complete lists do not fit
+this document's 150-line cap). It never quotes resume wording (D24, D59); resume rows carry a
+location only. Short version below; the owner confirms the complete lists at G4.
 
-Figures read from `src/data/portfolioData.js`; build ran clean (confirmed above). Not re-read from
-rendered `dist/` beyond the route-pages/forbidden-copy dist checks (believed, not verified further).
+Of 26 shared pairs, 21 are same substance and 5 differ:
 
-## Side-by-side claims list (R158, M5, D59)
-
-D24 bars resume text from the repository; D38 rewrote it out of history. Per D59, site claims are
-paired with a resume location and a verdict only, never quoted. Full wording:
-`.../scratchpad/ship-claims-with-resume-wording.md` (outside the repository, never committed).
-
-| # | Site wording (summary) | Resume location | Verdict |
+| # | Site wording | Resume location | Verdict |
 |---|---|---|---|
-| A | Role titles/dates (4); Apple's 4 highlights; edX teaching bullet; Freelance opening clause; hero lead + "tenfold"; both degrees; WorkHorse pipeline + hooks headline clauses; Studbook overview; MCP overview; the data-access line | matching bullets/sections throughout | same substance, near verbatim in most (10 grouped pairs) |
-| 1 | "Built the REST API layer and WebSocket real-time infrastructure" | Neural Newsletters, Pipeline Recovery bullet | differs: resume credits no REST/WebSocket build |
-| 2 | "Ran 4.5 hours a week of office hours" | edX, Technical Enablement bullet | differs: resume gives no office-hours figure |
-| 3 | "...QA and reporting workflows kept delivery visible to the client" | Freelance, Client Discovery & Delivery bullet | same substance; site adds one sentence not on resume |
-| 4 | "Four reviewers run at once...before a person ever sees the ship document" | WorkHorse, Guardrails & Evidence bullet | differs: site names no compliance regime, no credential-fallback example |
-| 5 | "60 gold questions...plus nine trap questions...3 of 3 refused" | Studbook bullet ("Graded on 60 questions") | differs: site states 69 total across a dev/test split; resume's "60" doesn't say if traps are inside it |
-| 6 | Toolkit columns (Build/Data/AI/Ship/People) | Skills section | differs: resume lists FastAPI and Kubernetes; toolkit omits both generally |
-| 7 | "Emerald Labs, Software Engineering Intern, May 2022 to Sep 2022" | not present | site only, not on the resume |
+| 10 | "Built the REST API layer and WebSocket real-time infrastructure" | Neural Newsletters, Pipeline Recovery bullet | differs: resume does not credit building the REST/WebSocket layer |
+| 13 | "Ran 4.5 hours a week of office hours and 1:1 mentorship" | edX, Technical Enablement bullet | differs: resume gives no office-hours figure |
+| 20 | "Four reviewers run at once...before a person ever sees the ship document" | WorkHorse, Guardrails & Evidence bullet | differs: site names no compliance regime, no credential-fallback example |
+| 23 | "60 gold questions...plus nine trap questions...3 of 3 refused" | Studbook, Retrieval & Evals bullet | differs: site states 69 total across a dev/test split; resume's "60" does not say if traps are inside it |
+| 26 | Toolkit columns (Build/Data/AI/Ship/People) | Skills section | differs: resume lists FastAPI and Kubernetes; toolkit omits both from the general list |
 
-WorkHorse claims site-only, not on resume (D46): Paddock shown current, Electron, 278 desktop/224
-plugin tests, "CI on every push", FastAPI, MCP clause (at-a-glance strip); "5 of 5", "1 of 5", "40",
-"70", "nine plugin releases" (first-four-run) and the five-row outcomes table (measured section).
+Site-only, not paired to a resume line (row 27 plus D46/D51's WorkHorse list, full in
+ship-claims.md): "Emerald Labs, Software Engineering Intern, May 2022 to Sep 2022"; Paddock shown
+current, Electron, 278 desktop/224 plugin tests, "CI on every push", FastAPI, MCP clause
+(at-a-glance strip); "5 of 5", "1 of 5", "40", "70", "nine plugin releases" (first-four-run) and
+the five-row outcomes table (measured section).
 
 ## What the reviewers found
 
@@ -101,14 +95,16 @@ Conformance: 33 of 33 traced. Adoption score: 3 (before the fixes above).
 
 ## Decisions
 
-| # | Decision | Recommendation | Why |
-|---|---|---|---|
-| D59 | Resume wording kept out of ship.md | Pair site claims with resume location + verdict only; full wording in a local file | Publishing is irreversible; D24 bars resume text from the repo. **Owner's call if he wants it in-repo.** |
-| D57 | Phone scan not in CI, pre-existing on `main` | Record deferral now; fix in a follow-up | Fix changes deploy.yml beyond this change's scope. **Owner's call on priority.** |
-| D54(d) | Is the banned scanner term the owner's client? | No change now; if yes, a follow-up replaces it with a hashed comparison | Name already public on `main` in 12 files. **Needs owner's yes/no.** |
-| D56, D58 | T21 file-list scope; no error boundary on the paragraph-link throw | Both accept, no fix | D56 sound; D58's throw is already caught by the build failing closed |
-| D38 | Design commits since the ship block squashed to one redacted commit | Done (below) | Squashing all 30 build commits breaks cited hashes |
-| — | Build-time rows (T15-D1/D3, T16-D1/D2, D-t18-1, D-t19-1/2) and D24-D55 (Design revision) | All taken/stand as approved, logged in conductor-log.md and brief.md | No human input needed; D52 answered "40", D53's labels stay first-four-run |
+| # | Decision | Recommendation | Alternative | Why |
+|---|---|---|---|---|
+| D59 | Resume wording kept out of ship.md | Pair site claims with resume location and verdict only; full wording never in the repo | Quote the resume wording in ship.md, as R158 literally reads | Publishing is irreversible, D24 bars resume text from the repo. Owner's call if he wants it in-repo. |
+| D60 | ship.md's 150-line cap cannot hold every number and pair in full | Write ship-claims.md as a companion file and link it | Raise the tier 2 cap, or drop rows from ship.md | R146/R158 require every row in full; the cap is hook-enforced |
+| D57 | Phone scan not in CI, pre-existing on `main` | Record deferral now, fix in a follow-up | Add a blocking deploy.yml step now with a deeper checkout | Fix changes deploy.yml beyond this change's scope. Owner's call on priority. |
+| D54(d) | Is the banned scanner term the owner's client? | No change now; a follow-up replaces it with a hashed comparison if yes | Replace the scanner term inside this change | Name already public on `main` in 12 files. Needs owner's yes/no. |
+| D56 | T21 file-list scope | Accept, no fix | Revert the overlay-copy edit | D56 is sound as scoped |
+| D58 | No error boundary on the paragraph-link throw | Accept, no fix | Add an error boundary with approved fallback copy | The throw is already caught by the build failing closed |
+| D38 | Design commits since the ship block squashed to one redacted commit | Done (below) | Squash the whole branch | Squashing all 30 build commits breaks cited hashes |
+| n/a | Build-time rows and D24-D55 (Design revision) | All taken and stand as approved, logged in conductor-log.md and brief.md | n/a | No human input needed |
 
 ## The D38 history rewrite
 
@@ -137,8 +133,8 @@ preview. Config/secrets touched: none.
 
 ## Clock
 
-Clock: agents 7 h 55 m of 1 h 30 m budget (OVER) · waiting on you 58 m · dead 61 h 50 m ·
-unexplained gaps 13 h 52 m · wall 84 h 35 m
+Clock: agents 8 h 06 m of 1 h 30 m budget (OVER) · waiting on you 58 m · dead 61 h 50 m ·
+unexplained gaps 13 h 52 m · wall 84 h 46 m
 
 ## Your decision
 
