@@ -1,49 +1,32 @@
-# Adoption review: rebuild the portfolio to the approved redesign
+# Adoption review: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
-Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`, commit `695345e`.
+Scope: `git diff 49618de..HEAD`, focused on the resume withdrawal, the scanner's new terms,
+repository links, the MCP section, docs/profile/CLAUDE.md edits, and the re-synced test floors.
+Read `brief.md`, `spec.md`, `plan.md`, `adr/0008` to `0010`, `CLAUDE.md`, `docs/sdlc/codebase-map.md`,
+`docs/hosted-config.md`, `scripts/forbidden-copy.mjs`, `src/data/portfolioData.js`,
+`src/data/portfolioData.test.js`, `docs/design/redesign-2026-09/PORTFOLIO_ALIGNMENT_PASS.md`.
 
-Verdict: 2 findings (0 critical, 0 high, 0 medium, 2 low)
-Adoption score: 4
+Verdict: 2 findings (0 critical, 1 high, 1 medium, 0 low)
+Adoption score: 3
 
 | Severity | File:line | Finding | Failure scenario | Fix |
 |---|---|---|---|---|
-| low | README.md:1-17 | README.md is still the unmodified `create-vite` template and says nothing about this project, its routes, its build, or the prerender pipeline this change adds. Pre-existing (flagged by `docs/sdlc/codebase-map.md` since 2026-09-10), not introduced here, but this change was the biggest rewrite of the site to date and left it untouched. | A new engineer's first instinct is to open README.md; it points them at `create-vite` plugin choices instead of `CLAUDE.md`, costing a detour before they find the real map. | README.md: replace with a short pointer, e.g. "See CLAUDE.md for architecture, commands and conventions." |
-| low | src/checkRoutePages.test.js:233-244 | The G19 case "exits 0 on the real dist/ after a build" silently skips (prints to stderr, does not fail) when `dist/` does not exist, so `npm test` run standalone (without `npm run build` first) reports full green while this case never actually exercised `check-route-pages.mjs` against a real build. The code comment and `verification.md` both call this out, but `CLAUDE.md`'s Commands section does not mention running build before test for full coverage. | An engineer running just `npm test` locally (the documented Test command) after changing `scripts/check-route-pages.mjs` sees all-green and believes the real-dist case passed, when it was skipped. | CLAUDE.md Commands section: add a one-line note that `npm run build` then `npm test` exercises the real-dist case, or none proposed (already self-documented in the test and in verification.md). |
+| high | src/data/portfolioData.js:379-436, src/data/portfolioData.test.js:64,181-184 | The WorkHorse "measured" stats ("5 of 5", "40", "70", "1 of 5", the closing sentence's "nine plugin releases") and the featured-card "40"/"9" carry no in-file comment saying they are the owner's own hand-maintained run-record figures, where their source is, or that they go stale after the next WorkHorse run. The only place this is stated is `adr/0010` (Consequences section) and the buried D41-D53 rows of `brief.md`; `CLAUDE.md` ("Mistakes to avoid", "Conventions") says nothing about it. The task brief for this run states this is exactly the scenario to check: "you edit the numbers yourself after the next run." | Six months from now the owner (or anyone else) opens `portfolioData.js`, sees four bare stat objects and a features card, has no reason to open `adr/0010`, and either edits the number without updating the matching pin in `portfolioData.test.js` (test goes red) or doesn't know which cells are safe to change and which are tied to specific run counts (e.g. "the first four runs") | Add a short comment directly above the `measured` block in `src/data/portfolioData.js` stating: these are the WorkHorse run-record stats, sourced to `approvals.md`'s G2 entries (see `adr/0010`), update after each new run and keep `portfolioData.test.js` lines 64 and 181-184 in sync; add one bullet to `CLAUDE.md` "Mistakes to avoid" pointing to `adr/0010` for how to update the run-record numbers |
+| medium | .github/workflows/deploy.yml, scripts/forbidden-copy.mjs:82-121 | The scanner's `FORBIDDEN_TERMS` list (extended by this revision to 31 terms plus two pattern terms) is well-commented for *what* was added and *why* (R156 references), but nothing in `CLAUDE.md` or `docs/sdlc/codebase-map.md` tells a future maintainer *that this is the mechanism to extend* when a new claim needs banning, or names the risk row in `plan.md` ("The Paddock pattern misses a synonym... the owner may extend the word list") as the only place that says so | An engineer wanting to ban a new phrase (e.g. after a future redesign) has to find `scripts/forbidden-copy.mjs` unaided; nothing in the README-equivalent (`codebase-map.md`) names it as a place to extend, only as a thing that exists | Add one line to `docs/sdlc/codebase-map.md`'s 2026-09-25 block or to `CLAUDE.md` naming `scripts/forbidden-copy.mjs`'s `FORBIDDEN_TERMS` array as the place to add a banned string or pattern term, with the two-shape hint (`string` or `{ label, pattern, skipExtensions }`) already documented in the file's own header comment |
 
-Findings outside scope: none.
+Findings outside scope: `README.md` is still the unmodified `create-vite` template and does not
+describe this project (confirmed); this predates and is unchanged by this diff, and is already
+self-documented as a known gap in `docs/sdlc/codebase-map.md` "Files that are not part of the
+product," so it is not scored as new here.
 
-Not verified: Lighthouse mobile scores (N4), the owner's viewport/keyboard/PDF-content manual
-checks (M1-M5), and the live deploy smoke (R143's live half) — all explicitly deferred to
-`ship.md` per `verification.md`, not part of this review's scope. `npm ci` and `npm test` were
-not re-run in this session (verification.md already ran and logged them at this commit); `npm run
-lint` was re-run here and printed no errors (exit implied 0, `oxlint` output empty).
+Not verified: `npm run lint`, `npm test`, `npm run build` were not re-run in this review (the
+conversation states verification is already green for this branch); I did not run `npm ci` or
+start any dev/preview server per instructions. The three GitHub repository links (`workhorse-
+snapshot`, `studbook-snapshot`, `paddock-snapshot`) were not fetched to confirm live status.
 
-## Notes
-
-Confirmed by reading the tree at commit `695345e`:
-- Every module the plan/spec introduces (`src/entry-server.jsx`, `src/pageMeta.js`,
-  `scripts/prerender.mjs`, `scripts/forbidden-copy.mjs`, `scripts/check-forbidden-copy.mjs`,
-  `src/components/CaseStudyPage.jsx`) carries a top comment naming its requirement ID (R127-R150)
-  and/or ADR, and its name matches the spec's vocabulary (`pageMetaFor`, `headTags`, `render`,
-  `assemblePage`, `writePage` all match spec interfaces (a)-(e) verbatim).
-- All seven ADRs cited in spec.md and brief.md exist under
-  `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/adr/`.
-- `CLAUDE.md` "Architecture in five lines" and "Ask first" are both updated to name the new
-  scripts and files (`src/routePaths.js`, `src/basename.js`, `src/entry-server.jsx` all confirmed
-  to exist at the paths CLAUDE.md names).
-- `docs/sdlc/codebase-map.md` carries a dated 2026-09-25 block summarizing the rebuild and
-  pointing at CLAUDE.md for the current shape; `docs/design-brief.md` points at the redacted
-  handoff; `docs/sdlc/constraints.md` open question 2 is closed with a citation to this change.
-- `docs/hosted-config.md` section 6a gives the owner a dedicated, concrete runbook entry for the
-  resume PDF: exact path, the D12/D17 checklist (contact fields, no phone, no street address,
-  document metadata, backlog wording), and a log format to record the check — this is clear
-  enough for the owner to act on, matching the task instruction that the missing PDF itself is
-  not a finding.
-- `package.json` diff matches spec R131/R147/D19 exactly (fontsource 5.3.0 pins, `react`/
-  `react-dom` pinned to `19.3.0`, `thinking-orbs` removed, three-step `build` script).
-- `.workhorse/profile.yml` `sensitive_paths` and `tier_floor_paths` both add the six new files
-  named in R145, each with a reason comment; `retention_notes` records the PDF and the
-  now-served-in-HTML email per D17.
-- Test files for the new scripts (`checkForbiddenCopy.test.js`, `checkRoutePages.test.js`, etc.)
-  live under `src/`, matching the existing (pre-change) convention for script tests, not the
-  component `*.test.jsx` colocation rule, which is unchanged from before this change.
+Notes on what worked well (not findings): the "withheld" convention in
+`PORTFOLIO_ALIGNMENT_PASS.md` is explained in a single banner (lines 7-20) that a reader hits
+before any individual "withheld" note, so each later occurrence is self-explanatory (confirmed).
+`scripts/forbidden-copy.mjs`'s own header and inline comments (lines 1-11, 35-71, 73-88,
+125-129) fully explain the two term shapes and how `buildMatchers` uses them, so once a
+maintainer finds the file, extending it is low-risk (confirmed).
