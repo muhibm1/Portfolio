@@ -9,23 +9,25 @@ import SiteLayout from './SiteLayout';
 // G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet
 // rather than App: HomePage and CaseStudyPage are still red until T8 and T7 land.
 describe('SiteHeader', () => {
-  it('shows the home section links and a Resume link to the PDF on /', () => {
+  it('shows the home section links and a GitHub link to the profile on /', () => {
     renderSiteLayoutAt('/');
 
     expect(headerLinkHref('Case studies')).toBe('#work');
     expect(headerLinkHref('How I work')).toBe('#approach');
     expect(headerLinkHref('Experience')).toBe('#experience');
     expect(headerLinkHref('Contact')).toBe('#contact');
-    expect(headerLinkHref('Resume')).toBe(`${import.meta.env.BASE_URL}${portfolioData.personal.resumeFileName}`);
+    expectGitHubLink(within(screen.getByRole('banner')));
+    expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
   });
 
-  it('shows Home, All case studies and Contact on a case-study page', () => {
+  it('shows Home, All case studies, Contact and the GitHub link on a case-study page', () => {
     renderSiteLayoutAt('/work/workhorse');
 
     expect(headerLinkHref('Home')).toBe('/');
     expect(headerLinkHref('All case studies')).toBe('/work');
     expect(headerLinkHref('Contact')).toBe('#contact');
     expect(screen.queryByRole('link', { name: 'Case studies' })).toBeNull();
+    expectGitHubLink(within(screen.getByRole('banner')));
   });
 
   it('has no copy-email control', () => {
@@ -52,6 +54,7 @@ describe('SiteHeader', () => {
     expect(panelLinks().map((link) => link.textContent)).toEqual(
       expect.arrayContaining(['Case studies', 'How I work', 'Experience', 'Contact']),
     );
+    expectGitHubLink(within(panel()));
 
     fireEvent.click(closeButton);
 
@@ -115,4 +118,13 @@ function panel() {
 function panelLinks() {
   const node = panel();
   return node ? within(node).getAllByRole('link') : [];
+}
+
+// R133: the header's GitHub link, in the nav or the mobile panel, points at personal.github,
+// opens in a new tab safely, and names the profile for a screen reader.
+function expectGitHubLink(scope) {
+  const link = scope.getByRole('link', { name: /github/i });
+  expect(link).toHaveAttribute('href', portfolioData.personal.github);
+  expect(link).toHaveAttribute('target', '_blank');
+  expect(link).toHaveAttribute('rel', 'noopener noreferrer');
 }

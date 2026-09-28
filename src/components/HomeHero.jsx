@@ -1,11 +1,11 @@
-import { primaryButtonClasses, secondaryButtonClasses } from './buttonClasses';
+import { primaryButtonClasses } from './buttonClasses';
 
 /**
- * The hero (R132): eyebrow, h1, lead and the two calls to action in every viewport, the email
- * link and the "Right now" card from 768px up. Copy comes straight from home.hero; the mobile
- * eyebrow and lead swap in below 768px (Home-Mobile.dc.html).
+ * The hero (R132): eyebrow, h1, lead, one call to action and the email link in every viewport,
+ * and the "Right now" card, ending with the code line, from 768px up. Copy comes straight from
+ * home.hero; the mobile eyebrow and lead swap in below 768px (Home-Mobile.dc.html).
  */
-export default function HomeHero({ hero, resumeHref, emailHref }) {
+export default function HomeHero({ hero, emailHref }) {
   return (
     <section className="flex flex-col gap-7 px-5 pt-16 pb-9 md:grid md:grid-cols-12 md:gap-6 md:px-[120px] md:pt-28 md:pb-24">
       <div className="flex flex-col gap-6 md:col-span-8 md:gap-7">
@@ -24,9 +24,6 @@ export default function HomeHero({ hero, resumeHref, emailHref }) {
           <a href="#work" className={primaryButtonClasses}>
             {hero.primaryCta}
           </a>
-          <a href={resumeHref} className={secondaryButtonClasses}>
-            {hero.secondaryCta}
-          </a>
           <a href={emailHref} className="hidden text-sm text-soft md:ml-3 md:inline">
             {hero.emailLinkText}
           </a>
@@ -40,6 +37,14 @@ export default function HomeHero({ hero, resumeHref, emailHref }) {
             <span className="text-sm text-muted">{item.text}</span>
           </div>
         ))}
+        <a
+          href={hero.codeLine.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-muted underline decoration-dotted underline-offset-2 hover:text-ink"
+        >
+          {hero.codeLine.text}
+        </a>
       </aside>
     </section>
   );

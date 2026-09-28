@@ -25,7 +25,6 @@ export default function SiteHeader() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const links = isHome ? HOME_LINKS : OTHER_ROUTE_LINKS;
-  const resumeHref = `${import.meta.env.BASE_URL}${personal.resumeFileName}`;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -43,11 +42,7 @@ export default function SiteHeader() {
           {links.map((link) => (
             <HeaderLink key={link.label} link={link} className={navLinkClasses} />
           ))}
-          {isHome && (
-            <a href={resumeHref} className={secondaryButtonClasses}>
-              Resume
-            </a>
-          )}
+          <GitHubLink href={personal.github} className={secondaryButtonClasses} />
         </nav>
 
         <button
@@ -71,11 +66,7 @@ export default function SiteHeader() {
           {links.map((link) => (
             <HeaderLink key={link.label} link={link} className={navLinkClasses} onClick={closeMenu} />
           ))}
-          {isHome && (
-            <a href={resumeHref} className={secondaryButtonClasses} onClick={closeMenu}>
-              Resume
-            </a>
-          )}
+          <GitHubLink href={personal.github} className={secondaryButtonClasses} onClick={closeMenu} />
         </div>
       )}
     </header>
@@ -93,6 +84,22 @@ function HeaderLink({ link, className, onClick }) {
   return (
     <a href={link.href} onClick={onClick} className={className}>
       {link.label}
+    </a>
+  );
+}
+
+// R133: the external link to the GitHub profile, shown on every route.
+function GitHubLink({ href, className, onClick }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Muhammad Muhibullah on GitHub"
+      onClick={onClick}
+      className={className}
+    >
+      GitHub
     </a>
   );
 }
