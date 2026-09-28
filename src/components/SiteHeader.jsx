@@ -42,7 +42,7 @@ export default function SiteHeader() {
           {links.map((link) => (
             <HeaderLink key={link.label} link={link} className={navLinkClasses} />
           ))}
-          <GitHubLink href={personal.github} className={secondaryButtonClasses} />
+          <GitHubLink href={personal.github} name={personal.name} className={secondaryButtonClasses} />
         </nav>
 
         <button
@@ -57,18 +57,24 @@ export default function SiteHeader() {
         </button>
       </div>
 
-      {isMenuOpen && (
-        <div
-          id={MOBILE_MENU_PANEL_ID}
-          data-testid="mobile-menu-panel"
-          className="flex flex-col gap-4 border-t border-border bg-ground px-1 py-4 md:hidden"
-        >
-          {links.map((link) => (
-            <HeaderLink key={link.label} link={link} className={navLinkClasses} onClick={closeMenu} />
-          ))}
-          <GitHubLink href={personal.github} className={secondaryButtonClasses} onClick={closeMenu} />
-        </div>
-      )}
+      {/* Stays mounted at all times (hidden when closed) so aria-controls on the toggle button
+          always resolves to a real element, open or closed (review group 3). */}
+      <div
+        id={MOBILE_MENU_PANEL_ID}
+        data-testid="mobile-menu-panel"
+        hidden={!isMenuOpen}
+        className="flex flex-col gap-4 border-t border-border bg-ground px-1 py-4 md:hidden"
+      >
+        {links.map((link) => (
+          <HeaderLink key={link.label} link={link} className={navLinkClasses} onClick={closeMenu} />
+        ))}
+        <GitHubLink
+          href={personal.github}
+          name={personal.name}
+          className={secondaryButtonClasses}
+          onClick={closeMenu}
+        />
+      </div>
     </header>
   );
 }
@@ -89,13 +95,13 @@ function HeaderLink({ link, className, onClick }) {
 }
 
 // R133: the external link to the GitHub profile, shown on every route.
-function GitHubLink({ href, className, onClick }) {
+function GitHubLink({ href, name, className, onClick }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Muhammad Muhibullah on GitHub"
+      aria-label={`${name} on GitHub`}
       onClick={onClick}
       className={className}
     >
