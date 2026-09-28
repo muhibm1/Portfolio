@@ -1,7 +1,7 @@
 # 0004: Guard the copy with a forbidden-string scanner over source and built HTML
 
 Date: 2026-09-25
-Status: proposed
+Status: proposed. Amended 2026-09-28 (revision, R156): the term list grows by the overlay's section 3 strings, the run-count phrases and the relative timing phrases the owner keeps off the site, and by `resume` (D24). Amended again the same day on audit (D36): the absolute timing figures are banned by one pattern term (a number with a time unit, skipped in `.css` and `.svg` files) rather than as literals, so they are written nowhere in the repository; a term entry may be `{ label, pattern, skipExtensions }` (spec interface (h)); `2x` matches on word boundaries. Amended a third time after the G2 rejection (D41 to D44): `nine plugin releases` leaves the list because the sentence is site copy again; `4 of 4` and `four real changes` stay as stale-count guards; a second pattern term, "Paddock retirement wording", bans `retired`, `retirement`, `retire`, `deprecated`, `dropped`, `dropping`, `discontinued` or `abandoned` in the same sentence as `Paddock`, because Paddock is shown as current (D44) and the site states nothing else about it. The count stays 31. The scan scope and exit codes below are unchanged.
 Change: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
 ## Context
