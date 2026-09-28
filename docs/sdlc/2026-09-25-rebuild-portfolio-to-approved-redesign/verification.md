@@ -1,58 +1,48 @@
 # Verification: rebuild the portfolio to the approved redesign
 
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`
-Status: red
-Run at: 2026-09-25 UTC
-Commit: `bbd02a25b202fbcb9665b73c4a3c25a20777aa8c`
-
-Re-verification from scratch of the post-review fixes (`bbd02a2`, four commits on top of `695345e`,
-the commit this same change's last verification run checked).
+Status: green
+Run at: 2026-09-28 UTC
+Commit: `12e6edd8f43cc55d4f9d9c8e71bad43f527c4dd7`
 
 Status is green only when every defined check exited 0 and every eval category met its target.
 "No check defined" rows do not count as passes; they are listed so the gap is visible.
 
-The sole cause of red is the expected owner-supplied gap named in the task:
-`public/Muhammad_Muhibullah_Resume.pdf` is intentionally absent (D2, D12, D16, D17). Every other
-check is green. See "Known gap" below.
-
 ## What was measured
 
-- Install: `npm ci` exit 0 (`verify-logs/install.log`). Run because `git diff --name-only
-  main...HEAD -- package.json package-lock.json` lists both files, so the lockfile changed.
-- Lint: `npm run lint` (oxlint), 0 errors, exit 0 (`verify-logs/lint.log`).
-- Test suite: 38 files, 419 tests, 418 passed, 1 failed, 0 skipped, 0 todo, 19.57s (`npm test`,
-  `verify-logs/test.log`; the JSON-reporter re-run gave the same 1 failed/418 passed/419 total in
-  12.62s, `verify-logs/evals.log`). The one failure is `src/servedFiles.test.js > served files
-  (G18) > serves the resume as a PDF beginning %PDF- (D2)`, throwing "D2:
-  public/Muhammad_Muhibullah_Resume.pdf is missing." Up from 329 tests across 34 files at the
-  previous *change*, `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`, and up from
-  392 tests across 37 files at this same change's last run (commit `695345e`, same one G18
-  failure). The review-phase fixer's four commits added `checkRoutePages.test.js` (15→16),
-  `routePages.test.js` (11→14) and `servedFiles.test.js` D23 assertions (confirmed by comparing
-  this run's log with `695345e`'s).
-- Build: `npm run build` exit 0; ends `Prerendered 8 pages` (`verify-logs/build.log`). Timed
-  separately (N1) at 4.342s wall, under the 90s target (`verify-logs/build-timed.log`).
-- typecheck, e2e, screenshot: no check defined in the profile.
-- Security audit: `npm audit --omit=dev --audit-level=high` found 0 vulnerabilities, exit 0
-  (`verify-logs/audit.log`).
-- Built CSS fonts: `node scripts/check-built-css-fonts.mjs`, exit 0, "1 CSS file(s), 34 @font-face
-  blocks, 68 font URLs, 0 data: font URLs" (`verify-logs/check-built-css-fonts.log`).
-- Route pages: `node scripts/check-route-pages.mjs`, exit 0, "8 pages carry their markers."
-  Timed (N3) at 109ms, under 2s (`verify-logs/check-route-pages.log`, `verify-logs/n3-route-pages-time.log`).
-- Forbidden copy: `node scripts/check-forbidden-copy.mjs dist`, exit 0, "41 files scanned." Timed
-  (N3) at 108ms, under 2s (`verify-logs/check-forbidden-copy.log`, `verify-logs/n3-forbidden-copy-time.log`).
-- Phone redaction: `node scripts/check-phone-redaction.mjs dist`, exit 0, "Scanned 291 files (75
-  skipped as binary), 0 hits." (`verify-logs/check-phone-redaction.log`). Skips `.pdf` by design
-  (D16); the missing resume PDF is not scanned here.
-- Resume PDF (new this run, D23): `node scripts/check-resume-pdf.mjs`, exit 2: "`::error::
-  public/Muhammad_Muhibullah_Resume.pdf is missing. This file is owner-supplied (D2); the owner
-  adds it after running the D12/D17 check.`" (`verify-logs/check-resume-pdf.log`). This is the
-  expected owner-supplied gap, checked directly for the first time this run.
-- Test-count floors: `node scripts/check-test-floor.mjs vitest-results.json`, exit 1 on the
-  suite-wide "0 failed" requirement only; every pinned suite floor is met
-  (`checkPhoneRedaction.test.js` 45/45, `routePaths.test.jsx` 8/8, `routePages.test.js` 14/14,
-  `checkRoutePages.test.js` 16/16, `checkForbiddenCopy.test.js` 14/14, `pageMeta.test.js` 11/11)
-  (`verify-logs/test-floor.log`).
+- Install: `npm ci` exited 0, added 180 packages, 4 vulnerabilities reported at the info level
+  (matches the dev-only exception below) (`verify-logs/install.log`). Run because
+  `package-lock.json` differs from `main` (`git diff --name-only main...HEAD` lists it).
+- Lint: `oxlint` produced no diagnostics, exit 0 (`npm run lint`, `verify-logs/lint.log`).
+- Test suite: 37 files, 460 tests, 460 passed, 0 failed, 0 skipped, 0 todo, 13.37s (`npm test --
+  --reporter=default --reporter=json --outputFile.json=vitest-results.json`, `verify-logs/test.log`).
+  Up from 329 tests across 34 files at the previous change,
+  `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`.
+- Test-count floors: `node scripts/check-test-floor.mjs vitest-results.json` exit 0; all six pinned
+  suites met their floor exactly (`checkPhoneRedaction.test.js` 45/45, `routePaths.test.jsx` 8/8,
+  `routePages.test.js` 14/14, `checkRoutePages.test.js` 16/16, `checkForbiddenCopy.test.js` 26/26,
+  `pageMeta.test.js` 11/11) (`verify-logs/check-test-floor.log`). `vitest-results.json` was deleted
+  after this run per instruction; it is not committed.
+- Build: `vite build` and the SSR build both exited 0, wall time 4.619s (well under the 90s N1
+  target), 8 pages prerendered (`npm run build`, `verify-logs/build.log`).
+- typecheck: no check defined in the profile.
+- e2e: no check defined in the profile.
+- screenshot: no check defined in the profile.
+- Security audit: `npm audit --omit=dev --audit-level=high` (the profile's blocking gate) found 0
+  vulnerabilities, exit 0 (`verify-logs/audit.log`).
+- Built-CSS-fonts check (R97): `node scripts/check-built-css-fonts.mjs` exit 0, 1 CSS file, 34
+  `@font-face` blocks, 68 font URLs, 0 `data:` font URLs (`verify-logs/check-built-css-fonts.log`).
+- Route pages check (R142): `node scripts/check-route-pages.mjs` exit 0, 8 pages carry their
+  markers, 0.080s wall (`verify-logs/check-route-pages.log`), well under N1's 2s per-check target.
+- Forbidden copy, built tree (R129): `node scripts/check-forbidden-copy.mjs dist` exit 0, 41 files
+  scanned, 0.093s wall (`verify-logs/check-forbidden-copy-dist.log`).
+- Forbidden copy, source tree (R128, R129): `node scripts/check-forbidden-copy.mjs` (no argument)
+  exit 0, 33 files scanned (`verify-logs/check-forbidden-copy-src.log`).
+- Phone redaction, built tree: `node scripts/check-phone-redaction.mjs dist` exit 0, 303 files
+  scanned (75 skipped as binary), 0 hits (`verify-logs/check-phone-redaction-dist.log`).
+- Phone redaction, repository: `node scripts/check-phone-redaction.mjs` (no argument) exit 0, 290
+  files scanned (6 skipped as binary), 0 hits, and includes the `git ls-files` check that no `.pdf`
+  is tracked (`verify-logs/check-phone-redaction-repo.log`).
 
 ## Checks
 
@@ -61,60 +51,70 @@ check is green. See "Known gap" below.
 | install | `npm ci` | 0 | `verify-logs/install.log` | confirmed |
 | typecheck | (none) | | | no check defined |
 | lint | `npm run lint` | 0 | `verify-logs/lint.log` | confirmed |
-| test | `npm test` | 1 | `verify-logs/test.log` | confirmed red: G18 resume PDF only |
+| test | `npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json` | 0 | `verify-logs/test.log` | confirmed |
+| test-count floors | `node scripts/check-test-floor.mjs vitest-results.json` | 0 | `verify-logs/check-test-floor.log` | confirmed |
 | build | `npm run build` | 0 | `verify-logs/build.log` | confirmed |
 | e2e | (none) | | | no check defined |
 | security_audit | `npm audit --omit=dev --audit-level=high` | 0 | `verify-logs/audit.log` | confirmed |
 | screenshot | (none) | | | no check defined |
-| built-css-fonts (post-build) | `node scripts/check-built-css-fonts.mjs` | 0 | `verify-logs/check-built-css-fonts.log` | confirmed |
-| route-pages (post-build) | `node scripts/check-route-pages.mjs` | 0 | `verify-logs/check-route-pages.log` | confirmed |
-| forbidden-copy (post-build) | `node scripts/check-forbidden-copy.mjs dist` | 0 | `verify-logs/check-forbidden-copy.log` | confirmed |
-| phone-redaction (post-build) | `node scripts/check-phone-redaction.mjs dist` | 0 | `verify-logs/check-phone-redaction.log` | confirmed |
-| resume-pdf (post-build, new D23) | `node scripts/check-resume-pdf.mjs` | 2 | `verify-logs/check-resume-pdf.log` | confirmed red: expected owner-supplied gap |
-| test (JSON, for test-floor) | `npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json` | 1 | `verify-logs/evals.log` | confirmed red: same G18 cause |
-| test-floor | `node scripts/check-test-floor.mjs vitest-results.json` | 1 | `verify-logs/test-floor.log` | confirmed red: same G18 failure, all per-file floors met |
+| built-css-fonts (R97) | `node scripts/check-built-css-fonts.mjs` | 0 | `verify-logs/check-built-css-fonts.log` | confirmed |
+| route-pages (R142) | `node scripts/check-route-pages.mjs` | 0 | `verify-logs/check-route-pages.log` | confirmed |
+| forbidden-copy, dist (R129) | `node scripts/check-forbidden-copy.mjs dist` | 0 | `verify-logs/check-forbidden-copy-dist.log` | confirmed |
+| forbidden-copy, src (R128, R129) | `node scripts/check-forbidden-copy.mjs` | 0 | `verify-logs/check-forbidden-copy-src.log` | confirmed |
+| phone-redaction, dist | `node scripts/check-phone-redaction.mjs dist` | 0 | `verify-logs/check-phone-redaction-dist.log` | confirmed |
+| phone-redaction, repo | `node scripts/check-phone-redaction.mjs` | 0 | `verify-logs/check-phone-redaction-repo.log` | confirmed |
 
 ## Evals
 
 | Category | Cases | Passed | Target | Met |
 |----------|-------|--------|--------|-----|
-| golden | 23 | 22 | 100% | no (G18) |
+| golden | 23 | 23 | 100% | yes |
 | edge | 4 | 4 | 100% | yes |
 | failure | 2 | 2 | 100% | yes |
-| adversarial | 2 | 2 | 100% | yes |
-| non-functional | 3 (N1-N3; N4 manual) | 2 | see rows | no (N2) |
+| adversarial | 3 | 3 | 100% | yes |
+| non-functional | 2 of 3 (N1, N2 automated; N4 manual) | 2 | see rows | yes |
 
-Golden G1-G14, G16-G24 (23; no G15) ran inside `npm test`; 22 passed, G18's resume-PDF sub-case
-failed (PNG and SVG sub-cases passed). Edge E1-E4, failure F1-F2, adversarial A1-A2 all passed,
-confirmed by file and status in `verify-logs/evals.log` (E1 `hydration.test.jsx` 8/8, E2
-`routes.test.jsx` 2/2, E3 part of `SiteHeader.test.jsx` 6/6, E4 part of `checkForbiddenCopy.test.js`
-14/14; F1 `routePages.test.js` 14/14 and `prerender.test.js` 4/4, F2 part of
-`checkForbiddenCopy.test.js`; A1 `pageMeta.test.js` 11/11, A2 `routePages.test.js` and
-`routePaths.test.jsx` 8/8). Non-functional: N1 met (4.342s build, target under 90s), N3 met (109ms
-and 108ms, target under 2s each), N2 missed (target 0 failed/0 skipped/0 todo suite-wide and every
-pinned floor met; 1 failed test, same G18 cause, despite every individual pinned floor being met).
-N4 (Lighthouse) is manual, not run here.
+All 32 automated cases in `evals.md` (G1-G8, G10-G14, G16-G24, G26; E1-E4; F1, F2; A1-A3) have an
+"Implemented as" path; every path was confirmed to exist on disk and, for the revised/new cases
+(G7, G10, G11, G14, G26, A3), confirmed by grep to contain a block or comment naming the case id
+(`describe('repository links (G26)'` at `src/components/CaseStudyPage.test.jsx:234`; `A3` comments
+at `src/checkForbiddenCopy.test.js:228,339`). No case is `missing`. All cases run inside `npm test`
+above (37 files, 460 tests, 0 failed) and passed.
 
-## Known gap (expected, not a known-failure citation)
+N1 (build under 90s, each post-build check under 2s): build 4.619s
+(`verify-logs/build.log`), `check-forbidden-copy.mjs dist` 0.093s, `check-route-pages.mjs` 0.080s
+(both logs above); all within target. N2 (0 failed/skipped/todo; every pinned suite at or above its
+floor): confirmed above, `verify-logs/check-test-floor.log`.
 
-`public/Muhammad_Muhibullah_Resume.pdf` is absent by design (plan.md Task 10 done-when; D2, D12,
-D16, D17: only the owner can check the PDF for data the site withholds). This gap is introduced
-by this change, not pre-existing, so it is not registered with `known-failure add` and is not
-cited as a known failure. It causes exactly three red rows this run: `test`/the JSON-reporter
-`test` re-run (G18's resume sub-case), `resume-pdf` (the new D23 script's designed exit 2 for a
-missing owner file), and `test-floor` (requires zero failed tests suite-wide). No placeholder or
-copied PDF was created; no test was edited or weakened; the resume-pdf script's own message names
-the gap by design. `known-failure list` was checked before any check ran and returned "No known
-failures recorded." (confirmed); none were added.
+M1 to M5 and N4 are not automated; see "Not verified".
 
-Stated plainly: every other check is green. The only red is this owner-supplied gap.
+## Failures and fixes
+
+None on this run.
+
+| # | Check | Cause | Fix commit | Re-run exit code |
+|---|-------|-------|------------|------------------|
+
+## Known failures
+
+None cited. `node wh.js known-failure list` returned "No known failures recorded." before this run,
+and no check in this run was red, so none was needed.
 
 ## Not verified
 
-- M1-M5, N4: manual, for the owner or main session, recorded in `ship.md`. M3 additionally
-  blocked pre-merge by nothing having been deployed yet.
+- M1: manual viewport/mobile-menu check across breakpoints. Not run; the owner or main session
+  records it in `ship.md`.
+- M2: manual keyboard-tab-order and focus-ring check. Not run; recorded in `ship.md`.
+- M3: manual post-deploy curl and private-window checks of the live site and repository URLs. Not
+  run; this is a post-merge check recorded in `ship.md`.
+- M4: manual comparison of the run-count figures against the owner's approved facts. Not run; the
+  shipper writes it into `ship.md`.
+- M5: manual side-by-side site-versus-resume claim list. Not run; the shipper writes it into
+  `ship.md` for the owner to confirm at G4.
+- N4: manual Lighthouse scores on the local preview. Not run; recorded in `ship.md`.
 
 ## Notes for the Ship document
 
-None found. This session did not separately cross-check `spec.md`/`plan.md`/`evals.md` prose
-beyond what evals G21/G22 already assert and which passed.
+None found in this pass. The prose across `spec.md`, `plan.md` and `evals.md` for this change was
+not diffed word-by-word in this session beyond what the eval cases already check; no wording
+mismatch was noticed while running checks and evals.
