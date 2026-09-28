@@ -156,6 +156,23 @@ Each item is confirmed by reading the file named.
 | 13 | Unused scaffold assets | `src/assets/react.svg`, `vite.svg`, `hero.png` | Imported by nothing. `hero.png` in particular may be intended for the hero and was never wired up. |
 | 14 | Stale local `dist/` | `dist/` | Untracked and git-ignored, **confirmed**, but present on disk from an earlier build and easy to mistake for current output. |
 
+### 2026-09-28 addendum: D57, phone-redaction scan not wired into CI
+
+`node scripts/check-phone-redaction.mjs`, run with no argument, is **not** run by
+`.github/workflows/deploy.yml` (**confirmed** by reading the workflow). CI's coverage of the
+phone number today is two narrower checks: R41's unit tests, and the generic phone-pattern
+regex in the R82 post-publish smoke step that runs against the already-served HTML, plus the
+`git ls-files` check for a tracked resume PDF. Neither of those is the repository-wide scan
+`check-phone-redaction.mjs` performs against the R89/GC41/GC89 reference commit.
+
+Recommendation, not yet actioned: a follow-up change should add a blocking step before Build in
+`deploy.yml`, with a checkout deep enough (`fetch-depth` covering the scanner's reference
+commit) for the scanner to read the history it needs. Until that lands, the owner runs
+`node scripts/check-phone-redaction.mjs` locally before merging any change that touches
+`src/`, `docs/`, or the workflow. `.github/workflows/deploy.yml` itself was not edited to make
+this addendum; it stays a protected-path, ask-first change for the owner to authorize
+separately.
+
 ### Security baseline items that do not yet apply, and one that does
 
 The global security baseline is written for applications with a database and auth. Most of it is
