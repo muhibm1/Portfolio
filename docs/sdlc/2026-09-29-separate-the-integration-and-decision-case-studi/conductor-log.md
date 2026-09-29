@@ -41,3 +41,5 @@
 2026-09-29T16:59:37.138Z | review | conductor | resumed at review after G4 approved; PR #21 merged by the main session on the owner's chat instruction 'You merge it' (merge e08f1bb at 2026-09-29T16:57:47Z, head b01519f, confirmed via gh pr view); deploy run 36601529754 success, both jobs success (confirmed via gh run view)
 2026-09-29T16:59:37.292Z | deploy | conductor | G5 not required at tier 2; set auto
 2026-09-29T17:00:41.984Z | deploy | wh-shipper | deploy mode, record only: Deploy record section added to ship.md (150 lines); merge e08f1bb and run 36601529754 re-confirmed read-only; no merge, no push, no commit
+2026-09-29T17:02:20.046Z | done | wh-retro-learner | retro.md committed at a4803ae; within budget on agent time; 2 new instincts, 2 raised; proposals P1-P4 for owner review, none applied; R168 still the owner's
+2026-09-29T17:02:32.223Z | done | conductor | pushing change branch and opening a docs-only PR for post-merge artifacts (ship.md deploy record, retro.md, instincts, conductor log); not merging it
