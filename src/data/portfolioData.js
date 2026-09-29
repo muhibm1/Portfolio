@@ -603,7 +603,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Changes to certain map data needed a person to review the request before work could continue. The queue grew faster than people could clear it. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
+                "Every change to certain map data needed a person to judge whether it should go ahead, and that judgment was the bottleneck. The queue grew faster than reviewers could clear it. About two months of tickets had piled up with teams across the pipeline waiting on them.",
             },
             { type: "paragraph", text: "Building a fix wasn't part of my assigned role. I took it on anyway." },
           ],
@@ -686,24 +686,24 @@ export const portfolioData = {
         eyebrow: "Apple (via TCS) · Systems integration",
         title: "Three systems, one tool, half the turnaround",
         summary:
-          "Editing certain map data meant unlocking and relocking permissions by hand across teams. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs.",
+          "Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
         linkText: "Read the case study",
         tags: ["~50% faster turnaround", "OAuth2 across 3 systems"],
       },
       eyebrow: "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
       title: "Three systems, one tool, half the turnaround",
       intro:
-        "Editing certain map features meant unlocking and relocking permissions by hand, across teams. I built a Python tool that does it on demand by working through the ticketing, repository and geo-data systems' own authenticated APIs.",
+        "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
       atAGlance: [
         { label: "My role", value: "Built it end to end" },
         { label: "Systems", value: "Ticketing, code repository, geo-data" },
         { label: "Stack", value: "Python, REST APIs, OAuth2" },
-        { label: "Result", value: "A manual, cross-team workflow replaced by access on demand" },
+        { label: "Result", value: "A script-driven process replaced by access on demand, with the reason recorded" },
       ],
       stats: [
         { value: "~50%", label: "faster turnaround on lock and unlock requests" },
         { value: "3 systems", label: "connected through their own authenticated APIs" },
-        { value: "On demand", label: "instead of a manual, cross-team handoff" },
+        { value: "On demand", label: "instead of hand-run scripts" },
       ],
       sections: [
         {
@@ -713,7 +713,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "To edit certain map features, someone had to unlock edit permissions first and lock them again afterward. Every step was manual, error-prone and crossed team boundaries.",
+                "Locking and unlocking protected map data already worked, but the path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care.",
             },
           ],
         },
@@ -731,7 +731,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A Python tool that unlocks map feature edit permissions when they're needed and locks them again afterward. It works through each system's authenticated REST API, so no one has to change the tools they already use.",
+                "A Python tool that locks and unlocks map feature edit permissions on demand. It works through each system's authenticated REST API, so no one has to change the tools they already use, and every lock or unlock carries a comment explaining why, so the next person who asks why a feature is locked finds the answer on the feature itself.",
             },
           ],
         },
@@ -753,7 +753,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A fully manual, cross-team workflow became access control on demand, and turnaround on lock and unlock requests dropped by about 50%.",
+                "A script-driven process became access control on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
             },
           ],
         },
@@ -761,7 +761,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath.",
+          "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Systems that don't talk to each other? Let's talk.",
@@ -848,7 +848,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A mass building-generation incident affected tens of thousands of buildings. I led the response: with SQL and QGIS, I identified the affected buildings inside restricted geospatial zones and triaged each one for deletion, correction or retention.",
+                "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each one.",
             },
           ],
         },

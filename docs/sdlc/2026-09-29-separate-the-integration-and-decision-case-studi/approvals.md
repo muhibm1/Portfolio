@@ -1,0 +1,34 @@
+# Approvals: Separate the integration and decision case studies and correct the incident count
+
+Change id: `2026-09-29-separate-the-integration-and-decision-case-studi`
+
+Each block is appended by `/workhorse:approve` and committed. Never edit earlier blocks.
+
+<!-- entries -->
+
+## G2: rejected
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-29T07:35:24.461Z
+- Artifact commit: `f2e983a8eb959dfa35e04c5dbf68ab9c9cbd374d` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/brief.md` sha256 `b28930402e99a7fb6b1a285f123179810fa93d2b0d39d3d0584156f6632d46e1`
+- Tier at decision: 2
+- Notes: Owner's answers of 2026-09-29, pasted in chat, recorded by the main session. They supersede his earlier same-day message that the incident count should read 'thousands'. (1) D3 and D8 reversed: the incident count stays 'tens of thousands' in all three places (it is in the approved facts and on his resume; nothing in the disclosure rules touches magnitude, and the site must not say less than the resume); drop the scanner guard that refuses 'tens of thousands'; the four test pins keep the current count. (2) D14 overridden: cut 'inside restricted geospatial zones'. The Data Health 'When it breaks at scale' paragraph becomes exactly: 'A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each one.' Reason in his words: the sentence publishes that a generation error put buildings into restricted geography, a more sensitive fact than the lock rules protect, and the case study's value is the triage judgment. The stat label 'buildings triaged in one incident I led' is not changed. Designer to decide as a decision row whether the scanner should also refuse 'restricted geospatial' so it cannot return (recommended yes). (3) D5: the integration homepage card summary becomes exactly: 'Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.' (4) The flagged phrase stays: keep 'extra tickets raised just to carry the change' (it does not describe how permissions are scoped). His three earlier answers stand as restated: D1 keep the integration title 'Three systems, one tool, half the turnaround'; D2 keep 'Cross-team' on the decision page lead, its homepage card and homepage principle 01; everything else in the packet as recommended.
+
+## G2: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-29T07:56:25.831Z
+- Artifact commit: `89ff39e809f18b544b5d68233f392c6d1efb1ddf` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/brief.md` sha256 `a2dbfff68064028d2a31a19e87225a9743465479af9733661342f62d802cb4c5`
+- Tier at decision: 2
+- Notes: D1: recommendation accepted; D2: recommendation accepted; D3: recommendation accepted; D4: recommendation accepted; D5: recommendation accepted; D6: recommendation accepted; D7: recommendation accepted; D8: recommendation accepted; D9: recommendation accepted; D10: recommendation accepted; D11: recommendation accepted; D12: recommendation accepted; D13: recommendation accepted; D14: recommendation accepted; D15: recommendation accepted
+
+## G4: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-29T08:26:07.722Z
+- Artifact commit: `626fcd5b8c23186683d79800b2de3011e44a0594` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/ship.md` sha256 `da6b9c1ce9be7ca9209267e20fb37e619719e38def2535684ec66583d82294e5`
+- Tier at decision: 2
+- Notes: D18: recommendation accepted; D1: recommendation accepted; D2: recommendation accepted; D3: recommendation accepted; D4: recommendation accepted; D5: recommendation accepted; D6: recommendation accepted; D7: recommendation accepted; D8: recommendation accepted; D9: recommendation accepted; D10: recommendation accepted; D11: recommendation accepted; D12: recommendation accepted; D13: recommendation accepted; D14: recommendation accepted; D15: recommendation accepted; D16: recommendation accepted; D17: recommendation accepted. Recorded by the main session, not typed by the owner, on the owner's standing chat instruction of 2026-09-29: 'when build is done make sure everything ships and the site is live. Accept any gates and dont get stuck'. Every recommendation accepted, D1 to D18. The owner has not yet read ship.md's strings or the back-to-back situation sections (R168); that read remains his, after publication.
