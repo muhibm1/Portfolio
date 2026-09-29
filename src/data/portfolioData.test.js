@@ -108,16 +108,19 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
     lead:
-      "Editing certain map features meant unlocking and relocking permissions by hand, across teams. I built a Python tool that does it on demand by working through the ticketing, repository and geo-data systems' own authenticated APIs.",
+      "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
     atAGlance: [
       { label: "My role", value: "Built it end to end" },
       { label: "Systems", value: "Ticketing, code repository, geo-data" },
       { label: "Stack", value: "Python, REST APIs, OAuth2" },
-      { label: "Result", value: "A manual, cross-team workflow replaced by access on demand" },
+      {
+        label: "Result",
+        value: "A script-driven process replaced by access on demand, with the reason recorded",
+      },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath.",
+      "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
     contactHeading: "Systems that don't talk to each other? Let's talk.",
   },
   "apple-data-health": {
@@ -233,6 +236,10 @@ function collectBlocks(caseStudy) {
   return caseStudy.sections.flatMap((section) => section.blocks);
 }
 
+function findCaseStudy(id) {
+  return portfolioData.caseStudies.find((study) => study.id === id);
+}
+
 function findSection(caseStudy, id) {
   return caseStudy.sections.find((section) => section.id === id);
 }
@@ -346,6 +353,124 @@ describe("portfolioData", () => {
       expect(study.callout.text).toBe(narrative.calloutText);
       expect(study.contactHeading).toBe(narrative.contactHeading);
     }
+  });
+
+  it("carries the integration page's situation, built and changed paragraphs verbatim (R160)", () => {
+    const integration = findCaseStudy("apple-integration");
+    const builtParagraph = findSection(integration, "built").blocks.find(
+      (block) => block.type === "paragraph",
+    );
+
+    expect(findSection(integration, "situation").blocks[0].text).toBe(
+      "Locking and unlocking protected map data already worked, but the path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care.",
+    );
+    expect(builtParagraph.text).toBe(
+      "A Python tool that locks and unlocks map feature edit permissions on demand. It works through each system's authenticated REST API, so no one has to change the tools they already use, and every lock or unlock carries a comment explaining why, so the next person who asks why a feature is locked finds the answer on the feature itself.",
+    );
+    expect(findSection(integration, "changed").blocks[0].text).toBe(
+      "A script-driven process became access control on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
+    );
+    expect(integration.stats[2]).toEqual({
+      value: "On demand",
+      label: "instead of hand-run scripts",
+    });
+  });
+
+  it("keeps every integration element the change request lists as unchanged (R160)", () => {
+    const integration = findCaseStudy("apple-integration");
+
+    expect(integration.title).toBe("Three systems, one tool, half the turnaround");
+    expect(integration.card.title).toBe("Three systems, one tool, half the turnaround");
+    expect(integration.card.linkText).toBe("Read the case study");
+    expect(integration.eyebrow).toBe(
+      "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
+    );
+    expect(integration.atAGlance.slice(0, 3)).toEqual([
+      { label: "My role", value: "Built it end to end" },
+      { label: "Systems", value: "Ticketing, code repository, geo-data" },
+      { label: "Stack", value: "Python, REST APIs, OAuth2" },
+    ]);
+    expect(integration.stats.slice(0, 2)).toEqual([
+      { value: "~50%", label: "faster turnaround on lock and unlock requests" },
+      { value: "3 systems", label: "connected through their own authenticated APIs" },
+    ]);
+    expect(findSection(integration, "built").blocks[0]).toEqual({
+      type: "link-diagram",
+      left: { title: "Ticketing system", note: "The request and its status" },
+      edge: "OAuth2 · REST",
+      hub: { title: "The tool", note: "Python" },
+      right: [{ title: "Code repository" }, { title: "Geo-data system" }],
+    });
+    expect(findSection(integration, "hard").blocks[0].text).toBe(
+      "Getting three separate systems to accept one tool was most of the work. When the tool's original authentication path was deprecated, I moved it to OAuth2 and worked through the permission errors that cascaded across the systems as a result.",
+    );
+    expect(integration.disclaimer).toBe(
+      "Details are limited to what I can share publicly. Internal system names are withheld.",
+    );
+    expect(integration.contactHeading).toBe("Systems that don't talk to each other? Let's talk.");
+  });
+
+  it("carries the decision page's new situation opening and keeps its lead, card and principle 01 (R161)", () => {
+    const decision = findCaseStudy("apple-llm-triage");
+    const situationBlocks = findSection(decision, "situation").blocks;
+
+    expect(situationBlocks[0].text).toBe(
+      "Every change to certain map data needed a person to judge whether it should go ahead, and that judgment was the bottleneck. The queue grew faster than reviewers could clear it. About two months of tickets had piled up with teams across the pipeline waiting on them.",
+    );
+    expect(situationBlocks[1].text).toBe(
+      "Building a fix wasn't part of my assigned role. I took it on anyway.",
+    );
+    expect(decision.intro).toBe(pinnedCaseStudyNarratives["apple-llm-triage"].lead);
+    expect(decision.card.title).toBe("A review backlog, turned into a decision system");
+    expect(portfolioData.home.principles.items[0]).toEqual({
+      number: "01",
+      title: "Find the step everyone waits on",
+      text:
+        "At Apple, a review queue was blocking cross-team work. I built a system that decides each ticket with a trail a person can audit, and the backlog hasn't come back.",
+    });
+  });
+
+  it("keeps tens of thousands as the incident count in all three places (R162)", () => {
+    const appleRole = portfolioData.home.experience.roles.find((role) =>
+      role.highlights?.some((text) => text.includes("building-generation incident")),
+    );
+    const dataHealth = findCaseStudy("apple-data-health");
+    const incidentText = findSection(dataHealth, "incident").blocks[0].text;
+
+    expect(appleRole.highlights.join(" ")).toContain(
+      "led response to a building-generation incident affecting tens of thousands of buildings.",
+    );
+    expect(dataHealth.stats[2]).toEqual({
+      value: "Tens of thousands",
+      label: "buildings triaged in one incident I led",
+    });
+    expect(incidentText).toContain("put tens of thousands of buildings into the data");
+  });
+
+  it("never says cross-team, crossed team or fully manual on the integration page (R165)", () => {
+    const integrationText = collectStrings(findCaseStudy("apple-integration")).join(" ");
+
+    expect(integrationText).not.toMatch(/cross-team|crossed team|fully manual/i);
+  });
+
+  it("carries the Data Health incident paragraph verbatim and never says restricted geospatial (R169)", () => {
+    const incident = findSection(findCaseStudy("apple-data-health"), "incident");
+
+    expect(incident.heading).toBe("When it breaks at scale");
+    expect(incident.blocks).toEqual([
+      {
+        type: "paragraph",
+        text:
+          "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each one.",
+      },
+    ]);
+    expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
+  });
+
+  it("carries the integration homepage card summary verbatim (R170)", () => {
+    expect(findCaseStudy("apple-integration").card.summary).toBe(
+      "Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
+    );
   });
 
   it("carries no callout note on the WorkHorse study (D24, D25)", () => {
