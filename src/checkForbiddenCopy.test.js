@@ -569,6 +569,35 @@ describe('check-forbidden-copy entry', () => {
     }
   });
 
+  // R164: proves `main` passes PAGE_SCOPED_TERMS to the scan, not only FORBIDDEN_TERMS. The
+  // fixture tree sits outside the repository; the scoped pattern matches on its
+  // work/apple-integration/ directory wherever the tree is rooted.
+  it('exits 1 naming the integration term for cross-team under work/apple-integration/, and 0 under another path', () => {
+    const builtSite = fs.mkdtempSync(path.join(os.tmpdir(), 'check-forbidden-copy-built-'));
+    try {
+      const integrationDirectory = path.join(builtSite, 'work', 'apple-integration');
+      fs.mkdirSync(integrationDirectory, { recursive: true });
+      fs.writeFileSync(path.join(integrationDirectory, 'index.html'), '<p>cross-team handoff</p>\n', 'utf8');
+
+      const failing = spawnEntry([builtSite]);
+
+      expect(failing.status).toBe(EXIT_HIT);
+      expect(failing.stdout).toContain(': integration page cross-team wording');
+      expect(failing.stdout).toContain('work/apple-integration/index.html');
+
+      fs.rmSync(path.join(builtSite, 'work'), { recursive: true, force: true });
+      const otherDirectory = path.join(builtSite, 'work', 'apple-llm-triage');
+      fs.mkdirSync(otherDirectory, { recursive: true });
+      fs.writeFileSync(path.join(otherDirectory, 'index.html'), '<p>cross-team handoff</p>\n', 'utf8');
+
+      const passing = spawnEntry([builtSite]);
+
+      expect(passing.status).toBe(EXIT_CLEAN);
+    } finally {
+      fs.rmSync(builtSite, { recursive: true, force: true });
+    }
+  });
+
   it('runs under two seconds scanning the real src/ directory (as the entry, no argument)', () => {
     const start = performance.now();
     spawnEntry([]);
