@@ -40,7 +40,10 @@ recruiters. No backend, no database, no auth, no visitor data collection.
 - No analytics, cookies, tracking pixels, embedded widgets or hosted forms. Ever.
 - No new dependency without naming it, its licence and its exact version in the plan
 - Banned site copy is enforced by `scripts/forbidden-copy.mjs` (`FORBIDDEN_TERMS`), extended
-  there with a test in `src/checkForbiddenCopy.test.js`; `npm test` and the deploy fail on a hit
+  there with a test in `src/checkForbiddenCopy.test.js`; `npm test` and the deploy fail on a hit.
+  A term that must be banned on one built page only goes in `PAGE_SCOPED_TERMS` with an
+  `onlyPaths` pattern instead; it fires only when a scanned path matches, which in practice means
+  the `dist` scan in CI
 
 ## Protected
 

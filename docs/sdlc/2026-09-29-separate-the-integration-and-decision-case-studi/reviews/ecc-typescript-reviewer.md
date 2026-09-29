@@ -1,0 +1,10 @@
+Verdict: 3 findings (0 critical, 0 high, 0 medium, 3 low)
+
+| Severity | File:line | Finding | Failure scenario | Fix |
+|---|---|---|---|---|
+| low | scripts/forbidden-copy.mjs (PAGE_SCOPED_TERMS pattern `\bcross[- ]teams?\b`) | Pattern misses Unicode hyphen, `&nbsp;`, `&#8209;`, `&shy;` and double-space spellings (confirmed by reading the regex; not run against such input) | Copy edited to "cross&#8209;team" or "cross  team" on the integration page -> built HTML passes the scan, banned wording ships | scripts/forbidden-copy.mjs: widen to `\bcross(?:[-‐-―\s]|&nbsp;|&#8209;|&shy;)+teams?\b`; add one fixture per variant in src/checkForbiddenCopy.test.js |
+| low | scripts/check-test-floor.mjs:53 | Pin for src/checkForbiddenCopy.test.js is 29; file now has 38 passing tests (confirmed: vitest run, 38 passed) | Deleting or skipping up to 9 of the new guard cases (G9, F1, A1, E3) leaves the floor green | scripts/check-test-floor.mjs: raise pinnedPassedCount to 38 (ask-first path; owner action, follow-up at merge, as spec D11 already notes) |
+| low | scripts/forbidden-copy.mjs (BOUNDARY_TERM, LANDMARK_TERM, TERRAIN_TERM, SANDBOX_TERM in FORBIDDEN_TERMS) | These are global and scan all of src/ minus tests, so any future code comment, CSS or identifier-prose using "boundary" (for example "error boundary") fails npm test (believed, not verified beyond the current tree, which scans clean: 80 tests pass) | A contributor writes a React "error boundary" comment in src/components -> copyIsClean test goes red with a copy-ban label | Accept and document in the file comment that these words are banned in code text too, or limit these four terms with `onlyPaths` to built HTML (`dist`) plus src/data/ |
+
+Findings outside scope: none
+Not verified: npm run build plus `node scripts/check-forbidden-copy.mjs dist` (not run; no build started); npm run lint and full npm test (only the two changed test files were run: 80 passed, exit 0); typecheck not applicable (no TypeScript). Regexes carry no g or y flag (confirmed by reading), so `.test` is not stateful. onlyPaths applies to a forward-slash repo-relative path from displayPath (confirmed, line 373-375).
