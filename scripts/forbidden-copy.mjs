@@ -6,6 +6,9 @@
  * scripts/check-phone-redaction.mjs over scripts/phone-redaction-scan.mjs; this scanner follows
  * the same split, exit codes and reasoning.
  *
+ * FORBIDDEN_TERMS apply to every scanned file; PAGE_SCOPED_TERMS apply only to paths their
+ * `onlyPaths` matches (2026-09-29 change, ADR 0001).
+ *
  * Importing this module runs nothing: `main` is called only by the entry,
  * scripts/check-forbidden-copy.mjs.
  */
@@ -80,6 +83,36 @@ export const ELEVEN_X_TERM = { label: '11x', pattern: /(?<!\d)11x\b/i, skipExten
 // R156 review fix: a plain "4 of 4" substring hit inside a larger count such as "24 of 45".
 export const FOUR_OF_FOUR_TERM = { label: '4 of 4', pattern: /(?<!\d)4 of 4(?!\d)/i, skipExtensions: [] }
 
+// 2026-09-29 change (ADR 0002, change request "Verification" items 1 and 2): the disclosure
+// words, as word-family patterns so plurals and verb forms are caught but "outbound", the Tailwind
+// `border-border` class and "Terraform" are not. No `g` or `y` flag on any pattern in this file:
+// `termsFoundIn` calls `.test` repeatedly and those flags make it stateful.
+export const SANDBOX_TERM = {
+  label: 'sandbox',
+  pattern: /\bsandbox(?:es|ed|ing)?\b/i,
+  skipExtensions: [],
+}
+export const BOUNDARY_TERM = { label: 'boundary', pattern: /\bboundar(?:y|ies)\b/i, skipExtensions: [] }
+export const TERRAIN_TERM = { label: 'terrain', pattern: /\bterrains?\b/i, skipExtensions: [] }
+export const LANDMARK_TERM = { label: 'landmark', pattern: /\blandmarks?\b/i, skipExtensions: [] }
+
+const CHANGE_VERBS = 'changed|edited|modified|updated|altered'
+const CHANGE_NOUNS = 'changes?|edits?|updates?|modifications?'
+export const CHANGED_INCORRECTLY_TERM = {
+  label: 'changed incorrectly wording',
+  pattern: new RegExp(
+    `\\bincorrectly (?:${CHANGE_VERBS})\\b|\\b(?:${CHANGE_VERBS}) incorrectly\\b|` +
+      `\\bincorrect (?:${CHANGE_NOUNS})\\b`,
+    'i',
+  ),
+  skipExtensions: [],
+}
+export const HIGH_IMPACT_TERM = {
+  label: 'high impact wording',
+  pattern: /\bhigh(?:[- ]user)?[- ]impact\b/i,
+  skipExtensions: [],
+}
+
 /**
  * Plan section 1's seventeen removed strings, deduplicated to their unique case-insensitive form
  * (matching is already case-insensitive, so "simulator"/"Simulator" and "Wasl"/"wasl" would
@@ -96,6 +129,10 @@ export const FOUR_OF_FOUR_TERM = { label: '4 of 4', pattern: /(?<!\d)4 of 4(?!\d
  * `four real changes`, `rejected ship`, `half the latency`, `2×`, `+52%`, plus
  * TIMING_FIGURE_TERM, PADDOCK_RETIREMENT_TERM, TWO_X_TERM, ELEVEN_X_TERM and FOUR_OF_FOUR_TERM
  * (the last three were plain strings until a review fix moved them to boundary-aware patterns).
+ *
+ * The 2026-09-29 change adds three strings, `crossed team`, `fully manual` and `restricted
+ * geospatial` (D15), and the five pattern terms above (SANDBOX_TERM to HIGH_IMPACT_TERM). It adds
+ * no count term: "tens of thousands" stays legal copy (D3, D8).
  */
 export const FORBIDDEN_TERMS = [
   '99.9',
@@ -129,6 +166,27 @@ export const FORBIDDEN_TERMS = [
   TWO_X_TERM,
   ELEVEN_X_TERM,
   FOUR_OF_FOUR_TERM,
+  'crossed team',
+  'fully manual',
+  'restricted geospatial',
+  SANDBOX_TERM,
+  BOUNDARY_TERM,
+  TERRAIN_TERM,
+  LANDMARK_TERM,
+  CHANGED_INCORRECTLY_TERM,
+  HIGH_IMPACT_TERM,
+]
+
+// "cross-team" stays legal on the decision and homepage copy but not on the integration page
+// (ADR 0001), so it is a separate list, applied only to paths under work/apple-integration/. The
+// leading \b keeps "across teams" from matching. Built pages are the only place this can fire.
+export const PAGE_SCOPED_TERMS = [
+  {
+    label: 'integration page cross-team wording',
+    pattern: /\bcross[- ]teams?\b/i,
+    skipExtensions: [],
+    onlyPaths: /(?:^|\/)work\/apple-integration\//,
+  },
 ]
 
 const LETTERS_ONLY = /^[a-zA-Z]+$/
@@ -136,12 +194,18 @@ const LETTERS_ONLY = /^[a-zA-Z]+$/
 /** Builds one case-insensitive matcher per term: a word-boundary pattern for a letters-only term,
  * a substring pattern for any other string, and for a dash character a pattern that also matches
  * its HTML entity spellings. A `{ label, pattern, skipExtensions }` term (interface (h)) carries
- * its own pattern and reports its label; `skipExtensions` defaults to none. */
+ * its own pattern and reports its label; `skipExtensions` defaults to none, and `onlyPaths` (a
+ * RegExp tested against the forward-slash repo-relative path) defaults to null, meaning every file. */
 export function buildMatchers(terms) {
   return terms.map((term) =>
     typeof term === 'string'
-      ? { term: termLabel(term), pattern: buildPattern(term), skipExtensions: [] }
-      : { term: term.label, pattern: term.pattern, skipExtensions: term.skipExtensions ?? [] },
+      ? { term: termLabel(term), pattern: buildPattern(term), skipExtensions: [], onlyPaths: null }
+      : {
+          term: term.label,
+          pattern: term.pattern,
+          skipExtensions: term.skipExtensions ?? [],
+          onlyPaths: term.onlyPaths ?? null,
+        },
   )
 }
 
@@ -190,7 +254,7 @@ export function scanFiles(absolutePaths, matchers) {
 export function main(args) {
   try {
     const absolutePaths = resolveScope(args)
-    const matchers = buildMatchers(FORBIDDEN_TERMS)
+    const matchers = buildMatchers([...FORBIDDEN_TERMS, ...PAGE_SCOPED_TERMS])
     const { exitCode, hitLines, counts } = scanFiles(absolutePaths, matchers)
 
     if (exitCode === EXIT_HIT) {
@@ -278,7 +342,12 @@ function readFileIfPresent(absolutePath) {
 
 function hitLinesIn(text, displayedPath, matchers) {
   const extension = path.extname(displayedPath).toLowerCase()
-  const applicableMatchers = matchers.filter((matcher) => !matcher.skipExtensions.includes(extension))
+  const slashPath = displayedPath.replaceAll('\\', '/')
+  const applicableMatchers = matchers.filter(
+    (matcher) =>
+      !matcher.skipExtensions.includes(extension) &&
+      (matcher.onlyPaths === null || matcher.onlyPaths.test(slashPath)),
+  )
   return text
     .split('\n')
     .flatMap((line, index) =>
