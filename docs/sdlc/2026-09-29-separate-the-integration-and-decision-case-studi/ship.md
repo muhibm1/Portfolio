@@ -1,6 +1,6 @@
 # Ship: Separate the integration and decision case studies and revise the Data Health incident paragraph
 
-Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `77c1f0f` · PR PR_URL_PENDING
+Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `77c1f0f` · PR https://github.com/muhibm1/Portfolio/pull/21
 Prepared 2026-09-29 08:25 UTC · Design approved: see [approvals.md](./approvals.md) (G2 approved 07:56 UTC, D1 to D15 accepted)
 
 This is the Ship document. Approving it (G4) lets the agent merge the PR. Merging to `main` publishes the public site, and the profile marks production as not automatic for agents.
