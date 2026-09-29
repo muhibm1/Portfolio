@@ -15,6 +15,7 @@ import {
   EXIT_CLEAN,
   EXIT_HIT,
   FORBIDDEN_TERMS,
+  PAGE_SCOPED_TERMS,
   buildMatchers,
   scanFiles,
 } from '../scripts/forbidden-copy.mjs';
@@ -24,6 +25,7 @@ const SCRIPTS_DIRECTORY = path.join(REPOSITORY_ROOT, 'scripts');
 const ENTRY_PATH = path.join(SCRIPTS_DIRECTORY, 'check-forbidden-copy.mjs');
 
 const matchers = buildMatchers(FORBIDDEN_TERMS);
+const matchersWithPageScope = buildMatchers([...FORBIDDEN_TERMS, ...PAGE_SCOPED_TERMS]);
 
 // One rendering per forbidden term (ADR 0004, R156): the paired-case entries
 // ("simulator"/"Simulator", "Wasl"/"wasl"), the two dash characters, 13 of the 14 R156 strings
@@ -64,6 +66,16 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'plus-fifty-two-percent.txt', text: 'saw a +52% jump' },
   { fileName: 'timing-figure.txt', text: 'the query took 1.5s' },
   { fileName: 'paddock-retirement.txt', text: 'Paddock was retired last quarter.' },
+  // 2026-09-29 integration and decision case studies (G8, R163): one rendering per new global term.
+  { fileName: 'crossed-team.txt', text: 'crossed team lines' },
+  { fileName: 'fully-manual.txt', text: 'a fully manual process' },
+  { fileName: 'restricted-geospatial.txt', text: 'restricted geospatial' },
+  { fileName: 'sandbox.txt', text: 'a sandbox' },
+  { fileName: 'boundary.txt', text: 'the boundary' },
+  { fileName: 'terrain.txt', text: 'terrain' },
+  { fileName: 'landmark.txt', text: 'a landmark' },
+  { fileName: 'changed-incorrectly.txt', text: 'was changed incorrectly' },
+  { fileName: 'high-user-impact.txt', text: 'high user impact' },
 ];
 
 describe('forbidden-copy matchers', () => {
@@ -91,6 +103,18 @@ describe('forbidden-copy file scan', () => {
     const fixturePath = path.join(fixtureDirectory, fileName);
     fs.writeFileSync(fixturePath, text, 'utf8');
     return fixturePath;
+  }
+
+  // Writes under nested directories, as the built site does (work/apple-integration/index.html).
+  function writeNestedFixture(relativePath, text) {
+    const fixturePath = path.join(fixtureDirectory, ...relativePath.split('/'));
+    fs.mkdirSync(path.dirname(fixturePath), { recursive: true });
+    fs.writeFileSync(fixturePath, text, 'utf8');
+    return fixturePath;
+  }
+
+  function hitsFor(fixturePath, scanMatchers) {
+    return scanFiles([fixturePath], scanMatchers).hitLines;
   }
 
   // G3: a fixture directory with one file per forbidden term, and a clean file.
@@ -389,6 +413,127 @@ describe('forbidden-copy file scan', () => {
     expect(exitCode).toBe(EXIT_HIT);
     expect(hitLines.filter((line) => line.includes('ascii-2x-adversarial.txt'))).toHaveLength(1);
     expect(hitLines.filter((line) => line.includes('ascii-2x-adversarial.txt'))[0]).toContain('2x');
+  });
+
+  // G9, R164: the integration term applies only under work/apple-integration/.
+  it('bans cross-team only under work/apple-integration/ (R164)', () => {
+    const integrationPath = writeNestedFixture('work/apple-integration/index.html', 'cross-team handoff\n');
+    const triagePath = writeNestedFixture('work/apple-llm-triage/index.html', 'cross-team handoff\n');
+    const rootPath = writeNestedFixture('index.html', 'cross-team handoff\n');
+
+    const integrationHits = hitsFor(integrationPath, matchersWithPageScope);
+
+    expect(integrationHits).toHaveLength(1);
+    expect(integrationHits[0]).toContain('integration page cross-team wording');
+    expect(hitsFor(triagePath, matchersWithPageScope)).toEqual([]);
+    expect(hitsFor(rootPath, matchersWithPageScope)).toEqual([]);
+  });
+
+  // E1, R163: the word families match their plurals and verb forms, not look-alike words.
+  it('matches the disclosure word families but not outbound, border classes or Terraform (R163)', () => {
+    const hitTexts = ['sandboxed', 'boundaries', 'Landmarks', 'TERRAINS'];
+    for (const [index, text] of hitTexts.entries()) {
+      expect(hitsFor(writeFixture(`family-${index}.txt`, `${text}\n`), matchers)).toHaveLength(1);
+    }
+    const nearMisses = ['outbound traffic', 'className="border-b border-border"', 'Terraform'];
+    for (const [index, text] of nearMisses.entries()) {
+      expect(hitsFor(writeFixture(`family-near-miss-${index}.txt`, `${text}\n`), matchers)).toEqual([]);
+    }
+  });
+
+  // E2, R163: the "changed incorrectly" and "high impact" phrasings.
+  it('matches changed-incorrectly and high-impact phrasings but not incorrect answer or changed the date (R163)', () => {
+    const hitTexts = [
+      'was changed incorrectly',
+      'incorrectly updated the data',
+      'an incorrect edit',
+      'high-impact features',
+    ];
+    for (const [index, text] of hitTexts.entries()) {
+      expect(hitsFor(writeFixture(`phrasing-${index}.txt`, `${text}\n`), matchers)).toHaveLength(1);
+    }
+    for (const [index, text] of ['the incorrect answer', 'changed the date'].entries()) {
+      expect(hitsFor(writeFixture(`phrasing-near-miss-${index}.txt`, `${text}\n`), matchers)).toEqual([]);
+    }
+  });
+
+  // E3, R164: the real data module carries "Cross-team" on the decision page and must stay clean.
+  it('scans the real data module clean with the page-scoped term inert (R164)', () => {
+    const dataModulePath = path.join(REPOSITORY_ROOT, 'src', 'data', 'portfolioData.js');
+
+    const { exitCode, hitLines } = scanFiles([dataModulePath], matchersWithPageScope);
+
+    expect(hitLines).toEqual([]);
+    expect(exitCode).toBe(EXIT_CLEAN);
+  });
+
+  // E4, R164: only the page-scoped matcher carries a path restriction.
+  it('carries onlyPaths on the page-scoped matcher only (R164)', () => {
+    const pageScopedMatchers = buildMatchers(PAGE_SCOPED_TERMS);
+
+    expect(pageScopedMatchers).toHaveLength(1);
+    expect(pageScopedMatchers[0].onlyPaths).toBeInstanceOf(RegExp);
+    expect(matchers.every((matcher) => matcher.onlyPaths === null)).toBe(true);
+    expect(FORBIDDEN_TERMS.some((term) => term.label === 'integration page cross-team wording')).toBe(false);
+  });
+
+  // F1, R163, R164: the three old integration sentences from main (lines 701, 716, 756).
+  it('catches the old integration copy if it returns to the built page (R163, R164)', () => {
+    const oldCopy = [
+      '{ label: "Result", value: "A manual, cross-team workflow replaced by access on demand" },',
+      'Every step was manual, error-prone and crossed team boundaries.',
+      'A fully manual, cross-team workflow became access control on demand.',
+    ].join('\n');
+    const fixturePath = writeNestedFixture('work/apple-integration/index.html', `${oldCopy}\n`);
+
+    const { exitCode, hitLines } = scanFiles([fixturePath], matchersWithPageScope);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(hitLines.filter((line) => line.endsWith(': integration page cross-team wording'))).toHaveLength(2);
+    expect(hitLines.some((line) => line.endsWith(': crossed team'))).toBe(true);
+    expect(hitLines.some((line) => line.endsWith(': boundary'))).toBe(true);
+    expect(hitLines.some((line) => line.endsWith(': fully manual'))).toBe(true);
+  });
+
+  // A1, R164: spaced, mixed-case and plural spellings hit; "across teams" does not.
+  it('catches spaced and mixed-case cross-team on the integration page but not across teams (R164)', () => {
+    const spacedPath = writeNestedFixture('spaced/work/apple-integration/index.html', 'Cross Team work\n');
+    const pluralPath = writeNestedFixture('plural/work/apple-integration/index.html', 'cross-teams work\n');
+    const acrossPath = writeNestedFixture('across/work/apple-integration/index.html', 'work across teams\n');
+
+    expect(hitsFor(spacedPath, matchersWithPageScope)).toHaveLength(1);
+    expect(hitsFor(pluralPath, matchersWithPageScope)).toHaveLength(1);
+    expect(hitsFor(acrossPath, matchersWithPageScope)).toEqual([]);
+  });
+
+  // E6, R164: the scope is the directory, wherever the tree is rooted, and not look-alikes.
+  it('scopes cross-team by the integration directory wherever the tree is rooted, not by look-alikes (R164)', () => {
+    const scopedPaths = ['dist/work/apple-integration/index.html', 'a/b/work/apple-integration/index.html'];
+    const lookAlikePaths = [
+      'work/apple-integration-notes/index.html',
+      'work/apple-integrations/index.html',
+    ];
+
+    for (const relativePath of scopedPaths) {
+      expect(hitsFor(writeNestedFixture(relativePath, 'cross-team\n'), matchersWithPageScope)).toHaveLength(1);
+    }
+    for (const relativePath of lookAlikePaths) {
+      expect(hitsFor(writeNestedFixture(relativePath, 'cross-team\n'), matchersWithPageScope)).toEqual([]);
+    }
+  });
+
+  // E8, R163, R169: the cut fact is banned in any case; its neighbours and the count are not.
+  it('bans restricted geospatial in any case but not restricted geography, geospatial data or the incident count (R163, R169)', () => {
+    const hitTexts = ['Restricted Geospatial Zones', 'inside RESTRICTED GEOSPATIAL areas'];
+    for (const [index, text] of hitTexts.entries()) {
+      const hits = hitsFor(writeFixture(`geospatial-${index}.txt`, `${text}\n`), matchers);
+      expect(hits).toHaveLength(1);
+      expect(hits[0]).toContain(': restricted geospatial');
+    }
+    const nearMisses = ['restricted geography', 'geospatial data', 'Tens of thousands of buildings'];
+    for (const [index, text] of nearMisses.entries()) {
+      expect(hitsFor(writeFixture(`geospatial-near-miss-${index}.txt`, `${text}\n`), matchers)).toEqual([]);
+    }
   });
 });
 
