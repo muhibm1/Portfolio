@@ -7,3 +7,9 @@
 2026-09-29T06:55:17.702Z | design | wh-eval-designer | evals 18 -> 21 (E5 built-dist check, E6 onlyPaths anchoring, E7 case variants); plan task 2 steps updated
 2026-09-29T06:58:33.861Z | design | wh-designer | brief refreshed with audit D14 and notes; counts corrected to 21 cases; R164 word boundary and no g/y flags
 2026-09-29T06:58:33.930Z | design | conductor | G2 Design presented
+2026-09-29T07:35:49.875Z | design | conductor | resumed at design after G2 rejected (owner answers: D3/D8 reversed, D14 replacement text, D5 replacement text, flagged phrase kept, D1/D2 stand)
+2026-09-29T07:45:21.532Z | design | wh-designer | revision: D3/D8 reversed (count kept, no scanner term), R169 Data Health paragraph verbatim, R170 card summary verbatim, D15 new (ban 'restricted geospatial', rec yes); 23 cases 14/7/1/1 + 2 NF; forbidden-copy check clean
+2026-09-29T07:48:15.351Z | design | wh-constraint-auditor | revision re-audit pass: 0 high, 0 medium, 1 low (D15 term misses hyphen/nbsp/split spellings; optional pattern term, builder note)
+2026-09-29T07:48:15.425Z | design | wh-eval-designer | revision re-check: 23 of 40 unchanged (14/7/1/1 + 2 NF); G13/G14 strings match approvals verbatim; each case in one task
+2026-09-29T07:48:28.178Z | design | conductor | G2 Design presented
+2026-09-29T07:48:32.200Z | design | conductor | G2 Design re-presented after revision (0 high; no second designer round)
