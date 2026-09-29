@@ -23,3 +23,12 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 - Packet: `docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/brief.md` sha256 `a2dbfff68064028d2a31a19e87225a9743465479af9733661342f62d802cb4c5`
 - Tier at decision: 2
 - Notes: D1: recommendation accepted; D2: recommendation accepted; D3: recommendation accepted; D4: recommendation accepted; D5: recommendation accepted; D6: recommendation accepted; D7: recommendation accepted; D8: recommendation accepted; D9: recommendation accepted; D10: recommendation accepted; D11: recommendation accepted; D12: recommendation accepted; D13: recommendation accepted; D14: recommendation accepted; D15: recommendation accepted
+
+## G4: approved
+
+- Who: mmuhibullah@instructors.2u.com
+- When: 2026-09-29T08:26:07.722Z
+- Artifact commit: `626fcd5b8c23186683d79800b2de3011e44a0594` (contains the packet below)
+- Packet: `docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/ship.md` sha256 `da6b9c1ce9be7ca9209267e20fb37e619719e38def2535684ec66583d82294e5`
+- Tier at decision: 2
+- Notes: D18: recommendation accepted; D1: recommendation accepted; D2: recommendation accepted; D3: recommendation accepted; D4: recommendation accepted; D5: recommendation accepted; D6: recommendation accepted; D7: recommendation accepted; D8: recommendation accepted; D9: recommendation accepted; D10: recommendation accepted; D11: recommendation accepted; D12: recommendation accepted; D13: recommendation accepted; D14: recommendation accepted; D15: recommendation accepted; D16: recommendation accepted; D17: recommendation accepted. Recorded by the main session, not typed by the owner, on the owner's standing chat instruction of 2026-09-29: 'when build is done make sure everything ships and the site is live. Accept any gates and dont get stuck'. Every recommendation accepted, D1 to D18. The owner has not yet read ship.md's strings or the back-to-back situation sections (R168); that read remains his, after publication.
