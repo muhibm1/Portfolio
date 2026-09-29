@@ -10,8 +10,8 @@ Two tasks edit disjoint files: the copy and its pins (`src/data/portfolioData.js
 `src/data/portfolioData.test.js`) and the scanner and its tests (`scripts/forbidden-copy.mjs`,
 `src/checkForbiddenCopy.test.js`). They could run in one parallel wave. But
 `src/copyIsClean.test.js` runs the real scanner over the real `src/` tree inside `npm test`
-(confirmed), and the current copy contains "crossed team boundaries", "fully manual" and "Tens of
-thousands" (lines 716, 756, 800, confirmed). A scanner task that lands before the copy task turns
+(confirmed), and the current copy contains "crossed team boundaries", "fully manual" and
+"restricted geospatial zones" (lines 716, 756, 851, confirmed). A scanner task that lands before the copy task turns
 `npm test` red on its own branch, and the previous change (2026-09-25, T16 step 4) had exactly
 that: a task whose full suite could not be green until a sibling merged.
 

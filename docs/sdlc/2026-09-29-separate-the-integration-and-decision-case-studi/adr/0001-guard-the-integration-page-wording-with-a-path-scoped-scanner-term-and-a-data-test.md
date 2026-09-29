@@ -24,10 +24,12 @@ path matches. A second exported list, `PAGE_SCOPED_TERMS`, holds one such term f
 `work/apple-integration/` matching "cross-team" (hyphen or space). `main` scans with both lists;
 `FORBIDDEN_TERMS` keeps its global meaning, so the existing data-module test that runs every
 `FORBIDDEN_TERMS` matcher over all copy is unchanged and still passes on the decision page's
-"Cross-team". "crossed team", "fully manual" and "tens of thousands" go in the global list, since
-nothing else on the site may say them. A test in `src/data/portfolioData.test.js` asserts the
-integration study's strings match none of the three phrases, so the guard also holds before any
-build, in `npm test`.
+"Cross-team". "crossed team", "fully manual" and "restricted geospatial" go in the global list,
+since nothing else on the site may say them (the G2 rejection of 2026-09-29 removed "tens of
+thousands" from this list: the count stays, D3, and added "restricted geospatial", D15). A test
+in `src/data/portfolioData.test.js` asserts the integration study's strings match none of
+"cross-team", "crossed team" and "fully manual", so the guard also holds before any build, in
+`npm test`.
 
 ## Alternatives
 
