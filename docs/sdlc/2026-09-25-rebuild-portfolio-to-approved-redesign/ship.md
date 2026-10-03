@@ -1,8 +1,7 @@
 # Ship: Rebuild the portfolio to the approved redesign
 
-This replaces the blocked draft of 2026-09-25 (`f0c9a84`), which could not push because
-verification was red on a missing resume PDF. The resume is now withdrawn from the site entirely
-(D24); this is a fresh document for the revision that followed.
+This replaces the blocked draft of 2026-09-25 (`f0c9a84`), red on a missing resume PDF. The
+resume is now withdrawn from the site entirely (D24); this is the revision that followed.
 
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`, tier 2, branch
 `wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `95ecf64`. PR: https://github.com/muhibm1/Portfolio/pull/19
@@ -10,12 +9,11 @@ Design approved: [approvals.md](./approvals.md) (G2, four rounds, last approved 
 
 ## The short version
 
-This revision removes the resume and its PDF from the site and repository, narrows contact to
-email and LinkedIn, links three public code snapshots wherever the work is discussed, adds an
-MCP-server story to WorkHorse, and brings its run record to five runs using the owner's own
-figures. Of 26 shared claim pairs between the site and the resume, 5 differ in substance; no
-factual claim in the content module was changed by an agent, so the owner decides each one. You
-decide whether it is ready to merge and publish.
+This revision removes the resume and its PDF, narrows contact to email and LinkedIn, links three
+public code snapshots, adds an MCP-server story to WorkHorse, and brings its run record to five
+runs using the owner's own figures. Of 26 shared claim pairs, 5 differ in substance; no factual
+claim was changed by an agent, so the owner decides each one. You decide whether it is ready to
+merge and publish.
 
 ## What changed
 
@@ -31,12 +29,10 @@ decide whether it is ready to merge and publish.
    run-record stats now carry source and staleness comments (`f7be231`).
 4. `SiteHeader.jsx`, `ContactFooter.jsx`, `CaseStudyCards.jsx`, `CaseStudyPage.jsx`, `HomeHero.jsx`,
    `ExperienceSection.jsx`: resume controls deleted, GitHub code links added, footer narrowed to
-   two links, MCP content rendered. This revision deleted three PDF scripts
-   (`scripts/check-resume-pdf.mjs`, `scripts/resume-pdf.mjs`, `src/checkResumePdf.test.js`); no
-   PDF was ever committed. `ResumeModal.jsx` was deleted in the original build, before this fix.
+   two links, MCP content rendered; three PDF scripts deleted, no PDF was ever committed.
+   `ResumeModal.jsx` was deleted in the original build, before this fix.
 5. Docs and profile (`CLAUDE.md`, `profile.yml`, `hosted-config.md`, `codebase-map.md`,
-   `constraints.md`) record the withdrawal and D57 deferral; test files widened to match (largest
-   share of the diff by line count).
+   `constraints.md`) record the withdrawal and D57 deferral; test files widened to match.
 
 ## Proof
 
@@ -54,12 +50,10 @@ failures. M1-M5, N4 manual, recorded below.
 
 ## Numbers and side-by-side claims (R146, R158, M4, M5, D59, D60)
 
-Every number and every shared claim pair, read from the built pages (`npm run build` ran clean,
-confirmed, then each `dist/*.html` file was read as rendered text) and cross-checked against
-`src/data/portfolioData.js`, is in
-[ship-claims.md](./ship-claims.md) (D60: a companion file, because the complete lists do not fit
-this document's 150-line cap). It never quotes resume wording (D24, D59); resume rows carry a
-location only. Short version below; the owner confirms the complete lists at G4.
+Every number and claim pair, read from built pages and cross-checked against
+`src/data/portfolioData.js`, is in [ship-claims.md](./ship-claims.md) (D60: companion file, the
+150-line cap does not fit the full lists). No resume wording quoted (D24, D59); resume rows carry
+a location only. Short version below; owner confirms the complete lists at G4.
 
 Of 26 shared pairs, 21 are same substance and 5 differ:
 
@@ -72,10 +66,8 @@ Of 26 shared pairs, 21 are same substance and 5 differ:
 | 26 | Toolkit columns (Build/Data/AI/Ship/People) | Skills section | differs: resume lists FastAPI and Kubernetes; toolkit omits both from the general list |
 
 Site-only, not paired to a resume line (row 27 plus D46/D51's WorkHorse list, full in
-ship-claims.md): "Emerald Labs, Software Engineering Intern, May 2022 to Sep 2022"; Paddock shown
-current, Electron, 278 desktop/224 plugin tests, "CI on every push", FastAPI, MCP clause
-(at-a-glance strip); "5 of 5", "1 of 5", "40", "70", "nine plugin releases" (first-four-run) and
-the five-row outcomes table (measured section).
+ship-claims.md): Emerald Labs internship; Paddock's current status, Electron, test counts, CI
+line, FastAPI, MCP clause; the run-record figures and the five-row outcomes table.
 
 ## What the reviewers found
 
@@ -108,13 +100,9 @@ Conformance: 33 of 33 traced. Adoption score: 3 (before the fixes above).
 
 ## The D38 history rewrite
 
-Branch never pushed (confirmed). Twelve design commits (`fa41dca`..`651633f`) replaced by one
-redacted commit `07f788f`; every old hash logged in conductor-log.md; brief.md's sha256 re-checked
-equal to the newest G2 entry (confirmed). A 42-marker scan over all 130 reachable commits found
-zero hits for the resume text; the owner's phone number has 18 pre-existing hits, only in commits
-already public on `main`, not rewritten (confirmed). Approvals citing `618f344`, `0ab3167`,
-`c13f63e` now point at unreachable commits, accepted by D48, decisions copied into brief.md. The
-old commits sit in the local reflog until git garbage-collects them; never pushed anywhere.
+Branch never pushed (confirmed). Twelve design commits squashed to redacted commit `07f788f`,
+hashes logged in conductor-log.md; 42-marker scan of all 130 reachable commits found zero
+resume-text hits (confirmed). Full detail in conductor-log.md.
 
 ## Deploy and undo
 
@@ -124,12 +112,27 @@ old commits sit in the local reflog until git garbage-collects them; never pushe
 | staging | none defined | no | n/a |
 | prod | `git push origin main` | no | `git revert` the merge commit, then push |
 
-The owner's merge is the deploy. Not rehearsed: no staging command exists, and dev (build/serve
-only) does not exercise the real rollback (a `git revert` on `main`); the merge itself, and a
-revert if needed, is the only real rehearsal available. Local preview: `npm run build` then
-`npm run preview` (Ctrl+C to stop); no preview server was started by this shipper. M3 (live pages,
-repo links) and N4 (Lighthouse) are post-merge; M1/M2 (viewport, keyboard) are on the local
-preview. Config/secrets touched: none.
+Not rehearsed pre-merge: no staging command exists, dev does not exercise the real rollback. See
+"Deploy record" below for what ran. Config/secrets touched: none.
+
+## Deploy record
+
+G4 approved at `9ef261b` (confirmed). Conductor's earlier wh-shipper dispatch to merge PR #19 was
+refused by the permission classifier as a production deploy (conductor-log, 2026-09-28T17:47:24Z).
+The owner then told the main session in chat to merge and deploy it itself; the main session
+(not the owner) ran `gh pr merge 19 --merge --match-head-commit 2705a6f`.
+
+| Step | Detail | Result | Label |
+|---|---|---|---|
+| Merge | PR #19 -> `9c3377f`, 17:48:23Z; diff `6ccfde6..2705a6f` only touches approvals/log | state MERGED | confirmed |
+| CI | Actions run 36460748579, head `9c3377f` | success, 2 jobs/29 steps, 0 failed | confirmed |
+| Live routes | `/`, `/work/`, 5 case studies, `/og.png` | 200 | relayed |
+| Live 404s | `/nope/`, resume PDF | 404 each (no resume, by design) | relayed |
+| WorkHorse page | "5 of 5", "1 of 5", Paddock x3, snapshot mentions, MCP section | present | relayed |
+| Banned-term scan | home+WorkHorse HTML vs resume/stale/timing/dash/phone terms | 0 hits | relayed |
+| Snapshot repos | 3 public repos | 200 each | relayed |
+
+Owner's own, not yet done: keyboard order, Lighthouse, phone view. Rollback: undo row above stands, now against `9c3377f` (revert the merge commit on `main` via a PR; redeploys).
 
 ## Clock
 
