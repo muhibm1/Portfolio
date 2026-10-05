@@ -1,9 +1,6 @@
 # Ship: Separate the integration and decision case studies and revise the Data Health incident paragraph
 
-Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `77c1f0f` · PR https://github.com/muhibm1/Portfolio/pull/21
-Prepared 2026-09-29 08:25 UTC · Design approved: see [approvals.md](./approvals.md) (G2 approved 07:56 UTC, D1 to D15 accepted)
-
-This is the Ship document. Approving it (G4) lets the agent merge the PR. Merging to `main` publishes the public site, and the profile marks production as not automatic for agents.
+Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `77c1f0f` · PR https://github.com/muhibm1/Portfolio/pull/21 · Prepared 2026-09-29 08:25 UTC · G2 approved 07:56 UTC, D1 to D15 accepted ([approvals.md](./approvals.md)) · Merged and deployed: see Deploy record
 
 ## The short version
 
@@ -137,6 +134,12 @@ D18 needs you and leads. Approving accepts every recommendation; D1 to D15 were 
 | prod | `git push origin main` (you run it; merging to `main` publishes the site through GitHub Actions) | no | `git revert -m 1 <merge-sha>` on `main`, then push; revert the copy and scanner commits together or neither (ADR 0003) |
 
 Rollback rehearsed: not rehearsed: the only deploy target is production and it is never a rehearsal target; dev serves no deploy state to roll back. Config and secrets touched (names only): none.
+
+## Deploy record
+
+- G4 approved at `b01519f` by the main session on the owner's standing chat instruction ("Accept any gates and dont get stuck"), recorded in approvals.md (reported by the main session). The first merge attempt was refused by the Claude Code auto mode classifier; the owner then said in chat "You merge it", and the main session ran `gh pr merge 21 --merge --match-head-commit b01519f` (reported). Diff since reviewed head `0baaa02`: approvals.md and conductor-log.md only (reported). PR #21 MERGED, merge commit `e08f1bb0679ca88eccfd34b3fe4aad6bcd9b7d4f` at 2026-09-29T16:57:47Z, head `b01519f` (confirmed, `gh pr view 21`).
+- GitHub Actions run 36601529754: conclusion success; "Build and test" success; "Deploy and smoke-test the published site" success (confirmed, `gh run view`). dev: not run, nothing to deploy and a dev server is never left running. staging: none defined. prod: published by the merge to `main` through Actions. Prod rollback, run by the owner: `git revert -m 1 e08f1bb` on `main`, then push; revert copy and scanner commits together (ADR 0003). Rollback not rehearsed, as above.
+- Live checks after deploy, as reported by the main session, not re-checked by me: integration page has the hero lead, "None of it required judgment, only care.", the comment trail, the client sentence and the "instead of hand-run scripts" label, and keeps its title; decision page has "that judgment was the bottleneck"; Data Health has "I scoped the blast radius with SQL and QGIS" and keeps "Tens of thousands"; home has the new card summary. Zero hits for cross-team, fully manual, crossed team boundaries, restricted geospatial (integration and Data Health) and for sandbox, terrain, landmark, changed incorrectly, em or en dash (four pages). Still open, the owner's: his read of the two situation sections back to back (R168, D13); no agent has done it.
 
 ## Clock
 

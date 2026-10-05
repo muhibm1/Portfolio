@@ -1,7 +1,7 @@
 ---
 id: assistant-recorded-approval-not-owner
 trigger: "when a G2 or G4 approval note says an assistant approved on the owner's standing instruction rather than the owner typing the approval"
-confidence: 0.5
+confidence: 0.7
 domain: workflow
 source: 2026-09-21-serve-every-app-route-with-http-200-on-github-pa, approvals.md lines 25 and 34; ship.md D1
 scope: project
@@ -27,3 +27,4 @@ silently through to Ship.
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/ship.md` Decision D1:
   "approvals.md's second G2 entry (059dca7) was recorded by an assistant citing a 'standing
   instruction', not the owner. G4 needs the owner's own act."
+- Second change (2026-09-29-separate-the-integration-and-decision-case-studi): approvals.md G4 note reads "Recorded by the main session, not typed by the owner, on the owner's standing chat instruction". The note is candid and ship.md D18 flagged it, but the pattern recurred (confidence raised to 0.7).
