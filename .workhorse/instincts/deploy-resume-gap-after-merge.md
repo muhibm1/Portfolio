@@ -1,7 +1,7 @@
 ---
 id: deploy-resume-gap-after-merge
 trigger: "when the owner merges the shipped PR himself and the pipeline has not yet resumed the deploy phase"
-confidence: 0.3
+confidence: 0.5
 domain: workflow
 source: 2026-09-21-serve-every-app-route-with-http-200-on-github-pa, conductor-log.md lines 31-32
 scope: project
@@ -25,3 +25,4 @@ merge status), rather than waiting for an unscheduled resume.
   "2026-09-21T20:52:48.316Z | deploy | conductor | resumed at deploy after gate approved (G4)"
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/ship.md:139` "PR #17
   merged by muhibm1 (owner) 2026-09-21T17:38:24Z"
+- Second gap (2026-09-29-separate-the-integration-and-decision-case-studi): conductor-log.md 08:27 to 16:59 (512 minutes). Different cause: the merge was refused by the auto mode classifier and waited on the owner's chat instruction (see auto-mode-classifier-refuses-merge-after-g4). Pattern: the log should name the cause of a wait when it starts. Confidence raised to 0.5.
