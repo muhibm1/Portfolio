@@ -5,6 +5,8 @@
 // linked, an MCP section added, the WorkHorse run record brought to five runs; spec R138, R146,
 // R153, R154, R155).
 // Nothing here is paraphrased, rounded or added beyond what those requirements give verbatim.
+// Change 2026-10-08 aligns the hero, the employer line, the Apple Maps case studies and the
+// WorkHorse wording to the owner's master document (PORTFOLIO_FIX_MASTER.md), word for word.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
 // Shape: personal (contact, header facts and the three public snapshot repositories), home
@@ -38,11 +40,11 @@ export const portfolioData = {
     hero: {
       eyebrow: "Forward deployed engineer · Austin, TX · Open to remote and relocation",
       mobileEyebrow: "Austin, TX · Open to remote and relocation",
-      heading: "I go where the systems are messy and ship software that works on live data.",
+      heading: "I find the step everyone is waiting on.",
       lead:
-        "Data Engineer on Apple's Data Health team (via TCS). I connect systems that were never built to talk to each other, put LLMs to work on production data behind real guardrails, and measure what I ship before I claim it.",
+        "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.",
       mobileLead:
-        "Data Engineer on Apple's Data Health team (via TCS). I connect systems that were never built to talk to each other, put LLMs to work on production data behind real guardrails, and measure what I ship.",
+        "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.",
       primaryCta: "Read the case studies",
       emailLinkText: "mmalqaim@gmail.com",
       codeLine: { text: "The code is public on GitHub", href: GITHUB_PROFILE },
@@ -50,13 +52,13 @@ export const portfolioData = {
         eyebrow: "Right now",
         items: [
           {
-            title: "At Apple",
+            title: "At Apple Maps",
             text:
-              "Running an LLM decision system and data health tooling for a pipeline spanning 50+ regions",
+              "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
           },
           {
             title: "Building WorkHorse",
-            text: "An agentic delivery pipeline with its own retrieval system. This site was built with it.",
+            text: "An agentic software delivery pipeline with its own retrieval system. This site was built with it.",
           },
           {
             title: "Looking for",
@@ -72,9 +74,9 @@ export const portfolioData = {
       items: [
         {
           value: "30 to 350+",
-          label: "Tickets decided a day",
-          context: "LLM decision system I built at Apple",
-          mobileText: "tickets a day, LLM decision system at Apple",
+          label: "Tickets a day",
+          context: "Decision support agent I built at Apple",
+          mobileText: "tickets a day, decision support agent at Apple",
         },
         {
           value: "2 weeks",
@@ -117,7 +119,7 @@ export const portfolioData = {
           number: "01",
           title: "Find the step everyone waits on",
           text:
-            "At Apple, a review queue was blocking cross-team work. I built a system that decides each ticket with a trail a person can audit, and the backlog hasn't come back.",
+            "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.",
         },
         {
           number: "02",
@@ -151,12 +153,12 @@ export const portfolioData = {
       heading: "Where the work happened.",
       roles: [
         {
-          company: "Apple (via TCS)",
+          company: "Apple Maps",
           title: "Data Engineer",
           period: "Feb 2025 to present",
           subheading: "Data Health team · Austin, TX",
           highlights: [
-            "Identified a review bottleneck, scoped the fix with the requesting teams, and deployed a self-hosted LLM system that decides approve, reject or hold with a reviewable audit trail; throughput from 30 to 350+ tickets a day.",
+            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that evaluates each unlock request against the surrounding geospatial data and internal spec, flags cascading effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
             "Built a Python tool linking ticketing, repository and geo-data systems through OAuth2 APIs, cutting permission turnaround by about 50%.",
             "Run and tune ML-driven remediation jobs that have resolved hundreds of thousands of validation failures across 50+ regions.",
             "Worked with DataOps and data evaluation to migrate data validation from AWS EMR to AWS EKS and move checks upstream, cutting release-blocking failures by about 40%, and led response to a building-generation incident affecting tens of thousands of buildings.",
@@ -227,7 +229,7 @@ export const portfolioData = {
         {
           title: "AI",
           items:
-            "LLM decision systems, RAG with hybrid search and reranking, evals, agent orchestration, self-hosted models with Ollama",
+            "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
         },
         {
           title: "Ship",
@@ -289,13 +291,13 @@ export const portfolioData = {
         {
           label: "What it is",
           value:
-            "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
+            "An agentic software delivery pipeline, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
         },
         {
           label: "Stack",
           value: "Node.js, Python, FastAPI, TypeScript, Electron, Supabase Postgres with pgvector",
         },
-        { label: "Quality", value: "224 plugin tests, 278 desktop tests, CI on every push" },
+        { label: "Quality", value: "224 pipeline tests, 278 desktop tests, CI on every push" },
       ],
       stats: [
         { value: "28", label: "single-purpose agents" },
@@ -443,7 +445,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine plugin releases came out of those four runs.",
+                "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine releases came out of those four runs.",
             },
           ],
         },
@@ -451,6 +453,7 @@ export const portfolioData = {
           id: "studbook",
           heading: "Studbook: answers with receipts",
           eyebrow: "Inside WorkHorse",
+          subtitle: "Cited retrieval (RAG) over WorkHorse's engineering record",
           blocks: [
             {
               type: "paragraph",
@@ -572,23 +575,23 @@ export const portfolioData = {
       id: "apple-llm-triage",
       card: {
         featured: false,
-        eyebrow: "Apple (via TCS) · LLM decision systems",
-        title: "A review backlog, turned into a decision system",
+        eyebrow: "Apple Maps · Decision support agent",
+        title: "A review backlog, turned into an analysis the reviewer can trust",
         summary:
-          "Cross-team data changes were stuck behind manual review. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that decides approve, reject or hold on each ticket, with a reviewable audit trail.",
+          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
         linkText: "Read the case study",
         tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
         mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
       },
-      eyebrow: "Case study · Apple (via TCS) · Data Health team · Feb 2025 to present",
-      title: "A review backlog, turned into a decision system",
+      eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
+      title: "A review backlog, turned into an analysis the reviewer can trust",
       intro:
-        "Cross-team data changes were stuck behind a manual review queue. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that reads each request and decides approve, reject or hold, with a reviewable audit trail.",
+        "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
       atAGlance: [
         { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
         { label: "Live since", value: "November 2025" },
-        { label: "Stack", value: "Python, open-source LLM self-hosted with Ollama, REST APIs" },
-        { label: "Status", value: "In production" },
+        { label: "Stack", value: "Python, open-source LLM, REST APIs" },
+        { label: "Status", value: "In production, human in the loop by design" },
       ],
       stats: [
         { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
@@ -603,9 +606,9 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Every change to certain map data needed a person to judge whether it should go ahead, and that judgment was the bottleneck. The queue grew faster than reviewers could clear it. About two months of tickets had piled up with teams across the pipeline waiting on them.",
+                "Changes to certain map data needed a person to review the request before work could continue, and the review was not a rubber stamp. Someone had to pull the surrounding data, check the proposed edit against internal specification, and work out what else the change would affect. The queue grew faster than people could do that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
             },
-            { type: "paragraph", text: "Building a fix wasn't part of my assigned role. I took it on anyway." },
+            { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
           ],
         },
         {
@@ -614,35 +617,46 @@ export const portfolioData = {
           blocks: [
             {
               type: "flow",
-              columns: 4,
+              columns: 6,
               steps: [
-                { title: "Ticket", note: "Structured request data" },
-                { title: "Model reads it", note: "Self-hosted, open source" },
-                { title: "Decision", note: "Approve, reject or hold" },
-                { title: "Audit trail", note: "Reviewable by a person", gate: true },
+                { title: "Unlock request" },
+                { title: "Geospatial snapshot, the target feature and its neighbors" },
+                { title: "Check against internal specification" },
+                { title: "Impact and cascade analysis" },
+                { title: "Documented recommendation" },
+                { title: "Reviewer decides", gate: true },
               ],
             },
             {
-              type: "bullets",
-              items: [
-                "A decision layer that reads the structured data on each ticket and returns one of three outcomes: approve, reject or hold.",
-                "I selected an open-source model, deployed it self-hosted through Ollama, and own it end to end.",
-                "Launch wasn't the end of the work. I keep tuning the prompt logic and the system's scope against how it performs on live tickets.",
-              ],
+              type: "paragraph",
+              text:
+                "An agent reads each unlock request, pulls a snapshot of the feature to be edited along with the features around it, checks the proposed edit against internal specification, and works through what else the change would touch, including effects that would only show up downstream. It returns a recommendation, unlock or keep locked, with the reasoning and the evidence behind it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "It does not act on that recommendation. A reviewer reads the analysis and makes the decision, which is the point: the hard part of this review was never the decision, it was the work required before anyone could make one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "I selected an open-source model, built the agent around it, and own it end to end. Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests.",
             },
           ],
         },
         {
-          id: "safe",
-          heading: "How it stays safe",
+          id: "why-a-person-decides",
+          heading: "Why a person still decides",
           blocks: [
             {
               type: "paragraph",
-              text: "Every decision is logged and reviewable by a person, so automation can act on live data without acting blind.",
+              text:
+                "The agent has no authority to change anything. It produces an assessment, and every recommendation carries the reasoning and the evidence that produced it, so a reviewer can disagree with it on the merits rather than taking it on faith.",
             },
             {
               type: "paragraph",
-              text: "The system has three outcomes, not two. Hold gives it a way to decline a call instead of forcing a yes or no.",
+              text:
+                "That line is deliberate rather than cautious. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
             },
           ],
         },
@@ -664,7 +678,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Since going live in November 2025: two months of backlog cleared in two weeks, and the queue has stayed at zero since. Throughput went from about 30 tickets a day to over 350 while cutting the risk that comes with manual review.",
+                "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The decision this produces is carried out by a separate tool I built, covered in the next case study.",
             },
           ],
         },
@@ -672,7 +696,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Find the review step everyone waits on. Separate the calls a system can make with a trail from the ones a person should make. Automate the first, keep people on the second, and keep tuning against live results.",
+          "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
       },
       disclaimer:
         "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
@@ -683,14 +707,14 @@ export const portfolioData = {
       id: "apple-integration",
       card: {
         featured: false,
-        eyebrow: "Apple (via TCS) · Systems integration",
+        eyebrow: "Apple Maps · Systems integration",
         title: "Three systems, one tool, half the turnaround",
         summary:
           "Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
         linkText: "Read the case study",
         tags: ["~50% faster turnaround", "OAuth2 across 3 systems"],
       },
-      eyebrow: "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
+      eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
       title: "Three systems, one tool, half the turnaround",
       intro:
         "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
@@ -714,6 +738,11 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Locking and unlocking protected map data already worked, but the path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The judgment behind these requests is covered in the previous case study. This one is about what happens after the decision is made.",
             },
           ],
         },
@@ -771,14 +800,14 @@ export const portfolioData = {
       id: "apple-data-health",
       card: {
         featured: false,
-        eyebrow: "Apple (via TCS) · Data reliability",
+        eyebrow: "Apple Maps · Data reliability",
         title: "Keeping a 50+ region data pipeline shippable",
         summary:
           "Remediation jobs that fix validation failures on live data, gates that decide when a repository can be promoted, a move from EMR to EKS, done with DataOps, that pushed validation upstream, and incident response when something breaks at scale.",
         linkText: "Read the case study",
         tags: ["~40% fewer release-blocking failures", "Hundreds of thousands of failures resolved"],
       },
-      eyebrow: "Case study · Apple (via TCS) · Data reliability · Feb 2025 to present",
+      eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
       title: "Keeping a 50+ region data pipeline shippable",
       intro:
         "Apple's Data Health team helps set the data quality and engineering standards for a pipeline spanning more than 50 regions. My part is keeping bad data from blocking releases: fixing it on live data, stopping it at the gate, and cleaning up fast when something slips through.",
@@ -848,7 +877,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each one.",
+                "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each group.",
             },
           ],
         },
@@ -901,7 +930,7 @@ export const portfolioData = {
                 { title: "Postgres", note: "Rebuilt schema" },
                 { title: "LLM", note: "Personalization prompts" },
                 { title: "REST API", note: "Elixir Phoenix" },
-                { title: "Reader", note: "Live status via WebSockets", gate: true },
+                { title: "Reader", note: "Live status over WebSockets", gate: true },
               ],
             },
             {
