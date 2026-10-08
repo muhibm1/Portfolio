@@ -2,7 +2,7 @@
 // data module directly so a wrong copy or a wrong block never passes silently.
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { portfolioData } from '../data/portfolioData';
 import CaseStudyPage from './CaseStudyPage';
 
@@ -10,6 +10,11 @@ const { caseStudies, personal } = portfolioData;
 const workhorse = caseStudies.find((study) => study.id === 'workhorse');
 
 describe('CaseStudyPage', () => {
+  afterEach(() => {
+    vi.doUnmock('../data/portfolioData');
+    vi.resetModules();
+  });
+
   describe.each(caseStudies)('the $id case study (G10)', (study) => {
     it('renders the eyebrow, heading and lead', () => {
       renderCaseStudyAt(`/work/${study.id}`);
@@ -256,9 +261,6 @@ describe('CaseStudyPage', () => {
       expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
       const whyHeading = within(document.getElementById('why')).getByRole('heading', { level: 2 });
       expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
-
-      vi.doUnmock('../data/portfolioData');
-      vi.resetModules();
     });
   });
 
@@ -310,9 +312,6 @@ describe('CaseStudyPage', () => {
           </MemoryRouter>,
         ),
       ).toThrow(/exactly once|once/i);
-
-      vi.doUnmock('../data/portfolioData');
-      vi.resetModules();
     });
   });
 });
