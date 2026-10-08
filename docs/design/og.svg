@@ -17,7 +17,7 @@
   viewBox="0 0 1200 630"
   xmlns="http://www.w3.org/2000/svg"
   role="img"
-  aria-label="Muhammad Muhibullah, Forward Deployed Engineer. 30 to 350 plus tickets decided a day."
+  aria-label="Muhammad Muhibullah, Forward Deployed Engineer. 30 to 350 plus tickets a day."
 >
   <title>Muhammad Muhibullah, Forward Deployed Engineer</title>
   <defs>
@@ -79,5 +79,5 @@
   <text x="80" y="185" class="eyebrow">Forward Deployed Engineer</text>
 
   <text x="76" y="440" class="stat">30 to 350+</text>
-  <text x="82" y="486" class="stat-label">Tickets decided a day</text>
+  <text x="82" y="486" class="stat-label">Tickets a day</text>
 </svg>

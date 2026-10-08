@@ -122,11 +122,14 @@ function OnThisPageNav({ sections }) {
   );
 }
 
+// A section is `{ id, heading, eyebrow?, subtitle?, blocks }`; the subtitle is one line that
+// sits between the heading and the first block.
 function CaseStudySection({ section }) {
   return (
     <div id={section.id} className="flex max-w-3xl flex-col gap-5">
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
       <h2 className="font-display text-2xl font-medium text-ink sm:text-3xl">{section.heading}</h2>
+      {section.subtitle && <p className="text-base text-muted sm:text-lg">{section.subtitle}</p>}
       {section.blocks.map((block, index) => (
         <Block key={index} block={block} />
       ))}
