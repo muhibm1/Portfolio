@@ -8,6 +8,8 @@
  *
  * FORBIDDEN_TERMS apply to every scanned file; PAGE_SCOPED_TERMS apply only to paths their
  * `onlyPaths` matches (2026-09-29 change; see docs/sdlc/2026-09-29-separate-the-integration-and-decision-case-studi/adr/0001-guard-the-integration-page-wording-with-a-path-scoped-scanner-term-and-a-data-test.md).
+ * Change 2026-10-08-align-the-site-to-the-owner-s-master-copy adds the vendor, plugin, messy and
+ * decision-authority terms the owner's master document removed.
  *
  * Importing this module runs nothing: `main` is called only by the entry,
  * scripts/check-forbidden-copy.mjs.
@@ -114,6 +116,26 @@ export const HIGH_IMPACT_TERM = {
   skipExtensions: [],
 }
 
+// 2026-10-08 change (owner's master document, change 2026-10-08-align-the-site-to-the-owner-s-master-copy;
+// see docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/adr/0001-ban-the-new-wording-sitewide-and-reword-two-source-comments.md):
+// the vendor, plugin and decision-authority wording the owner removed. Same rule as above: no `g` or `y` flag.
+// Document section 1 vendor rule: the employer is never described as a contractor, vendor or consultancy.
+export const CONTRACTOR_TERM = { label: 'contractor', pattern: /\bcontractors?\b/i, skipExtensions: [] }
+export const VENDOR_TERM = { label: 'vendor', pattern: /\bvendors?\b/i, skipExtensions: [] }
+// "Software Consultant" (a job title) must not hit, so only the firm nouns do.
+export const CONSULTANCY_TERM = { label: 'consultancy', pattern: /\bconsultanc(?:y|ies)\b/i, skipExtensions: [] }
+// Document section 1 plugin rule: WorkHorse is not described as a plugin.
+export const PLUGIN_TERM = { label: 'plugin', pattern: /\bplugins?\b/i, skipExtensions: [] }
+// Document section 3 removal rows: the agent does not act, a person decides.
+export const ACT_ON_LIVE_DATA_TERM = { label: 'acts on live data', pattern: /\bacts? on live data\b/i, skipExtensions: [] }
+export const DECISION_SYSTEM_TERM = { label: 'decision system', pattern: /\bdecision systems?\b/i, skipExtensions: [] }
+// "10 rejected" and "0 rejected" inside a larger number are not the banned claim.
+export const ZERO_REJECTED_TERM = {
+  label: '0 rejected',
+  pattern: /(?<!\d)0 rejected\b|\bzero rejected\b/i,
+  skipExtensions: [],
+}
+
 /**
  * Plan section 1's seventeen removed strings, deduplicated to their unique case-insensitive form
  * (matching is already case-insensitive, so "simulator"/"Simulator" and "Wasl"/"wasl" would
@@ -179,6 +201,30 @@ export const FORBIDDEN_TERMS = [
   LANDMARK_TERM,
   CHANGED_INCORRECTLY_TERM,
   HIGH_IMPACT_TERM,
+  // 2026-10-08: document section 1 vendor rule, word-bounded so "service" and "deviate" stay legal.
+  'TCS',
+  'Tata',
+  'via',
+  CONTRACTOR_TERM,
+  VENDOR_TERM,
+  CONSULTANCY_TERM,
+  // Document section 1 plugin rule.
+  PLUGIN_TERM,
+  // Document section 2 messy rule: client systems are not called messy.
+  'messy',
+  // Document section 3 removal rows: the agent recommends, a person decides.
+  'approve, reject or hold',
+  'decision layer',
+  ACT_ON_LIVE_DATA_TERM,
+  DECISION_SYSTEM_TERM,
+  'tickets decided',
+  'decides each ticket',
+  // Document section 5 Studbook stack: the model runs are not described as self-hosted or Ollama.
+  'self-hosted',
+  'Ollama',
+  // Owner decision D4: the throughput claim is "more than tenfold", never a count of times.
+  'eleven times',
+  ZERO_REJECTED_TERM,
 ]
 
 // "cross-team" stays legal on the decision and homepage copy but not on the integration page
