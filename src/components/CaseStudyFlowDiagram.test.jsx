@@ -47,6 +47,16 @@ describe('CaseStudyFlowDiagram (flow block)', () => {
     expect(plainNode.children).toHaveLength(2);
   });
 
+  it('lets a long step title wrap inside its box and leaves the note span classes unchanged', () => {
+    render(<CaseStudyFlowDiagram columns={6} steps={[{ title: 'Recommendation', note: 'A note' }]} />);
+
+    const titleSpan = screen.getByText('Recommendation');
+    const noteSpan = screen.getByText('A note');
+    expect(titleSpan.className).toContain('break-words');
+    expect(titleSpan.className).toContain('hyphens-auto');
+    expect(noteSpan.className).toBe('text-xs text-muted');
+  });
+
   it('marks a dashed step distinctly from a solid step', () => {
     const steps = [
       { title: 'Deploy', note: 'Person approves at tier 3', dashed: true },
