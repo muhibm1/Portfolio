@@ -6,7 +6,7 @@
 // R153, R154, R155).
 // Nothing here is paraphrased, rounded or added beyond what those requirements give verbatim.
 // Change 2026-10-08 aligns the hero, the employer line, the Apple Maps case studies and the
-// WorkHorse wording to the owner's master document (PORTFOLIO_FIX_MASTER.md), word for word.
+// WorkHorse wording to the owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), word for word.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
 // Shape: personal (contact, header facts and the three public snapshot repositories), home

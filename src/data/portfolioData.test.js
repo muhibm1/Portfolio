@@ -65,7 +65,7 @@ const pinnedCaseStudyStats = {
 
 const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
 
-// The owner's master document (PORTFOLIO_FIX_MASTER.md, change 2026-10-08), copied verbatim.
+// The owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), copied verbatim.
 const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer can trust";
 const DECISION_INTRO =
   "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
