@@ -51,7 +51,13 @@ const BANNED_ON_EVERY_ROUTE = [
 ];
 
 const CROSS_TEAM = /cross[- ]teams?/i;
-const AGENT_AUTHORITY = /\b(agent|system|model) (decides|approves|rejects|unlocks|applies|acts)\b/i;
+// Active and modal forms ("the agent can approve", "the model will decide") and passive forms
+// ("is applied automatically", "are approved automatically") that give the agent the decision.
+const AGENT_AUTHORITY = new RegExp(
+  '\\b(?:(?:agent|system|model) (?:(?:can|will|may|could|would|should) )?(?:decides?|approves?|rejects?|unlocks?|applies|apply|acts?)'
+    + '|(?:is|are) (?:applied|approved|rejected|decided|unlocked) automatically)\\b',
+  'i',
+);
 
 const pages = Object.fromEntries(
   sitePagePaths().map((path) => [path, servedPage(path)]),
@@ -176,5 +182,28 @@ describe('master copy served on every route (2026-10-08)', () => {
       expect(occurrences(pages[path], 'data-gate'), path).toBe(expected);
     }
     expect(gateStepCountInData(DECISION_PATH)).toBe(1);
+  });
+});
+
+describe('AGENT_AUTHORITY pattern', () => {
+  it.each([
+    'The agent decides each ticket.',
+    'The agent can approve the change.',
+    'The model will decide which tickets ship.',
+    'The system may reject a request.',
+    'Every fix is applied automatically.',
+    'Low-risk changes are approved automatically.',
+  ])('hits the bad phrasing: %s', (sentence) => {
+    expect(sentence).toMatch(AGENT_AUTHORITY);
+  });
+
+  it.each([
+    'The agent recommends and a person decides.',
+    'The system can recommend a fix for a person to review.',
+    'The model will suggest an order; a person approves it.',
+    'Nothing is applied until a person approves it.',
+    'Changes are approved by a person.',
+  ])('does not hit the near miss: %s', (sentence) => {
+    expect(sentence).not.toMatch(AGENT_AUTHORITY);
   });
 });
