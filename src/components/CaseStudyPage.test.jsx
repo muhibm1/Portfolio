@@ -231,6 +231,37 @@ describe('CaseStudyPage', () => {
     });
   });
 
+  describe('section subtitle (R9)', () => {
+    it('renders a section subtitle under its heading only when the data carries one', async () => {
+      const stubData = structuredClone(portfolioData);
+      const stubWorkhorse = stubData.caseStudies.find((study) => study.id === 'workhorse');
+      const measured = stubWorkhorse.sections.find((section) => section.id === 'measured');
+      const why = stubWorkhorse.sections.find((section) => section.id === 'why');
+      measured.subtitle = 'Stub subtitle';
+
+      vi.resetModules();
+      vi.doMock('../data/portfolioData', () => ({ portfolioData: stubData }));
+      const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
+
+      render(
+        <MemoryRouter initialEntries={['/work/workhorse']}>
+          <Routes>
+            <Route path="/work/:slug" element={<StubCaseStudyPage />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
+      const measuredHeading = within(document.getElementById('measured')).getByRole('heading', { level: 2 });
+      expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
+      const whyHeading = within(document.getElementById('why')).getByRole('heading', { level: 2 });
+      expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
+
+      vi.doUnmock('../data/portfolioData');
+      vi.resetModules();
+    });
+  });
+
   describe('repository links (G26)', () => {
     it('renders exactly four public-snapshot anchors with the right attributes and destinations', () => {
       renderCaseStudyAt('/work/workhorse');
