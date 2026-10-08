@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
-// Self-hosted typefaces, only the weights the mockups use (ADR 0002).
+// Bundled typefaces, only the weights the mockups use (ADR 0002).
 // They load before index.css so its theme tokens name families that are already declared.
 import '@fontsource/ibm-plex-sans/400.css'
 import '@fontsource/ibm-plex-sans/500.css'

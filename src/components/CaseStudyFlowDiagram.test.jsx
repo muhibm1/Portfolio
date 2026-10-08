@@ -32,6 +32,31 @@ describe('CaseStudyFlowDiagram (flow block)', () => {
     expect(gateNode.className).not.toEqual(plainNode.className);
   });
 
+  it('marks a gate step with data-gate and dark classes, and omits the note span when there is none', () => {
+    const steps = [{ title: 'Plain', note: 'Has a note' }, { title: 'Gate', gate: true }, { title: 'No note' }];
+
+    render(<CaseStudyFlowDiagram columns={3} steps={steps} />);
+
+    const [plainNode, gateNode, noNoteNode] = screen.getAllByRole('listitem');
+    expect(gateNode).toHaveAttribute('data-gate', 'true');
+    expect(gateNode.className).toContain('bg-ink');
+    expect(plainNode).not.toHaveAttribute('data-gate');
+    expect(noNoteNode).not.toHaveAttribute('data-gate');
+    expect(gateNode.children).toHaveLength(1);
+    expect(noNoteNode.children).toHaveLength(1);
+    expect(plainNode.children).toHaveLength(2);
+  });
+
+  it('lets a long step title wrap inside its box and leaves the note span classes unchanged', () => {
+    render(<CaseStudyFlowDiagram columns={6} steps={[{ title: 'Recommendation', note: 'A note' }]} />);
+
+    const titleSpan = screen.getByText('Recommendation');
+    const noteSpan = screen.getByText('A note');
+    expect(titleSpan.className).toContain('break-words');
+    expect(titleSpan.className).toContain('hyphens-auto');
+    expect(noteSpan.className).toBe('text-xs text-muted');
+  });
+
   it('marks a dashed step distinctly from a solid step', () => {
     const steps = [
       { title: 'Deploy', note: 'Person approves at tier 3', dashed: true },

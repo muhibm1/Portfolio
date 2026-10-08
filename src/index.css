@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Self-hosted families (loaded in src/main.jsx), each with a system fallback. Redesign tokens
+/* Bundled families (loaded in src/main.jsx), each with a system fallback. Redesign tokens
    per plan section 2 and R130; the twelve hex values below are the only colour source, so
    components use the token classes (bg-ground, text-ink, ...) instead of hex literals. */
 @theme {

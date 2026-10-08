@@ -2,7 +2,7 @@
 // data module directly so a wrong copy or a wrong block never passes silently.
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { portfolioData } from '../data/portfolioData';
 import CaseStudyPage from './CaseStudyPage';
 
@@ -10,6 +10,11 @@ const { caseStudies, personal } = portfolioData;
 const workhorse = caseStudies.find((study) => study.id === 'workhorse');
 
 describe('CaseStudyPage', () => {
+  afterEach(() => {
+    vi.doUnmock('../data/portfolioData');
+    vi.resetModules();
+  });
+
   describe.each(caseStudies)('the $id case study (G10)', (study) => {
     it('renders the eyebrow, heading and lead', () => {
       renderCaseStudyAt(`/work/${study.id}`);
@@ -231,6 +236,34 @@ describe('CaseStudyPage', () => {
     });
   });
 
+  describe('section subtitle (R9)', () => {
+    it('renders a section subtitle under its heading only when the data carries one', async () => {
+      const stubData = structuredClone(portfolioData);
+      const stubWorkhorse = stubData.caseStudies.find((study) => study.id === 'workhorse');
+      const measured = stubWorkhorse.sections.find((section) => section.id === 'measured');
+      const why = stubWorkhorse.sections.find((section) => section.id === 'why');
+      measured.subtitle = 'Stub subtitle';
+
+      vi.resetModules();
+      vi.doMock('../data/portfolioData', () => ({ portfolioData: stubData }));
+      const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
+
+      render(
+        <MemoryRouter initialEntries={['/work/workhorse']}>
+          <Routes>
+            <Route path="/work/:slug" element={<StubCaseStudyPage />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
+      const measuredHeading = within(document.getElementById('measured')).getByRole('heading', { level: 2 });
+      expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
+      const whyHeading = within(document.getElementById('why')).getByRole('heading', { level: 2 });
+      expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
+    });
+  });
+
   describe('repository links (G26)', () => {
     it('renders exactly four public-snapshot anchors with the right attributes and destinations', () => {
       renderCaseStudyAt('/work/workhorse');
@@ -279,9 +312,6 @@ describe('CaseStudyPage', () => {
           </MemoryRouter>,
         ),
       ).toThrow(/exactly once|once/i);
-
-      vi.doUnmock('../data/portfolioData');
-      vi.resetModules();
     });
   });
 });
