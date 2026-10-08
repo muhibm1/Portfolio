@@ -2,6 +2,9 @@
 // amended by the owner's resume and the 2026-09-28 rejection notes) and the seven mockups, word
 // for word. A failure here means a fact or a string drifted from what the owner approved; only
 // he may change portfolioData.js (CLAUDE.md "Protected"). G14 (R138, R146, R153, R154, R155).
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { portfolioData } from "./portfolioData.js";
 import { staticRoutePaths } from "../routePaths.js";
@@ -46,7 +49,7 @@ const pinnedRoleTitles = [
 const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
-  "LLM decision systems, RAG with hybrid search and reranking, evals, agent orchestration, self-hosted models with Ollama",
+  "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
   "AWS (S3, EMR, EKS, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
@@ -62,6 +65,46 @@ const pinnedCaseStudyStats = {
 
 const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
 
+// The owner's master document (PORTFOLIO_FIX_MASTER.md, change 2026-10-08), copied verbatim.
+const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer can trust";
+const DECISION_INTRO =
+  "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
+const DECISION_SITUATION =
+  "Changes to certain map data needed a person to review the request before work could continue, and the review was not a rubber stamp. Someone had to pull the surrounding data, check the proposed edit against internal specification, and work out what else the change would affect. The queue grew faster than people could do that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.";
+const DECISION_CALLOUT =
+  "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.";
+const PRINCIPLE_ONE =
+  "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.";
+const HERO_HEADING = "I find the step everyone is waiting on.";
+const HERO_LEAD =
+  "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.";
+const RESUME_BULLET =
+  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that evaluates each unlock request against the surrounding geospatial data and internal spec, flags cascading effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
+const DECISION_FLOW_TITLES = [
+  "Unlock request",
+  "Geospatial snapshot, the target feature and its neighbors",
+  "Check against internal specification",
+  "Impact and cascade analysis",
+  "Documented recommendation",
+  "Reviewer decides",
+];
+const DECISION_BUILT_PARAGRAPHS = [
+  "An agent reads each unlock request, pulls a snapshot of the feature to be edited along with the features around it, checks the proposed edit against internal specification, and works through what else the change would touch, including effects that would only show up downstream. It returns a recommendation, unlock or keep locked, with the reasoning and the evidence behind it.",
+  "It does not act on that recommendation. A reviewer reads the analysis and makes the decision, which is the point: the hard part of this review was never the decision, it was the work required before anyone could make one.",
+  "I selected an open-source model, built the agent around it, and own it end to end. Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests.",
+];
+const DECISION_WHY_PARAGRAPHS = [
+  "The agent has no authority to change anything. It produces an assessment, and every recommendation carries the reasoning and the evidence that produced it, so a reviewer can disagree with it on the merits rather than taking it on faith.",
+  "That line is deliberate rather than cautious. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+];
+const DECISION_CHANGED_PARAGRAPHS = [
+  "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+  "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+  "The decision this produces is carried out by a separate tool I built, covered in the next case study.",
+];
+const INTEGRATION_CROSS_REFERENCE =
+  "The judgment behind these requests is covered in the previous case study. This one is about what happens after the decision is made.";
+
 // Copied verbatim from the committed mockups in docs/design/redesign-2026-09/ (owner-approved
 // copy) and R155, amended where R154/R155 give an exact new string.
 const pinnedCaseStudyNarratives = {
@@ -75,13 +118,13 @@ const pinnedCaseStudyNarratives = {
       {
         label: "What it is",
         value:
-          "A Claude Code plugin, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
+          "An agentic software delivery pipeline, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
       },
       {
         label: "Stack",
         value: "Node.js, Python, FastAPI, TypeScript, Electron, Supabase Postgres with pgvector",
       },
-      { label: "Quality", value: "224 plugin tests, 278 desktop tests, CI on every push" },
+      { label: "Quality", value: "224 pipeline tests, 278 desktop tests, CI on every push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -89,23 +132,21 @@ const pinnedCaseStudyNarratives = {
     contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
   },
   "apple-llm-triage": {
-    eyebrow: "Case study · Apple (via TCS) · Data Health team · Feb 2025 to present",
-    title: "A review backlog, turned into a decision system",
-    lead:
-      "Cross-team data changes were stuck behind a manual review queue. I identified the bottleneck, scoped the fix with the teams who own the requests, and deployed a self-hosted LLM system that reads each request and decides approve, reject or hold, with a reviewable audit trail.",
+    eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
+    title: "A review backlog, turned into an analysis the reviewer can trust",
+    lead: DECISION_INTRO,
     atAGlance: [
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
-      { label: "Stack", value: "Python, open-source LLM self-hosted with Ollama, REST APIs" },
-      { label: "Status", value: "In production" },
+      { label: "Stack", value: "Python, open-source LLM, REST APIs" },
+      { label: "Status", value: "In production, human in the loop by design" },
     ],
     calloutEyebrow: "What I'd bring to a client",
-    calloutText:
-      "Find the review step everyone waits on. Separate the calls a system can make with a trail from the ones a person should make. Automate the first, keep people on the second, and keep tuning against live results.",
+    calloutText: DECISION_CALLOUT,
     contactHeading: "Have a queue like this? I reply within a day.",
   },
   "apple-integration": {
-    eyebrow: "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
+    eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
     lead:
       "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
@@ -124,7 +165,7 @@ const pinnedCaseStudyNarratives = {
     contactHeading: "Systems that don't talk to each other? Let's talk.",
   },
   "apple-data-health": {
-    eyebrow: "Case study · Apple (via TCS) · Data reliability · Feb 2025 to present",
+    eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
     title: "Keeping a 50+ region data pipeline shippable",
     lead:
       "Apple's Data Health team helps set the data quality and engineering standards for a pipeline spanning more than 50 regions. My part is keeping bad data from blocking releases: fixing it on live data, stopping it at the gate, and cleaning up fast when something slips through.",
@@ -176,7 +217,7 @@ const pinnedPaddockParagraph =
 const pinnedMeasuredFirstParagraph =
   "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.";
 const pinnedMeasuredLastParagraph =
-  "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine plugin releases came out of those four runs.";
+  "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine releases came out of those four runs.";
 
 // R154: the four `measured` stat cards, D41/D47/D50/D51/D53/D42.
 const pinnedMeasuredStats = [
@@ -383,7 +424,7 @@ describe("portfolioData", () => {
     expect(integration.card.title).toBe("Three systems, one tool, half the turnaround");
     expect(integration.card.linkText).toBe("Read the case study");
     expect(integration.eyebrow).toBe(
-      "Case study · Apple (via TCS) · Systems integration · Feb 2025 to present",
+      "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     );
     expect(integration.atAGlance.slice(0, 3)).toEqual([
       { label: "My role", value: "Built it end to end" },
@@ -414,19 +455,16 @@ describe("portfolioData", () => {
     const decision = findCaseStudy("apple-llm-triage");
     const situationBlocks = findSection(decision, "situation").blocks;
 
-    expect(situationBlocks[0].text).toBe(
-      "Every change to certain map data needed a person to judge whether it should go ahead, and that judgment was the bottleneck. The queue grew faster than reviewers could clear it. About two months of tickets had piled up with teams across the pipeline waiting on them.",
-    );
+    expect(situationBlocks[0].text).toBe(DECISION_SITUATION);
     expect(situationBlocks[1].text).toBe(
-      "Building a fix wasn't part of my assigned role. I took it on anyway.",
+      "Building a fix was not part of my assigned role. I took it on anyway.",
     );
     expect(decision.intro).toBe(pinnedCaseStudyNarratives["apple-llm-triage"].lead);
-    expect(decision.card.title).toBe("A review backlog, turned into a decision system");
+    expect(decision.card.title).toBe(DECISION_TITLE);
     expect(portfolioData.home.principles.items[0]).toEqual({
       number: "01",
       title: "Find the step everyone waits on",
-      text:
-        "At Apple, a review queue was blocking cross-team work. I built a system that decides each ticket with a trail a person can audit, and the backlog hasn't come back.",
+      text: PRINCIPLE_ONE,
     });
   });
 
@@ -461,7 +499,7 @@ describe("portfolioData", () => {
       {
         type: "paragraph",
         text:
-          "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each one.",
+          "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each group.",
       },
     ]);
     expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
@@ -679,5 +717,189 @@ describe("portfolioData", () => {
     expect(personal.github).toBe("https://github.com/muhibm1");
     expect(personal.linkedin).toBe("https://www.linkedin.com/in/muhibm1/");
     expect(personal.email).toBe("mmalqaim@gmail.com");
+  });
+
+  it("carries the document's hero h1 and lead word for word, with the mobile lead identical (R1)", () => {
+    const { hero } = portfolioData.home;
+
+    expect(hero.heading).toBe(HERO_HEADING);
+    expect(hero.lead).toBe(HERO_LEAD);
+    expect(hero.mobileLead).toBe(hero.lead);
+    for (const text of [hero.heading, hero.lead, hero.mobileLead]) {
+      expect(text).not.toMatch(/messy|\bvia\b|[–—]/i);
+    }
+  });
+
+  it("carries the decision study's section 4a copy verbatim, including the throughput explanation (R4)", () => {
+    const decision = findCaseStudy("apple-llm-triage");
+    const paragraphsOf = (id) =>
+      findSection(decision, id)
+        .blocks.filter((block) => block.type === "paragraph")
+        .map((block) => block.text);
+
+    expect(decision.card.eyebrow).toBe("Apple Maps · Decision support agent");
+    expect(decision.card.title).toBe(DECISION_TITLE);
+    expect(decision.card.summary).toBe(DECISION_INTRO);
+    expect(decision.eyebrow).toBe("Case study · Apple Maps · Data Health team · Feb 2025 to present");
+    expect(decision.title).toBe(DECISION_TITLE);
+    expect(decision.intro).toBe(DECISION_INTRO);
+    expect(decision.atAGlance).toEqual([
+      { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
+      { label: "Live since", value: "November 2025" },
+      { label: "Stack", value: "Python, open-source LLM, REST APIs" },
+      { label: "Status", value: "In production, human in the loop by design" },
+    ]);
+    expect(decision.stats).toEqual([
+      { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
+      { value: "2 weeks", label: "to clear two months of accumulated tickets" },
+      { value: "Zero", label: "backlog since launch" },
+    ]);
+    expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([
+      ["situation", "The situation"],
+      ["built", "What I built"],
+      ["why-a-person-decides", "Why a person still decides"],
+      ["people", "Working with the teams"],
+      ["changed", "What changed"],
+    ]);
+    expect(paragraphsOf("situation")).toEqual([
+      DECISION_SITUATION,
+      "Building a fix was not part of my assigned role. I took it on anyway.",
+    ]);
+    expect(paragraphsOf("built")).toEqual(DECISION_BUILT_PARAGRAPHS);
+    expect(paragraphsOf("why-a-person-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
+    expect(paragraphsOf("people")).toEqual([
+      "I worked directly with the stakeholder teams who own these requests to decide what the system should handle, and changed its scope as live results came in.",
+    ]);
+    expect(paragraphsOf("changed")).toEqual(DECISION_CHANGED_PARAGRAPHS);
+    expect(decision.callout.text).toBe(DECISION_CALLOUT);
+    expect(decision.disclaimer).toBe(
+      "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
+    );
+    expect(decision.contactHeading).toBe("Have a queue like this? I reply within a day.");
+  });
+
+  it("carries the six-step decision flow with Reviewer decides as the only gate (R5)", () => {
+    const flow = findSection(findCaseStudy("apple-llm-triage"), "built").blocks[0];
+
+    expect(flow.type).toBe("flow");
+    expect(flow.columns).toBe(6);
+    expect(flow.steps.map((step) => step.title)).toEqual(DECISION_FLOW_TITLES);
+    expect(flow.steps.some((step) => "note" in step)).toBe(false);
+    expect(flow.steps.map((step) => step.gate === true)).toEqual([false, false, false, false, false, true]);
+  });
+
+  it("carries the integration cross-reference as the situation's second paragraph (R6)", () => {
+    const blocks = findSection(findCaseStudy("apple-integration"), "situation").blocks;
+
+    expect(blocks).toHaveLength(2);
+    expect(blocks[1]).toEqual({ type: "paragraph", text: INTEGRATION_CROSS_REFERENCE });
+  });
+
+  it("replaces every deciding description with the resume's or document's words (R8)", () => {
+    const { home } = portfolioData;
+
+    expect(home.stats.items[0]).toEqual({
+      value: "30 to 350+",
+      label: "Tickets a day",
+      context: "Decision support agent I built at Apple",
+      mobileText: "tickets a day, decision support agent at Apple",
+    });
+    expect(home.hero.rightNow.items[0]).toEqual({
+      title: "At Apple Maps",
+      text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
+    });
+    expect(home.hero.rightNow.items[1].text).toBe(
+      "An agentic software delivery pipeline with its own retrieval system. This site was built with it.",
+    );
+    expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
+    expect(home.experience.roles[0].company).toBe("Apple Maps");
+    expect(home.experience.roles[0].highlights[0]).toBe(RESUME_BULLET);
+    expect(home.toolkit.columns[2].items).toBe(
+      "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+    );
+  });
+
+  it("says plugin nowhere and carries the Studbook subtitle, with the MCP and Paddock copy unchanged (R9)", () => {
+    const workhorse = findCaseStudy("workhorse");
+
+    expect(collectStrings(workhorse).join("\n")).not.toMatch(/\bplugins?\b/i);
+    expect(findSection(workhorse, "studbook").subtitle).toBe(
+      "Cited retrieval (RAG) over WorkHorse's engineering record",
+    );
+    expect(findSection(workhorse, "mcp").blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
+  });
+
+  it("names the employer Apple Maps in every slot and never via TCS (R2)", () => {
+    const appleStudies = ["apple-llm-triage", "apple-integration", "apple-data-health"].map(findCaseStudy);
+
+    expect(portfolioData.home.experience.roles[0].company).toBe("Apple Maps");
+    expect(portfolioData.home.hero.rightNow.items[0].title).toBe("At Apple Maps");
+    for (const study of appleStudies) {
+      expect(study.eyebrow.startsWith("Case study · Apple Maps · ")).toBe(true);
+      expect(study.card.eyebrow.startsWith("Apple Maps · ")).toBe(true);
+    }
+    expect(collectStrings(portfolioData).join("\n")).not.toContain("(via TCS)");
+  });
+
+  it("contains none of the document's banned strings, with cross-team only off the integration page (R3)", () => {
+    const banned = [
+      /\bTCS\b/i,
+      /\bTata\b/i,
+      /\bvia\b/i,
+      /\bcontractors?\b/i,
+      /\bvendors?\b/i,
+      /\bconsultanc(?:y|ies)\b/i,
+      /\bplugins?\b/i,
+      /\bmessy\b/i,
+      /approve, reject or hold/i,
+      /\bdecision layer\b/i,
+      /\bacts? on live data\b/i,
+      /\bdecision systems?\b/i,
+      /tickets decided/i,
+      /decides each ticket/i,
+      /self-hosted/i,
+      /\bOllama\b/i,
+      /eleven times/i,
+      /(?<!\d)0 rejected\b|\bzero rejected\b/i,
+    ];
+    const allText = collectStrings(portfolioData).join("\n");
+
+    for (const pattern of banned) {
+      expect(allText).not.toMatch(pattern);
+    }
+    expect(collectStrings(findCaseStudy("apple-integration")).join("\n")).not.toMatch(/cross[- ]teams?/i);
+    expect(findCaseStudy("apple-llm-triage").intro).toMatch(/cross-team/i);
+  });
+
+  it("uses only the approved numerals on the decision study (R4, item 12)", () => {
+    const text = collectStrings(findCaseStudy("apple-llm-triage")).join("\n");
+    const numerals = new Set(text.match(/\d+/g));
+
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025"].includes(numeral))).toBe(true);
+  });
+
+  it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
+    const svgPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../docs/design/og.svg");
+    const svg = readFileSync(svgPath, "utf8");
+
+    expect(svg).toContain(
+      'aria-label="Muhammad Muhibullah, Forward Deployed Engineer. 30 to 350 plus tickets a day."',
+    );
+    expect(svg).toContain('class="stat-label">Tickets a day</text>');
+    expect(svg).not.toMatch(/Tickets decided|decided a day/);
+  });
+
+  it("words the Neural step 5 note as Live status over WebSockets (R11)", () => {
+    const neural = findCaseStudy("neural-newsletters-llm");
+    const neuralFlows = collectBlocks(neural).filter((block) => block.type === "flow");
+    const allNotes = portfolioData.caseStudies
+      .flatMap(collectBlocks)
+      .filter((block) => block.type === "flow")
+      .flatMap((block) => block.steps.map((step) => step.note ?? ""));
+
+    expect(neuralFlows.some((flow) => flow.steps[4]?.note === "Live status over WebSockets")).toBe(true);
+    for (const note of allNotes) {
+      expect(note).not.toMatch(/\bvia\b/i);
+    }
   });
 });
