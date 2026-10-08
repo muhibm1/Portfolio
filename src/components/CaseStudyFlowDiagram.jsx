@@ -13,15 +13,21 @@ const FLOW_DESKTOP_COLUMNS_CLASS = {
   8: 'md:grid-cols-8',
 };
 
-/** A `flow` block: `columns` sets the grid width, each step is `{ title, note, gate?, dashed? }`. */
+/**
+ * A `flow` block: `columns` sets the grid width, each step is `{ title, note?, gate?, dashed? }`.
+ * A gate step carries `data-gate="true"` so a test or a grep can find the human decision; a step
+ * without a `note` renders no note line.
+ */
 export default function CaseStudyFlowDiagram({ columns, steps }) {
   const desktopColumnsClass = FLOW_DESKTOP_COLUMNS_CLASS[columns] ?? 'md:grid-cols-4';
   return (
     <ol className={`grid grid-cols-2 gap-2 sm:grid-cols-4 ${desktopColumnsClass}`}>
       {steps.map((step, index) => (
-        <li key={index} className={stepClasses(step)}>
-          <span className="font-display text-sm font-semibold">{step.title}</span>
-          <span className={`text-xs ${step.gate ? 'text-on-dark-tertiary' : 'text-muted'}`}>{step.note}</span>
+        <li key={index} className={stepClasses(step)} data-gate={step.gate ? 'true' : undefined}>
+          <span className="font-display text-sm font-semibold break-words hyphens-auto">{step.title}</span>
+          {step.note && (
+            <span className={`text-xs ${step.gate ? 'text-on-dark-tertiary' : 'text-muted'}`}>{step.note}</span>
+          )}
         </li>
       ))}
     </ol>

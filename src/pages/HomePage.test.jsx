@@ -16,7 +16,7 @@ describe('HomePage', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: home.hero.heading })).toBeInTheDocument();
     expect(screen.getByText(home.hero.eyebrow)).toBeInTheDocument();
-    expect(screen.getByText('At Apple')).toBeInTheDocument();
+    expect(screen.getByText('At Apple Maps')).toBeInTheDocument();
     expect(screen.getByText('Building WorkHorse')).toBeInTheDocument();
     expect(screen.getByText('Looking for')).toBeInTheDocument();
     expect(screen.getByText(home.hero.codeLine.text)).toBeInTheDocument();
