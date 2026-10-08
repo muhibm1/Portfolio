@@ -59,7 +59,7 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'resume.txt', text: 'Resume attached below' },
   { fileName: 'four-of-four.txt', text: '4 of 4 runs succeeded' },
   { fileName: 'four-real-changes.txt', text: 'four real changes shipped' },
-  { fileName: 'rejected-ship.txt', text: '0 rejected ship documents' },
+  { fileName: 'rejected-ship.txt', text: 'no rejected ship documents' },
   { fileName: 'half-the-latency.txt', text: 'half the latency of before' },
   { fileName: 'times-sign.txt', text: '2× faster' },
   { fileName: 'ascii-2x.txt', text: '2x faster' },
@@ -76,6 +76,25 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'landmark.txt', text: 'a landmark' },
   { fileName: 'changed-incorrectly.txt', text: 'was changed incorrectly' },
   { fileName: 'high-user-impact.txt', text: 'high user impact' },
+  // 2026-10-08 master-copy change (R12): one rendering per new global term.
+  { fileName: 'tcs.txt', text: 'TCS' },
+  { fileName: 'tata.txt', text: 'Tata' },
+  { fileName: 'via.txt', text: 'Apple via a proxy' },
+  { fileName: 'messy.txt', text: 'messy systems' },
+  { fileName: 'approve-reject-or-hold.txt', text: 'approve, reject or hold' },
+  { fileName: 'decision-layer.txt', text: 'a decision layer' },
+  { fileName: 'tickets-decided.txt', text: 'Tickets decided a day' },
+  { fileName: 'decides-each-ticket.txt', text: 'it decides each ticket' },
+  { fileName: 'self-hosted.txt', text: 'self-hosted models' },
+  { fileName: 'ollama.txt', text: 'Ollama' },
+  { fileName: 'eleven-times.txt', text: 'more than eleven times' },
+  { fileName: 'contractor.txt', text: 'a contractor' },
+  { fileName: 'vendor.txt', text: 'the vendor' },
+  { fileName: 'consultancy.txt', text: 'a consultancy' },
+  { fileName: 'plugin.txt', text: 'a plugin' },
+  { fileName: 'acts-on-live-data.txt', text: 'acts on live data' },
+  { fileName: 'decision-system.txt', text: 'a decision system' },
+  { fileName: 'zero-rejected.txt', text: 'zero rejected' },
 ];
 
 describe('forbidden-copy matchers', () => {
@@ -391,8 +410,9 @@ describe('forbidden-copy file scan', () => {
     expect(hitLines.filter((line) => line.includes('retirement-paddock.txt') && line.includes('Paddock retirement wording'))).toHaveLength(1);
   });
 
-  // E4: "nine plugin releases" is site copy, not a term (D43).
-  it('does not match "nine plugin releases came out of the first four runs"', () => {
+  // 2026-10-08, R12: "nine plugin releases" used to be site copy; the owner now bans "plugin",
+  // so the same sentence must hit.
+  it('matches "nine plugin releases came out of the first four runs" on the plugin term (R12)', () => {
     const fixturePath = writeFixture(
       'nine-plugin-releases.txt',
       'nine plugin releases came out of the first four runs\n',
@@ -400,7 +420,8 @@ describe('forbidden-copy file scan', () => {
 
     const { hitLines } = scanFiles([fixturePath], matchers);
 
-    expect(hitLines).toEqual([]);
+    expect(hitLines).toHaveLength(1);
+    expect(hitLines[0]).toContain(': plugin');
   });
 
   // A3: the ASCII "2x faster" is not a silent pass for the banned "2×" relative-timing claim.
@@ -533,6 +554,127 @@ describe('forbidden-copy file scan', () => {
     const nearMisses = ['restricted geography', 'geospatial data', 'Tens of thousands of buildings'];
     for (const [index, text] of nearMisses.entries()) {
       expect(hitsFor(writeFixture(`geospatial-near-miss-${index}.txt`, `${text}\n`), matchers)).toEqual([]);
+    }
+  });
+
+  // 2026-10-08 master-copy change (R12). Each helper writes one fixture file per text and returns
+  // the term labels the scan reported for it.
+  function labelsHitBy(text, fileName) {
+    return hitsFor(writeFixture(fileName, `${text}\n`), matchers).map((line) => line.split(': ').pop());
+  }
+
+  function expectEachToHit(texts, expectedLabel) {
+    for (const [index, text] of texts.entries()) {
+      expect(labelsHitBy(text, `${expectedLabel.replaceAll(' ', '-')}-hit-${index}.txt`), text).toContain(expectedLabel);
+    }
+  }
+
+  function expectNoneToHit(texts) {
+    for (const [index, text] of texts.entries()) {
+      expect(labelsHitBy(text, `near-miss-${index}.txt`), text).toEqual([]);
+    }
+  }
+
+  // E18
+  it('matches via on a word boundary but not service, deviate, trivial, viable or viaduct (R12)', () => {
+    expectEachToHit(['Apple (via TCS)', 'Apple via a vendor', 'VIA the queue'], 'via');
+    expectNoneToHit(['service', 'deviate', 'trivial', 'viable', 'viaduct']);
+  });
+
+  // E19
+  it('matches every vendor form but not Software Consultant, consulting or vendored (R12)', () => {
+    expectEachToHit(['TCS', 'tcs'], 'TCS');
+    expectEachToHit(['Tata Consultancy Services'], 'Tata');
+    expectEachToHit(['Tata Consultancy Services', 'consultancies'], 'consultancy');
+    expectEachToHit(['a contractor'], 'contractor');
+    expectEachToHit(["the vendor's"], 'vendor');
+    expectNoneToHit(['Software Consultant', 'consulting', 'vendored']);
+  });
+
+  // E20
+  it('matches the decision-authority phrases but not a person deciding or a decision support agent (R12)', () => {
+    const phrases = [
+      ['decides approve, reject or hold', 'approve, reject or hold'],
+      ['Approve, reject or hold', 'approve, reject or hold'],
+      ['a decision layer', 'decision layer'],
+      ['automation can act on live data', 'acts on live data'],
+      ['acts on live data', 'acts on live data'],
+      ['LLM decision systems', 'decision system'],
+      ['turned into a decision system', 'decision system'],
+      ['Tickets decided a day', 'tickets decided'],
+      ['decides each ticket', 'decides each ticket'],
+    ];
+    for (const [index, [text, label]] of phrases.entries()) {
+      const labels = labelsHitBy(text, `authority-${index}.txt`);
+      expect(labels, text).toEqual([label]);
+    }
+    expectNoneToHit([
+      'Reviewer decides',
+      'a person decides',
+      'decided documents',
+      'Validation decides what gets promoted',
+      'delete, correct or retain decision',
+      'decision support agent',
+    ]);
+  });
+
+  // E21
+  it('matches plugin, messy, self-hosted, Ollama, eleven times and zero rejected but not their near-misses (R12)', () => {
+    expectEachToHit(['A Claude Code plugin', 'plugins'], 'plugin');
+    expectEachToHit(['systems are messy'], 'messy');
+    expectEachToHit(['self-hosted', 'Self-Hosted models'], 'self-hosted');
+    expectEachToHit(['Ollama'], 'Ollama');
+    expectEachToHit(['more than eleven times'], 'eleven times');
+    expectEachToHit(['zero rejected'], '0 rejected');
+    expect(labelsHitBy('0 rejected ship documents', 'zero-rejected-ship.txt').sort()).toEqual(['0 rejected', 'rejected ship']);
+    expectNoneToHit(['messier', '10 rejected', 'eleventh', 'selfhosted']);
+  });
+
+  // E23
+  it('scans the real copy, comments and share-image source clean with the new terms (R3)', () => {
+    const realFiles = [
+      ['src', 'data', 'portfolioData.js'],
+      ['src', 'main.jsx'],
+      ['src', 'index.css'],
+      ['docs', 'design', 'og.svg'],
+    ].map((segments) => path.join(REPOSITORY_ROOT, ...segments));
+
+    const { exitCode, hitLines } = scanFiles(realFiles, matchersWithPageScope);
+
+    expect(hitLines).toEqual([]);
+    expect(exitCode).toBe(EXIT_CLEAN);
+  });
+
+  // E25
+  it('names file, line and both terms when the vendor string returns (R12)', () => {
+    const realCopy = fs.readFileSync(path.join(REPOSITORY_ROOT, 'src', 'data', 'portfolioData.js'), 'utf8');
+    const original = 'Case study · Apple Maps · Systems integration';
+    expect(realCopy).toContain(original);
+    const withVendor = realCopy.replace(original, 'Case study · Apple (via TCS) · Systems integration');
+    const lineNumber = withVendor.split('\n').findIndex((line) => line.includes('Apple (via TCS)')) + 1;
+    const fixturePath = writeNestedFixture('src/data/portfolioData.js', withVendor);
+
+    const { exitCode, hitLines } = scanFiles([fixturePath], matchers);
+
+    expect(exitCode).toBe(EXIT_HIT);
+    expect(hitLines).toHaveLength(2);
+    expect(hitLines.some((line) => line.endsWith(`src/data/portfolioData.js:${lineNumber}: via`))).toBe(true);
+    expect(hitLines.some((line) => line.endsWith(`src/data/portfolioData.js:${lineNumber}: TCS`))).toBe(true);
+  });
+
+  // E27
+  it('catches mixed case and non-breaking-space spellings of the new terms (R12)', () => {
+    const nonBreakingSpace = ' ';
+    const spellings = [
+      [`Via${nonBreakingSpace}TCS`, ['via', 'TCS']],
+      ['VIA tcs', ['via', 'TCS']],
+      ['DECISION SYSTEM', ['decision system']],
+      ['Self-HOSTED', ['self-hosted']],
+      ['pluginS', ['plugin']],
+    ];
+    for (const [index, [text, expectedLabels]] of spellings.entries()) {
+      const labels = labelsHitBy(text, `adversarial-${index}.txt`);
+      for (const label of expectedLabels) expect(labels, text).toContain(label);
     }
   });
 });
