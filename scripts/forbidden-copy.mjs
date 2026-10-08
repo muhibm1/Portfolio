@@ -125,6 +125,8 @@ export const VENDOR_TERM = { label: 'vendor', pattern: /\bvendors?\b/i, skipExte
 // "Software Consultant" (a job title) must not hit, so only the firm nouns do.
 export const CONSULTANCY_TERM = { label: 'consultancy', pattern: /\bconsultanc(?:y|ies)\b/i, skipExtensions: [] }
 // Master copy document section 1 (quoted in the change's spec.md "Data") plugin rule: WorkHorse is not described as a plugin.
+// Matches "approve, reject or hold" with or without the Oxford comma before "or".
+export const APPROVE_REJECT_HOLD_TERM = { label: 'approve, reject or hold', pattern: /approve, reject,? or hold/i, skipExtensions: [] }
 export const PLUGIN_TERM = { label: 'plugin', pattern: /\bplugins?\b/i, skipExtensions: [] }
 // Master copy document section 3 (quoted in the change's spec.md "Data") removal rows: the agent does not act, a person decides.
 export const ACT_ON_LIVE_DATA_TERM = { label: 'acts on live data', pattern: /\bacts? on live data\b/i, skipExtensions: [] }
@@ -213,7 +215,7 @@ export const FORBIDDEN_TERMS = [
   // Master copy document section 2 (quoted in the change's spec.md "Data") messy rule: client systems are not called messy.
   'messy',
   // Master copy document section 3 (quoted in the change's spec.md "Data") removal rows: the agent recommends, a person decides.
-  'approve, reject or hold',
+  APPROVE_REJECT_HOLD_TERM,
   'decision layer',
   ACT_ON_LIVE_DATA_TERM,
   DECISION_SYSTEM_TERM,
