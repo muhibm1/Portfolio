@@ -116,17 +116,17 @@ export const HIGH_IMPACT_TERM = {
   skipExtensions: [],
 }
 
-// 2026-10-08 change (owner's master document, change 2026-10-08-align-the-site-to-the-owner-s-master-copy;
+// 2026-10-08 change (owner's master copy document, kept outside the repository, change 2026-10-08-align-the-site-to-the-owner-s-master-copy;
 // see docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/adr/0001-ban-the-new-wording-sitewide-and-reword-two-source-comments.md):
 // the vendor, plugin and decision-authority wording the owner removed. Same rule as above: no `g` or `y` flag.
-// Document section 1 vendor rule: the employer is never described as a contractor, vendor or consultancy.
+// Master copy document section 1 (quoted in the change's spec.md "Data") vendor rule: the employer is never described as a contractor, vendor or consultancy.
 export const CONTRACTOR_TERM = { label: 'contractor', pattern: /\bcontractors?\b/i, skipExtensions: [] }
 export const VENDOR_TERM = { label: 'vendor', pattern: /\bvendors?\b/i, skipExtensions: [] }
 // "Software Consultant" (a job title) must not hit, so only the firm nouns do.
 export const CONSULTANCY_TERM = { label: 'consultancy', pattern: /\bconsultanc(?:y|ies)\b/i, skipExtensions: [] }
-// Document section 1 plugin rule: WorkHorse is not described as a plugin.
+// Master copy document section 1 (quoted in the change's spec.md "Data") plugin rule: WorkHorse is not described as a plugin.
 export const PLUGIN_TERM = { label: 'plugin', pattern: /\bplugins?\b/i, skipExtensions: [] }
-// Document section 3 removal rows: the agent does not act, a person decides.
+// Master copy document section 3 (quoted in the change's spec.md "Data") removal rows: the agent does not act, a person decides.
 export const ACT_ON_LIVE_DATA_TERM = { label: 'acts on live data', pattern: /\bacts? on live data\b/i, skipExtensions: [] }
 export const DECISION_SYSTEM_TERM = { label: 'decision system', pattern: /\bdecision systems?\b/i, skipExtensions: [] }
 // "10 rejected" and "0 rejected" inside a larger number are not the banned claim.
@@ -208,18 +208,18 @@ export const FORBIDDEN_TERMS = [
   CONTRACTOR_TERM,
   VENDOR_TERM,
   CONSULTANCY_TERM,
-  // Document section 1 plugin rule.
+  // Master copy document section 1 (quoted in the change's spec.md "Data") plugin rule.
   PLUGIN_TERM,
-  // Document section 2 messy rule: client systems are not called messy.
+  // Master copy document section 2 (quoted in the change's spec.md "Data") messy rule: client systems are not called messy.
   'messy',
-  // Document section 3 removal rows: the agent recommends, a person decides.
+  // Master copy document section 3 (quoted in the change's spec.md "Data") removal rows: the agent recommends, a person decides.
   'approve, reject or hold',
   'decision layer',
   ACT_ON_LIVE_DATA_TERM,
   DECISION_SYSTEM_TERM,
   'tickets decided',
   'decides each ticket',
-  // Document section 5 Studbook stack: the model runs are not described as self-hosted or Ollama.
+  // Master copy document section 5 (quoted in the change's spec.md "Data") Studbook stack: the model runs are not described as self-hosted or Ollama.
   'self-hosted',
   'Ollama',
   // Owner decision D4: the throughput claim is "more than tenfold", never a count of times.
