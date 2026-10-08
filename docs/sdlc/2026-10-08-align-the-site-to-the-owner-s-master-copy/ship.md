@@ -110,7 +110,10 @@ Approving accepts every recommendation. The first row is a step the run could no
 | D13 | Re-render `public/og.png` | Main session re-renders from `og.svg` and commits before merge; open | Leave old image | Old image still says "decided"; needs local Chrome |
 | D1 to D19 | Brief decisions | Accepted by you at G2 (2026-10-08T02:56Z); D18 "line" for "boundary" shown above | per row | [brief.md](./brief.md) |
 | D20 | E31 re-scope | `data-gate` marks every `gate:true` step; decision page exactly 1, other routes equal their data count | Add a separate human-decision flag | Existing gate steps pre-date this change (conductor-log 03:07Z) |
-| D21 to D24 | Wave 2 builder decisions | Recommendations taken, accepted by the conductor (conductor-log 03:50Z) | n/a | Row text is not recorded in any artifact on this branch (confirmed by search): ask the conductor before approving |
+| D21 | E31 counts data-gate per route: 1 on the decision route; every other route's expected count is derived from its gate:true flow steps in portfolioData (0 for home and /work) | per D20, as instructed | the original E31 (sum of 1 across all routes) | WorkHorse and Neural legitimately carry gate:true steps; deriving from data catches an unexpected marker without hardcoding |
+| D22 | The "nine plugin releases" scanner test is rewritten in place to assert a hit on the plugin term, E21 holds the other fixtures separately | plan said delete and replace with the hit assertion | delete outright | the same sentence is the clearest proof the old exception is gone |
+| D23 | ZERO_REJECTED_TERM label is "0 rejected" | follows E21's stated label | label "zero rejected" | E21 names that label |
+| D24 | E25 scans a temp file named <tmp>/src/data/portfolioData.js with scanFiles and asserts the hit lines end with the file path, line and the terms via and TCS | the scanner entry only scans the repo's own src/, so it cannot take a fixture src tree | spawning the entry | still proves file, line and both terms |
 | D-b1 | `HomePage.test.jsx` pin "At Apple Maps" | Follows D5 | Keep "At Apple" | Spec D5 |
 | S1 | Resume PDF in Downloads is the old wording | You replace it before sending; not in the repo | Leave | Contradicts the site |
 | S2 | Public repo docs with old wording | Leave for now, or a follow-up change | Reword now | Outside the scanner; history keeps it |
