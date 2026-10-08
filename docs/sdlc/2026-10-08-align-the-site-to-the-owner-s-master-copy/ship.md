@@ -136,3 +136,18 @@ Clock: agents 1 h 41 m of 1 h 30 m budget (OVER) · waiting on you 27 m · dead 
 ## Your decision
 
 Approve to merge, or reject with notes to send it back. The merge publishes the site, so do the four items above before approving.
+
+## Deploy record
+
+| Step | Result | UTC | Status |
+|------|--------|-----|--------|
+| Push branch head bb81b50 | pushed, PR head matched | 2026-10-08 | confirmed |
+| `gh pr merge 26 --merge --match-head-commit bb81b50...` | exit 0, merge commit `0d5803f549028e7b2b11d3502df0e6eac712edc3` (merge commit, not squash) | 2026-10-08 07:43 | confirmed |
+| Actions run 37745217741, job "Build and test" | success | 07:44:21 | confirmed |
+| Actions run 37745217741, job "Deploy and smoke-test the published site" | success | 07:44:42 | confirmed |
+| dev, staging | not run: dev is a local server, staging has no command | n/a | confirmed |
+
+Run: https://github.com/muhibm1/Portfolio/actions/runs/37745217741. The merge-commit row replaces the squash wording above.
+Rollback (not rehearsed, believed, not verified): `git revert -m 1 0d5803f549028e7b2b11d3502df0e6eac712edc3`, then the owner pushes the revert to `main`.
+D13 closed (confirmed): `public/og.png` re-rendered from `docs/design/og.svg` with the label "Tickets a day", commit 7d4c046.
+Known issue shipped knowingly by the owner, for a follow-up change (owner-reported, believed, not verified by the agent): flow-diagram words break letter by letter at 768px, and the word "recommendation" at 1440px. At tablet width the case-study sidebar stays, the content column is about 366px, and the flow grid still switches to 6 or 8 columns.
