@@ -24,7 +24,7 @@ export default function CaseStudyFlowDiagram({ columns, steps }) {
     <ol className={`grid grid-cols-2 gap-2 sm:grid-cols-4 ${desktopColumnsClass}`}>
       {steps.map((step, index) => (
         <li key={index} className={stepClasses(step)} data-gate={step.gate ? 'true' : undefined}>
-          <span className="font-display text-sm font-semibold">{step.title}</span>
+          <span className="font-display text-sm font-semibold break-words hyphens-auto">{step.title}</span>
           {step.note && (
             <span className={`text-xs ${step.gate ? 'text-on-dark-tertiary' : 'text-muted'}`}>{step.note}</span>
           )}
