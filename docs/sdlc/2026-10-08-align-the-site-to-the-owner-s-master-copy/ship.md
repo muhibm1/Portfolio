@@ -128,7 +128,7 @@ Before merging, yours: (1) re-render `public/og.png`; (2) item 7 read-through ab
 
 ## Clock
 
-Clock: agents 1 h 37 m of 1 h 30 m budget (OVER) · waiting on you 27 m · dead 6 m · wall 2 h 09 m
+Clock: agents 1 h 41 m of 1 h 30 m budget (OVER) · waiting on you 27 m · dead 6 m · wall 2 h 13 m
 
 ## Your decision
 
