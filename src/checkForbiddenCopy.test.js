@@ -596,6 +596,7 @@ describe('forbidden-copy file scan', () => {
     const phrases = [
       ['decides approve, reject or hold', 'approve, reject or hold'],
       ['Approve, reject or hold', 'approve, reject or hold'],
+      ['approve, reject, or hold', 'approve, reject or hold'],
       ['a decision layer', 'decision layer'],
       ['automation can act on live data', 'acts on live data'],
       ['acts on live data', 'acts on live data'],
@@ -615,6 +616,8 @@ describe('forbidden-copy file scan', () => {
       'Validation decides what gets promoted',
       'delete, correct or retain decision',
       'decision support agent',
+      'approve, reject and hold',
+      'approve or reject',
     ]);
   });
 
