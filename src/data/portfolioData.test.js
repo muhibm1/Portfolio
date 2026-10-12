@@ -145,12 +145,12 @@ const pinnedCaseStudyNarratives = {
         value:
           "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
       },
-      { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, Claude" },
+      { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude" },
       { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "A way to put an agent near production without trusting it with production: the model does the reading, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
+      "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
     contactHeading: "Want an agent near production? Let's talk.",
   },
   "apple-llm-triage": {
