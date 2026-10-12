@@ -1,5 +1,5 @@
 // Integration test for the prerender pipeline (G24, R139, R140, R141): assemblePage composed
-// with entry-server's render and headTags(pageMetaFor(path)) for each of the seven served paths,
+// with entry-server's render and headTags(pageMetaFor(path)) for each of the eight served paths,
 // proving the assembled <head> carries exactly the tags that page's meta names and #root carries
 // that page's real markup, not a stub.
 import { describe, expect, it } from 'vitest';

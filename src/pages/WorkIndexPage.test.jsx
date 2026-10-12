@@ -15,11 +15,11 @@ describe('WorkIndexPage', () => {
     expect(heading).toHaveClass('sr-only');
   });
 
-  it('lists the five case studies in R127 order, the first the featured variant', () => {
+  it('lists the six case studies in R127 order, the first the featured variant', () => {
     renderWorkIndexAt('/work');
 
     const links = caseStudyLinks();
-    expect(links).toHaveLength(5);
+    expect(links).toHaveLength(6);
     expect(links.map((link) => link.getAttribute('href'))).toEqual(
       portfolioData.caseStudies.map((study) => `/work/${study.id}`),
     );
