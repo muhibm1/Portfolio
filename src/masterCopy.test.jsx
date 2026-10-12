@@ -1,4 +1,4 @@
-// Route-level proof of the owner's master-copy change (2026-10-08): renders all seven served
+// Route-level proof of the owner's master-copy change (2026-10-08): renders all eight served
 // routes in process, the way src/prerenderIntegration.test.js does, and checks the strings,
 // the human-gate marker and the cross-reference sentences in the HTML a visitor would receive.
 // The banned list below is written out here on purpose, independent of scripts/forbidden-copy.mjs,
@@ -100,8 +100,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all seven routes', () => {
-    expect(sitePagePaths()).toHaveLength(7);
+  it('serves all eight routes', () => {
+    expect(sitePagePaths()).toHaveLength(8);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {

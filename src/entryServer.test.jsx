@@ -17,6 +17,16 @@ function distinctiveTextFor(path) {
   return caseStudy.title;
 }
 
+/** The text as React's server renderer escapes it in markup, so a title with an apostrophe still matches. */
+function escapedAsRendered(text) {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#x27;');
+}
+
 describe('entry-server render (G17)', () => {
   const paths = staticRoutePaths(portfolioData.caseStudies);
 
@@ -25,7 +35,7 @@ describe('entry-server render (G17)', () => {
 
     const html = render(`${BASE}${path === '/' ? '' : path}`);
 
-    expect(html).toContain(distinctiveTextFor(path));
+    expect(html).toContain(escapedAsRendered(distinctiveTextFor(path)));
     expect(html).not.toContain(NOT_FOUND_TEXT);
     expect(consoleError).not.toHaveBeenCalled();
   });
