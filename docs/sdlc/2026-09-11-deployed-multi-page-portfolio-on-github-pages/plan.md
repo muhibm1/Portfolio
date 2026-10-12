@@ -4,7 +4,7 @@ Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Spec: [spec.md](./spec.md) · Evals: [evals.md](./evals.md) · Project copy: [project-copy-draft.md](./project-copy-draft.md)
 Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages` (confirmed, `state.json`)
 Worktree: one per task, created by the conductor (`isolation: worktree`); task branches `<branch>/t<N>`
-Written: 2026-09-12 by the implementation planner, against `main` at `eee8243` as briefed. This session had Read, Glob, Grep and Write only, so no command was run. Every claim is labelled `confirmed` (read or grepped here) or `believed, not verified`.
+Written: 2026-09-12 by the implementation planner, against `main` at `bef2587` as briefed. This session had Read, Glob, Grep and Write only, so no command was run. Every claim is labelled `confirmed` (read or grepped here) or `believed, not verified`.
 
 ## Approach
 

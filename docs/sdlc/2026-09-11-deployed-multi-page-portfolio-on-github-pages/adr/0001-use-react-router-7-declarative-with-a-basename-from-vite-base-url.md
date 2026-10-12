@@ -51,9 +51,9 @@ surface as a major-version pull request.
 ## Amendment 2026-09-12
 
 Owner build decision B2 ("B2 and B3 as recommended", `conductor-log.md` line 35) moved the pin
-from 7.9.4 to 7.18.3 in commit `a98fdcf`. 7.9.4 fails `npm audit` on a high-severity range, 6.0.0
+from 7.9.4 to 7.18.3 in commit `55ff8b6`. 7.9.4 fails `npm audit` on a high-severity range, 6.0.0
 to 7.17.0, and npm names 7.18.3 as the fix (confirmed, `verify-logs/audit.log` lines 23 to 39).
 7.18.3 is MIT with engines `node >=20.0.0` (confirmed, `node_modules/react-router/package.json`
 lines 18 and 157). The decision is unchanged. The v7 API facts above were checked against 7.9.4
 documentation; that they hold in 7.18.3 is believed, not verified, beyond `npm test` exiting 0 at
-`a98fdcf` (`conductor-log.md` line 37).
+`55ff8b6` (`conductor-log.md` line 37).

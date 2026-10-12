@@ -3,7 +3,7 @@ Verdict: 1 finding (0 critical, 0 high, 0 medium, 1 low)
 
 | Severity | File:line | Finding | Failure scenario | Fix |
 |---|---|---|---|---|
-| low | git commit 1ad9c3e (body) | Task 1 commit body says "the owner's change request (the file named in brief.md)" instead of naming CASE_STUDY_FIX_INTEGRATION_AND_DECISION.md as plan step 5 asked (confirmed via git log). It does cite the G2 notes with timestamp and approvals.md. Also brief.md does not name the file (confirmed; the name is in spec.md and plan.md only), so the pointer is slightly dangling. | A later auditor reading git log alone cannot find the source document by name; they must open spec.md or plan.md. No behavioural effect; SDLC prose, not a verification target. | none proposed (do not rewrite history; optionally name the file in the Ship document) |
+| low | git commit 4d90287 (body) | Task 1 commit body says "the owner's change request (the file named in brief.md)" instead of naming CASE_STUDY_FIX_INTEGRATION_AND_DECISION.md as plan step 5 asked (confirmed via git log). It does cite the G2 notes with timestamp and approvals.md. Also brief.md does not name the file (confirmed; the name is in spec.md and plan.md only), so the pointer is slightly dangling. | A later auditor reading git log alone cannot find the source document by name; they must open spec.md or plan.md. No behavioural effect; SDLC prose, not a verification target. | none proposed (do not rewrite history; optionally name the file in the Ship document) |
 
 ## Forward trace
 
@@ -38,7 +38,7 @@ Scope creep: none. Dependencies added: none (package files not in diff, confirme
 
 ## Plan conformance
 
-Tasks 1 and 2 both done, in wave order (commits 1ad9c3e then bad16dc, confirmed). All four planned files touched; no unplanned source file touched. check-test-floor.mjs untouched as planned (D11).
+Tasks 1 and 2 both done, in wave order (commits 4d90287 then 4cc4616, confirmed). All four planned files touched; no unplanned source file touched. check-test-floor.mjs untouched as planned (D11).
 
 ## Decisions
 

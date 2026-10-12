@@ -1,7 +1,7 @@
 # Conformance review: serve every app route with HTTP 200 on GitHub Pages
 
 Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`. Reviewed diff
-`main...wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` (head `b4d2f6e`,
+`main...wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` (head `98fe6ce`,
 confirmed by `git diff --stat`) against `spec.md` R116-R126, `plan.md`, `evals.md`.
 
 Verdict: 0 findings (0 critical, 0 high, 0 medium, 0 low)
@@ -42,8 +42,8 @@ T1/T2/T3 file lists).
 
 ## Plan conformance
 
-All three tasks (T1, T2, T3) show their planned commits in `git log` (`ff7a890`, `3b7c344`,
-`755c08c`, plus `b4d2f6e` refactor and the G2-approval chore commit); every file the plan named for
+All three tasks (T1, T2, T3) show their planned commits in `git log` (`221a12c`, `4fd5320`,
+`6368f07`, plus `98fe6ce` refactor and the G2-approval chore commit); every file the plan named for
 each task was touched and no unplanned file was touched (confirmed). Test suite: 322 tests across
 34 files, all passing (confirmed, ran `npm test` directly), matching `verification.md`'s reported
 count.

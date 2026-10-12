@@ -1,6 +1,6 @@
 # Adoption review: serve every app route with HTTP 200 on GitHub Pages
 
-Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`, head `b4d2f6e`.
+Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`, head `98fe6ce`.
 
 Verdict: 0 findings (0 critical, 0 high, 0 medium, 0 low)
 Adoption score: 5

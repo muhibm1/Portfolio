@@ -10,7 +10,7 @@ test-count floor so the redaction suite cannot be silently deleted or hollowed o
 build, verify, review and ship all completed with zero gate rejections and zero fix loops; the
 only friction was a builder hitting its turn limit before committing and a hook denial on
 `.github/workflows/deploy.yml` that the conductor worked around. The owner merged PR #15 as
-`9d24286`; Actions run `35553027638` succeeded, including build, test and the new deploy-time
+`9f0d83d`; Actions run `35553027638` succeeded, including build, test and the new deploy-time
 smoke steps.
 
 ## Clock
@@ -40,7 +40,7 @@ to run checks and commit the diff.
 | Phase | Finding | Would a human have caught it? |
 |-------|---------|-------------------------------|
 | design | constraint-audit: CI test-count floor of 12 could not prove the redaction cases actually ran (1 high) | Unlikely without deliberately trying to delete the suite; this is the kind of drift-over-time finding a design review rarely simulates |
-| review | wh-security-reviewer: 4 medium (count coercion silently reading absent keys as 0, `error.message` echoing file bytes into a public Actions log, floor script and scanner missing from `sensitive_paths`/`tier_floor_paths`, no CI-side working-tree scan) and 4 low findings, all fixed in `cc36f23` before ship | Some (the log-leak one is subtle; a human skim of the diff would likely miss `error.message` reading fixture bytes) |
+| review | wh-security-reviewer: 4 medium (count coercion silently reading absent keys as 0, `error.message` echoing file bytes into a public Actions log, floor script and scanner missing from `sensitive_paths`/`tier_floor_paths`, no CI-side working-tree scan) and 4 low findings, all fixed in `d950b49` before ship | Some (the log-leak one is subtle; a human skim of the diff would likely miss `error.message` reading fixture bytes) |
 | verify | re-verification after the fix confirmed 8/8 checks and 34/34 eval cases before G4 | Yes, but only by re-running the full suite, which a human reviewer under time pressure often skips |
 
 ## What the pipeline missed

@@ -3,7 +3,7 @@
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Status: green
 Run at: 2026-09-12 (this session)
-Commit: `b91d04fc3499e2872b894dd67c044b30847a867c` (**confirmed**, `git rev-parse HEAD`)
+Commit: `13fc4cd757f81f8f5c6c6c7b4102ccffb4a427a3` (**confirmed**, `git rev-parse HEAD`)
 Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages` (**confirmed**, `git branch
 --show-current`)
 Node: `v22.12.0`, npm `10.9.0` (**confirmed**, `node --version` / `npm --version` run with
@@ -14,13 +14,13 @@ check here)
 ## History
 
 This is re-verification after the second G4 rejection's short fix pass. The last green verify was
-at commit `460405e`. Since then, five commits landed: `4373e35` (spec.md, intent.md, ADR 0010
-amendments), `a0221e1` (evals.md: GC89, GC41 rewritten; new GC94, FL24, AD18), `1731db5` (F4:
+at commit `983bfce`. Since then, five commits landed: `3226a8c` (spec.md, intent.md, ADR 0010
+amendments), `678f41c` (evals.md: GC89, GC41 rewritten; new GC94, FL24, AD18), `f6c7143` (F4:
 `scripts/check-phone-redaction.mjs` catches `1`/`+1` country-code prefixes, decodes UTF-16 or
-exits 2 on undecodable files; new `src/checkPhoneRedaction.test.js`, 17 tests), `34a0a8c` (F5:
+exits 2 on undecodable files; new `src/checkPhoneRedaction.test.js`, 17 tests), `f39ea73` (F5:
 `docs/hosted-config.md`, `docs/sdlc/constraints.md`, `docs/sdlc/codebase-map.md`,
-`.workhorse/profile.yml` doc corrections), `b91d04f` (conductor log only, no code or test change).
-`git diff --stat 460405e..HEAD` confirms exactly these 15 files changed and no others: no
+`.workhorse/profile.yml` doc corrections), `13fc4cd` (conductor log only, no code or test change).
+`git diff --stat 983bfce..HEAD` confirms exactly these 15 files changed and no others: no
 `.github/workflows/**` file, no other `src/**` file, no `package.json`, no `package-lock.json`, no
 `vite.config.js`, no `index.html`.
 
@@ -40,7 +40,7 @@ reader of the git history. Anyone re-verifying this report must re-run the comma
 
 | Check | Command | Exit code | Output | Status |
 |-------|---------|-----------|--------|--------|
-| install | `npm ci` | not re-run this session | n/a | **confirmed carried.** `git diff --stat 460405e..HEAD -- package.json package-lock.json` produced no output this session, confirming neither file changed since the last install. Per the verifier's own rule ("install, only if a lockfile changed"), a fresh install was not required. `node_modules` is present and functional: `npm run lint`, `npm test` and `npm run build` all ran cleanly against it this session |
+| install | `npm ci` | not re-run this session | n/a | **confirmed carried.** `git diff --stat 983bfce..HEAD -- package.json package-lock.json` produced no output this session, confirming neither file changed since the last install. Per the verifier's own rule ("install, only if a lockfile changed"), a fresh install was not required. `node_modules` is present and functional: `npm run lint`, `npm test` and `npm run build` all ran cleanly against it this session |
 | typecheck | (none) | | | **no check defined** in the profile; the project has no TypeScript |
 | lint | `npm run lint` | 0 | `verify-logs/lint.log` | **confirmed pass.** oxlint reported zero errors, zero warnings |
 | format | (none) | | | **no check defined** in the profile |
@@ -62,16 +62,16 @@ Full detail: `verify-logs/eval-runner-report.md`, written by `workhorse:wh-eval-
 foreground dispatch that completed without hitting a turn limit. Per the conductor's instruction,
 the runner re-ran in full every case this wave touched (GC89, GC41, GC94, FL24, the R89/M8
 traceability rows, GC92, GC93 (renamed from GC91), and every case whose command is `npm test` or
-the redaction script), and carried the rest from the `460405e` report only where each case's
-inputs are confirmed unchanged since `460405e` via `git diff --stat`, labeling each result "carried"
+the redaction script), and carried the rest from the `983bfce` report only where each case's
+inputs are confirmed unchanged since `983bfce` via `git diff --stat`, labeling each result "carried"
 or "re-run" explicitly. This verifier spot-checked the runner's headline claims directly this
 session (`npm test`, `npm run build`, `npm run lint`, `npm audit --omit=dev`, the redaction
 script's self-test and both scans) and got identical results.
 
 | Category | Cases | Passed | Target | Met |
 |----------|-------|--------|--------|-----|
-| golden | 94 by this report's ID-level enumeration (GC1-GC90 numbered IDs plus `v`-suffixed pairs, GC91, GC92, GC93, GC94, GC-CP); evals.md's own section 9 states 99 (**believed, not reconciled**: this discrepancy already existed in the prior report at `460405e`, 93 vs. evals.md's stated 98, and is likely evals.md counting some sub-rows this ID-level enumeration does not separately count; flagged, not guessed at). 84 automatable by this enumeration, 10 permanently manual (GC19, GC22v, GC27v, GC30v, GC77, GC79v, GC84, GC86, GC90, GC-CP) | **84 of 84** automatable | 100% | **Yes** |
-| edge | 23 (EG1-EG23). EG19 is manual by design: `public/.well-known/security.txt`'s `Expires` field is a static, hand-maintained string, not a computed value, so there is no date-math generator to unit test. 22 automatable | **22 of 22** automatable | 100% | **Yes.** Applying the same convention the `460405e` verification.md used (EG19 excluded from the denominator as manual by design, not a new gap introduced by this wave) |
+| golden | 94 by this report's ID-level enumeration (GC1-GC90 numbered IDs plus `v`-suffixed pairs, GC91, GC92, GC93, GC94, GC-CP); evals.md's own section 9 states 99 (**believed, not reconciled**: this discrepancy already existed in the prior report at `983bfce`, 93 vs. evals.md's stated 98, and is likely evals.md counting some sub-rows this ID-level enumeration does not separately count; flagged, not guessed at). 84 automatable by this enumeration, 10 permanently manual (GC19, GC22v, GC27v, GC30v, GC77, GC79v, GC84, GC86, GC90, GC-CP) | **84 of 84** automatable | 100% | **Yes** |
+| edge | 23 (EG1-EG23). EG19 is manual by design: `public/.well-known/security.txt`'s `Expires` field is a static, hand-maintained string, not a computed value, so there is no date-math generator to unit test. 22 automatable | **22 of 22** automatable | 100% | **Yes.** Applying the same convention the `983bfce` verification.md used (EG19 excluded from the denominator as manual by design, not a new gap introduced by this wave) |
 | failure | 24 (FL1-FL24, FL24 new this wave). 16 automatable and passed (FL2-FL6, FL9-FL14, FL17-FL19, FL21, FL24). FL7 is mixed (Windows-preventive half passed, CI-only/browser-console halves outstanding). 7 are CI-only or manual by design (FL1, FL8, FL15, FL16, FL20, FL22, FL23) | **16 of 16** scoreable now, plus FL7's automatable half passing | 100% correct handling | **Yes**, for everything scoreable pre-deploy |
 | adversarial | 18 (AD1-AD18, AD18 new this wave and optional). Target is 100% rejected/handled except AD13 (documented) and AD18 (optional, scored "documented" when not run, per evals.md section 1's own rule) | 15 fully automated pass (AD1-AD9, AD11, AD12, AD14-AD17) + AD10 structural half pass + AD13 documented + AD18 not run (documented) | 100% except AD13; AD18 excluded from the bar | **Yes**, for everything scoreable pre-deploy |
 
@@ -121,7 +121,7 @@ in `verify-logs/eval-runner-report.md`.
   in a captured log. Scored "documented," not a failure, per evals.md's own rule.
 - **EG19** (R67, edge): not automatable. `public/.well-known/security.txt`'s `Expires` field is a
   static, hand-maintained string, not a computed value; there is no date-math generator in the
-  codebase to unit test. Pre-existing, unchanged since `460405e`.
+  codebase to unit test. Pre-existing, unchanged since `983bfce`.
 - **AD10** (R56/R57, adversarial): Windows-structural half passed (blocking audit step present and
   ordered correctly in the workflow). The live-rejection half requires an actual `ubuntu-latest` CI
   run against a real vulnerable package; cannot be run pre-deploy on this machine.
@@ -138,7 +138,7 @@ in `verify-logs/eval-runner-report.md`.
   optional ("may additionally be run"); not run this session, the unit test covers the requirement.
 - **One item left open for the human, not a verification blocker**: `evals.md`'s own section 9
   states category totals of 99 golden / 23 edge / 24 failure / 18 adversarial, while this report's
-  (and the `460405e` report's own) ID-level enumeration counts 94 golden. This discrepancy predates
+  (and the `983bfce` report's own) ID-level enumeration counts 94 golden. This discrepancy predates
   this wave and was not introduced or investigated by this run. It does not change any check's exit
   code or any category's pass/target outcome recorded above, since every automatable case by either
   counting method passed.

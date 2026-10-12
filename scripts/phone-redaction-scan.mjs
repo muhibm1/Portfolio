@@ -34,7 +34,7 @@ export const SELF_TEST_REFERENCE = '5555560100'
 // undecodable until its extension is added here.
 export const BINARY_EXTENSIONS = ['.jpg', '.png', '.woff', '.woff2']
 
-const REFERENCE_COMMIT = 'b50497f'
+const REFERENCE_COMMIT = 'e908b50'
 const REFERENCE_FILE = 'src/data/portfolioData.js'
 const PHONE_KEY_LINE = /^\s*["']?phone["']?\s*:/
 

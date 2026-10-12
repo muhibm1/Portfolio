@@ -12,10 +12,10 @@ Change: 2026-09-11-deployed-multi-page-portfolio-on-github-pages
 
 ## Context
 
-At commit `a98fdcf` (B2 and B3), `npm audit --omit=dev --audit-level=high` reports "found 0
+At commit `55ff8b6` (B2 and B3), `npm audit --omit=dev --audit-level=high` reports "found 0
 vulnerabilities" (confirmed, `verify-logs/fold-t1b-audit-prod.log`). The full-tree audit,
 `npm audit --audit-level=high`, exits 1. The verifier re-ran both under Node v22.12.0 at commit
-`cf969de` and confirmed the full audit lists exactly the five advisories below and no others
+`b5c70fc` and confirmed the full audit lists exactly the five advisories below and no others
 (`verification.md`, security_audit row, and `verify-logs/security_audit.json.log`, local only).
 
 | GHSA | Package | Severity | Fixed by |

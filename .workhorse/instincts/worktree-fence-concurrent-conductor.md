@@ -23,7 +23,7 @@ owner, because the second session reached its own gate independently.
 
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/conductor-log.md:16`
   "blocked: second conductor running this change concurrently (resumed 16:54:10, T3 worktree
-  agent-af9f403178ed99b06 locked); duplicate G2 approval 059dca7 written by an assistant, not
+  agent-af9f403178ed99b06 locked); duplicate G2 approval 3b1a910 written by an assistant, not
   the owner; T1 vite.config.js edit still denied by hook."
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/conductor-log.md:19`
   owner note: "the earlier vite.config.js and deploy.yml denials came from the worktree fence

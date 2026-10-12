@@ -8,18 +8,18 @@
 2026-09-20T22:18:03.371Z | design | wh-designer | revision round: high audit finding resolved via scripts/check-test-floor.mjs (ADR 0004); 34 eval cases, 3 waves, 13 decisions; brief.md rewritten
 2026-09-20T22:18:03.439Z | design | conductor | G2 Design presented
 2026-09-20T22:22:56.480Z | design | conductor | resumed at design after G2 approved; entering build
-2026-09-20T22:33:32.294Z | build | conductor | wave 1 folded into change branch by rebase (677b2dd); D14: task branch suffix -t1 not /t1, git ref collision, matches repo history
+2026-09-20T22:33:32.294Z | build | conductor | wave 1 folded into change branch by rebase (f695ceb); D14: task branch suffix -t1 not /t1, git ref collision, matches repo history
 2026-09-20T22:47:01.779Z | build | wh-builder t2 | layered UTF-8/UTF-16 scan, hit-outranks-incomplete exit; 44 tests in file, suite 273 pass, lint+build 0, real scan clean 0 hits 0 undecodable
-2026-09-20T22:47:01.864Z | build | conductor | t2 builder hit its turn limit before committing; conductor ran the checks and committed the finished diff (3cbce64); worktree isolation blocked a second builder from that tree
-2026-09-20T22:57:31.549Z | build | wh-builder t3 | floor script + 9 tests committed (b0c69f0), pin 44 measured from a fresh report; E33 fails, workflow edit blocked
+2026-09-20T22:47:01.864Z | build | conductor | t2 builder hit its turn limit before committing; conductor ran the checks and committed the finished diff (7f425e5); worktree isolation blocked a second builder from that tree
+2026-09-20T22:57:31.549Z | build | wh-builder t3 | floor script + 9 tests committed (9eed5fa), pin 44 measured from a fresh report; E33 fails, workflow edit blocked
 2026-09-20T22:57:31.635Z | build | conductor | BLOCKED: hook denies every edit to .github/workflows/deploy.yml in subagent and main session; owner must apply the one-step edit by hand
 2026-09-20T23:00:26.489Z | build | conductor | resumed at build after session cut off; wave 3 blocked on .github/workflows/deploy.yml hook denial
-2026-09-20T23:04:44.143Z | build | wh-builder t3b | deploy.yml floor step edited (hook denial did not reproduce); E33 passes, 282 tests, lint+build 0; folded as 356f41c
+2026-09-20T23:04:44.143Z | build | wh-builder t3b | deploy.yml floor step edited (hook denial did not reproduce); E33 passes, 282 tests, lint+build 0; folded as eb5e334
 2026-09-20T23:06:19.945Z | build | wh-polish | no edits needed; 282 tests, lint, build all exit 0
-2026-09-20T23:11:20.677Z | verify | wh-verifier | GREEN at 356f41c: lint/test/build/audit + self-test, real scan, junction run, test floor all exit 0; 282 tests; evals 34/34 (13g 7e 5f 8a 1n)
+2026-09-20T23:11:20.677Z | verify | wh-verifier | GREEN at eb5e334: lint/test/build/audit + self-test, real scan, junction run, test floor all exit 0; 282 tests; evals 34/34 (13g 7e 5f 8a 1n)
 2026-09-21T01:42:34.536Z | review | conductor | resumed at review after session cut off
-2026-09-21T01:48:47.136Z | review | wh-fixer | review mode: fixed 6 findings (5 medium, 1 low) in cc36f23; npm test exit 0 (285 passed), npm run lint exit 0
-2026-09-21T01:53:52.556Z | verify | wh-verifier | re-verify after review fix at cc36f23: green, 8 of 8 checks passed, 34 of 34 eval cases met
+2026-09-21T01:48:47.136Z | review | wh-fixer | review mode: fixed 6 findings (5 medium, 1 low) in d950b49; npm test exit 0 (285 passed), npm run lint exit 0
+2026-09-21T01:53:52.556Z | verify | wh-verifier | re-verify after review fix at d950b49: green, 8 of 8 checks passed, 34 of 34 eval cases met
 2026-09-21T02:01:14.045Z | review | wh-shipper | ship.md written, PR https://github.com/muhibm1/Portfolio/pull/15
 2026-09-21T02:01:35.908Z | review | wh-shipper | ship.md written (135 lines), branch pushed, PR #15 opened, rollback rehearsed clean
 2026-09-21T02:01:38.312Z | review | conductor | G4 Ship presented
@@ -28,7 +28,7 @@
 2026-09-21T02:06:10.248Z | deploy | wh-shipper | deploy mode: dev confirmed (vite ready, localhost:5177/Portfolio/), staging none, prod not run (auto false, merge of PR 15 is the release, owner performs it); deploy record in ship.md, 149 lines
 2026-09-21T02:06:10.332Z | deploy | conductor | D17: close at done with PR 15 unmerged, or stop blocked -> stop blocked; follows D16 precedent, done would record a change that has not shipped
 2026-09-21T02:06:10.416Z | deploy | conductor | BLOCKED at deploy: owner must merge PR 15 (the production release); resume after merge to record the publish and close
-2026-09-21T02:06:48.233Z | deploy | conductor | resumed at deploy after blocked: owner merged PR 15 as 9d24286 (mergedAt 2026-09-21T02:06:07Z)
-2026-09-21T02:07:16.234Z | deploy | conductor | publish confirmed: run 35553027638 on 9d24286 success, build+test and deploy+smoke jobs green; one informational exit-1 annotation in Build and test (step 33)
-2026-09-21T02:08:41.051Z | deploy | wh-shipper | deploy record updated: prod published via owner merge 9d24286, run 35553027638 success; exit-1 annotation confirmed from informational full-tree audit step; ship.md 150 lines, c731efc pushed to change branch
+2026-09-21T02:06:48.233Z | deploy | conductor | resumed at deploy after blocked: owner merged PR 15 as 9f0d83d (mergedAt 2026-09-21T02:06:07Z)
+2026-09-21T02:07:16.234Z | deploy | conductor | publish confirmed: run 35553027638 on 9f0d83d success, build+test and deploy+smoke jobs green; one informational exit-1 annotation in Build and test (step 33)
+2026-09-21T02:08:41.051Z | deploy | wh-shipper | deploy record updated: prod published via owner merge 9f0d83d, run 35553027638 success; exit-1 annotation confirmed from informational full-tree audit step; ship.md 150 lines, cde0026 pushed to change branch
 2026-09-21T02:08:49.535Z | done | conductor | done: retro dispatched in background

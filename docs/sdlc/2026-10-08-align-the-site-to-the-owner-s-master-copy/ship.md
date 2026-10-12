@@ -1,6 +1,6 @@
 # Ship: Align the site to the owner's master copy
 
-Change id: `2026-10-08-align-the-site-to-the-owner-s-master-copy` · Tier 2 · Branch `wh/2026-10-08-align-the-site-to-the-owner-s-master-copy` at `864e448` · PR https://github.com/muhibm1/Portfolio/pull/26
+Change id: `2026-10-08-align-the-site-to-the-owner-s-master-copy` · Tier 2 · Branch `wh/2026-10-08-align-the-site-to-the-owner-s-master-copy` at `8f5cf51` · PR https://github.com/muhibm1/Portfolio/pull/26
 Prepared 2026-10-08T04:22Z UTC · Design approved: see [approvals.md](./approvals.md) · Reports: [reviews/](./reviews/) · [verification.md](./verification.md)
 
 This is the Ship document. Approving it merges the change, and a merge to `main` publishes the public site through GitHub Actions (CLAUDE.md, confirmed), so treat approval as a release.
@@ -21,7 +21,7 @@ Plain words: every string your document specifies was rewritten word for word, w
 
 ### The strings as rendered (a)
 
-All quoted from `dist/**/index.html` built at 864e448; dist is newer than the last commit (confirmed, file times).
+All quoted from `dist/**/index.html` built at 8f5cf51; dist is newer than the last commit (confirmed, file times).
 - Hero h1: "I find the step everyone is waiting on."
 - Hero lead: "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration." Same text in the meta, Open Graph and Twitter descriptions (confirmed for the meta description; the others by the `masterCopy` test).
 - Right now: "At Apple Maps: Running a decision support agent and data health tooling for a pipeline spanning 50+ regions". Also "Building WorkHorse: An agentic software delivery pipeline with its own retrieval system. This site was built with it."
@@ -83,19 +83,19 @@ Evals: golden 20/20, edge 8/8, failure 2/2, adversarial 1/1. Known pre-existing 
 
 | Severity | Reviewer | File:line | Finding | Resolution |
 |----------|----------|-----------|---------|------------|
-| medium | bug | CaseStudyFlowDiagram.jsx:28 | Six-column flow titles spill out of boxes at 776 to 1416px | fixed 564f8d8 (break-words, hyphens-auto); closed by CSS semantics, not measured in a browser |
+| medium | bug | CaseStudyFlowDiagram.jsx:28 | Six-column flow titles spill out of boxes at 776 to 1416px | fixed 32a417f (break-words, hyphens-auto); closed by CSS semantics, not measured in a browser |
 | medium | bug, security (conformance low) | public/og.png | Share image still reads "Tickets decided a day" | accepted per D13 (owner approved at G2): the main session re-renders `public/og.png` from `docs/design/og.svg` in local headless Chrome and commits it before merge; no test requires the PNG; the open item is listed under Deploy and undo and Your decision |
-| medium | adoption | portfolioData.js:9, portfolioData.test.js:68 | Comments cite an untracked master document | fixed 4565b15; adoption re-check closed |
-| medium | test-analyzer | masterCopy.test.jsx:690 | Agent-authority regex too narrow | fixed 0dabaa9 |
+| medium | adoption | portfolioData.js:9, portfolioData.test.js:68 | Comments cite an untracked master document | fixed 74cfb47; adoption re-check closed |
+| medium | test-analyzer | masterCopy.test.jsx:690 | Agent-authority regex too narrow | fixed 8af665e |
 | low | bug | CaseStudyFlowDiagram.jsx:26 | `data-gate` also on non-decision gate steps (Neural 1, WorkHorse 3); E31 as written not met | open, no fix; D20 re-scope, owner decides |
 | low | conformance | spec D18 | "boundary" became "line" in "That line is deliberate rather than cautious." | open, recommendation taken, approved at G2 |
 | low | adoption | CLAUDE.md:29, codebase-map.md:28 | Still say "self-hosted" typefaces | open, protected file, owner decides |
-| low | adoption | forbidden-copy.mjs:119-137 | "Document section N" comments with no path | fixed 4565b15 |
+| low | adoption | forbidden-copy.mjs:119-137 | "Document section N" comments with no path | fixed 74cfb47 |
 | low | security (out of scope) | docs/design-brief.md, docs/design/redesign-2026-09/* | Public repo docs still carry "via TCS", "LLM decision systems", "self-hosted LLM" | open, no fix, owner decides; git history keeps old text anyway |
-| low | test-analyzer | CaseStudyPage.test.jsx:239 | Mock cleanup not in afterEach | fixed 3ce298d |
+| low | test-analyzer | CaseStudyPage.test.jsx:239 | Mock cleanup not in afterEach | fixed b27d492 |
 | low | test-analyzer | checkForbiddenCopy.test.js:144 | "self hosted" and non-breaking hyphen variants untested | open, no fix (ask-first scanner) |
 | low | test-analyzer | masterCopy.test.jsx:54 | Authority regex misses adverb, plural, perfect tense, "get" passive | open, no fix |
-| low | typescript | forbidden-copy.mjs:~212 | "approve, reject, or hold" Oxford comma missed | fixed 864e448 |
+| low | typescript | forbidden-copy.mjs:~212 | "approve, reject, or hold" Oxford comma missed | fixed 8f5cf51 |
 | low | typescript | forbidden-copy.mjs:~213 | "11 times", "decided each ticket", "$0 rejected" variants | open, no fix |
 | low | typescript | forbidden-copy.mjs:~203 | Bare "via" banned everywhere, including comments | open, no fix; follows D9 |
 
@@ -141,13 +141,13 @@ Approve to merge, or reject with notes to send it back. The merge publishes the 
 
 | Step | Result | UTC | Status |
 |------|--------|-----|--------|
-| Push branch head bb81b50 | pushed, PR head matched | 2026-10-08 | confirmed |
-| `gh pr merge 26 --merge --match-head-commit bb81b50...` | exit 0, merge commit `0d5803f549028e7b2b11d3502df0e6eac712edc3` (merge commit, not squash) | 2026-10-08 07:43 | confirmed |
+| Push branch head 2b3ddb5 | pushed, PR head matched | 2026-10-08 | confirmed |
+| `gh pr merge 26 --merge --match-head-commit 2b3ddb5...` | exit 0, merge commit `2b17b8d64ed3696157f8e33716235dfa330d3474` (merge commit, not squash) | 2026-10-08 07:43 | confirmed |
 | Actions run 37745217741, job "Build and test" | success | 07:44:21 | confirmed |
 | Actions run 37745217741, job "Deploy and smoke-test the published site" | success | 07:44:42 | confirmed |
 | dev, staging | not run: dev is a local server, staging has no command | n/a | confirmed |
 
 Run: https://github.com/muhibm1/Portfolio/actions/runs/37745217741. The merge-commit row replaces the squash wording above.
-Rollback (not rehearsed, believed, not verified): `git revert -m 1 0d5803f549028e7b2b11d3502df0e6eac712edc3`, then the owner pushes the revert to `main`.
-D13 closed (confirmed): `public/og.png` re-rendered from `docs/design/og.svg` with the label "Tickets a day", commit 7d4c046.
+Rollback (not rehearsed, believed, not verified): `git revert -m 1 2b17b8d64ed3696157f8e33716235dfa330d3474`, then the owner pushes the revert to `main`.
+D13 closed (confirmed): `public/og.png` re-rendered from `docs/design/og.svg` with the label "Tickets a day", commit c8131f5.
 Known issue shipped knowingly by the owner, for a follow-up change (owner-reported, believed, not verified by the agent): flow-diagram words break letter by letter at 768px, and the word "recommendation" at 1440px. At tablet width the case-study sidebar stays, the content column is about 366px, and the flow grid still switches to 6 or 8 columns.

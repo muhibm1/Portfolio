@@ -3,11 +3,11 @@
 Change id: `2026-09-20-pin-node-22-12-minimum`
 Status: green
 Run at: 2026-09-20T10:24:00Z UTC (approximate, from the test run's own "Start at" line)
-Commit: `7b25b7272a8841ee1279e7ad5c766740b9a005d9`
+Commit: `67c5fb28f43b4b3b98685fb52a6b7345e8fb6785`
 
-Re-verification requested because the prior green run (2026-09-20T11:30:30Z, commit `2ddbe37`)
-predates commits `1dbf781` (split the `.npmrc` guard lines on a lone CR, matching npm's own
-parser) and `7b25b72` (force-kill the shell-fallback npm spawn's process tree on timeout). Every
+Re-verification requested because the prior green run (2026-09-20T11:30:30Z, commit `228827e`)
+predates commits `54798cd` (split the `.npmrc` guard lines on a lone CR, matching npm's own
+parser) and `67c5fb2` (force-kill the shell-fallback npm spawn's process tree on timeout). Every
 check and every automatable eval case below was re-run fresh on this commit; nothing is carried
 forward from the earlier run. All claims below are confirmed by a command this session ran and
 read, unless marked "believed, not verified".
@@ -24,9 +24,9 @@ read, unless marked "believed, not verified".
 - Test suite: 246 tests, 246 passed, 0 failed, 0 skipped, across 29 files, 20.23s (`npm test`,
   `verify-logs/test.log`), exit 0. Up from 208 tests in 25 files at the previous change,
   `2026-09-13-no-inlined-data-font-urls-in-built-css`. `src/checkNpmrc.test.js` grew from 10 tests
-  (the last verified run, commit `2ddbe37`) to 13 tests in this run, from the `1dbf781` fix's two
+  (the last verified run, commit `228827e`) to 13 tests in this run, from the `54798cd` fix's two
   new lone-CR deny-side tests plus its regression test for the existing CRLF fixture.
-  `src/nodeVersionPin.test.js` still holds 10 tests; `7b25b72` changed its spawn-timeout handling,
+  `src/nodeVersionPin.test.js` still holds 10 tests; `67c5fb2` changed its spawn-timeout handling,
   not its test count.
 - `node_modules` survival: top-level package directory count under `node_modules` was 129 both
   immediately before and immediately after the full `npm test` run (`ls -d node_modules/*/ | wc -l`,
@@ -116,7 +116,7 @@ failures recorded" (confirmed, run at the start of this session).
 
 - `evals.md` NF26 states an expected 227 tests / 28 files; the observed, confirmed count this
   session is 246 tests / 29 files (13 more than the last verified run's 233, from `checkNpmrc.test.js`
-  growing by 3 tests in the `1dbf781` fix). This is a stale plan/eval number, not a code defect;
+  growing by 3 tests in the `54798cd` fix). This is a stale plan/eval number, not a code defect;
   treated as met, not failed, since the actual count only ever grows past the floor.
 - The repository's actual `.npmrc` remains one line, `engine-strict=true`, without the explanatory
   comment shown in spec Interfaces (c); unchanged from the last verified run and still satisfies
@@ -132,7 +132,7 @@ failures recorded" (confirmed, run at the start of this session).
   change has not been merged and no workflow run exists yet to read.
 - The owner's manual four-item `docs/hosted-config.md` section 6 check (triggered because
   `package.json` changed): manual, not run by this session.
-- Whether `7b25b72`'s process-tree kill actually prevents an orphaned `npm.cmd`/`node` grandchild
+- Whether `67c5fb2`'s process-tree kill actually prevents an orphaned `npm.cmd`/`node` grandchild
   on a real timeout: the commit message itself says the failure mode was never reproduced; this
   session observed no timeout or hang in `src/nodeVersionPin.test.js` (all 10 tests passed in
   8.29s total for the spawn sub-tests), so the fix's defensive behaviour was not exercised. Believed

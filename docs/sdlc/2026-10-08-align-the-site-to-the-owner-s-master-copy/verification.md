@@ -3,7 +3,7 @@
 Change id: `2026-10-08-align-the-site-to-the-owner-s-master-copy`
 Status: green
 Run at: 2026-10-08T04:16:32.351Z UTC
-Commit: `864e4484ef84`
+Commit: `8f5cf512e9dd`
 
 Status is green only when every defined check exited 0 and every eval category met its target.
 "No check defined" rows do not count as passes; they are listed so the gap is visible.
@@ -55,12 +55,12 @@ Anything believed but not run, with the reason.
 
 - Item 7 read-through of the copy, rendering at 390, 768 and 1440px, and item 8 link checks: manual, not run, carried to the Ship document. Never counted as passed.
 - E12 whole-page and E31 were re-scoped by decision D20 (decision page has exactly one data-gate; other routes hold as many as their gate:true steps in data). The builder cases "serves a human gate marker on the decision page and only on gate steps elsewhere" and E12 passed as re-scoped (confirmed). The written text of E12 and E31 in evals.md still says the older wording.
-- Re-run at 864e448 (E3, E10, E12, E16, E18-E22, E24, E26, E31): all matching tests passed, floors passed, dist scan 40 files exit 0 (confirmed).
+- Re-run at 8f5cf51 (E3, E10, E12, E16, E18-E22, E24, E26, E31): all matching tests passed, floors passed, dist scan 40 files exit 0 (confirmed).
 - Nothing was served: no vite preview or dev server was started (confirmed).
 
 ## Evals run
 
-- Command: `npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json`, exit 0 (confirmed, `verify-logs/evals.log`). 520 passed, 0 failed, 0 pending, re-run at 864e448 after the review fixes. Every implemented eval test title was found in the JSON report with status passed (confirmed, by title match per case).
+- Command: `npm test -- --reporter=default --reporter=json --outputFile.json=vitest-results.json`, exit 0 (confirmed, `verify-logs/evals.log`). 520 passed, 0 failed, 0 pending, re-run at 8f5cf51 after the review fixes. Every implemented eval test title was found in the JSON report with status passed (confirmed, by title match per case).
 - E26: `node scripts/check-test-floor.mjs vitest-results.json`, exit 0. checkForbiddenCopy 46 passed (floor 29), pageMeta 11 (floor 11) (confirmed). `vitest-results.json` deleted afterwards.
 - E24: `node scripts/check-forbidden-copy.mjs dist`, exit 0, 40 files scanned against 32 for the no-argument run, so 8 more (confirmed).
 - N1: 520 passed, at or above 480. N3: build log shows `Prerendered 8 pages` (confirmed). N4: lint and audit exit 0 (confirmed). N2 passed within the suite.

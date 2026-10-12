@@ -1,10 +1,10 @@
 # Ship: Rebuild the portfolio to the approved redesign
 
-This replaces the blocked draft of 2026-09-25 (`f0c9a84`), red on a missing resume PDF. The
+This replaces the blocked draft of 2026-09-25 (`a5d499f`), red on a missing resume PDF. The
 resume is now withdrawn from the site entirely (D24); this is the revision that followed.
 
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`, tier 2, branch
-`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `95ecf64`. PR: https://github.com/muhibm1/Portfolio/pull/19
+`wh/2026-09-25-rebuild-portfolio-to-approved-redesign` at `def66c9`. PR: https://github.com/muhibm1/Portfolio/pull/19
 Design approved: [approvals.md](./approvals.md) (G2, four rounds, last approved 09-28 09:32 UTC)
 
 ## The short version
@@ -26,7 +26,7 @@ merge and publish.
    boundary-aware pattern terms, confirmed by reading the file). `phone-redaction-scan.mjs` no
    longer skips `.pdf` (D30).
 3. `src/data/portfolioData.js` (sensitive, content): every resume-derived claim rewritten,
-   run-record stats now carry source and staleness comments (`f7be231`).
+   run-record stats now carry source and staleness comments (`cd95f92`).
 4. `SiteHeader.jsx`, `ContactFooter.jsx`, `CaseStudyCards.jsx`, `CaseStudyPage.jsx`, `HomeHero.jsx`,
    `ExperienceSection.jsx`: resume controls deleted, GitHub code links added, footer narrowed to
    two links, MCP content rendered; three PDF scripts deleted, no PDF was ever committed.
@@ -73,15 +73,15 @@ line, FastAPI, MCP clause; the run-record figures and the five-row outcomes tabl
 
 | Severity | Reviewer(s) | Finding | Resolution |
 |---|---|---|---|
-| high | adoption | run-record figures had no in-file source/staleness note | fixed `f7be231` |
-| high | silent-failure, security | phone-redaction scan never runs in CI, pre-existing on `main` | accepted: D57; deferral in `constraints.md` (`faa5bba`); follow-up fix |
-| medium | bug, typescript | scanner reads binaries; `2x`/`11x`/`4 of 4`/timing pattern unanchored | fixed `4b23191` |
-| medium | adoption | scanner not named as the extension point in CLAUDE.md | fixed `f7be231` |
-| medium | react | `aria-controls` pointed at an unmounted panel | fixed `01fa7ae` |
+| high | adoption | run-record figures had no in-file source/staleness note | fixed `cd95f92` |
+| high | silent-failure, security | phone-redaction scan never runs in CI, pre-existing on `main` | accepted: D57; deferral in `constraints.md` (`2a2c2f6`); follow-up fix |
+| medium | bug, typescript | scanner reads binaries; `2x`/`11x`/`4 of 4`/timing pattern unanchored | fixed `210b93a` |
+| medium | adoption | scanner not named as the extension point in CLAUDE.md | fixed `cd95f92` |
+| medium | react | `aria-controls` pointed at an unmounted panel | fixed `ee35a0a` |
 | medium | react | no error boundary around `ParagraphWithLink`'s throw | accepted: conductor, D58; prerender fails closed on the same throw |
-| medium | pr-test-analyzer | footer link count not asserted at exactly 2 | fixed `28eb005` |
+| medium | pr-test-analyzer | footer link count not asserted at exactly 2 | fixed `cf92fed` |
 | medium | conformance | ship.md was the stale pre-revision draft | resolved by this document |
-| low | bug/react/pr-test/conformance/security (9 items) | false negatives, G21 line-skip, `key={index}`, stale comment, D56 scope, "Appendix A" spot check | 4 fixed (`4b23191`, `01fa7ae`, `28eb005`); 5 confirmed sound or open, no risk |
+| low | bug/react/pr-test/conformance/security (9 items) | false negatives, G21 line-skip, `key={index}`, stale comment, D56 scope, "Appendix A" spot check | 4 fixed (`210b93a`, `ee35a0a`, `cf92fed`); 5 confirmed sound or open, no risk |
 
 Conformance: 33 of 33 traced. Adoption score: 3 (before the fixes above).
 
@@ -100,7 +100,7 @@ Conformance: 33 of 33 traced. Adoption score: 3 (before the fixes above).
 
 ## The D38 history rewrite
 
-Branch never pushed (confirmed). Twelve design commits squashed to redacted commit `07f788f`,
+Branch never pushed (confirmed). Twelve design commits squashed to redacted commit `3b28a5d`,
 hashes logged in conductor-log.md; 42-marker scan of all 130 reachable commits found zero
 resume-text hits (confirmed). Full detail in conductor-log.md.
 
@@ -117,22 +117,22 @@ Not rehearsed pre-merge: no staging command exists, dev does not exercise the re
 
 ## Deploy record
 
-G4 approved at `9ef261b` (confirmed). Conductor's earlier wh-shipper dispatch to merge PR #19 was
+G4 approved at `8cc5767` (confirmed). Conductor's earlier wh-shipper dispatch to merge PR #19 was
 refused by the permission classifier as a production deploy (conductor-log, 2026-09-28T17:47:24Z).
 The owner then told the main session in chat to merge and deploy it itself; the main session
-(not the owner) ran `gh pr merge 19 --merge --match-head-commit 2705a6f`.
+(not the owner) ran `gh pr merge 19 --merge --match-head-commit 0046553`.
 
 | Step | Detail | Result | Label |
 |---|---|---|---|
-| Merge | PR #19 -> `9c3377f`, 17:48:23Z; diff `6ccfde6..2705a6f` only touches approvals/log | state MERGED | confirmed |
-| CI | Actions run 36460748579, head `9c3377f` | success, 2 jobs/29 steps, 0 failed | confirmed |
+| Merge | PR #19 -> `c221b05`, 17:48:23Z; diff `1ef0414..0046553` only touches approvals/log | state MERGED | confirmed |
+| CI | Actions run 36460748579, head `c221b05` | success, 2 jobs/29 steps, 0 failed | confirmed |
 | Live routes | `/`, `/work/`, 5 case studies, `/og.png` | 200 | relayed |
 | Live 404s | `/nope/`, resume PDF | 404 each (no resume, by design) | relayed |
 | WorkHorse page | "5 of 5", "1 of 5", Paddock x3, snapshot mentions, MCP section | present | relayed |
 | Banned-term scan | home+WorkHorse HTML vs resume/stale/timing/dash/phone terms | 0 hits | relayed |
 | Snapshot repos | 3 public repos | 200 each | relayed |
 
-Owner's own, not yet done: keyboard order, Lighthouse, phone view. Rollback: undo row above stands, now against `9c3377f` (revert the merge commit on `main` via a PR; redeploys).
+Owner's own, not yet done: keyboard order, Lighthouse, phone view. Rollback: undo row above stands, now against `c221b05` (revert the merge commit on `main` via a PR; redeploys).
 
 ## Clock
 

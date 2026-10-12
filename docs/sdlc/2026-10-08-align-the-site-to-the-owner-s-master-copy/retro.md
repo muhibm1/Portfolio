@@ -4,7 +4,7 @@ Change id: `2026-10-08-align-the-site-to-the-owner-s-master-copy` (tier 2)
 
 ## What happened
 
-The site copy and case-study structure were aligned to the owner's master copy in two build waves (4 tasks, 19 decisions at G2, D20-D24 added in build). Verify went green at 508 tests, review opened one fix round (4 fixes, 520 tests), G4 was approved, and PR #26 merged as merge commit 0d5803f. Deploy run 37745217741 passed both jobs (build/test, deploy/smoke-test). D13 closed: `public/og.png` re-rendered at 7d4c046.
+The site copy and case-study structure were aligned to the owner's master copy in two build waves (4 tasks, 19 decisions at G2, D20-D24 added in build). Verify went green at 508 tests, review opened one fix round (4 fixes, 520 tests), G4 was approved, and PR #26 merged as merge commit 2b17b8d. Deploy run 37745217741 passed both jobs (build/test, deploy/smoke-test). D13 closed: `public/og.png` re-rendered at c8131f5.
 
 ## Clock
 

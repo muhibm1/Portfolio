@@ -11,7 +11,7 @@ Checked and found sound (no finding): gate-marker tests per D20 (decision page e
 Findings outside scope: the banned-term list is copied in three places (forbidden-copy.mjs, portfolioData.test.js, masterCopy.test.jsx); intentional per file header, but they can drift.
 Not verified: I did not run `npm test`; all claims come from reading the diff and the files above.
 
-## Re-check (diff b69406118120..864e4484ef84)
+## Re-check (diff 40235fadf17a..8f5cf512e9dd)
 
 Verdict: 1 finding (0 critical, 0 high, 0 medium, 1 low). Medium (AGENT_AUTHORITY too narrow) is closed.
 

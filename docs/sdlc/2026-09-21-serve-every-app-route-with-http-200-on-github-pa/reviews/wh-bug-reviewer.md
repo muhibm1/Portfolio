@@ -1,6 +1,6 @@
 Verdict: 2 findings (0 critical, 0 high, 0 medium, 2 low)
 
-Reviewed: `git diff main...wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` at b4d2f6e (code files only; SDLC prose not reviewed for bugs). Changed functions read in full with callers: `staticRoutePaths`, `validatedSlug` (src/routePaths.js); `sitePagePaths`, `writeRoutePages`, `resolvedTarget` (scripts/route-pages.mjs); `main`, `pageRelativePaths`, `readShell`, `missingOrStaleOffenders`, `unexpectedOffenders` (scripts/check-route-pages.mjs); `githubPagesBuild().closeBundle` (vite.config.js); the build-job check step and the "Smoke R121 and R122" step (deploy.yml, incl. R63's `ROOT_URL` and `smoke/root.html` at lines 163 to 177); the four new test files.
+Reviewed: `git diff main...wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` at 98fe6ce (code files only; SDLC prose not reviewed for bugs). Changed functions read in full with callers: `staticRoutePaths`, `validatedSlug` (src/routePaths.js); `sitePagePaths`, `writeRoutePages`, `resolvedTarget` (scripts/route-pages.mjs); `main`, `pageRelativePaths`, `readShell`, `missingOrStaleOffenders`, `unexpectedOffenders` (scripts/check-route-pages.mjs); `githubPagesBuild().closeBundle` (vite.config.js); the build-job check step and the "Smoke R121 and R122" step (deploy.yml, incl. R63's `ROOT_URL` and `smoke/root.html` at lines 163 to 177); the four new test files.
 
 | Severity | File:line | Finding | Failure scenario | Fix |
 |---|---|---|---|---|

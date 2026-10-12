@@ -121,14 +121,14 @@ Log format, one line per check, newest last:
 
 Log:
 
-- 2026-09-11 d5ad8b0 first deploy (PR #1). 1 pass: home renders inside `#root` (confirmed, browser).
+- 2026-09-11 81b57bd first deploy (PR #1). 1 pass: home renders inside `#root` (confirmed, browser).
   2 pass: canvas paints (12,020 non-transparent pixels at 420x420, role `img`, `aria-label`
   present, confirmed by pixel read); pause-on-hide/offscreen not exercised live this pass, taken
   from code (`ThinkingOrbHero.jsx`, `IntersectionObserver` + `visibilitychange`) and its test
   suite. 3 pass: `/work/apple-llm-triage` opened directly, rendered the case study (confirmed).
   4 fail: 12 `font-src 'self'` CSP violations from `data:` fonts Vite inlined into the built CSS
   (confirmed, browser console). Filed as change `2026-09-13-no-inlined-data-font-urls-in-built-css`.
-- 2026-09-14 c3b7ca5 fix deploy (PR #8), triggered by a change to `vite.config.js`. 1 pass: home
+- 2026-09-14 38dfdf3 fix deploy (PR #8), triggered by a change to `vite.config.js`. 1 pass: home
   renders (confirmed). 2 pass, from code and its tests: `ThinkingOrbHero.jsx`'s
   `visibilitychange`/`IntersectionObserver` pause logic and its dedicated test file
   (`setTabVisibility`, `installViewportObserver`) are unchanged by this fix. A live pause/resume
@@ -162,14 +162,14 @@ updated 2026-09-28 by the same change's revision (task T21, D24).
 - The number is removed from the site (R41, authorised by G1-D1, "D1 remove phone", in
   `approvals.md`). Under G4-D3 every full and partial form of it was also redacted from every file
   tracked on the branch of change `2026-09-11-deployed-multi-page-portfolio-on-github-pages`, the
-  approved G1 and G2 artifacts included, in commits `1d11c97`, `545da85` and `76bcc00`. No
+  approved G1 and G2 artifacts included, in commits `bbf4d9b`, `33c3cf4` and `cf972a8`. No
   document on that branch carries any form of it, and no redaction decision is open. The check
   is `scripts/check-phone-redaction.mjs` (spec R89). It derives the number at run time from
-  `b50497f`, never prints it, and runs on a developer machine, not in CI. Confirmed on
+  `e908b50`, never prints it, and runs on a developer machine, not in CI. Confirmed on
   2026-09-13: the script exits 0 with 0 hits on that branch. A branch that has not merged this
   change still carries the number in its current files, `main` before the merge included
   (conductor-confirmed in the G4 review packet, 2026-09-13). Item 2 covers publishing.
-- Commits from `b50497f` onward contain the full number. Confirmed for `b50497f` itself:
+- Commits from `e908b50` onward contain the full number. Confirmed for `e908b50` itself:
   `git grep` finds it in that commit's `src/data/portfolioData.js`. Rewriting history with
   `git filter-repo` would invalidate every commit SHA quoted in `approvals.md`, `state.json` and
   the SDLC artifacts.

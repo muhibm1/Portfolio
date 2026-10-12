@@ -3,10 +3,10 @@
 Change id: `2026-09-20-fix-phone-redaction-scanner`
 Status: green
 Run at: 2026-09-20 (this session; test log's own "Start at" line: 20:50:29 local)
-Commit: `cc36f23d613104426c0aaa6ce542c924624ca57e`
+Commit: `d950b49763bed2673293268f6e4f152fe93123b9`
 Branch: `wh/2026-09-20-fix-phone-redaction-scanner`
 
-Re-verification after the review-phase fixer commit `cc36f23`, which touched
+Re-verification after the review-phase fixer commit `d950b49`, which touched
 `scripts/check-test-floor.mjs`, `src/checkPhoneRedaction.test.js` and `src/checkTestFloor.test.js`
 only. No lockfile changed (`git status --porcelain` shows no `package-lock.json` change), so
 install was not re-run; the prior session's `node_modules` was used.
@@ -19,13 +19,13 @@ install was not re-run; the prior session's `node_modules` was used.
   in count from the previous verification (E19 gained assertions inside an existing test, not a
   new test). `src/checkTestFloor.test.js` holds 12 tests, up from 9, matching the fixer's three
   added fixture cases in the exits-2 `it.each`. Up from 282 tests at the previous change's
-  verification, this same change id at commit `356f41c`.
+  verification, this same change id at commit `eb5e334`.
 - Build: `vite build` transformed 1924 modules and wrote `dist/` in 4.84s, exit 0
   (`verify-logs/build.log`).
 - Security audit: `npm audit --omit=dev --audit-level=high` found 0 vulnerabilities, exit 0
   (`verify-logs/security_audit.log`).
-- Install: not re-run, no lockfile change on this branch since `356f41c` (confirmed by
-  `git diff --name-only 356f41c..cc36f23`, which lists only the three files named above).
+- Install: not re-run, no lockfile change on this branch since `eb5e334` (confirmed by
+  `git diff --name-only eb5e334..d950b49`, which lists only the three files named above).
 - Typecheck, format, e2e, screenshot: no command defined in `.workhorse/profile.yml`; not run.
 - Self-test: `node scripts/check-phone-redaction.mjs --self-test` printed
   `Self-test: 17 of 17 form renderings hit, 0 of 9 near-misses hit.`, exit 0
@@ -64,7 +64,7 @@ install was not re-run; the prior session's `node_modules` was used.
 
 | Check | Command | Exit code | Output | Status |
 |-------|---------|-----------|--------|--------|
-| install | `npm ci` | - | not re-run: no lockfile change since `356f41c` | not applicable |
+| install | `npm ci` | - | not re-run: no lockfile change since `eb5e334` | not applicable |
 | typecheck | (none) | - | no check defined | no check defined |
 | lint | `npm run lint` | 0 | `verify-logs/lint.log` | confirmed |
 | test | `npm test` | 0 | `verify-logs/test.log` | confirmed |

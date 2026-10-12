@@ -3,7 +3,7 @@
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`
 Status: green
 Run at: 2026-09-28 UTC
-Commit: `faa5bba9634781072267981f15deaa182c8a2907`
+Commit: `2a2c2f684ce94a05f3522cc16272cc733ad211f8`
 
 Status is green only when every defined check exited 0 and every eval category met its target.
 "No check defined" rows do not count as passes; they are listed so the gap is visible.
@@ -36,7 +36,7 @@ Status is green only when every defined check exited 0 and every eval category m
 - Built-CSS preflight `[hidden]` rule: `grep -o '\[hidden\][^}]*{[^}]*}' dist/assets/*.css` found
   `[hidden]:where(:not([hidden=until-found])){display:none!important}` in
   `dist/assets/index-DzTMdoLr.css`, confirming the mobile menu panel (which now carries `hidden`
-  plus a `flex` class per the `01fa7ae` review fix) is actually hidden by Tailwind preflight in
+  plus a `flex` class per the `ee35a0a` review fix) is actually hidden by Tailwind preflight in
   the built stylesheet, not merely believed.
 - Route pages check (R142): `node scripts/check-route-pages.mjs` exit 0, 8 pages carry their
   markers, 0.086s wall (`verify-logs/check-route-pages.log`), well under N1's 2s per-check target.
@@ -86,7 +86,7 @@ listed across the table). For the cases touched by the review fixes on this run:
 
 - G3, E4, A3 (`src/checkForbiddenCopy.test.js`): confirmed by grep to contain comments naming
   `G3`, `E4` and `A3` directly (lines 30, 96, 120, 206, 217, 228, 284, 382), matching the review
-  fix `4b23191` that added binary-skip and `@2x`/`11x`/`4-of-4` boundary-aware cases and re-synced
+  fix `210b93a` that added binary-skip and `@2x`/`11x`/`4-of-4` boundary-aware cases and re-synced
   the pinned floor from 26 to 29.
 - G26 (`src/components/CaseStudyPage.test.jsx`): confirmed by grep,
   `describe('repository links (G26)'` at line 234.
@@ -94,15 +94,15 @@ listed across the table). For the cases touched by the review fixes on this run:
   When/Then matches G7 exactly: five route links in R127 order with the first inside the featured
   `<article>` (line 10-28), the featured article's external code link asserted for `href`,
   `target="_blank"`, `rel="noopener noreferrer"` and an `aria-label` naming the repository per the
-  `28eb005` review fix (lines 30-52, comment cites R153/WCAG 2.5.3), the four featured stats
+  `cf92fed` review fix (lines 30-52, comment cites R153/WCAG 2.5.3), the four featured stats
   `100%`/`3 of 3`/`40`/`9` (lines 54-65), and the grid cards' tags, read-more label and absence of
   a second code link (lines 67-88). Confirmed by reading the file, not by id match alone.
 - G12 (`src/pages/HomePage.test.jsx`): confirmed by grep, comment `// G12: no resume control
   anywhere on the page, and the footer carries exactly email and LinkedIn.` at line 107, matching
-  the `28eb005` fix that collapsed the footer to exactly two links.
+  the `cf92fed` fix that collapsed the footer to exactly two links.
 - SiteHeader closed-panel assertion (`src/components/SiteHeader.test.jsx`): confirmed by reading
   the file, `panel()` asserted to carry the `hidden` attribute (line 46) and `panelLinks()` uses
-  `queryAllByRole` with a comment explaining the panel stays mounted, matching the `01fa7ae` fix.
+  `queryAllByRole` with a comment explaining the panel stays mounted, matching the `ee35a0a` fix.
 
 No case is `missing`. All cases run inside `npm test` above (37 files, 463 tests, 0 failed) and
 passed.

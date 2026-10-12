@@ -2,7 +2,7 @@
 
 Status: green
 Change id: `2026-09-29-separate-the-integration-and-decision-case-studi`
-Branch: `wh/2026-09-29-separate-the-integration-and-decision-case-studi`, commit `77c1f0f` (confirmed; the Review-phase fix commit)
+Branch: `wh/2026-09-29-separate-the-integration-and-decision-case-studi`, commit `01d76a9` (confirmed; the Review-phase fix commit)
 Node: v24.19.0 (confirmed, `node --version`). Logs: `docs/sdlc/<id>/verify-logs/`. All commands ran from the repository root.
 
 ## Checks
@@ -43,7 +43,7 @@ Case to proof (all pass, confirmed in verify-logs/evals.log unless noted):
 
 ## What was measured
 
-- `npm test` ran 37 files and 480 tests: 480 passed, 0 failed (the summary line reports no skipped count), 18.57 s. Up from 463 tests across 37 files at the previous change, `2026-09-25-rebuild-portfolio-to-approved-redesign` (the fix commit added one test over the 479 seen at `bad16dc`).
+- `npm test` ran 37 files and 480 tests: 480 passed, 0 failed (the summary line reports no skipped count), 18.57 s. Up from 463 tests across 37 files at the previous change, `2026-09-25-rebuild-portfolio-to-approved-redesign` (the fix commit added one test over the 479 seen at `4cc4616`).
 - The eval subset (`npx vitest run` on the three relevant files) ran 3 files and 84 tests: 84 passed, 0 failed.
 - `npm run lint` (oxlint) exited 0.
 - `npm run build` exited 0: client build, SSR build, "Prerendered 8 pages".
