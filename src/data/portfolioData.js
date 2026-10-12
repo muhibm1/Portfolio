@@ -985,11 +985,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I built WorkHorse first: a delivery pipeline that gates software changes at two human approvals using Claude Code hooks. AgentOps gates an incident response the same way with a different mechanism, and the contrast is the useful part.",
+                "I built WorkHorse first: a delivery pipeline that gates software changes at two human approvals using hooks that run before every tool call. AgentOps gates an incident response the same way with a different mechanism, and the contrast is the useful part.",
             },
             {
               type: "table",
-              columns: [{ label: "Question" }, { label: "WorkHorse, Claude Code hooks" }, { label: "AgentOps, LangGraph" }],
+              columns: [{ label: "Question" }, { label: "WorkHorse, tool-call hooks" }, { label: "AgentOps, LangGraph" }],
               rows: [
                 { cells: ["Where is the state?", "Files and gate documents on disk", "Typed state in a SQLite checkpointer"] },
                 { cells: ["How is a gate enforced?", "A hook blocks the tool call", "interrupt() pauses the graph"] },
