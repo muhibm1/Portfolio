@@ -1,6 +1,6 @@
 # Adoption review: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
-Scope: `git diff 49618de..HEAD`, focused on the resume withdrawal, the scanner's new terms,
+Scope: `git diff 1a2573f..HEAD`, focused on the resume withdrawal, the scanner's new terms,
 repository links, the MCP section, docs/profile/CLAUDE.md edits, and the re-synced test floors.
 Read `brief.md`, `spec.md`, `plan.md`, `adr/0008` to `0010`, `CLAUDE.md`, `docs/sdlc/codebase-map.md`,
 `docs/hosted-config.md`, `scripts/forbidden-copy.mjs`, `src/data/portfolioData.js`,

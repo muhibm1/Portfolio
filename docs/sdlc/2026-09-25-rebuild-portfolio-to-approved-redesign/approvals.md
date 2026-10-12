@@ -10,7 +10,7 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 
 - Who: mmuhibullah@instructors.2u.com
 - When: 2026-09-25T05:21:43.544Z
-- Artifact commit: `6784c7518095bb256d6d5688abbef6665fad36fc` (contains the packet below)
+- Artifact commit: `3cf8227ee35803cf994c6fc8c38abee56f4603d5` (contains the packet below)
 - Packet: `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/brief.md` sha256 `ffc8987e3dfd63e2d63018eba7efe82f48eefa13cefd56b41e83fa0b70c0eb50`
 - Tier at decision: 2
 - Notes: D1: recommendation accepted; D2: recommendation accepted; D3: recommendation accepted; D4: recommendation accepted; D5: recommendation accepted; D6: recommendation accepted; D7: recommendation accepted; D8: recommendation accepted; D9: recommendation accepted; D10: recommendation accepted; D11: recommendation accepted; D12: recommendation accepted; D13: recommendation accepted; D14: recommendation accepted; D15: recommendation accepted; D16: recommendation accepted; D17: recommendation accepted; D18: recommendation accepted; D19: recommendation accepted
@@ -46,7 +46,7 @@ Each block is appended by `/workhorse:approve` and committed. Never edit earlier
 
 - Who: mmuhibullah@instructors.2u.com
 - When: 2026-09-28T17:30:11.564Z
-- Artifact commit: `6ccfde61dec29836bc0ec8c5e117266f4bd66df3` (contains the packet below)
+- Artifact commit: `1ef04142c96409732656b104b976e9da4f5b68cb` (contains the packet below)
 - Packet: `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/ship.md` sha256 `b179747133ffc6411845961d3c3c31407edbc94ea1876c4cd847dee0775a8db7`
 - Tier at decision: 2
 - Notes: D59: recommendation accepted; D60: recommendation accepted; D57: recommendation accepted; D56: recommendation accepted; D58: recommendation accepted; D38: recommendation accepted

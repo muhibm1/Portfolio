@@ -10,7 +10,7 @@ Adoption score: 4
 Findings outside scope: none
 Not verified: read the diff (`git diff main...HEAD --stat` and selected hunks), `git ls-files`, `git grep`; did not run npm test, lint or build, and started no server. Claims above are confirmed by those commands except that I did not read the test files in full.
 
-## Re-check (diff b69406118120..864e4484ef84, src/data and scripts/forbidden-copy.mjs)
+## Re-check (diff 40235fadf17a..8f5cf512e9dd, src/data and scripts/forbidden-copy.mjs)
 
 Result: medium finding closed. Score stays 4. No new findings.
 

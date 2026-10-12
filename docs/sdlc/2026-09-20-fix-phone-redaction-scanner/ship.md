@@ -1,6 +1,6 @@
 # Ship: Fix the phone redaction scanner's mixed-encoding miss and its silent no-run
 
-Change id: `2026-09-20-fix-phone-redaction-scanner` · Tier 2 · Branch `wh/2026-09-20-fix-phone-redaction-scanner` at `d3ddb9f` · PR https://github.com/muhibm1/Portfolio/pull/15
+Change id: `2026-09-20-fix-phone-redaction-scanner` · Tier 2 · Branch `wh/2026-09-20-fix-phone-redaction-scanner` at `4b5fb20` · PR https://github.com/muhibm1/Portfolio/pull/15
 Prepared 2026-09-21 UTC · Design approved: see [approvals.md](./approvals.md) (G2, 2026-09-20)
 
 This is the Ship document. Approving it merges the change and deploys it to every environment
@@ -58,12 +58,12 @@ Known pre-existing failures cited: none (`wh.js known-failure list` reported non
 
 | Severity | Reviewer | File:line | Finding | Resolution |
 |----------|----------|-----------|---------|------------|
-| medium | security | check-test-floor.mjs:79-86 | `wholeSuiteCounts` coerced an absent or non-numeric count to 0 instead of failing closed | fixed: cc36f23 |
-| medium | security | check-test-floor.mjs:64-68 | `reportReadFailureReason` echoed `error.message`, leaking the first bytes of an unreadable file into a public Actions log | fixed: cc36f23 |
-| medium | ecc-pr-test-analyzer | checkPhoneRedaction.test.js:283 | E19 asserted no exit code or hit count, so it would survive the exact regression this change fixes | fixed: cc36f23 |
-| medium | ecc-pr-test-analyzer | checkTestFloor.test.js:102 | E30 asserted only the static half of the failure message, not the computed counts | fixed: cc36f23 |
-| medium | adoption | check-test-floor.mjs:27,96 | The below-pin error line did not name `PINNED_REDACTION_PASSED_COUNT` or its file | fixed: cc36f23 |
-| low | bug + security | check-test-floor.mjs:36-40 | A JSON `null` report threw an uncaught TypeError and exited 1 with a stack trace instead of the documented exit 2 | fixed: cc36f23 |
+| medium | security | check-test-floor.mjs:79-86 | `wholeSuiteCounts` coerced an absent or non-numeric count to 0 instead of failing closed | fixed: d950b49 |
+| medium | security | check-test-floor.mjs:64-68 | `reportReadFailureReason` echoed `error.message`, leaking the first bytes of an unreadable file into a public Actions log | fixed: d950b49 |
+| medium | ecc-pr-test-analyzer | checkPhoneRedaction.test.js:283 | E19 asserted no exit code or hit count, so it would survive the exact regression this change fixes | fixed: d950b49 |
+| medium | ecc-pr-test-analyzer | checkTestFloor.test.js:102 | E30 asserted only the static half of the failure message, not the computed counts | fixed: d950b49 |
+| medium | adoption | check-test-floor.mjs:27,96 | The below-pin error line did not name `PINNED_REDACTION_PASSED_COUNT` or its file | fixed: d950b49 |
+| low | bug + security | check-test-floor.mjs:36-40 | A JSON `null` report threw an uncaught TypeError and exited 1 with a stack trace instead of the documented exit 2 | fixed: d950b49 |
 | medium | security + adoption | .workhorse/profile.yml:73-84,159 | The three script files that make up the control are in neither `sensitive_paths` nor `tier_floor_paths: 2`, unlike the sibling checks | accepted: owner, `.workhorse/profile.yml` (D7); agents may not edit the profile |
 | medium | security | .github/workflows/deploy.yml (absent step) | The real working-tree scan still does not run in the publishing workflow; only the R82 served-bytes pattern check covers it there | deferred: follow-up, decision D10; compensating controls are the deploy.yml:396-404 served-bytes check and the scan run on the owner's machine |
 | medium | conformance | spec.md:R9 | R9 has no automated test, only a reviewer read of both headers | accepted as a low in the constraint audit; not re-litigated |
@@ -106,7 +106,7 @@ the human and no agent may take it.
 
 | Environment | Command | Automatic on approval | Rollback |
 |-------------|---------|------------------------|----------|
-| dev | `npm run dev` | yes | `git revert` the five change commits (677b2dd, 3cbce64, b0c69f0, 356f41c, cc36f23), or `git checkout main` |
+| dev | `npm run dev` | yes | `git revert` the five change commits (f695ceb, 7f425e5, 9eed5fa, eb5e334, d950b49), or `git checkout main` |
 | staging | (none configured) | no | not applicable, no staging environment exists |
 | prod | `git push origin main` | no | `git revert <merge commit>` and `git push origin main`; the owner performs this |
 
@@ -136,15 +136,15 @@ manual push by the owner either way.
 
 ## Deploy record
 
-G4 approved 2026-09-21T02:02:15Z (approvals.md, 6d02c39); deploy mode run 2026-09-20 UTC.
+G4 approved 2026-09-21T02:02:15Z (approvals.md, 13d2fc3); deploy mode run 2026-09-20 UTC.
 | Environment | Command | Exit code | Note |
 |-------------|---------|-----------|------|
 | dev | `npm run dev` | confirmed started, stopped after check | ready 648 ms, `http://localhost:5177/Portfolio/`; not left running |
 | staging | (none) | not run | no deploy command in profile |
 | prod | `git push origin main` | owner-performed | see below |
 **PR #15 merged by owner, published clean.** Confirmed (`gh pr view 15`): MERGED, mergedAt
-2026-09-21T02:06:07Z, merge commit `9d24286` (origin/main tip). Confirmed (Actions run
-35553027638, headSha `9d24286`): success; both jobs green (lint, tests, floors R52/R11, build,
+2026-09-21T02:06:07Z, merge commit `9f0d83d` (origin/main tip). Confirmed (Actions run
+35553027638, headSha `9f0d83d`): success; both jobs green (lint, tests, floors R52/R11, build,
 scoped audit; smoke R63/R87/R80/R100/R81/R82). One annotation, exit 1 on the informational
 full-tree audit step (continue-on-error), confirmed via `gh run view --log` as that step alone,
-not gating. Rollback: `git revert --no-edit 9d24286` then push to main, owner-performed; not rehearsed (five change-commit reverts above were).
+not gating. Rollback: `git revert --no-edit 9f0d83d` then push to main, owner-performed; not rehearsed (five change-commit reverts above were).

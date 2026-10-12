@@ -25,4 +25,4 @@ again.
 - `docs/sdlc/2026-09-20-fix-phone-redaction-scanner/conductor-log.md:16` "resumed at build after
   session cut off; wave 3 blocked on .github/workflows/deploy.yml hook denial"
 - `docs/sdlc/2026-09-20-fix-phone-redaction-scanner/conductor-log.md:17` "deploy.yml floor step
-  edited (hook denial did not reproduce); E33 passes, 282 tests, lint+build 0; folded as 356f41c"
+  edited (hook denial did not reproduce); E33 passes, 282 tests, lint+build 0; folded as eb5e334"

@@ -1,7 +1,7 @@
 # Constraints
 
 Muhammad Muhibullah personal portfolio. Written 2026-09-10 by the discovery analyst against
-commit `b50497f`. Companion to `docs/sdlc/codebase-map.md` and `.workhorse/profile.yml`.
+commit `e908b50`. Companion to `docs/sdlc/codebase-map.md` and `.workhorse/profile.yml`.
 
 Statements are marked **confirmed** (observed) or **believed** (inferred or stated but not
 verified). The G0 packet at the end lists what only the owner can decide.
@@ -106,7 +106,7 @@ pattern.
 3. **The owner's phone number was published on the page; it no longer is.** At G0 it
    rendered in `ContactFooter` and `ResumeModal` (confirmed at G0). Change 2026-09-11 removed it
    from the site under G1-D1 ("D1 remove phone", spec R41) and redacted every full and partial
-   form of it from the tracked documents under G4-D3. Git history from `b50497f` onward still
+   form of it from the tracked documents under G4-D3. Git history from `e908b50` onward still
    holds it, an accepted position recorded in `docs/hosted-config.md` section 7. The site-facing
    checks run in CI: R41's unit tests, and the generic pattern in the R82 deploy smoke step. The
    repository check is the R89 script, `scripts/check-phone-redaction.mjs`, run on a developer
@@ -220,7 +220,7 @@ Three items do apply and are open:
 
 ## Compliance controls
 
-Written 2026-09-10 by the compliance mapper against commit `b50497f`, from
+Written 2026-09-10 by the compliance mapper against commit `e908b50`, from
 `docs/sdlc/codebase-map.md`, this file's constraints above, and `.workhorse/profile.yml`.
 
 **This section flags; it does not decide.** The owner is this project's only engineer, only
@@ -318,7 +318,7 @@ from the matching skill, not extended from here.
 Change id: `g0-onboarding`
 Gate: G0
 Tier: not applicable (onboarding, no code change)
-Branch: `main` at `b50497f`
+Branch: `main` at `e908b50`
 PR: none
 Prepared: 2026-09-10 UTC
 

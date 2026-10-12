@@ -127,7 +127,7 @@ function writeEmptyDependencyPackage(directory, name, engines) {
 }
 
 // The repository's own node_modules, read before and after the spawn tests below. Before
-// d5c0114, a leaked NPM_CONFIG_LOCAL_PREFIX on Windows made a fixture `npm ci` treat the
+// 267c07a, a leaked NPM_CONFIG_LOCAL_PREFIX on Windows made a fixture `npm ci` treat the
 // repository itself as its install target and delete the real node_modules while every
 // assertion in this file still passed. entryCount is deliberately undefined, not 0, when the
 // directory is absent, so a checkout with no node_modules cannot pass this check vacuously.

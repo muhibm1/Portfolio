@@ -25,6 +25,6 @@ silently through to Ship.
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/approvals.md:34` same
   pattern for G4
 - `docs/sdlc/2026-09-21-serve-every-app-route-with-http-200-on-github-pa/ship.md` Decision D1:
-  "approvals.md's second G2 entry (059dca7) was recorded by an assistant citing a 'standing
+  "approvals.md's second G2 entry (3b1a910) was recorded by an assistant citing a 'standing
   instruction', not the owner. G4 needs the owner's own act."
 - Second change (2026-09-29-separate-the-integration-and-decision-case-studi): approvals.md G4 note reads "Recorded by the main session, not typed by the owner, on the owner's standing chat instruction". The note is candid and ship.md D18 flagged it, but the pattern recurred (confidence raised to 0.7).

@@ -1,6 +1,6 @@
 # Security review: serve every app route with HTTP 200 on GitHub Pages
 
-Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa` · Tier 2 · Reviewed `main...b4d2f6e`
+Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa` · Tier 2 · Reviewed `main...98fe6ce`
 Compliance regimes: none selected (profile). Baseline and privacy defaults walked instead.
 
 Verdict: 6 findings (0 critical, 0 high, 0 medium, 6 low)

@@ -14,8 +14,8 @@ yourself," the conductor dispatched wh-shipper in deploy mode to merge PR #19. T
 permission classifier refused that dispatch as a production deploy (confirmed, conductor-log
 2026-09-28T17:47:24Z); nothing tried another route and the conductor reported a block. The
 owner's direct instruction to the main session is what actually resolved it: the main session
-merged PR #19 itself with `gh pr merge 19 --merge --match-head-commit 2705a6f` (merge commit
-9c3377f, 2026-09-28T17:48:23Z), and deploy run 36460748579 succeeded.
+merged PR #19 itself with `gh pr merge 19 --merge --match-head-commit 0046553` (merge commit
+c221b05, 2026-09-28T17:48:23Z), and deploy run 36460748579 succeeded.
 
 In this repo, a merge to `main` is a production release (the deploy workflow triggers on push
 to `main`). The permission classifier is expected to refuse a subagent-dispatched merge of the
@@ -36,8 +36,8 @@ not to perform it.
   PR #19 himself"
 - `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/conductor-log.md:138` "resumed at
   deploy after the block: the owner told the main session 'Merge and deploy it yourself'; the
-  main session merged PR #19 at head 2705a6f (merge commit 9c3377f...); deploy run 36460748579
+  main session merged PR #19 at head 0046553 (merge commit c221b05...); deploy run 36460748579
   ... concluded success"
 - `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/ship.md` "Deploy record": "The
   owner then told the main session in chat to merge and deploy it itself; the main session (not
-  the owner) ran `gh pr merge 19 --merge --match-head-commit 2705a6f`."
+  the owner) ran `gh pr merge 19 --merge --match-head-commit 0046553`."

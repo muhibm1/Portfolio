@@ -1,7 +1,7 @@
 # Codebase map
 
 Muhammad Muhibullah personal portfolio. Written 2026-09-10 by the discovery analyst against
-commit `b50497f` (the only commit on `main`).
+commit `e908b50` (the only commit on `main`).
 
 Every statement below is marked **confirmed** (observed by reading a file or running a read-only
 command) or **believed** (inferred, stated by the owner, or planned but not yet in the repo).

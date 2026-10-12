@@ -19,7 +19,7 @@ D52; round 5 (re-audit, D54, D55), T21 redacts the plan copy's line 44 parenthet
 Immediately after G2 approval and before the first builder is dispatched, the conductor replaces
 fa41dca and every later design commit on the branch (the audit response, the two packet and
 rejection records, this round) with one commit holding the redacted state, non-interactively
-(`git reset --soft 49618de`, then one commit carrying the messages). Before the reset, the conductor
+(`git reset --soft 1a2573f`, then one commit carrying the messages). Before the reset, the conductor
 writes into the conductor log the hash and subject of every commit the rewrite will drop (618f344,
 a712f46, aba1ac3, 82f7209, 0ab3167, 905d8cb, this round's commit and the G2 approval commit, each
 cited by an `approvals.md` entry or a commit body), then the new hash beside them; after it, the conductor re-computes the
@@ -27,7 +27,7 @@ sha256 of `brief.md` and confirms it equals the packet hash in the newest "G2: a
 logging the result (D48). No `wh/2026-09-25-*` ref exists on the remote (confirmed by `git ls-remote
 --heads origin` on 2026-09-28 before this round; believed still true), so nothing is force-pushed. What
 this cannot fix, accepted by D38: the relative timing phrases in `src/data/portfolioData.js` and
-the WorkHorse mockup since d5e1f23 and 781970f (30 build commits, cited by hash in the
+the WorkHorse mockup since b55aeeb and 448ab51 (30 build commits, cited by hash in the
 verification, review and conductor records), and anything on `main` or another pushed ref. The
 run tallies in those commits are approved site copy again (D45) and need no rewrite.
 
@@ -44,7 +44,7 @@ beside it; `spec.md` R151 to R159 and the amended rows; ADRs 0008, 0009, 0010.
 
 | Tasks | What stays | Eval cases still owned by the done task (test unchanged) | Evidence |
 |-------|------------|----------------------------------------------------------|----------|
-| T1 to T4 | tokens, typefaces, pins; the content module's shape; the scanner; the design record and `og.svg` | T1: G4, G5, G13; T2: G1; T3: F2 | `verification.md` at bbd02a2: lint, build, audit, both scanners, route pages all exit 0 |
+| T1 to T4 | tokens, typefaces, pins; the content module's shape; the scanner; the design record and `og.svg` | T1: G4, G5, G13; T2: G1; T3: F2 | `verification.md` at 1de3b43: lint, build, audit, both scanners, route pages all exit 0 |
 | T5 to T10 | header, layout, footer, cards, case-study template, home, work index, not-found, page meta, `og.png` | T9: none (G9 cut by eval review 2026-09-28, R134 coverage folded into G7, task T19); T10: G16, A1, E3 | 418 of 419 tests passed; the one failure was the PDF (withdrawn by D24) |
 | T11 to T13 | prerender pipeline, route checks, deploy workflow, docs, profile, test floors; the review fixes (D20 to D23) | T11: G17, G19, G23, G24, E1, E2, F1, A2 | `ship.md` "What changed" and "What the reviewers found" |
 
@@ -191,7 +191,7 @@ Dev: `git checkout main`. Production: nothing deploys until the owner merges; if
 | G2 red between wave 1 and wave 2 confuses a builder | Certain | A misleading red | Stated in Approach and in T16 step 4; T18 owns turning it green |
 | The timing pattern, the Paddock pattern or `2x` later matches legitimate copy (a decade, a Tailwind class, a stylesheet duration, "dropped by about 40%" on another page) | Low | A false red on a future edit | The timing pattern needs a unit word or a decimal, the Paddock pattern needs the word in the same sentence as Paddock, `2x` needs word boundaries, `.css` and `.svg` are skipped; E4 covers each near miss; the owner extends or trims the list |
 | "5 of 5", "1 of 5" and "40" have no source in the repository other than the owner's rejection entries, and go stale after his next run | Certain | A count the owner must maintain by hand | T15's commit body cites the "G2: rejected" entries of 2026-09-28 by date, time and gate (D48, D51); M4 lists all three with their source; the owner edits the content file himself after the next run (`CLAUDE.md` conventions) |
-| A builder or a later edit writes ownership or client wording into the run record (run 1 is private client work, D50), or the design record keeps tying a named app to run 1 | Low | A confidentiality slip on a public site | G14 rejects `my`, `mine` and `client` in the `measured` block; the rows are the mockup's verbatim; no agent writes a client name. What the repository carries, confirmed by search: one scanner term naming an app, in 14 files here and 12 on `main` (D54); T21 redacts the one place, the plan copy's line 44, that ties it to run 1, and G21 asserts it; the build commits since 781970f and `main` keep the text (D38); the owner says at G2 whether that name is the client, and a follow-up change replaces the term if so; M5 is the backstop |
+| A builder or a later edit writes ownership or client wording into the run record (run 1 is private client work, D50), or the design record keeps tying a named app to run 1 | Low | A confidentiality slip on a public site | G14 rejects `my`, `mine` and `client` in the `measured` block; the rows are the mockup's verbatim; no agent writes a client name. What the repository carries, confirmed by search: one scanner term naming an app, in 14 files here and 12 on `main` (D54); T21 redacts the one place, the plan copy's line 44, that ties it to run 1, and G21 asserts it; the build commits since 448ab51 and `main` keep the text (D38); the owner says at G2 whether that name is the client, and a follow-up change replaces the term if so; M5 is the backstop |
 | The Paddock pattern misses a synonym (archived, sunset, shelved, legacy, former, no longer maintained) or a status split across two sentences (audit low, not fixed) | Low | A status word reaches the site | M5 is the backstop: the shipper reads every Paddock sentence; the owner may extend the word list in `scripts/forbidden-copy.mjs` after this change |
 | A sensitive-path edit lands with no prompt because G2 names the path | Certain | The approval is the only authorization | The four paths are listed per task above and in the brief, so the owner approves them knowingly; the reviewers diff each |
 | The history rewrite (D38) is skipped and fa41dca is pushed with the unredacted overlay | Low | Resume text and figures in the public PR history | "Before Build" names the conductor and the moment; the shipper's push is after Build, so the conductor log entry is checkable first |

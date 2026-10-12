@@ -12,7 +12,7 @@ env leak; review found and fixed ten findings across two rounds, including a hig
 parser bug the shipper caught after a green verification. The branch was ready and G4-approved
 well before it published: `git push` was refused by the `ask_commands` hook three times in ship
 and deploy mode, so the owner published the branch, opened PR 11, and squash-merged it to `main`
-at `7ea3583` by hand, after which the Pages workflow (run `35536692240`) succeeded including this
+at `8b5e7a7` by hand, after which the Pages workflow (run `35536692240`) succeeded including this
 change's own new steps.
 
 ## Clock
@@ -127,7 +127,7 @@ hypothetical:
 @@
 +| AD-CR1 | Adversarial | `.npmrc` line `# harmless comment<CR>registry=https://evil.example.com/`
 +  plus a valid `engine-strict=true` line | check-npmrc.mjs rejects (exit 1), matching npm's own
-+  `/[\r\n]+/` split | src/checkNpmrc.test.js | Implemented at 1dbf781, fixture confirmed by the
++  `/[\r\n]+/` split | src/checkNpmrc.test.js | Implemented at 54798cd, fixture confirmed by the
 +  security reviewer (npm 10.7.0, Node v24.19.0) |
 ```
 

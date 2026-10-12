@@ -1,4 +1,4 @@
-# Bug review: 2026-09-25-rebuild-portfolio-to-approved-redesign (revision, 49618de..11bb943)
+# Bug review: 2026-09-25-rebuild-portfolio-to-approved-redesign (revision, 1a2573f..f4df80d)
 
 Verdict: 7 findings (0 critical, 0 high, 1 medium, 6 low)
 

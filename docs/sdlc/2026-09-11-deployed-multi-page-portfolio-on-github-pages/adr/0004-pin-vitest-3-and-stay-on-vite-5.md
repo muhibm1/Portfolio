@@ -54,7 +54,7 @@ Node 22 LTS.
 ## Amendment 2026-09-12
 
 Owner build decision B2 ("B2 and B3 as recommended", `conductor-log.md` line 35) moved the pin
-from 3.2.4 to 3.2.7 in commit `a98fdcf`, clearing critical advisory GHSA-5xrq-8626-4rwp (as
+from 3.2.4 to 3.2.7 in commit `55ff8b6`, clearing critical advisory GHSA-5xrq-8626-4rwp (as
 recorded in `conductor-log.md` line 30). The decision is unchanged. Confirmed from
 `node_modules/vitest/package.json`: MIT (line 7); engines `^18.0.0 || ^20.0.0 || >=22.0.0` (line
 114), which settles the Node 21 point above, since 21 is outside it; and `vite` as

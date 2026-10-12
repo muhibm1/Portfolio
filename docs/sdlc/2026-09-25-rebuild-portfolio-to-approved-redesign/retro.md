@@ -79,7 +79,7 @@ wh-shipper in deploy mode to merge PR #19 (D61, line 135). The Claude Code permi
 refused that dispatch as a production deploy (line 137, 2026-09-28T17:47:24Z). Nothing tried
 another route; the conductor reported a true block. The owner's direct instruction to the main
 session is what resolved it: the main session merged PR #19 itself with
-`gh pr merge 19 --merge --match-head-commit 2705a6f` (merge commit `9c3377f`,
+`gh pr merge 19 --merge --match-head-commit 0046553` (merge commit `c221b05`,
 2026-09-28T17:48:23Z), and deploy run `36460748579` succeeded (line 138).
 
 **Lesson (believed, from one occurrence):** in this repo a merge to `main` is a production

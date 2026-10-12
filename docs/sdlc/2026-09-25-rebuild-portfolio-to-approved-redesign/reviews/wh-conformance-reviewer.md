@@ -1,6 +1,6 @@
 # Conformance review: rebuild the portfolio to the approved redesign (revision)
 
-Scope: `git diff 49618de..HEAD` (resume withdrawal / alignment-overlay revision, R151-R159 and
+Scope: `git diff 1a2573f..HEAD` (resume withdrawal / alignment-overlay revision, R151-R159 and
 amended R132-R138, R143-R146, R149). R127-R131, R139-R142, R147-R148, R150 unchanged by the
 revision; confirmed only where the diff touches their code.
 
@@ -17,7 +17,7 @@ Verdict: 2 findings (0 critical, 0 high, 1 medium, 1 low)
 
 | Req | File | Test | Status |
 |---|---|---|---|
-| R127-R131,R139-R150 (unchanged) | as built | existing suites | implemented and tested (verification.md green at 12e6edd, not re-run this session) |
+| R127-R131,R139-R150 (unchanged) | as built | existing suites | implemented and tested (verification.md green at 8760252, not re-run this session) |
 | R132 | src/pages/HomePage.jsx, HomeHero.jsx | HomePage.test.jsx | implemented and tested |
 | R133 | src/components/SiteHeader.jsx:45,69,92-102 | SiteHeader.test.jsx | implemented and tested |
 | R134-R136 | CaseStudyCards.jsx:56-58, CaseStudyPage.jsx | CaseStudyCards/CaseStudyPage.test.jsx | implemented and tested |
@@ -63,7 +63,7 @@ block (379-436): no "my"/"mine"/"client"; the sole "my own ship gate" (528) sits
 
 Findings outside scope: none.
 
-Not verified: full suite not re-run this session (relied on verification.md green at 12e6edd);
+Not verified: full suite not re-run this session (relied on verification.md green at 8760252);
 M1-M5, N4 manual checks per verification.md's own "Not verified" section, unchanged by this
 review; D56 classified as necessary drift by this reviewer's judgement, not independently
 re-derived beyond reading plan.md's T21 file list.

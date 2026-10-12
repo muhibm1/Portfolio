@@ -1,7 +1,7 @@
 # Conductor log: 2026-09-29-separate-the-integration-and-decision-case-studi
 
 2026-09-29T06:39:49.043Z | design | conductor | change created: Separate the integration and decision case studies and correct the incident count on branch wh/2026-09-29-separate-the-integration-and-decision-case-studi, cut from main
-2026-09-29T06:39:57.828Z | design | conductor | started change from origin/main 9c3377f; plugin root 0.3.11 used (0.3.10 also installed; conductor definition is 0.3.11)
+2026-09-29T06:39:57.828Z | design | conductor | started change from origin/main c221b05; plugin root 0.3.11 used (0.3.10 also installed; conductor definition is 0.3.11)
 2026-09-29T06:51:13.273Z | design | wh-designer | tier 2 (forbidden-copy.mjs on tier-2 floor); spec R160-R168, 20 eval cases, 2 waves of 1 task, 13 decisions, no FORBIDDEN_TERMS collision
 2026-09-29T06:55:17.630Z | design | wh-constraint-auditor | pass: 0 high, 1 medium (Data Health 'restricted geospatial zones'/'buildings' vs disclosure rule 2 -> D14), 6 low
 2026-09-29T06:55:17.702Z | design | wh-eval-designer | evals 18 -> 21 (E5 built-dist check, E6 onlyPaths anchoring, E7 case variants); plan task 2 steps updated
@@ -14,14 +14,14 @@
 2026-09-29T07:48:28.178Z | design | conductor | G2 Design presented
 2026-09-29T07:48:32.200Z | design | conductor | G2 Design re-presented after revision (0 high; no second designer round)
 2026-09-29T07:59:37.952Z | design | conductor | resumed at design after G2 approved (accept-all D1-D15)
-2026-09-29T08:02:52.963Z | build | wh-builder | T1 done at 1ad9c3e: 10 strings placed, 7 new/3 updated pins; red 7 failed then npm test 470 passed, lint 0, build 0; commit body names change request generically (note for shipper)
-2026-09-29T08:02:53.030Z | build | conductor | wave 1 folded by rebase (fast-forward) at 1ad9c3e per profile wave_merge; the gate hook refuses the merge verb before G4
-2026-09-29T08:06:34.894Z | build | wh-builder | T2 done at bad16dc: 3 global strings + 6 pattern terms, onlyPaths, PAGE_SCOPED_TERMS; 29->38 scanner cases; npm test 479 passed, lint 0, build 0, G12 0, E5 0
+2026-09-29T08:02:52.963Z | build | wh-builder | T1 done at 4d90287: 10 strings placed, 7 new/3 updated pins; red 7 failed then npm test 470 passed, lint 0, build 0; commit body names change request generically (note for shipper)
+2026-09-29T08:02:53.030Z | build | conductor | wave 1 folded by rebase (fast-forward) at 4d90287 per profile wave_merge; the gate hook refuses the merge verb before G4
+2026-09-29T08:06:34.894Z | build | wh-builder | T2 done at 4cc4616: 3 global strings + 6 pattern terms, onlyPaths, PAGE_SCOPED_TERMS; 29->38 scanner cases; npm test 479 passed, lint 0, build 0, G12 0, E5 0
 2026-09-29T08:06:34.969Z | build | conductor | D16: labels for phrasing patterns -> 'changed incorrectly wording', 'high impact wording', bare words for the rest
 2026-09-29T08:06:35.044Z | build | conductor | D17: D15 spelling variants (hyphen, nbsp, split) -> not taken, plain substring; left to R168 human read
-2026-09-29T08:06:35.115Z | build | conductor | wave 2 folded by rebase (fast-forward) at bad16dc
+2026-09-29T08:06:35.115Z | build | conductor | wave 2 folded by rebase (fast-forward) at 4cc4616
 2026-09-29T08:07:17.155Z | build | wh-polish | no edits: diff clean; 3 optional cosmetic items listed (SANDBOX_TERM layout, growing doc comment, long test titles)
-2026-09-29T08:09:32.645Z | verify | wh-verifier | green at bad16dc: lint 0, test 479/479, build 0, audit 0, G12 0, N2 empty, E5 10/10; evals 14/7/1/1 + 2 NF all met; R168 manual
+2026-09-29T08:09:32.645Z | verify | wh-verifier | green at 4cc4616: lint 0, test 479/479, build 0, audit 0, G12 0, N2 empty, E5 10/10; evals 14/7/1/1 + 2 NF all met; R168 manual
 2026-09-29T08:16:30.732Z | review | wh-bug-reviewer | 0 crit/high/med, 5 low (separator variants, slug hard-coded in onlyPaths, no g/y flag test, data test hyphen-only, word families hit code); CI applies scoped term, integration page in dist scan (confirmed)
 2026-09-29T08:16:30.799Z | review | wh-conformance-reviewer | 11 of 11 requirements traced; strings match plan and G2 notes verbatim; 1 low (T1 commit body names change request generically)
 2026-09-29T08:16:30.867Z | review | wh-adoption-reviewer | score 3; 3 medium (CLAUDE.md lacks PAGE_SCOPED_TERMS how-to; scanner cites ADR/D numbers without paths; new terms lack reasons), 1 low (profile 'seventeen-string', stale T4 comment)
@@ -31,15 +31,15 @@
 2026-09-29T08:16:31.143Z | review | ecc-silent-failure-hunter | 2 low (no assert the scoped page was scanned; SSR comment splits)
 2026-09-29T08:16:31.211Z | review | ecc-pr-test-analyzer | 1 medium (no test proves main wires PAGE_SCOPED_TERMS), 3 low (floor pin, backslash line untested, sandbox plurals)
 2026-09-29T08:16:31.277Z | review | conductor | D18: cut phrase 'restricted geospatial' remains in public repo docs and git history -> accept and record in ship.md (history already public, approvals.md append-only); owner may choose redaction follow-up at G4
-2026-09-29T08:20:10.810Z | review | wh-fixer | review mode, 4 of 4 mediums fixed at 77c1f0f (CLAUDE.md page-scoped how-to, ADR paths in scanner comments, per-term reasons, entry test red-proved); npm test 480, lint 0, build 0, dist scan 0
-2026-09-29T08:22:46.418Z | verify | wh-verifier | re-verify green at 77c1f0f: lint 0, test 480/480, build 0, audit 0, G12 0, N2 empty, E5 10/10; evals all met; R168 strings extended (intro, meta, built paragraph)
+2026-09-29T08:20:10.810Z | review | wh-fixer | review mode, 4 of 4 mediums fixed at 01d76a9 (CLAUDE.md page-scoped how-to, ADR paths in scanner comments, per-term reasons, entry test red-proved); npm test 480, lint 0, build 0, dist scan 0
+2026-09-29T08:22:46.418Z | verify | wh-verifier | re-verify green at 01d76a9: lint 0, test 480/480, build 0, audit 0, G12 0, N2 empty, E5 10/10; evals all met; R168 strings extended (intro, meta, built paragraph)
 2026-09-29T08:24:55.580Z | review | wh-shipper | ship.md written, PR https://github.com/muhibm1/Portfolio/pull/21
-2026-09-29T08:25:18.758Z | review | wh-shipper | ship.md 147 lines, PR #21 against main, pushed change branch only at 0baaa02; digest ship_blockers empty; D18 leads Decisions
+2026-09-29T08:25:18.758Z | review | wh-shipper | ship.md 147 lines, PR #21 against main, pushed change branch only at e337cca; digest ship_blockers empty; D18 leads Decisions
 2026-09-29T08:25:26.680Z | review | conductor | G4 Ship presented
-2026-09-29T08:25:30.463Z | review | conductor | G4 Ship presented (PR #21, verification green at 77c1f0f, D18 leads)
-2026-09-29T08:27:12.970Z | review | main session | G4 approved at b01519f by the main session on the owner's standing instruction ('Accept any gates and dont get stuck'); approval commits pushed to the change branch (PR #21 head b01519f, diff since review 0baaa02 is approvals.md and conductor-log.md only). The merge of PR #21 was refused by the Claude Code auto mode classifier as dangerous. Not retried by any other route. Waiting on the owner to merge PR #21 with a merge commit; then /workhorse:run records the deploy and closes the change.
-2026-09-29T16:59:37.138Z | review | conductor | resumed at review after G4 approved; PR #21 merged by the main session on the owner's chat instruction 'You merge it' (merge e08f1bb at 2026-09-29T16:57:47Z, head b01519f, confirmed via gh pr view); deploy run 36601529754 success, both jobs success (confirmed via gh run view)
+2026-09-29T08:25:30.463Z | review | conductor | G4 Ship presented (PR #21, verification green at 01d76a9, D18 leads)
+2026-09-29T08:27:12.970Z | review | main session | G4 approved at 400802d by the main session on the owner's standing instruction ('Accept any gates and dont get stuck'); approval commits pushed to the change branch (PR #21 head 400802d, diff since review e337cca is approvals.md and conductor-log.md only). The merge of PR #21 was refused by the Claude Code auto mode classifier as dangerous. Not retried by any other route. Waiting on the owner to merge PR #21 with a merge commit; then /workhorse:run records the deploy and closes the change.
+2026-09-29T16:59:37.138Z | review | conductor | resumed at review after G4 approved; PR #21 merged by the main session on the owner's chat instruction 'You merge it' (merge 26e8bcc at 2026-09-29T16:57:47Z, head 400802d, confirmed via gh pr view); deploy run 36601529754 success, both jobs success (confirmed via gh run view)
 2026-09-29T16:59:37.292Z | deploy | conductor | G5 not required at tier 2; set auto
-2026-09-29T17:00:41.984Z | deploy | wh-shipper | deploy mode, record only: Deploy record section added to ship.md (150 lines); merge e08f1bb and run 36601529754 re-confirmed read-only; no merge, no push, no commit
-2026-09-29T17:02:20.046Z | done | wh-retro-learner | retro.md committed at a4803ae; within budget on agent time; 2 new instincts, 2 raised; proposals P1-P4 for owner review, none applied; R168 still the owner's
+2026-09-29T17:00:41.984Z | deploy | wh-shipper | deploy mode, record only: Deploy record section added to ship.md (150 lines); merge 26e8bcc and run 36601529754 re-confirmed read-only; no merge, no push, no commit
+2026-09-29T17:02:20.046Z | done | wh-retro-learner | retro.md committed at 9f3f5e5; within budget on agent time; 2 new instincts, 2 raised; proposals P1-P4 for owner review, none applied; R168 still the owner's
 2026-09-29T17:02:32.223Z | done | conductor | pushing change branch and opening a docs-only PR for post-merge artifacts (ship.md deploy record, retro.md, instincts, conductor log); not merging it

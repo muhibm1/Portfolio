@@ -1,7 +1,7 @@
 # Retro: Deployed multi-page portfolio on GitHub Pages
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
-Trigger: release. All five gates approved, PR #1 merged at `d5ad8b0`, deploy run `34773728394`
+Trigger: release. All five gates approved, PR #1 merged at `81b57bd`, deploy run `34773728394`
 green, site live at `https://muhibm1.github.io/Portfolio/`.
 
 ## What happened
@@ -30,20 +30,20 @@ check and surfaced only in a manual post-deploy browser check that the owner has
 | 09-12 19:53-23:14 | build | waves 1-4 (T1-T13, T1b) built and folded; build paused after wave 1 for owner decisions B1 (Node), B2 (react-router/vitest pins), B3 (Tailwind advisory) |
 | 09-12 20:52 | owner | "B1 installed Node 22.12; B2 and B3 as recommended" (B1 not yet in effect on PATH) |
 | 09-12 23:18-23:21 | build | Node v22.12.0 confirmed on PATH; lint runs clean for the first time |
-| 09-12 23:49 - 09-13 01:21 | verify | RED then GREEN at `8ea98a7`; one fixer wave (V1) for `.gitignore` and JSX keys; conductor killed by an API rate limit once more, resumed 00:42:37 |
+| 09-12 23:49 - 09-13 01:21 | verify | RED then GREEN at `a7b67cf`; one fixer wave (V1) for `.gitignore` and JSX keys; conductor killed by an API rate limit once more, resumed 00:42:37 |
 | 09-13 01:33-01:45 | review | 4 reviewers dispatched; packet compiler corrected once by the conductor |
 | 09-13 01:46 | gate | **G4 rejected** (round 1): phone redaction gaps, mockups in `public/`, Back to Top broken off-home |
 | 09-13 02:05-02:31 | build | fix wave 1 (F1-F3): Back to Top fixed, mockups moved to `docs/design/`, redaction script widened |
-| 09-13 02:55 | verify | GREEN at `460405e`; eval-runner hit its turn limit twice during this dispatch and completed on the third |
+| 09-13 02:55 | verify | GREEN at `983bfce`; eval-runner hit its turn limit twice during this dispatch and completed on the third |
 | 09-13 03:29 | gate | **G4 rejected** (round 2): redaction script still misses `+1`-prefixed numbers and UTF-16 files; stale docs |
 | 09-13 03:51-04:21 | build | fix wave 2 (F4-F5): script widened again, 17 unit tests added, stale docs corrected |
-| 09-13 04:32 | verify | GREEN at `b91d04f`, 23 test files, 191 tests passing |
+| 09-13 04:32 | verify | GREEN at `13fc4cd`, 23 test files, 191 tests passing |
 | 09-13 05:01 | gate | **G4 approved** (round 3), with 3 medium findings left open as tracked follow-ups |
 | 09-13 05:42-06:00 | deploy | release.md drafted; release engineer stopped at its 50-turn limit before committing, found 3 defects, fixed them in a finishing pass |
 | 09-13 14:27 | deploy | repo made public while empty, on the owner's instruction; bash-guard refused the main session's own direct attempt to publish `main` |
-| 09-13 18:02 | deploy | owner pushed `main` (landing at `942d311`); change branch pushed and PR #1 opened |
+| 09-13 18:02 | deploy | owner pushed `main` (landing at `c10984d`); change branch pushed and PR #1 opened |
 | 09-13 18:03 | gate | G5 approved ("public as is; ADR 0009 confirmed") |
-| 09-13 18:12-18:14 | deploy | Pages source set; PR merged at `0172210` -> `d5ad8b0`; deploy run `34773728394` green; live checks run, font CSP defect found |
+| 09-13 18:12-18:14 | deploy | Pages source set; PR merged at `94fc553` -> `81b57bd`; deploy run `34773728394` green; live checks run, font CSP defect found |
 | 09-13 21:46-21:51 | deploy | release engineer appended the "Deploy record" section to `release.md`; retro dispatched |
 
 ## What went well
@@ -95,7 +95,7 @@ API rate limit. Row 16:01 reports resuming after one prior kill; rows 16:40 and 
 twice rather than two separate kills; row 00:10 reports "killed twice" on top of those. This gives
 a range of 4 to 5 logged kills in the spec phase, not a precise count. **Confirmed**, one further
 kill in a later phase is in the log: conductor-log.md row at 2026-09-13T00:42:37 records the
-conductor "resumed at 81046e2 in phase verify after rate-limit kill" (verify phase). The main
+conductor "resumed at be3fdc7 in phase verify after rate-limit kill" (verify phase). The main
 session may report further kills beyond these; none were found in conductor-log.md by this pass,
 so no further count is claimed (**believed, not verified** would apply to any such report, but
 none was located to cite). The spec-architect stopped at its own turn limit mid-edit (row
@@ -111,7 +111,7 @@ worth keeping as a documented practice.
 
 **2. Node 22.12 requirement discovered at build, not onboarding.** `docs/sdlc/constraints.md`
 technical constraint 5 and `.workhorse/profile.yml` notes (both written at onboarding, commit
-`2602557`, confirmed: `git show --stat 2602557` lists both files as added there, not `b50497f`,
+`68ebc4d`, confirmed: `git show --stat 68ebc4d` lists both files as added there, not `e908b50`,
 which only added the scaffold and mockups) blame `oxlint --version` exit 1 on "npm cli issue 4828",
 an optional-dependency bug.
 **Confirmed** (conductor-log row at 20:44:05.230, wh-builder T1), the actual cause, found only at
@@ -206,12 +206,12 @@ proposed here without evidence it is actually causing missed impressions (confir
 **8. First public push exposed the phone number for about 6 minutes, and the release plan had
 already said it would.** Sequence, labelled as `release.md` section b (Deploy record) gives each
 claim: the main session made the repository public at 14:27Z while it was still empty (**believed,
-not verified**, conductor log); the owner pushed `main` himself, landing at `942d311`
+not verified**, conductor log); the owner pushed `main` himself, landing at `c10984d`
 (**believed, not verified**); a first push attempt reportedly did not land on origin and was
 repeated (**believed, not verified**, no further detail logged); from about 18:02Z to 18:08Z,
-`main` at `942d311` was the public default-branch view, still carrying the phone number in
+`main` at `c10984d` was the public default-branch view, still carrying the phone number in
 `src/data/portfolioData.js`, `generate_viewer.cjs`, and the `public/` mockups, until the merge
-(`d5ad8b0`) replaced it (release.md states this plainly, not itself labelled there); bash-guard
+(`81b57bd`) replaced it (release.md states this plainly, not itself labelled there); bash-guard
 refused the main session's own direct attempt to publish `main`, and it was not bypassed
 (**believed, not verified**). This exposure was accepted under the owner's own D2 option (iv), "go
 public as is" (release.md section 3's options table; approvals.md G5 notes).
@@ -456,7 +456,7 @@ above:
 - Whether `npm ci` actually fails on a Linux CI runner because of the old orphan dependency was
   never independently tested; it did not need to be, since the dependency was already removed
   before the first real CI run. **Confirmed** (`git log --oneline -S'@rolldown/binding-win32-x64-msvc' -- package.json`):
-  the dependency was introduced in `b50497f` and removed in `3d75333` ("build: repair toolchain,
+  the dependency was introduced in `e908b50` and removed in `a78aeb7` ("build: repair toolchain,
   pin dependencies, add vitest and pages build steps"), not by B2/B3 (which pinned react-router,
   vitest and moved Tailwind to devDependencies; a separate decision).
 - The owner's first push of `main` "did not land on origin and had to be repeated": reported by the

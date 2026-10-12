@@ -10,9 +10,9 @@ The live site logged 12 Content Security Policy console errors because Vite's de
 the site's `font-src 'self'` policy blocked (confirmed, `intent.md`). This change made every font
 ship as a same-origin file instead and added two blocking CI checks (build-time and live-served)
 so the regression cannot ship silently again, going through all five gates with no rejection and
-landing as PR #8 (`c3b7ca5`, confirmed, `git log`). The owner's required post-deploy browser check
+landing as PR #8 (`38dfdf3`, confirmed, `git log`). The owner's required post-deploy browser check
 found 0 CSP violations and 0 inlined fonts on the live site, and was logged in a follow-up
-docs-only PR #9 (`00c2ce4`, merge `a30f2fc`, confirmed, `git show 00c2ce4 --stat` and
+docs-only PR #9 (`ab73603`, merge `eb21582`, confirmed, `git show ab73603 --stat` and
 `docs/hosted-config.md` section 6, both read directly).
 
 ## What the pipeline caught, by phase
@@ -20,10 +20,10 @@ docs-only PR #9 (`00c2ce4`, merge `a30f2fc`, confirmed, `git show 00c2ce4 --stat
 | Phase | Finding | Would a human have caught it? |
 |-------|---------|-------------------------------|
 | Spec (G2) | Constraint auditor's M5: the revision-1 plan tested `neverInlineFonts` by importing `vite.config.js` under jsdom, which fails to load at all (esbuild `TextEncoder` invariant), so the test never actually ran. Conductor reproduced it locally before dispatching a rewrite that moved the function to its own module. Evidence: `conductor-log.md` 2026-09-14T02:09:11.083Z (M5 raised), T02:09:43.498Z (conductor reproduced), T02:37:49.985Z (rev 2 fix) | Likely, if they ran the test suite themselves — this is a real, loud test failure, not a silent one. The pipeline's value here was catching it at spec time, before any code was written, not that a human never would have |
-| Verify | `wh-verifier` caught a self-consistency gap across 3 verify sessions: `plan.md` and `evals.md`'s prose said commit `64f91c1` touched one file, when it actually and correctly touched two (`.workhorse/profile.yml` plus one line of this change's own `conductor-log.md`). Held status red until the wording was corrected and all five affected checks were re-run fresh. Evidence: `verification.md` lines 4-22, "Failures and fixes" table; `conductor-log.md` 2026-09-14T05:42:53.649Z | Unlikely — this is the kind of fine-grained "does the prose match the actual `git show --stat` output" check a human reviewer reading for intent, not auditing every clause against a fresh command, would plausibly wave through |
+| Verify | `wh-verifier` caught a self-consistency gap across 3 verify sessions: `plan.md` and `evals.md`'s prose said commit `f33b017` touched one file, when it actually and correctly touched two (`.workhorse/profile.yml` plus one line of this change's own `conductor-log.md`). Held status red until the wording was corrected and all five affected checks were re-run fresh. Evidence: `verification.md` lines 4-22, "Failures and fixes" table; `conductor-log.md` 2026-09-14T05:42:53.649Z | Unlikely — this is the kind of fine-grained "does the prose match the actual `git show --stat` output" check a human reviewer reading for intent, not auditing every clause against a fresh command, would plausibly wave through |
 | Review (G4) | Adoption reviewer: `CLAUDE.md`'s Commands section never mentions the new blocking check `node scripts/check-built-css-fonts.mjs`, and its "Ask first" list never gained the two new sensitive scripts, even though `.workhorse/profile.yml` itself was correctly updated at G2-D6. Evidence: `review-packet.md` section 4, Adoption row; independently re-confirmed by this retro reading the current `CLAUDE.md` directly, still missing both as of this retro | Unlikely — a human skimming a PR diff dominated by `deploy.yml` and `vite.config.js` changes would plausibly not think to check whether a prose doc file was updated to match a machine-config file that was |
 | Review (G4) | Bug reviewer: `scripts/check-built-css-fonts.mjs` treats an empty-string directory argument as a valid path and scans the whole repo/cwd instead of defaulting or erroring (low, not reachable through this repo's CI). Security reviewer: the R100 smoke step builds its fetch URL by concatenation without independently validating the href starts with `/`, relying on the earlier R80 step's gate in the same job. Evidence: `review-packet.md` section 4, Bug and Security rows | Plausible either way — both are the kind of defensive-coding nit a careful senior reviewer catches and a rushed one does not |
-| Deploy (G5) | Release engineer's rehearsed rollback (deploy, revert, redeploy, all local, 3/3 steps exit 0) surfaced a process nuance nobody had written down before: a single merge-commit revert also reverts `64f91c1`, the profile-protection commit, so the owner needs to choose consciously between a full rollback and a more surgical one if he ever wants to keep that protection during an incident. Evidence: `release.md` "Findings" section and D3; `conductor-log.md` 2026-09-14T09:31:46.549Z | Unlikely without an actual rehearsal — this is exactly the kind of interaction a "dry run in your head" misses and an executed rehearsal catches |
+| Deploy (G5) | Release engineer's rehearsed rollback (deploy, revert, redeploy, all local, 3/3 steps exit 0) surfaced a process nuance nobody had written down before: a single merge-commit revert also reverts `f33b017`, the profile-protection commit, so the owner needs to choose consciously between a full rollback and a more surgical one if he ever wants to keep that protection during an incident. Evidence: `release.md` "Findings" section and D3; `conductor-log.md` 2026-09-14T09:31:46.549Z | Unlikely without an actual rehearsal — this is exactly the kind of interaction a "dry run in your head" misses and an executed rehearsal catches |
 
 ## What the pipeline missed
 
@@ -37,7 +37,7 @@ docs-only PR #9 (`00c2ce4`, merge `a30f2fc`, confirmed, `git show 00c2ce4 --stat
 
 Each is a diff for the human to review and apply. Not applied to any file by this retro, per this
 task's explicit instruction ("propose ... never applied silently") — this change is already merged
-into `main` (PR #8, `c3b7ca5`), and this retro runs on a fresh branch off `main`, not the original
+into `main` (PR #8, `38dfdf3`), and this retro runs on a fresh branch off `main`, not the original
 `wh/` change branch, so there is no open change to carry these through G4 with.
 
 ### `CLAUDE.md` "Mistakes to avoid" (newest first; list currently has 4 lines, would have 6, still under the 10-line cap)
@@ -60,7 +60,7 @@ into `main` (PR #8, `c3b7ca5`), and this retro runs on a fresh branch off `main`
    `node_modules` and `package-lock.json` and reinstalling.
 ```
 
-Evidence: `docs/hosted-config.md` section 6, 2026-09-14 `c3b7ca5` entry (the automation confound,
+Evidence: `docs/hosted-config.md` section 6, 2026-09-14 `38dfdf3` entry (the automation confound,
 read directly); `review-packet.md` section 4 Adoption row and `release.md` D2 (the CLAUDE.md drift,
 also independently confirmed by reading the current `CLAUDE.md`).
 
@@ -93,8 +93,8 @@ here only so it is not lost.
 
 ### `.workhorse/profile.yml`
 
-No change proposed. The profile itself was already correctly updated at G2-D6 (`64f91c1`,
-confirmed, `git show 64f91c1 --stat` and the profile's own `sensitive_paths`/`tier_floor_paths`
+No change proposed. The profile itself was already correctly updated at G2-D6 (`f33b017`,
+confirmed, `git show f33b017 --stat` and the profile's own `sensitive_paths`/`tier_floor_paths`
 entries for both scripts, read directly). The gap was entirely in `CLAUDE.md`, handled above.
 
 ### `evals.md` of the change
@@ -120,7 +120,7 @@ signal the code under test reads. Flag that check item as needing a human-operat
 specifically, distinct from other items in the same manual-check list that automation can perform
 reliably. This is client-independent: any project using the Page Visibility API for pause-on-hide
 behaviour and verified through an agent's own browser tool would hit the same confound. Evidence:
-`docs/hosted-config.md` section 6, 2026-09-14 `c3b7ca5` entry.
+`docs/hosted-config.md` section 6, 2026-09-14 `38dfdf3` entry.
 
 ## New evals
 

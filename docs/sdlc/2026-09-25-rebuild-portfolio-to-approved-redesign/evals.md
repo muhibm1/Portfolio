@@ -3,7 +3,7 @@
 Change id: `2026-09-25-rebuild-portfolio-to-approved-redesign`
 Spec: [spec.md](./spec.md)
 Revised 2026-09-28 with the Design revision (spec "Revision record"). Cases marked "built" passed at
-`bbd02a2` (`verification.md`) and keep their test unchanged; cases marked "revised" change with the
+`1de3b43` (`verification.md`) and keep their test unchanged; cases marked "revised" change with the
 revision and are owned by the task named in `plan.md`; G26 is new; M5 is rewritten; N3 is merged
 into N1. Forty rows, the tier-2 limit.
 

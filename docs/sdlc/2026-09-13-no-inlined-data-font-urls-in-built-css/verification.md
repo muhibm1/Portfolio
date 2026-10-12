@@ -4,16 +4,16 @@ Change id: `2026-09-13-no-inlined-data-font-urls-in-built-css`
 Status: green
 Run at: 2026-09-14T05:41:16Z UTC (this session re-runs only GC103's five checks, after both
 `plan.md` line 166 and `evals.md`'s GC103 "Implemented as" cell were corrected to state the
-accurate two-file fact for commit `64f91c1`; all other checks below are unchanged, carried
+accurate two-file fact for commit `f33b017`; all other checks below are unchanged, carried
 forward from the 2026-09-14T05:18:34Z and 2026-09-14T05:33:14Z sessions, whose logs this session
 did not re-run, per instruction)
-Commit: `5627b6d2682fd46d875dee678154640f4d769b5e` (confirmed, `git rev-parse HEAD` on
+Commit: `c7851180974586a3b1edf312cd51bf83e7444417` (confirmed, `git rev-parse HEAD` on
 `wh/2026-09-13-no-inlined-data-font-urls-in-built-css`, re-confirmed this session, unchanged)
 
 Status is green only when every defined check exited 0 and every eval category met its target.
 "No check defined" rows do not count as passes; they are listed so the gap is visible. Status here
 is **green**. The prior two sessions reported red solely because `plan.md`'s conformance-note check
-2 and `evals.md`'s GC103 "Implemented as" cell said commit `64f91c1` touches only
+2 and `evals.md`'s GC103 "Implemented as" cell said commit `f33b017` touches only
 `.workhorse/profile.yml`, when it actually and correctly also touches one line of this change's own
 `conductor-log.md`. Both documents have now been corrected (confirmed, re-read this session: `plan.md`
 line 166 and `evals.md` line 127, plus the Revision 3 note at lines 43-54 and 265-273) to state the
@@ -108,19 +108,19 @@ instruction.
 | R100 body forbids runner files / `count_matches` | `grep -cE 'GITHUB_(ENV\|PATH\|OUTPUT\|STATE\|STEP_SUMMARY)\|count_matches' <extracted body>` | 0 | `verify-logs/r100-body-grep.log`: `0` | confirmed |
 | R100 body identity, pre-fold vs verify-time | `diff $SCRATCH/r104/steps/run-6.sh $SCRATCH/verify/steps-reextract/run-6.sh` | 0 | byte-identical; the body T3 extracted pre-fold is the same body the 2026-09-14T05:18:34Z session re-extracted from the folded head | confirmed |
 
-## Scope (GC103, R101; plan.md step 7, and the Conformance note on `64f91c1`)
+## Scope (GC103, R101; plan.md step 7, and the Conformance note on `f33b017`)
 
 **This section re-run 2026-09-14T05:41:16Z**, after `plan.md` line 166 and `evals.md`'s GC103 row
-were both corrected to state the accurate two-file fact for `64f91c1`. All five commands below were
+were both corrected to state the accurate two-file fact for `f33b017`. All five commands below were
 re-run fresh this session, not cited from an earlier session's log, per this task's instruction.
 
-### Conformance note on `64f91c1` (three checks, `plan.md`'s own corrected text, re-run this session)
+### Conformance note on `f33b017` (three checks, `plan.md`'s own corrected text, re-run this session)
 
 | # | Check | Command | Result | Status |
 |---|-------|---------|--------|--------|
-| 1 | Only one commit on this branch touches the profile | `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` | `64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)` — exactly that one commit | confirmed |
-| 2 | That commit's stat lists exactly `.workhorse/profile.yml` and this change's `conductor-log.md` | `git show --stat --format= 64f91c1` | `.workhorse/profile.yml \| 4 +++-` and `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md \| 1 +`, two files changed, 4 insertions and 1 deletion plus 1 insertion. `plan.md` line 166 (re-read this session) now states this exact two-file expectation, naming the conductor-log path and describing the one added line as the conductor recording its own commit, expected. Matches verbatim | **confirmed** |
-| 3 | Nothing edited the profile again after `64f91c1` | `git diff 64f91c1 HEAD -- .workhorse/profile.yml` | empty | confirmed |
+| 1 | Only one commit on this branch touches the profile | `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` | `f33b017 chore(profile): protect the font-inlining scripts (G2-D6)` — exactly that one commit | confirmed |
+| 2 | That commit's stat lists exactly `.workhorse/profile.yml` and this change's `conductor-log.md` | `git show --stat --format= f33b017` | `.workhorse/profile.yml \| 4 +++-` and `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md \| 1 +`, two files changed, 4 insertions and 1 deletion plus 1 insertion. `plan.md` line 166 (re-read this session) now states this exact two-file expectation, naming the conductor-log path and describing the one added line as the conductor recording its own commit, expected. Matches verbatim | **confirmed** |
+| 3 | Nothing edited the profile again after `f33b017` | `git diff f33b017 HEAD -- .workhorse/profile.yml` | empty | confirmed |
 
 ### R101 / GC103, re-run against `evals.md`'s corrected wording
 
@@ -129,18 +129,18 @@ re-run fresh this session, not cited from an earlier session's log, per this tas
 | Full diff against `main` | `git diff --name-only main...HEAD` | Not re-run this session; the pathspec-excluded and named-path checks below cover R101's contract directly | not re-run this session (see rows below) |
 | **R101 scoped check, GC103's primary assertion** | `git diff --name-only main...HEAD -- . ':(exclude).workhorse/profile.yml'` | Re-run this session. 14 paths: `.github/workflows/deploy.yml`; 8 files under this change's `docs/sdlc/` directory (`adr/0001-...md`, `adr/0002-...md`, `approvals.md`, `conductor-log.md`, `evals.md`, `intent.md`, `plan.md`, `spec.md`); `scripts/check-built-css-fonts.mjs`; `scripts/never-inline-fonts.mjs`; `src/checkBuiltCssFonts.test.js`; `src/neverInlineFonts.test.js`; `vite.config.js`. Exactly R101's six named paths plus the eight `docs/sdlc/` files, nothing else | **PASS, confirmed** |
 | R101 dependency/config surface | `git diff main -- package.json package-lock.json index.html src/` | Re-run this session: only `src/checkBuiltCssFonts.test.js` and `src/neverInlineFonts.test.js` (both new files, additions only) | **PASS, confirmed** |
-| Commits touching the profile | `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` | Re-run this session: exactly `64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)`, one commit | **PASS, confirmed** |
-| Commit's file list | `git show --stat --format= 64f91c1` | Re-run this session: exactly two files, `.workhorse/profile.yml` and `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md`, matching `evals.md`'s and `plan.md`'s now-corrected text verbatim | **PASS, confirmed** |
-| No later edit to the profile | `git diff 64f91c1 HEAD -- .workhorse/profile.yml` | Re-run this session: empty | **PASS, confirmed** |
+| Commits touching the profile | `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` | Re-run this session: exactly `f33b017 chore(profile): protect the font-inlining scripts (G2-D6)`, one commit | **PASS, confirmed** |
+| Commit's file list | `git show --stat --format= f33b017` | Re-run this session: exactly two files, `.workhorse/profile.yml` and `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md`, matching `evals.md`'s and `plan.md`'s now-corrected text verbatim | **PASS, confirmed** |
+| No later edit to the profile | `git diff f33b017 HEAD -- .workhorse/profile.yml` | Re-run this session: empty | **PASS, confirmed** |
 
 **Reading, updated this session.** `evals.md`'s GC103 row (line 127) and `plan.md`'s conformance-note
-check 2 (line 166) were both corrected outside this role's write scope to state that commit `64f91c1`
+check 2 (line 166) were both corrected outside this role's write scope to state that commit `f33b017`
 touches `.workhorse/profile.yml` and one line of this change's own `conductor-log.md`, not
 `.workhorse/profile.yml` alone. Both documents were re-read this session and now match reality
 verbatim. All five of GC103's defined checks were re-run fresh this session, not inferred from the
 wording change: the pathspec-excluded diff lists exactly R101's six paths plus the eight
 `docs/sdlc/` files; the dependency/config-surface diff shows only the two new test files; exactly one
-commit (`64f91c1`) touches the profile; that commit's stat lists exactly the two expected files; and
+commit (`f33b017`) touches the profile; that commit's stat lists exactly the two expected files; and
 no later commit touches the profile again. GC103 passes in full, resolving the sole remaining gap
 from the prior two sessions.
 
@@ -221,13 +221,13 @@ post-release and correctly reported as "manual, not run" rather than failures.
 
 No failures remain. GC103, the only case any prior session in this phase reported as failing, was a
 documentation-wording gap in `evals.md` and `plan.md` (a verbatim quotation asserting commit
-`64f91c1` touches one file, when it correctly touches two), not a code defect; this role never edits
+`f33b017` touches one file, when it correctly touches two), not a code defect; this role never edits
 those files. Both were corrected outside this role's scope, and this session re-ran all five of
 GC103's defined checks fresh and confirmed each passes against the corrected wording.
 
 | # | Check | Cause | Fix | Re-run exit code |
 |---|-------|-------|-----|------------------|
-| 1 | GC103 (golden eval) | `plan.md` line 166 and `evals.md`'s GC103 "Implemented as" cell said `64f91c1` touches only `.workhorse/profile.yml`; the commit correctly also touches one line of this change's `conductor-log.md` | Both documents corrected to state the two-file fact (not this role's edit) | 0 (all five re-run commands this session; see "Scope (GC103, R101)") |
+| 1 | GC103 (golden eval) | `plan.md` line 166 and `evals.md`'s GC103 "Implemented as" cell said `f33b017` touches only `.workhorse/profile.yml`; the commit correctly also touches one line of this change's `conductor-log.md` | Both documents corrected to state the two-file fact (not this role's edit) | 0 (all five re-run commands this session; see "Scope (GC103, R101)") |
 
 ## Not verified
 
@@ -264,7 +264,7 @@ GC103's defined checks fresh and confirmed each passes against the corrected wor
 ## Findings for the human
 
 1. **GC103 (golden eval) — resolved this session.** `plan.md` line 166 and `evals.md`'s GC103
-   "Implemented as" cell now both state that commit `64f91c1` touches `.workhorse/profile.yml` and
+   "Implemented as" cell now both state that commit `f33b017` touches `.workhorse/profile.yml` and
    one line of this change's own `conductor-log.md`, matching what the commit actually does. This
    session re-read both documents and re-ran all five of GC103's defined checks fresh against the
    real branch state: exactly one commit touches the profile, that commit's stat lists exactly the

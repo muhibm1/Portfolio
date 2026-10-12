@@ -1,7 +1,7 @@
 # WorkHorse client profile. Written once at /workhorse:onboard, edited by humans, read by every agent and hook.
 # Every value here is a fact about THIS client. Label anything not verified with "(believed)".
 #
-# Written 2026-09-10 by the discovery analyst from the repository at commit b50497f, the owner's
+# Written 2026-09-10 by the discovery analyst from the repository at commit e908b50, the owner's
 # description, and docs/design-brief.md. Full reasoning lives in docs/sdlc/codebase-map.md and
 # docs/sdlc/constraints.md. The G0 packet at the end of constraints.md lists what the owner must
 # confirm before the first change runs.

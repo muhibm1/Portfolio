@@ -1,7 +1,7 @@
 # Project copy: DRAFT for the owner to confirm at G3
 
 Status: **draft, not owner-written.** At G2 the owner asked for this copy to be drafted for him
-("D2-D5 as recommended, draft the project copy for me", `approvals.md`, commit 24fbc85). Business
+("D2-D5 as recommended, draft the project copy for me", `approvals.md`, commit 0c60318). Business
 constraint 1 says no agent may write copy the owner has not approved, so this text ships only if
 the owner approves or edits it at G3. The Build phase copies it verbatim into
 `portfolioData.projects`; it must not paraphrase it.

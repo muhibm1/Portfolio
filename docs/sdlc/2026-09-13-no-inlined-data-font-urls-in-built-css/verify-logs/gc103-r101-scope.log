@@ -1,10 +1,10 @@
---- 64f91c1 conformance check 1: git log main..HEAD for profile.yml ---
-64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)
---- conformance check 2: git show --stat --format= 64f91c1 ---
+--- f33b017 conformance check 1: git log main..HEAD for profile.yml ---
+f33b017 chore(profile): protect the font-inlining scripts (G2-D6)
+--- conformance check 2: git show --stat --format= f33b017 ---
  .workhorse/profile.yml                                                | 4 +++-
  .../conductor-log.md                                                  | 1 +
  2 files changed, 4 insertions(+), 1 deletion(-)
---- conformance check 3: git diff 64f91c1 HEAD -- .workhorse/profile.yml (should be empty) ---
+--- conformance check 3: git diff f33b017 HEAD -- .workhorse/profile.yml (should be empty) ---
 (end check 3, empty means nothing after)
 --- R101 scope: git diff --name-only main...HEAD -- . excluding profile.yml ---
 .github/workflows/deploy.yml

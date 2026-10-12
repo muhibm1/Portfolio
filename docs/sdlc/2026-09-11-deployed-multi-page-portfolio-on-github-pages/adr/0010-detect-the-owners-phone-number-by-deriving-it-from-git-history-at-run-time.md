@@ -17,7 +17,7 @@ that is not the owner's number (confirmed by reading).
 ## Decision
 
 `scripts/check-phone-redaction.mjs` recovers the reference number at run time from
-`git show b50497f:src/data/portfolioData.js`. It takes the line holding the `phone` key and keeps
+`git show e908b50:src/data/portfolioData.js`. It takes the line holding the `phone` key and keeps
 only its digits, which must number exactly ten. It then builds three matchers, one per form. Each
 allows zero to three separator characters (space, dot, hyphen, parentheses) between digit groups,
 and rejects a match with a digit directly before or after it. It scans every path
@@ -40,7 +40,7 @@ all three forms match and the look-alike does not.
 Easier: one exact check with no allowlist and no false positives from hashes, covering all three
 forms and every separator.
 
-Harder: the check depends on `b50497f` being in the local clone. It fails loudly with exit 2 when
+Harder: the check depends on `e908b50` being in the local clone. It fails loudly with exit 2 when
 it is not, rather than passing vacuously. It cannot run in CI:
 `.github/workflows/deploy.yml` line 37 calls `actions/checkout` with no `fetch-depth` (confirmed
 by grep), and that default is a shallow clone (believed, not verified). A future commit that

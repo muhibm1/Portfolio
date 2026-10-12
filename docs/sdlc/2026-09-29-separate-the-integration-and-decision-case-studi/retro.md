@@ -1,10 +1,10 @@
 # Retro: Separate the integration and decision case studies and correct the incident count
 
-Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · PR #21 merged as `e08f1bb`, deploy run 36601529754 succeeded (confirmed, `gh pr view`, `gh run view`, per ship.md Deploy record).
+Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · PR #21 merged as `26e8bcc`, deploy run 36601529754 succeeded (confirmed, `gh pr view`, `gh run view`, per ship.md Deploy record).
 
 ## What happened
 
-The owner wanted the integration and decision case studies told apart. The pipeline placed his words on the integration page, its homepage card and the decision page, and replaced the Data Health incident paragraph with his sentence. The copy scanner (`scripts/forbidden-copy.mjs`) gained 9 new terms and one page-scoped term so removed claims cannot return. G2 was rejected once because the owner reversed his own count instruction ("thousands" back to "tens of thousands") and cut "inside restricted geospatial zones"; the rework passed on the second presentation. Verification was green at `77c1f0f` (480 tests, lint, build, audit, dist scan, all confirmed in ship.md), and the merge waited eight and a half hours on the owner's direct instruction.
+The owner wanted the integration and decision case studies told apart. The pipeline placed his words on the integration page, its homepage card and the decision page, and replaced the Data Health incident paragraph with his sentence. The copy scanner (`scripts/forbidden-copy.mjs`) gained 9 new terms and one page-scoped term so removed claims cannot return. G2 was rejected once because the owner reversed his own count instruction ("thousands" back to "tens of thousands") and cut "inside restricted geospatial zones"; the rework passed on the second presentation. Verification was green at `01d76a9` (480 tests, lint, build, audit, dist scan, all confirmed in ship.md), and the merge waited eight and a half hours on the owner's direct instruction.
 
 ## Clock
 
@@ -17,7 +17,7 @@ Longest agent phase: design, believed, from log timestamps (06:39 to 07:59 wall,
 ## What the pipeline caught
 
 - Constraint auditor, design: `restricted geospatial zones` collided with disclosure rule 2 (D14). The owner then agreed and went further, cutting it. A human might have caught it, but only by reading the paragraph against the rules; the auditor caught it in 4 minutes.
-- Reviewers, review: 4 mediums fixed in `77c1f0f` (no CLAUDE.md note on page-scoped terms, ADR cites without paths, no reason per new term, no test that the entry wires `PAGE_SCOPED_TERMS`). The last is a real test gap that a human would probably have missed.
+- Reviewers, review: 4 mediums fixed in `01d76a9` (no CLAUDE.md note on page-scoped terms, ADR cites without paths, no reason per new term, no test that the entry wires `PAGE_SCOPED_TERMS`). The last is a real test gap that a human would probably have missed.
 - Security reviewer: the cut phrase remains in public docs and git history (D18). Accepted, owner confirmed at G4 through the recorded approval.
 - Verifier: E5 built-page assertions over `dist/` (10 of 10) proved the strings reached the served HTML and meta tags.
 

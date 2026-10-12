@@ -1,6 +1,6 @@
 Verdict: 5 findings (0 critical, 0 high, 0 medium, 5 low)
 
-Reviewed `git diff main...wh/2026-09-29-separate-the-integration-and-decision-case-studi` at bad16dc: `scripts/forbidden-copy.mjs` (read in full), `scripts/check-forbidden-copy.mjs`, `src/checkForbiddenCopy.test.js`, `src/data/portfolioData.js`, `src/data/portfolioData.test.js`, plus `.github/workflows/deploy.yml` lines 100-125, `scripts/route-pages.mjs`, `src/routePaths.js`. Owner copy strings were not assessed for wording.
+Reviewed `git diff main...wh/2026-09-29-separate-the-integration-and-decision-case-studi` at 4cc4616: `scripts/forbidden-copy.mjs` (read in full), `scripts/check-forbidden-copy.mjs`, `src/checkForbiddenCopy.test.js`, `src/data/portfolioData.js`, `src/data/portfolioData.test.js`, plus `.github/workflows/deploy.yml` lines 100-125, `scripts/route-pages.mjs`, `src/routePaths.js`. Owner copy strings were not assessed for wording.
 
 What was checked and holds (all confirmed unless labelled):
 - `main` builds matchers from `[...FORBIDDEN_TERMS, ...PAGE_SCOPED_TERMS]` (forbidden-copy.mjs:257) and CI runs `node scripts/check-forbidden-copy.mjs dist` as a blocking step after Build (deploy.yml:119-120, no `continue-on-error`). So the page-scoped term is applied in CI.

@@ -2,7 +2,7 @@
 
 Change id: `2026-09-13-no-inlined-data-font-urls-in-built-css`. Tier: 2.
 Spec: [spec.md](./spec.md) revision 2, approved at G2 · Evals: [evals.md](./evals.md) revision 2, 55 cases · ADRs: [0001](./adr/0001-refuse-to-inline-font-files-with-a-font-only-assetsinlinelimit-function.md), [0002](./adr/0002-check-built-css-with-a-committed-node-script-run-the-same-way-in-ci-and-locally.md)
-Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css`, head `64f91c1`, created from `main` at `85c5e4d` (both confirmed, branch reflog read).
+Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css`, head `f33b017`, created from `main` at `6319c97` (both confirmed, branch reflog read).
 Worktrees: one per task under the gitignored `.worktrees/` (`.gitignore` line 28, confirmed), task branches `wh/2026-09-13-no-inlined-data-font-urls-in-built-css/t<N>`, folded by rebase (`build.wave_merge`, confirmed).
 Written 2026-09-13 by the implementation planner. This session had Read, Glob, Grep and Write only, so no command was run. Every claim is labelled `confirmed` (read here) or `believed, not verified`.
 
@@ -14,7 +14,7 @@ The change is three independent pieces that meet only in the built output. They 
 
 1. **Shell and Node.** Git Bash, from the worktree root. Every `node` or `npm` command is written as `export PATH="/c/Users/alqai/AppData/Roaming/nvm/v22.12.0:$PATH" && <command>` (system Node is v21.7.3). Step 0 of every task runs `export PATH="/c/Users/alqai/AppData/Roaming/nvm/v22.12.0:$PATH" && node -v && npm ci` and stops unless `node -v` prints `v22.12.0`. `npm ci` is not an ask command (confirmed against profile `ask_commands`). That a fresh worktree has no `node_modules` is believed.
 2. **Scratch files live outside the repository.** `$SCRATCH` means `/c/Users/alqai/AppData/Local/Temp/claude/C--Users-alqai-Portfolio/d0dede8c-e802-4bb0-96b3-f53cba8c233e/scratchpad/fonts-2026-09-13`. Use `$SCRATCH/t<N>/` per task, `$SCRATCH/r104/` for the rehearsal harness and `$SCRATCH/verify/` for the verifier. If a later session has a different scratchpad, use its `fonts-2026-09-13/` with the same subfolders. Nothing under `$SCRATCH` is committed. The worktree's own `dist/` is gitignored (`.gitignore` line 11, confirmed).
-3. **Sensitive files are edited only with the Edit or Write tool.** Since `64f91c1`, the four sensitive files in this change are `vite.config.js`, `.github/workflows/deploy.yml`, `scripts/never-inline-fonts.mjs` and `scripts/check-built-css-fonts.mjs` (profile lines 74 to 81 and 156, confirmed). The protect-paths hook matches only Edit, Write, MultiEdit and NotebookEdit (`protect-paths.js` line 2, confirmed). So a shell redirection would skip the owner's prompt, which is forbidden. Prompts to expect are in [Owner prompts](#owner-prompts).
+3. **Sensitive files are edited only with the Edit or Write tool.** Since `f33b017`, the four sensitive files in this change are `vite.config.js`, `.github/workflows/deploy.yml`, `scripts/never-inline-fonts.mjs` and `scripts/check-built-css-fonts.mjs` (profile lines 74 to 81 and 156, confirmed). The protect-paths hook matches only Edit, Write, MultiEdit and NotebookEdit (`protect-paths.js` line 2, confirmed). So a shell redirection would skip the owner's prompt, which is forbidden. Prompts to expect are in [Owner prompts](#owner-prompts).
 4. **Build before judging `dist/`.** Run `npm run build` before any grep or script run on `dist/`, because a stale local `dist/` exists (constraints known debt 14, confirmed).
 5. **No new dependency, no other file** (R101). No task touches `package.json`, `package-lock.json`, `index.html`, `src/test/setup.js`, `src/main.jsx` or `src/data/portfolioData.js`. Tests go in `src/`, run under the default jsdom environment and carry no `@vitest-environment` pragma (R93, R98).
 6. **Lint.** Run `npm run lint` under Node 22.12.0. The oxlint Windows binding is installed at 1.82.0 and requires Node `^20.19.0 || >=22.12.0` (`node_modules/@oxlint/binding-win32-x64-msvc/package.json`, confirmed). The old `Cannot find native binding` log ran under v21.7.3 (`$SCRATCH/../w1-lint.log`, confirmed). If lint still cannot load in a worktree, run `npm ci` once more and retry. Never delete or regenerate `package-lock.json` in this change (R101), and never report lint as passed without an observed exit 0. Report it as `blocked: lint cannot load` with the log (G3 D4).
@@ -24,16 +24,16 @@ The change is three independent pieces that meet only in the built output. They 
 
 | Action | Path | Task | Purpose |
 |--------|------|------|---------|
-| create | `scripts/never-inline-fonts.mjs` | T1 | `neverInlineFonts(filePath)`: `false` for font files, `undefined` otherwise (R93). Sensitive since `64f91c1` |
+| create | `scripts/never-inline-fonts.mjs` | T1 | `neverInlineFonts(filePath)`: `false` for font files, `undefined` otherwise (R93). Sensitive since `f33b017` |
 | create | `src/neverInlineFonts.test.js` | T1 | 2 tests for both return values (R93) |
 | modify | `vite.config.js` | T1 | One import line, `build: { assetsInlineLimit: neverInlineFonts }`, at most one comment line (R93, R96). Sensitive |
-| create | `scripts/check-built-css-fonts.mjs` | T2 | Applies the font rule to every `.css` under a directory; exit 0, 1 or 2 (R97). Sensitive since `64f91c1` |
+| create | `scripts/check-built-css-fonts.mjs` | T2 | Applies the font rule to every `.css` under a directory; exit 0, 1 or 2 (R97). Sensitive since `f33b017` |
 | create | `src/checkBuiltCssFonts.test.js` | T2 | 10 cases, 15 tests, spawning the script against fixtures (R98) |
 | modify | `.github/workflows/deploy.yml` | T3 | Header source line, R99 build-job step, R100 deploy-job smoke step. Sensitive |
 | create | `docs/sdlc/<id>/verification.md`, `verify-logs/` | verify phase | Gate evidence, including the R104 record run |
 | outside repo | `$SCRATCH/r104/` | T3, verify phase | R104 harness: extraction, `node:http` fixture server, case runner, expected lines. Never committed |
 
-`.workhorse/profile.yml` is not in R101's list and no task edits it. See [Conformance note on 64f91c1](#conformance-note-on-64f91c1).
+`.workhorse/profile.yml` is not in R101's list and no task edits it. See [Conformance note on f33b017](#conformance-note-on-f33b017).
 
 ## Waves
 
@@ -145,7 +145,7 @@ Owner: the verify phase (`wh-verifier`, and the `wh-eval-runner` it dispatches),
 4. **Regression demonstrations (FL35, FL36, NF20).** Scratch builds with Vite's JS API, as `scratchpad\inline-probe.mjs` does (confirmed, read): `emptyOutDir: true` and an `outDir` under `$SCRATCH/verify/`. FL35 sets an inline `build.assetsInlineLimit: 4096`, and the script must exit 1 naming `index-*.css` with 12. FL36 sets `base: '/Other/'`, and the script must exit 1. `vite.config.js` is never edited.
 5. **AD22.** `git diff --no-index` of two scratch copies of `vite.config.js`, where only the second has `font-src` widened.
 6. **Workflow structure (GC101, GC102).** T3's "Done when" checks on the folded head.
-7. **Scope (GC103, R101).** Account for `64f91c1` as in the next section.
+7. **Scope (GC103, R101).** Account for `f33b017` as in the next section.
 8. **R104 record run (GC106, EG32, FL39 to FL51; with FL37, EG27, AD19 proven through FL43 to FL46, FL49 and FL41).**
    - Harness: T3's `$SCRATCH/r104/`, after checking each file's sha256 against T3's report. If the harness or `extract-runs.js` is gone, for example in a new session, rebuild it from spec Interfaces (c) and (d). Extraction must be by program, never by retyping, and each substitute's source is pasted into `verification.md` (R104, audit L13).
    - Setup: build first. P1 runs `npm run preview -- --port 4799 --strictPort` (binds `localhost`, confirmed by the auditor), with `ROOT_URL=http://localhost:4799/Portfolio/` and `dist/index.html` copied to `smoke/root.html`.
@@ -159,19 +159,19 @@ Evidence the owner sees at G4:
 - Each task's red-then-green record: T1 and T2 test outputs, T2's pre-fix exit-1 output, and T3's harness self-test.
 - Eval pass rates per category against 100%.
 
-### Conformance note on 64f91c1
+### Conformance note on f33b017
 
-`git diff --name-only main...HEAD` will list `.workhorse/profile.yml`, which is outside R101's list. The owner ordered this in his G2 notes ("add both scripts to profile for me", `approvals.md`, confirmed). The main session committed it before build as `64f91c1 chore(profile): protect the font-inlining scripts (G2-D6)` (confirmed, reflog). The conformance reviewer treats it as the owner's D6 execution, not scope drift, if three checks hold:
+`git diff --name-only main...HEAD` will list `.workhorse/profile.yml`, which is outside R101's list. The owner ordered this in his G2 notes ("add both scripts to profile for me", `approvals.md`, confirmed). The main session committed it before build as `f33b017 chore(profile): protect the font-inlining scripts (G2-D6)` (confirmed, reflog). The conformance reviewer treats it as the owner's D6 execution, not scope drift, if three checks hold:
 1. `git log --format='%h %s' main..HEAD -- .workhorse/profile.yml` prints exactly that one commit.
-2. `git show --stat --format= 64f91c1` lists exactly two files: `.workhorse/profile.yml` and this change's `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md` (one added line, the conductor recording its own commit, which is expected). No other file appears.
-3. `git diff 64f91c1 HEAD -- .workhorse/profile.yml` is empty, so no task edited it later.
+2. `git show --stat --format= f33b017` lists exactly two files: `.workhorse/profile.yml` and this change's `docs/sdlc/2026-09-13-no-inlined-data-font-urls-in-built-css/conductor-log.md` (one added line, the conductor recording its own commit, which is expected). No other file appears.
+3. `git diff f33b017 HEAD -- .workhorse/profile.yml` is empty, so no task edited it later.
 
 Then R101 is checked as `git diff --name-only main...HEAD -- . ':(exclude).workhorse/profile.yml'`, which must list only R101's six paths and this change's `docs/sdlc/` directory. `git diff main -- package.json package-lock.json index.html src/` must show only the two new test files.
 
 ## Rollback
 
 - **Local and change branch.** Nothing is published. Revert a task commit with `git revert <sha>` on the change branch, or let the conductor drop a task branch before the fold. There is no data to clean up. Scratch files sit outside the repository.
-- **Production (GitHub Pages).** The owner reverts the three task commits on `main`, or the merge commit with `-m 1`, and pushes. The workflow then rebuilds and republishes the previous site. The revert removes R99 and R100 too, so that deploy runs the old steps only. Expected effect: the 12 CSP font errors return, and text in the Latin subset is unaffected (believed, release.md of change 2026-09-11). Do not revert `64f91c1`: it only adds protection and is the owner's D6.
+- **Production (GitHub Pages).** The owner reverts the three task commits on `main`, or the merge commit with `-m 1`, and pushes. The workflow then rebuilds and republishes the previous site. The revert removes R99 and R100 too, so that deploy runs the old steps only. Expected effect: the 12 CSP font errors return, and text in the Latin subset is unaffected (believed, release.md of change 2026-09-11). Do not revert `f33b017`: it only adds protection and is the owner's D6.
 - **Partial: R100 fails wrongly on the runner.** The site is already live, because `Deploy to GitHub Pages` runs before every smoke step (`deploy.yml` lines 158 to 160, confirmed). Fix the R100 body forward and re-run R104, or revert T3's commit alone.
 - **Partial: R97 fails wrongly in the build job.** Nothing is uploaded, and the previous site stays live. Fix `scripts/check-built-css-fonts.mjs` with R98 green, or revert T3's commit to drop the step.
 - **Schema and data.** Not applicable: no database, no migration, no stored data (profile `database: none`, confirmed).
@@ -198,7 +198,7 @@ Then R101 is checked as `git diff --name-only main...HEAD -- . ':(exclude).workh
 
 ### 1. TL;DR
 
-The plan builds the approved spec in 3 parallel tasks in 1 wave, one task per piece. T1 is the font-only inline function and `vite.config.js`. T2 is the built CSS check script with 15 tests. T3 is the two `deploy.yml` steps, proven by the R104 harness. The proofs that need all three together run in the verify phase on the folded branch: R97 on the real build, and the R104 record run with P1. Expect at least 7 owner prompts during build, because every file except the two tests is now a sensitive path. You are asked to approve the wave shape, who owns the R104 record run, how `64f91c1` is counted against R101, and the lint fallback.
+The plan builds the approved spec in 3 parallel tasks in 1 wave, one task per piece. T1 is the font-only inline function and `vite.config.js`. T2 is the built CSS check script with 15 tests. T3 is the two `deploy.yml` steps, proven by the R104 harness. The proofs that need all three together run in the verify phase on the folded branch: R97 on the real build, and the R104 record run with P1. Expect at least 7 owner prompts during build, because every file except the two tests is now a sensitive path. You are asked to approve the wave shape, who owns the R104 record run, how `f33b017` is counted against R101, and the lint fallback.
 
 ### 2. Decisions requested
 
@@ -206,7 +206,7 @@ The plan builds the approved spec in 3 parallel tasks in 1 wave, one task per pi
 |---|----------|----------------|-------------|-----------------------------|
 | D1 | Wave shape | 1 wave: T1, T2 and T3 in parallel. T3 runs a "P1-pre" on the conductor's font-only scratch build | 2 waves: T3 after T1 and T2 fold, so its P1 uses the real config and its R99 step's script exists | One more serial builder session; P1 runs in build as well as at verify |
 | D2 | Who runs R104's record | T3's builder writes and runs the harness pre-fold as its test. The verify phase re-runs all 14 cases on the folded commit and writes the rows in `verification.md`, the file the verifier owns | Literal R104 wording: a builder records the rows in `verification.md` | A wave-2 builder task writes into the verifier's artifact, and the conformance reviewer must check two authors of one file |
-| D3 | `64f91c1` against R101's file list | Keep it on the branch; the conformance reviewer excludes it by commit after three checks ([note](#conformance-note-on-64f91c1)) | You land `64f91c1` on `main` first and the branch is rebased, so R101 holds literally | An extra push to `main`, which is a production deploy with no site change |
+| D3 | `f33b017` against R101's file list | Keep it on the branch; the conformance reviewer excludes it by commit after three checks ([note](#conformance-note-on-f33b017)) | You land `f33b017` on `main` first and the branch is rebased, so R101 holds literally | An extra push to `main`, which is a production deploy with no site change |
 | D4 | If oxlint cannot load after a fresh `npm ci` | Verification is red on lint; you decide then. The lockfile is never regenerated in this change | Accept the CI build job's lint as the only lint evidence | G4 is approved with no local lint evidence, and CI lint runs only after your merge |
 
 ### 3. Evidence
@@ -214,7 +214,7 @@ The plan builds the approved spec in 3 parallel tasks in 1 wave, one task per pi
 | Check | Command or source | Exit | Output | Status |
 |-------|-------------------|------|--------|--------|
 | Sensitive and tier-2 paths now cover both scripts | `.workhorse/profile.yml` lines 80, 81, 156 | n/a | read | confirmed |
-| `64f91c1` is the D6 commit, and the branch head | `.git/logs/refs/heads/wh/2026-09-13-...` line 6 | n/a | `chore(profile): protect the font-inlining scripts (G2-D6)` | confirmed |
+| `f33b017` is the D6 commit, and the branch head | `.git/logs/refs/heads/wh/2026-09-13-...` line 6 | n/a | `chore(profile): protect the font-inlining scripts (G2-D6)` | confirmed |
 | protect-paths asks on sensitive paths, only for Edit, Write, MultiEdit and NotebookEdit | `hooks/scripts/protect-paths.js` lines 2, 31, 32 | n/a | read | confirmed |
 | Insertion points: `vite.config.js` lines 5, 35, 43; `deploy.yml` lines 6, 120, 123, 258, 260; one `continue-on-error` (line 130) | files read | n/a | read | confirmed |
 | `extract-runs.js`, `inline-probe.mjs` and the font-only build CSS still exist | Glob of the scratchpad | n/a | all three found | confirmed |
@@ -235,7 +235,7 @@ Evals: 55 cases, none run, so no pass rate yet (targets: 100% for golden, edge, 
 | Severity | Finding | Resolution |
 |----------|---------|------------|
 | Medium | R104 says "the builder SHALL rehearse ... and record it in `verification.md`", but the verifier writes that file, and a pre-fold record is not the commit that merges | Decided by you at G3 (D2); recommended split above |
-| Medium | R101's literal file list excludes `.workhorse/profile.yml`, which `64f91c1` changed on this branch | D3; three-check exclusion by commit |
+| Medium | R101's literal file list excludes `.workhorse/profile.yml`, which `f33b017` changed on this branch | D3; three-check exclusion by commit |
 | Low | No local YAML or actionlint check exists for `deploy.yml` (confirmed) | Structural greps and extraction now; the first CI run is the proof (Not verified) |
 | Low | CLAUDE.md's lint remedy regenerates `package-lock.json`, which R101 forbids | Rule 6 and D4 |
 | Low | A shell redirection would skip the owner's prompt on a sensitive file | Rule 3 |

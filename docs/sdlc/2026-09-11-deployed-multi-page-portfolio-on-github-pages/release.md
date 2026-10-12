@@ -1,11 +1,11 @@
 # Release: Deployed multi-page portfolio on GitHub Pages
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
-Tier: 2. G4 approved at `839b67b` (confirmed: `WH state get gates.G4` returns `approved`, `WH state get phase`
+Tier: 2. G4 approved at `c9e52b9` (confirmed: `WH state get gates.G4` returns `approved`, `WH state get phase`
 returns `deploy`, `approvals.md` G4 block dated `2026-09-13T05:03:00.718Z`).
-Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages`, HEAD `839b67b48de74f0911982419d350fa1962fd46da`.
-Change branch forked from `main` at `942d311a49ae89c4fbc08bda9efbafd0f354b0ba` (confirmed,
-`conductor-log.md` 2026-09-12T19:53:42Z: "change branch created from main at 942d311").
+Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages`, HEAD `c9e52b9c472d97fee8632f04fe308f3cd20ad6cd`.
+Change branch forked from `main` at `c10984d606f530ac03090433011abdb8653789a5` (confirmed,
+`conductor-log.md` 2026-09-12T19:53:42Z: "change branch created from main at c10984d").
 Prepared: 2026-09-13, on Node v22.12.0 (confirmed, `node --version`).
 
 No em-dashes. Every factual claim is labelled **confirmed** (this agent read the file, ran the
@@ -25,52 +25,52 @@ present in `git log main..HEAD --oneline`.
 ### Added
 
 - Multi-page site with a client-side router: `/` (home), `/work` (case-study and project index),
-  `/work/:slug` for each of the three case studies (`f093db6`, `3a9d284`, `83df689`, `a44c13b`).
+  `/work/:slug` for each of the three case studies (`26b1aaa`, `412bd34`, `0aabff8`, `b06a6fe`).
 - `/work` lists three GitHub projects (`workhorse`, `Shu`, `wasl`, all private repositories, shown
   with a "Private repository, walkthrough on request" note and a `mailto:` link) and the
   interactive triage simulator, now labelled "Illustrative example, fictional data" (`e921436`,
-  `f5ac45a`).
+  `621ef47`).
 - Live `thinking-orbs` hero animation replacing the MM monogram, honouring
-  `prefers-reduced-motion` and pausing offscreen (`7077f00`, `48c9007`).
+  `prefers-reduced-motion` and pausing offscreen (`6ad8dee`, `9fd0954`).
 - Self-hosted fonts (Inter, JetBrains Mono, Space Grotesk) via pinned `@fontsource` packages;
-  Google Fonts removed from `index.html` (`386223b`).
+  Google Fonts removed from `index.html` (`e1f7684`).
 - `dist/404.html` as a byte-identical copy of `index.html` at build time, so deep links resolve on
-  GitHub Pages (`vite.config.js`, part of `3d75333`).
+  GitHub Pages (`vite.config.js`, part of `a78aeb7`).
 - `npm test` (Vitest plus React Testing Library), 23 test files, 191 tests, wired into
-  `.workhorse/profile.yml` (`3d75333` onward).
+  `.workhorse/profile.yml` (`a78aeb7` onward).
 - `public/.well-known/security.txt`, `Contact` pointing at `personal.email`, one-year `Expires`
-  (`b45e18f`).
+  (`6d9a5fc`).
 - `docs/hosted-config.md`, the record of every setting that lives in the GitHub dashboard, plus
-  the R84 post-deploy manual check (`b45e18f`, corrected `34a0a8c`).
+  the R84 post-deploy manual check (`6d9a5fc`, corrected `f39ea73`).
 
 ### Changed
 
 - Case-study content moved from a modal (`CaseStudyModal.jsx`) to a routed page
-  (`CaseStudyPage.jsx`); the Resume stays a modal (`3a9d284`, ADR 0008).
-- Home hero cards link straight to `/work/<id>` (`48c9007`).
+  (`CaseStudyPage.jsx`); the Resume stays a modal (`412bd34`, ADR 0008).
+- Home hero cards link straight to `/work/<id>` (`9fd0954`).
 - Contact email is read from `personal.email` everywhere instead of one hard-coded `mailto:`
-  string; the phone number is removed from the public site (`f1792e1`, `95f27dc`).
+  string; the phone number is removed from the public site (`110cff7`, `7c26f3e`).
 - `react-router` pinned at `7.18.3` and `vitest` at `3.2.7` (owner decision B2); `tailwindcss` and
   `@tailwindcss/vite` moved to `devDependencies` at exact `4.3.3` (owner decision B3)
-  (`a98fdcf`).
-- `@rolldown/binding-win32-x64-msvc`, an orphaned Windows-only dependency, removed (`3d75333`).
-- `generate_viewer.cjs`, dead code reading a path outside the repository, removed (`386223b`).
+  (`55ff8b6`).
+- `@rolldown/binding-win32-x64-msvc`, an orphaned Windows-only dependency, removed (`a78aeb7`).
+- `generate_viewer.cjs`, dead code reading a path outside the repository, removed (`e1f7684`).
 
 ### Fixed
 
-- Back to Top now calls `window.scrollTo` and works on every route, not only `/` (`c518b71`,
+- Back to Top now calls `window.scrollTo` and works on every route, not only `/` (`829b673`,
   G4-D5, R91).
-- `FdePhilosophy.jsx` icons rendered without React keys (`2df4999`).
-- `scripts/check-phone-redaction.mjs` (added `76bcc00`) hardened twice more: catches a `+1`/`1`
+- `FdePhilosophy.jsx` icons rendered without React keys (`666d604`).
+- `scripts/check-phone-redaction.mjs` (added `cf972a8`) hardened twice more: catches a `+1`/`1`
   country-code prefix written directly before the number, and decodes UTF-16 files instead of
-  silently skipping them as binary (`1731db5`).
+  silently skipping them as binary (`f6c7143`).
 
 ### Security and CI
 
 - `.github/workflows/deploy.yml` added: builds and tests on every push to `main`, then deploys to
   GitHub Pages and smoke-tests the served bytes. Every action pinned to a full commit SHA; the
   build job has read-only permissions, the deploy job has exactly `pages: write` and
-  `id-token: write`; no secret of any kind is referenced (`02743e2`, spec R55-R64, ADR 0005).
+  `id-token: write`; no secret of any kind is referenced (`7177ffb`, spec R55-R64, ADR 0005).
   Gates before anything reaches Pages: a dependency-pin check (R85), lint, the full test suite
   with a 12-passed floor (R52), the production build, and a blocking
   `npm audit --audit-level=high --omit=dev` (R56). A second, non-blocking full-tree audit runs for
@@ -86,29 +86,29 @@ present in `git log main..HEAD --oneline`.
   only (`vite.config.js`, ADR 0006): `default-src 'self'`, `script-src 'self'`, `object-src 'none'`,
   `form-action 'none'`, `frame-ancestors` not set (GitHub Pages cannot be framed off by a meta tag;
   accepted, believed, not re-verified this session), `strict-origin-when-cross-origin` referrer.
-- `scripts/check-phone-redaction.mjs` added: derives the owner's phone number from commit `b50497f`
+- `scripts/check-phone-redaction.mjs` added: derives the owner's phone number from commit `e908b50`
   at run time and never prints or hard-codes it; a `--self-test` mode proves the matcher against
   synthetic numbers; scans every tracked file and, given a directory argument, every file under it
-  (`76bcc00`, hardened `1731db5`, ADR 0010). `src/checkPhoneRedaction.test.js` (17 unit tests) runs
+  (`cf972a8`, hardened `f6c7143`, ADR 0010). `src/checkPhoneRedaction.test.js` (17 unit tests) runs
   the matcher and decoder in CI through `npm test`.
-- `.gitignore` gained `.env*` (pattern, not an enumerated filename) and `.claude/` (`386223b`,
-  `d6a1a4c`).
+- `.gitignore` gained `.env*` (pattern, not an enumerated filename) and `.claude/` (`e1f7684`,
+  `4f26a45`).
 - Four design mockups moved from `public/` to `docs/design/`, with `src/publicDirectory.test.js`
-  guarding that none of them, or any future mockup, reaches `dist/` (`38d36b4`, R92, ADR 0012).
+  guarding that none of them, or any future mockup, reaches `dist/` (`781d7a1`, R92, ADR 0012).
 - `.github/dependabot.yml` added, `npm` and `github-actions` ecosystems, `open-pull-requests-limit:
-  5` each (`02743e2`).
+  5` each (`7177ffb`).
 - ADR 0009 records accepting 5 dev-only advisories (vite, esbuild, `@vitest/mocker`) as a
   documented risk until a future Vite 6+/Vitest 4+ upgrade; the blocking audit scope changed to
   `--omit=dev` in both CI and `.workhorse/profile.yml` so the local gate matches the CI gate
-  (`26b5c0e`).
+  (`327c085`).
 
 ### Docs
 
 - `intent.md`, `spec.md` (92 requirements), `evals.md`, `plan.md`, `review-packet.md`,
   `approvals.md` written and carried through three G4 rounds (two rejections, one approval).
   Twelve ADRs recorded (`docs/sdlc/.../adr/0001` to `0012`).
-- `docs/hosted-config.md` added and corrected twice for stale redaction claims (`b45e18f`,
-  `34a0a8c`).
+- `docs/hosted-config.md` added and corrected twice for stale redaction claims (`6d9a5fc`,
+  `f39ea73`).
 - `docs/sdlc/constraints.md`, `docs/sdlc/codebase-map.md`, `.workhorse/profile.yml` updated for the
   phone-number removal, the new `test`/`test_file` commands, and `src/data/portfolioData.js` added
   to `sensitive_paths` (G3-D4).
@@ -196,7 +196,7 @@ repository, so you can also merge locally and push if you prefer over the GitHub
 way:
 
 **Use a merge commit (not squash, not rebase).** `approvals.md` records five gate approvals by
-their artifact commit SHAs (`a7ed654`, `bd1cd7c7...`, `49a0c2b2...`, `b6103144...`, and the G4
+their artifact commit SHAs (`d78220e`, `8035f487...`, `e8e9672d...`, `094923e7...`, and the G4
 history above). A merge commit keeps every one of those SHAs reachable from `main`'s history
 exactly as approved. Squashing or rebasing rewrites or drops those commits, which breaks the audit
 trail `approvals.md` depends on (the whole point of recording a SHA per gate is that it stays
@@ -291,7 +291,7 @@ address as above. Going public publishes this file and these lines as-is.
 The number was removed from the public site (R41) and, under G4-D3, redacted from every tracked
 file on this change branch. It is **not** removed from git history. This agent located every
 commit and path that ever added or removed a rendering of it, using a script that derives the
-digits from commit `b50497f` at run time (the same technique `scripts/check-phone-redaction.mjs`
+digits from commit `e908b50` at run time (the same technique `scripts/check-phone-redaction.mjs`
 uses) and passes them only to `git log -S<digits> --name-only`, whose output never includes the
 matched text itself, only commit hashes, subjects and paths. **No digit was read, printed, typed
 or written by this agent at any point.**
@@ -302,14 +302,14 @@ in the parenthesised form):**
 
 | Commit | Path |
 |---|---|
-| `b50497f` | `src/data/portfolioData.js` (introduced) |
-| `c59216b`, `f1792e1` | `src/data/portfolioData.js` (removed from the site, R41) |
-| `2602557` | `docs/sdlc/constraints.md` |
-| `a7ed654` | `docs/sdlc/.../intent.md` |
-| `0a62e9e`, `bd1cd7c` | `docs/sdlc/.../spec.md` |
-| `0099601`, `b45e18f` | `docs/sdlc/.../intent.md`, `docs/sdlc/constraints.md` |
-| `1d11c97` | `docs/sdlc/.../spec.md` |
-| `545da85` | `docs/sdlc/.../intent.md` |
+| `e908b50` | `src/data/portfolioData.js` (introduced) |
+| `c59216b`, `110cff7` | `src/data/portfolioData.js` (removed from the site, R41) |
+| `68ebc4d` | `docs/sdlc/constraints.md` |
+| `d78220e` | `docs/sdlc/.../intent.md` |
+| `6df5213`, `8035f48` | `docs/sdlc/.../spec.md` |
+| `0099601`, `6d9a5fc` | `docs/sdlc/.../intent.md`, `docs/sdlc/constraints.md` |
+| `bbf4d9b` | `docs/sdlc/.../spec.md` |
+| `33c3cf4` | `docs/sdlc/.../intent.md` |
 
 No commit outside this change's own branch history was searched for other renderings (last-seven
 digits alone, area-code-and-exchange alone, spaced or dotted forms); the component files
@@ -335,7 +335,7 @@ git log --all --diff-filter=A --name-only --pretty=format: \
 **Confirmed: zero results for both.** No `.env` file and no file named like a key, secret or
 credential was ever committed, at any point in history.
 
-**`generate_viewer.cjs`** (present on `main`, removed on this change branch, commit `386223b`):
+**`generate_viewer.cjs`** (present on `main`, removed on this change branch, commit `e1f7684`):
 contains the hard-coded local path `C:\Users\alqai\.gemini\antigravity\brain\<uuid>` (**confirmed**,
 read the file at `main`). This discloses your local Windows username (`alqai`) and a local tool
 directory name. Not a secret, but a path disclosure; it stops being published once `main` moves
@@ -343,7 +343,7 @@ past this change (the file is deleted here) or once history is rewritten (not re
 above).
 
 **The four design mockups** (`docs/design/mockup-*.jpg` on this branch, `public/mockup-*.jpg` on
-`main` today): tracked in every commit since `b50497f`. Going public makes them fetchable at a
+`main` today): tracked in every commit since `e908b50`. Going public makes them fetchable at a
 stable URL for as long as any commit that carries them is reachable, which is effectively forever
 once cloned. `review-packet.md` records they carry C2PA "Created by Google Generative AI"
 provenance (**believed**, carried from the security reviewer, not independently re-verified by
@@ -485,7 +485,7 @@ All commands above were run, or are marked "not run"/"believed" with a reason.
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`
 Gate: G5. Tier: 2. Branch: `wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages` at
-`839b67b`. PR: none (cannot exist until `main` is on origin, section 2a).
+`c9e52b9`. PR: none (cannot exist until `main` is on origin, section 2a).
 Prepared: 2026-09-13.
 
 ## 1. TL;DR
@@ -514,12 +514,12 @@ executed, and the merge should not happen until the Pages source is set.
 ## 3. Evidence
 
 See section 7 above for this session's own run (Node v22.12.0). Carried from `review-packet.md`
-(G4, `839b67b`'s parent chain), not re-run in full by this agent since nothing has changed since
+(G4, `c9e52b9`'s parent chain), not re-run in full by this agent since nothing has changed since
 that approval:
 
 | Check | Command | Exit code | Status |
 |---|---|---|---|
-| Full G4 verification | lint, 191 tests, build, scoped audit | all 0 | confirmed by the verifier at `b91d04f`, re-confirmed by this agent's own run this session at `839b67b` (no source changes between the two) |
+| Full G4 verification | lint, 191 tests, build, scoped audit | all 0 | confirmed by the verifier at `13fc4cd`, re-confirmed by this agent's own run this session at `c9e52b9` (no source changes between the two) |
 | Eval pass rates | golden 84/84 automatable, edge 22/22 (1 manual by design), failure 16/16 scoreable, adversarial 15/15 automated (2 documented, not pass/fail) | n/a | believed, carried from `review-packet.md`, not re-run by this agent (this agent has no eval-runner role) |
 | Findings at G4 | 0 critical, 0 high, 3 medium open (D1, and the two D4 script gaps above), rest low | n/a | confirmed by reading `review-packet.md` section 4 |
 | This session's own checks | see section 7 | see section 7 | confirmed |
@@ -650,7 +650,7 @@ outcome into this file's section 2f log and the deploy record.
 
 Appended by an agent this session, after G5 was approved and the release already happened. This
 is a new section at the end of the file. Appending it changes this file's own sha256; it does not
-touch the approved G5 packet above, which is preserved unmodified in commit `95c2736` (sha256
+touch the approved G5 packet above, which is preserved unmodified in commit `38aedc3` (sha256
 `b64890947c9cfe33aa46e57c085aa40971cf0fadfdec293791fa75a944dc1e5b`). No earlier byte in this file
 was edited to write this section.
 
@@ -661,12 +661,12 @@ happened, not a fresh gate.
 
 ## a. What was released
 
-- Merge commit **confirmed**: `d5ad8b0` (`git log -1 --oneline d5ad8b0` returns
-  `d5ad8b0 Merge pull request #1 from muhibm1/wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages`).
-  `git rev-parse origin/main main` returns `d5ad8b0...` for both, so local `main` and `origin/main`
+- Merge commit **confirmed**: `81b57bd` (`git log -1 --oneline 81b57bd` returns
+  `81b57bd Merge pull request #1 from muhibm1/wh/2026-09-11-deployed-multi-page-portfolio-on-github-pages`).
+  `git rev-parse origin/main main` returns `81b57bd...` for both, so local `main` and `origin/main`
   match (**confirmed**).
-- Approved head **confirmed**: `0172210` (this change's branch HEAD named in the job dispatch;
-  reachable from `d5ad8b0` as the merged-in side, not independently re-walked this session).
+- Approved head **confirmed**: `94fc553` (this change's branch HEAD named in the job dispatch;
+  reachable from `81b57bd` as the merged-in side, not independently re-walked this session).
 - Workflow run **confirmed**: `34773728394`, "Build and deploy to GitHub Pages", triggered by the
   push that landed the merge to `main`.
 - Live URL **confirmed reachable**: `https://muhibm1.github.io/Portfolio/` (`curl -sI`, see
@@ -684,16 +684,16 @@ while the repository was still empty, before `main` had any content pushed to or
    not verified**; conductor log). bash-guard refused the main session's own attempt to publish
    `main` directly and was not bypassed (**believed, not verified**, same source). Performed by:
    the main session, on the owner's instruction.
-2. **a, the owner pushes `main`.** The owner pushed `main` himself, landing at `942d311`
+2. **a, the owner pushes `main`.** The owner pushed `main` himself, landing at `c10984d`
    (**believed, not verified**). A first attempt reportedly did not land on origin and was repeated
    (**believed, not verified**, no further detail logged). From about 18:02Z to 18:08Z, `main` at
-   `942d311` was the public default-branch view, still carrying the phone number in
+   `c10984d` was the public default-branch view, still carrying the phone number in
    `src/data/portfolioData.js`, `generate_viewer.cjs`, and the `public/` mockups (section 3's
    option (iv) exposure, accepted by the owner). Performed by: the owner.
-3. **b, branch and PR.** The change branch was pushed at `9f5f077` and PR #1 opened at about
+3. **b, branch and PR.** The change branch was pushed at `c465fd1` and PR #1 opened at about
    18:02Z (**believed, not verified**). Performed by: the main session or the conductor, per the
    packet's step 2b allowance.
-4. **G5 approval.** Recorded approved at 2026-09-13T18:03:32Z, artifact commit `95c2736`
+4. **G5 approval.** Recorded approved at 2026-09-13T18:03:32Z, artifact commit `38aedc3`
    (**believed, not verified**; this agent did confirm G5 is still `approved` this session,
    `wh state get gates.G5`).
 5. **d, Pages source.** Created via `gh api` with `build_type=workflow`, `https_enforced: true`, on
@@ -701,8 +701,8 @@ while the repository was still empty, before `main` had any content pushed to or
    **confirmed**: `gh api repos/muhibm1/Portfolio/pages` returns `"build_type":"workflow"`,
    `"https_enforced":true`, `"source":{"branch":"main","path":"/"}`). Performed by: the main
    session, delegated by the owner.
-6. **c, the merge.** The main session merged PR #1 at the approved head `0172210`, producing
-   `d5ad8b0` (**confirmed** the commit exists and merges two parents; who clicked merge is
+6. **c, the merge.** The main session merged PR #1 at the approved head `94fc553`, producing
+   `81b57bd` (**confirmed** the commit exists and merges two parents; who clicked merge is
    **believed, not verified**). Performed by: the main session, delegated by the owner. This departs
    from the G5 packet's line "No agent runs the production push or the merge, at this tier or any
    tier": the owner delegated the Pages-source step and the merge to the main session; the push of
@@ -758,7 +758,7 @@ line, in that section's exact format, for the owner to add himself (not written 
 `docs/hosted-config.md` by this agent):
 
 ```
-2026-09-13 d5ad8b0 first deploy (run 34773728394) 1 pass, 2 pass (paint only; tab-hidden pause not
+2026-09-13 81b57bd first deploy (run 34773728394) 1 pass, 2 pass (paint only; tab-hidden pause not
 checked), 3 pass (HTTP 404 by design, ADR 0002; body renders), 4 fail: 12 CSP font-src violations
 from data: JetBrains Mono Cyrillic-ext/Vietnamese subsets. See release.md "Deploy record" for detail.
 ```
@@ -800,7 +800,7 @@ from data: JetBrains Mono Cyrillic-ext/Vietnamese subsets. See release.md "Deplo
 Per section 6's rehearsed procedure, applied to the actual released commit:
 
 ```
-git revert -m 1 d5ad8b0
+git revert -m 1 81b57bd
 ```
 
 Reverts the merge on `main`, taking the tree back to its pre-merge state. As rehearsed in section

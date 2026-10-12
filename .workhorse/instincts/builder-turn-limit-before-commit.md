@@ -23,5 +23,5 @@ second occurrence before promoting it to CLAUDE.md.
   scan, hit-outranks-incomplete exit; 44 tests in file, suite 273 pass, lint+build 0, real scan
   clean 0 hits 0 undecodable"
 - `docs/sdlc/2026-09-20-fix-phone-redaction-scanner/conductor-log.md:13` "t2 builder hit its turn
-  limit before committing; conductor ran the checks and committed the finished diff (3cbce64);
+  limit before committing; conductor ran the checks and committed the finished diff (7f425e5);
   worktree isolation blocked a second builder from that tree"

@@ -1,12 +1,12 @@
 # Eval runner report — re-verification after second G4 rejection's short fix pass
 
 Change id: `2026-09-11-deployed-multi-page-portfolio-on-github-pages`. This run re-verifies the
-tree at commit `b91d04f`, the state after five commits landed on top of the last green verify at
-commit `460405e`: `4373e35` (spec.md, intent.md, ADR 0010 amendments), `a0221e1` (evals.md: GC89,
-GC41 rewritten; new GC94, FL24, AD18), `1731db5` (F4: `scripts/check-phone-redaction.mjs` country
+tree at commit `13fc4cd`, the state after five commits landed on top of the last green verify at
+commit `983bfce`: `3226a8c` (spec.md, intent.md, ADR 0010 amendments), `678f41c` (evals.md: GC89,
+GC41 rewritten; new GC94, FL24, AD18), `f6c7143` (F4: `scripts/check-phone-redaction.mjs` country
 -code prefix handling and undecodable-file exit 2, plus `src/checkPhoneRedaction.test.js`, 17
-tests), `34a0a8c` (F5: doc corrections in `docs/hosted-config.md`, `docs/sdlc/constraints.md`,
-`docs/sdlc/codebase-map.md`, `.workhorse/profile.yml`), `b91d04f` (conductor log only).
+tests), `f39ea73` (F5: doc corrections in `docs/hosted-config.md`, `docs/sdlc/constraints.md`,
+`docs/sdlc/codebase-map.md`, `.workhorse/profile.yml`), `13fc4cd` (conductor log only).
 
 **Environment.** `node --version` printed `v22.12.0` (**confirmed**) with
 `/c/Users/alqai/AppData/Roaming/nvm/v22.12.0` first on PATH, before any Node/npm command this
@@ -121,7 +121,7 @@ Both rows match exactly what the 2026-09-13 second-rejection amendment states it
 
 `npm test` → exit 0. **23 test files, 191 tests, all passed, 0 failed/skipped/todo.** Log:
 `verify-logs/evals.log`. This is exactly the "191 tests believed" figure evals.md's amendment
-projected (174 at `460405e` plus the 17 new `checkPhoneRedaction.test.js` tests), now **confirmed
+projected (174 at `983bfce` plus the 17 new `checkPhoneRedaction.test.js` tests), now **confirmed
 by an actual run**, not merely projected.
 
 Individually re-checked from this same run:
@@ -145,7 +145,7 @@ Individually re-checked from this same run:
 
 ## 2. Full sweep: carried vs re-run
 
-`git diff --stat 460405e..HEAD` shows exactly 15 files changed:
+`git diff --stat 983bfce..HEAD` shows exactly 15 files changed:
 `.workhorse/profile.yml`, `docs/hosted-config.md`, one new ADR, `approvals.md`,
 `conductor-log.md`, `evals.md`, `intent.md`, `review-packet.md`, `spec.md`, `verification.md`,
 `verify-logs/eval-runner-report.md`, `docs/sdlc/codebase-map.md`, `docs/sdlc/constraints.md`,
@@ -157,7 +157,7 @@ inferred.
 **Re-run this session** (already covered above): GC89, GC41, GC94, FL24, GC93, all `npm test`
 -invoking cases (GC50-GC54, GC92, NF4), and GC92's post-build/doc half.
 
-**Carried, not re-run, inputs unchanged since 460405e (confirmed via `git diff --stat` showing no
+**Carried, not re-run, inputs unchanged since 983bfce (confirmed via `git diff --stat` showing no
 change to any file these cases read), and additionally spot-re-confirmed this session where cheap
 to do so:**
 
@@ -174,15 +174,15 @@ to do so:**
   `.env*`), EG18 (trigger scoping), EG20 (`.env*` ignore pattern), GC55-GC58, GC62, GC63,
   GC80-GC83, GC85, GC87, AD11, AD12, AD14, AD15, AD16: **carried, not re-run**. These read
   `.github/workflows/deploy.yml`, `package.json`, `.gitignore`, or pure logic files (`src/**`
-  other than the two files that changed), none of which changed since `460405e`.
+  other than the two files that changed), none of which changed since `983bfce`.
 - GC91/EG23 (R91, Back to Top) and AD17 (R92, mockup guard): **carried, not re-run** as
   standalone red-team fixture exercises, since `src/components/ContactFooter.jsx`,
   `src/components/ContactFooter.test.jsx`, `src/publicDirectory.test.js`, `public/`, and
-  `docs/design/` are all unchanged since `460405e`. The relevant test files themselves did
+  `docs/design/` are all unchanged since `983bfce`. The relevant test files themselves did
   re-run and re-pass as part of the full `npm test` run above (13 ContactFooter tests, 4
   publicDirectory tests, all passed), which re-confirms the non-fixture half of both cases.
 - GC84, GC86, GC90, GC-CP, EG19, AD13, AD10, FL1, FL7, FL8, FL15, FL16, FL20, FL22, FL23: manual
-  or CI-only by the case's own design, unchanged in nature since `460405e`. `docs/hosted-config.md`
+  or CI-only by the case's own design, unchanged in nature since `983bfce`. `docs/hosted-config.md`
   did change (section 7, the phone-number-in-git-history note), but GC84 and GC87 read sections 6
   and 5 respectively, both untouched by that diff (**confirmed** by listing the file's headings
   and comparing against the diff hunk locations). `docs/sdlc/codebase-map.md` and
@@ -195,7 +195,7 @@ to do so:**
 
 Evals.md's own amendment states category totals as: 99 golden, 23 edge (unchanged), 24 failure, 18
 adversarial (17 scored + AD18 optional/not counted). This report's own case-by-case enumeration
-(same method the prior report at `460405e` used) counts 94 golden IDs (93 plus `GC94`), 23 edge, 24
+(same method the prior report at `983bfce` used) counts 94 golden IDs (93 plus `GC94`), 23 edge, 24
 failure (23 plus `FL24`), 18 adversarial (17 plus `AD18`). The golden totals (94 here vs. 99 in
 evals.md's own arithmetic) do not reconcile; this discrepancy already existed in the prior report
 (93 vs. evals.md's stated 98) and was not investigated then either. **Believed, not reconciled**:
@@ -205,7 +205,7 @@ ID-level enumeration does not separately count. Flagging rather than guessing at
 | Category | Cases (this report's ID count) | Passed / scored | Target | Met |
 |----------|-------|------------------|--------|-----|
 | Golden | 94 (GC1-GC90 numbered IDs plus `v`-suffixed pairs, GC91, GC92, GC93, GC94, GC-CP) | 84 of 84 automatable cases confirmed passing, including all five newly re-run this session (GC41, GC89, GC93, GC94, plus GC92's remaining half). 10 permanently manual, not counted: GC19, GC22v, GC27v, GC30v, GC77, GC79v, GC84, GC86, GC90, GC-CP | 100% | **Yes**, for every automatable case |
-| Edge | 23 (EG1-EG23) | 22 of 23 confirmed passing (unchanged from `460405e`, all inputs unchanged), including EG23 (carried). 1 not automatable: EG19 (no date-math generator exists to unit test; unchanged) | 100% | **No**, for the same pre-existing reason as the prior run: EG19's target code path does not exist by design. Not a new gap |
+| Edge | 23 (EG1-EG23) | 22 of 23 confirmed passing (unchanged from `983bfce`, all inputs unchanged), including EG23 (carried). 1 not automatable: EG19 (no date-math generator exists to unit test; unchanged) | 100% | **No**, for the same pre-existing reason as the prior run: EG19's target code path does not exist by design. Not a new gap |
 | Failure | 24 (FL1-FL24) | 16 automatable and passed (FL2-FL6, FL9-FL14, FL17-FL19, FL21, and newly re-run **FL24**), unchanged/re-confirmed for the first 15, freshly confirmed for FL24. 8 not automatable pre-deploy (FL1, FL7 mixed, FL8, FL15, FL16, FL20, FL22, FL23), unchanged | 100% correct handling | **Yes**, for everything scoreable pre-deploy |
 | Adversarial | 18 (AD1-AD18) | 15 fully automated and passed (AD1-AD9, AD11, AD12, AD14-AD17), unchanged, inputs unconnected to this window's commits. AD10 split: Windows-structural half passed, CI-only live half outstanding, unchanged. AD13 documented (accepted residual risk), unchanged. **AD18 not run this session (optional, manual, no-digit-in-log requirement), scored "documented," not counted toward the 100% bar** | 100% except AD13; AD18 scored separately | **Yes**, for everything scoreable pre-deploy; AD18 correctly excluded from the bar per evals.md's own targets section |
 
@@ -221,7 +221,7 @@ GC88, GC92) produced exactly the expected result, with exit codes and output lin
   a scratch fixture. Not automated per the dispatcher's explicit instruction and evals.md's own
   rule that it is scored "documented" when not run, not counted toward the adversarial 100% bar.
 
-**Not fully automatable, pre-existing, unchanged in nature since `460405e`:**
+**Not fully automatable, pre-existing, unchanged in nature since `983bfce`:**
 
 - **EG19** (R67): no date-math generator exists in the codebase to unit test.
 - **AD10** (R56/R57): Windows-structural half passed; live-rejection half requires a real

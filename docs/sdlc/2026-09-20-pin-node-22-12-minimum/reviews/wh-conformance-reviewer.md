@@ -34,12 +34,12 @@ above it. R107's own acceptance check (non-comment lines equal exactly `["engine
 is satisfied regardless: harmless drift from the literal interface text, not a failure (confirmed
 by reading .npmrc and GC109's test).
 
-T1 handover: commit 5d01402 landed `.nvmrc`, `package.json`, `package-lock.json`,
-`nodeVersionPin.test.js` with 3 tests red (GC109, AD23, GC110) pending `.npmrc`; commit 6730782 is
+T1 handover: commit cfffe42 landed `.nvmrc`, `package.json`, `package-lock.json`,
+`nodeVersionPin.test.js` with 3 tests red (GC109, AD23, GC110) pending `.npmrc`; commit a328dab is
 the owner's hand-created `.npmrc`. All five T1 files present, nothing dropped, all tests now pass
 (confirmed against plan.md's T1 file list and verification.md).
 
-d5c0114 widens the fixture env-strip helper from `npm_config_*` only (spec Interfaces (f)'s literal
+267c07a widens the fixture env-strip helper from `npm_config_*` only (spec Interfaces (f)'s literal
 text) to also strip `npm_package_*` and 5 exact lifecycle keys. This is a defect fix, not scope
 creep: Windows upper-cases npm lifecycle env vars, so the original filter stripped nothing and let
 this repo's own `.npmrc`/local-prefix leak into fixtures (at one point deleting the repo's own
@@ -48,7 +48,7 @@ this repo's own `.npmrc`/local-prefix leak into fixtures (at one point deleting 
 (confirmed by reading nodeVersionPin.test.js:74). Necessary drift, same requirement, scoped to the
 test helper only.
 
-05e46aa (polish) only extracts a duplicated `stepNameLines`/`stepNameBefore` helper in
+30e7c74 (polish) only extracts a duplicated `stepNameLines`/`stepNameBefore` helper in
 deployWorkflowNodeVersion.test.js; every `expect(...)` line is byte-identical before and after
 (confirmed by diff). Harmless drift.
 

@@ -8,7 +8,7 @@ Change: 2026-09-20-fix-phone-redaction-scanner
 
 The outcome asks for red-team tests that start the script through a junction or symlink, plant
 a phone number, and expect exit 1 (R5, R7). A real scan derives the reference number from
-`git show b50497f:src/data/portfolioData.js` (ADR 0010 of change 2026-09-11) and exits 2 on a
+`git show e908b50:src/data/portfolioData.js` (ADR 0010 of change 2026-09-11) and exits 2 on a
 shallow clone. CI checks out with the default depth (`.github/workflows/deploy.yml` line 39, no
 `fetch-depth`), so a subprocess test that runs the real scan would fail there, and a test that
 skips on a shallow clone would trip the test-count floor (`deploy.yml` lines 102 to 121 require

@@ -3,7 +3,7 @@
 Change id: `2026-09-13-no-inlined-data-font-urls-in-built-css`
 Gate: G4
 Tier: 2
-Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css` at `77a375d`
+Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css` at `8e82874`
 PR: not opened yet (conductor opens it after this gate)
 Prepared: 2026-09-14 (this session) UTC
 
@@ -54,7 +54,7 @@ otherwise; full detail and log paths are in [verification.md](./verification.md)
 | R99 diff shape | `git diff main -- deploy.yml \| grep` | 0 | only header line removed, no `uses:`/`continue-on-error` added | confirmed |
 | R100 body forbids runner files | grep for `GITHUB_ENV`/etc. and `count_matches` on extracted body | 0 | `0` matches | confirmed |
 | R100 body identity | `diff` of pre-fold extraction vs. re-extraction from folded head | 0 | byte-identical | confirmed |
-| GC103/R101 scope (5 checks) | `git diff --name-only`/`git show --stat` on `64f91c1` and pathspec-excluded diff | 0 | exactly R101's 6 named paths plus 8 `docs/sdlc/` files; `64f91c1` touches exactly `.workhorse/profile.yml` and this change's `conductor-log.md`, one commit, never edited again | confirmed, re-run fresh this verify session after a two-line wording correction to `plan.md`/`evals.md` (see "Findings" below) |
+| GC103/R101 scope (5 checks) | `git diff --name-only`/`git show --stat` on `f33b017` and pathspec-excluded diff | 0 | exactly R101's 6 named paths plus 8 `docs/sdlc/` files; `f33b017` touches exactly `.workhorse/profile.yml` and this change's `conductor-log.md`, one commit, never edited again | confirmed, re-run fresh this verify session after a two-line wording correction to `plan.md`/`evals.md` (see "Findings" below) |
 | R104 rehearsal, 14 cases (P1 real, P2, F1-F12) | bash rehearsal harness against the committed R100 body | varies per case, all as specified | all 14 of 14 cases match | confirmed |
 
 Eval summary: golden 11/11 automatable (1 manual, GC105, deferred to owner post-release), edge
@@ -84,7 +84,7 @@ rule, every finding below is marked `open`, not blocking, since nothing is above
 
 Conformance: 12 of 12 requirements (R93-R104) traced to code and test; R103 correctly deferred as
 a post-release owner action, not implemented in code. Drift: 0 missing coverage, 0 untested, 0
-scope creep. The conformance reviewer independently re-ran and reconfirmed the `64f91c1`
+scope creep. The conformance reviewer independently re-ran and reconfirmed the `f33b017`
 three-check exclusion and the R101 scope diff.
 
 Adoption score: 4/5. Blockers: none; both doc gaps above are non-blocking follow-ups.
@@ -114,7 +114,7 @@ logic, then tests, then docs and config.
    R80 and R81 smoke steps. First in the tour because it is the only file that can publish a
    regression to the live site, and any CI workflow edit is itself a tier-2 trigger.
 2. **`.workhorse/profile.yml`**. Adds the two new scripts to `sensitive_paths` and
-   `tier_floor_paths`. Committed separately as `64f91c1`, on the owner's explicit G2 instruction
+   `tier_floor_paths`. Committed separately as `f33b017`, on the owner's explicit G2 instruction
    ("add both scripts to profile for me"), not by a task. Second because it is the machine
    enforcement of this change's own security posture, and its scope was independently
    re-confirmed by the conformance reviewer.
@@ -122,10 +122,10 @@ logic, then tests, then docs and config.
    line and a one-property `build: { assetsInlineLimit: neverInlineFonts }` key. Diff adds lines
    only; the CSP string was confirmed byte-identical before and after. Third because it is the
    file that could, if changed carelessly, weaken the site's security policy.
-4. **`scripts/never-inline-fonts.mjs`** (new, sensitive since `64f91c1`). The actual fix: a
+4. **`scripts/never-inline-fonts.mjs`** (new, sensitive since `f33b017`). The actual fix: a
    dependency-free, ten-line function that tells Vite to never inline a font file. Business logic
    at the center of this change.
-5. **`scripts/check-built-css-fonts.mjs`** (new, sensitive since `64f91c1`). The committed
+5. **`scripts/check-built-css-fonts.mjs`** (new, sensitive since `f33b017`). The committed
    enforcement script both CI steps rely on (directly in the build job, restated in bash in the
    deploy job). Placed as the policy-check counterpart to the fix above.
 6. **`src/neverInlineFonts.test.js`**, **`src/checkBuiltCssFonts.test.js`** (new). 17 tests

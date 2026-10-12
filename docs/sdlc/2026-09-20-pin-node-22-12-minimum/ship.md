@@ -1,6 +1,6 @@
 # Ship: Pin Node 22.12 minimum
 
-Change id: `2026-09-20-pin-node-22-12-minimum` · Tier 2 · Branch `wh/2026-09-20-pin-node-22-12-minimum` at `7b25b72` · PR: not opened (blocked, see below)
+Change id: `2026-09-20-pin-node-22-12-minimum` · Tier 2 · Branch `wh/2026-09-20-pin-node-22-12-minimum` at `67c5fb2` · PR: not opened (blocked, see below)
 Prepared 2026-09-20 UTC · Design approved: see [approvals.md](./approvals.md)
 
 ## The short version
@@ -45,7 +45,7 @@ Ordered by risk. 15 files, 884 insertions, 36 deletions (`git diff --stat main..
 
 ## Proof
 
-Re-verified at commit `7b25b72` (`verification.md`).
+Re-verified at commit `67c5fb2` (`verification.md`).
 
 | Check | Command | Exit code | Output | Status |
 |-------|---------|-----------|--------|--------|
@@ -70,17 +70,17 @@ Eight reviewers ran. Reports: [reviews/](./reviews/). Two reviewers on one issue
 
 | Severity | Reviewer | File:line | Finding | Resolution |
 |----------|----------|-----------|---------|------------|
-| high | wh-bug-reviewer | scripts/check-npmrc.mjs:34-37 | Guard exited 0 for an `.npmrc` that never set `engine-strict=true` at all (empty, comments-only, or the line removed) | fixed in 248182e |
-| high | wh-security-reviewer | scripts/check-npmrc.mjs:62-69 | Guard stripped every `\r` then split only on `\n`; npm's own ini parser splits on a lone `\r` too, so a comment line hiding a lone-CR registry setting passed the guard and was honoured by npm | fixed in 1dbf781 |
-| high | ecc-pr-test-analyzer | src/nodeVersionPin.test.js | No test asserted the repository's own `node_modules` survives the fixture `npm ci` spawns, the exact bug d5c0114 fixed once already | fixed in b182c8a |
-| medium | wh-bug-reviewer | src/nodeVersionPin.test.js:187-195 | FL53 depended on the host's own user-level npm config instead of an isolated scratch HOME | fixed in b182c8a |
-| medium | ecc-silent-failure-hunter | src/nodeVersionPin.test.js:229-249 | "npm run exports engine-strict" case never asserted `result.status`, so a broken spawn could pass vacuously | fixed in b182c8a |
-| medium | ecc-typescript-reviewer | scripts/check-npmrc.mjs:38-58 | No BOM strip before comparing lines; a functionally correct file saved with a BOM failed the guard | fixed in 248182e |
-| medium | wh-bug-reviewer, ecc-typescript-reviewer | src/checkNpmrc.test.js:34/43 | `spawnSync` had no timeout; a wedged child would hang the suite instead of failing | fixed in 248182e |
-| medium | wh-adoption-reviewer | CLAUDE.md:52 | The harness's inability to create or edit `.npmrc` at all was undocumented; this change's own build lost time to it twice | fixed in 495c05b |
-| medium | ecc-pr-test-analyzer | evals.md GC113/GC116/GC117 | Doc-correction and profile-guard requirements were verifier commands only, no permanent test | fixed in 2ddbe37 |
-| medium | ecc-typescript-reviewer | src/nodeVersionPin.test.js:75-79 | Shell-fallback spawn path (no `npm_execpath`) could leave an orphaned process tree on a Windows timeout | fixed in 7b25b72 |
-| low | wh-bug-reviewer | scripts/check-npmrc.mjs:53 | `engine-strict = true` (spaced) was rejected though npm accepts it | fixed in 248182e |
+| high | wh-bug-reviewer | scripts/check-npmrc.mjs:34-37 | Guard exited 0 for an `.npmrc` that never set `engine-strict=true` at all (empty, comments-only, or the line removed) | fixed in af52a5c |
+| high | wh-security-reviewer | scripts/check-npmrc.mjs:62-69 | Guard stripped every `\r` then split only on `\n`; npm's own ini parser splits on a lone `\r` too, so a comment line hiding a lone-CR registry setting passed the guard and was honoured by npm | fixed in 54798cd |
+| high | ecc-pr-test-analyzer | src/nodeVersionPin.test.js | No test asserted the repository's own `node_modules` survives the fixture `npm ci` spawns, the exact bug 267c07a fixed once already | fixed in 3222f7b |
+| medium | wh-bug-reviewer | src/nodeVersionPin.test.js:187-195 | FL53 depended on the host's own user-level npm config instead of an isolated scratch HOME | fixed in 3222f7b |
+| medium | ecc-silent-failure-hunter | src/nodeVersionPin.test.js:229-249 | "npm run exports engine-strict" case never asserted `result.status`, so a broken spawn could pass vacuously | fixed in 3222f7b |
+| medium | ecc-typescript-reviewer | scripts/check-npmrc.mjs:38-58 | No BOM strip before comparing lines; a functionally correct file saved with a BOM failed the guard | fixed in af52a5c |
+| medium | wh-bug-reviewer, ecc-typescript-reviewer | src/checkNpmrc.test.js:34/43 | `spawnSync` had no timeout; a wedged child would hang the suite instead of failing | fixed in af52a5c |
+| medium | wh-adoption-reviewer | CLAUDE.md:52 | The harness's inability to create or edit `.npmrc` at all was undocumented; this change's own build lost time to it twice | fixed in d8e4876 |
+| medium | ecc-pr-test-analyzer | evals.md GC113/GC116/GC117 | Doc-correction and profile-guard requirements were verifier commands only, no permanent test | fixed in 228827e |
+| medium | ecc-typescript-reviewer | src/nodeVersionPin.test.js:75-79 | Shell-fallback spawn path (no `npm_execpath`) could leave an orphaned process tree on a Windows timeout | fixed in 67c5fb2 |
+| low | wh-bug-reviewer | scripts/check-npmrc.mjs:53 | `engine-strict = true` (spaced) was rejected though npm accepts it | fixed in af52a5c |
 | low | wh-bug-reviewer | .npmrc:1 | No explanatory comment line (spec Interfaces (c)) | open: owner decision, D14a |
 | low | wh-bug-reviewer | .github/workflows/deploy.yml:44-50 | `setup-node`'s npm-cache step reads `.npmrc` once before the guard step runs | open: owner decision, D14b |
 | low | wh-security-reviewer | .github/workflows/deploy.yml:90 | Guard judges the file, not npm's effective config; an inherited `~/.npmrc` or `npm_config_*` variable is invisible to it | open: not fixed, carried here so it is not hidden |
@@ -113,7 +113,7 @@ profile edit.
 |-------------|---------|------------------------|----------|
 | dev | `npm run dev` | yes | stop the process; no state changes |
 | staging | (none configured) | no | not applicable |
-| prod | owner squash-merges the PR to `main` (`gh pr merge --squash`) | no (owner performs production merges himself, CLAUDE.md) | `git revert 7ea3583` on `main`, then the owner pushes |
+| prod | owner squash-merges the PR to `main` (`gh pr merge --squash`) | no (owner performs production merges himself, CLAUDE.md) | `git revert 8b5e7a7` on `main`, then the owner pushes |
 
 No secret or environment variable is touched by this change. Rehearsed in dev this session:
 `npm run dev` started cleanly (confirmed, `Local: http://localhost:5174/Portfolio/`, ready in
@@ -124,7 +124,7 @@ granted. The background dev server this session started terminates when this run
 rehearsed: gap recorded as decision D15.
 
 Done by the owner by hand, outside this pipeline: pushed the branch, opened PR 11, and
-squash-merged it to `main` at `7ea3583` (confirmed, `gh pr list --state all`). See Deploy record
+squash-merged it to `main` at `8b5e7a7` (confirmed, `gh pr list --state all`). See Deploy record
 below for the resulting publish.
 
 ## Clock
@@ -143,7 +143,7 @@ with notes accepting D12, D13, D15. See Deploy record below for what ran under t
 |-------------|---------|-----------|------------------|--------|
 | dev | `npm run dev` | n/a, long-running process | 2026-09-20T19:26:47Z | confirmed: Vite 5.4.21 ready in 2877 ms, served at `http://localhost:5176/Portfolio/` (ports 5173-5175 in use by other sessions), no error output |
 | staging | (no command in profile) | - | - | not run: no deploy command configured for staging |
-| prod | owner squash-merged PR 11 (`gh pr merge --squash`) to `main` at `7ea3583`; publishing workflow run 35536692240 | 0 (workflow conclusion: success) | 2026-09-20T20:48:04Z created, 20:48:56Z completed | confirmed: `gh run view 35536692240` shows both jobs succeeded, including "Deploy to GitHub Pages" and the post-deploy smoke tests (R63, R80, R81, R82, R87, R100) |
+| prod | owner squash-merged PR 11 (`gh pr merge --squash`) to `main` at `8b5e7a7`; publishing workflow run 35536692240 | 0 (workflow conclusion: success) | 2026-09-20T20:48:04Z created, 20:48:56Z completed | confirmed: `gh run view 35536692240` shows both jobs succeeded, including "Deploy to GitHub Pages" and the post-deploy smoke tests (R63, R80, R81, R82, R87, R100) |
 
 Merge and production publish confirmed complete, done by the owner outside this pipeline; the
 earlier push block is resolved. Not verified by this session: an independent fetch of the

@@ -1,7 +1,7 @@
 # Release: no inlined data font URLs in built CSS
 
 Change id: `2026-09-13-no-inlined-data-font-urls-in-built-css`. Tier: 2.
-Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css`, head `ca43d4e` (confirmed, `git log`).
+Branch: `wh/2026-09-13-no-inlined-data-font-urls-in-built-css`, head `1fada21` (confirmed, `git log`).
 PR: [#8](https://github.com/muhibm1/Portfolio/pull/8), open, `CLEAN`/`MERGEABLE`, base `main`, 14
 commits (confirmed, `gh pr view 8` and `git log --oneline main..HEAD`). **Not merged.**
 G4: approved, no conditions (confirmed, `wh.js state get gates.G4` and `approvals.md`).
@@ -79,7 +79,7 @@ Config and secrets touched (names only, never values):
   section 4 confirms the repository has 0 Actions secrets today). The only configuration touched is
   `vite.config.js`'s `build.assetsInlineLimit` (a build-time function, not a secret) and
   `.workhorse/profile.yml`'s `sensitive_paths`/`tier_floor_paths` lists (already committed at
-  `64f91c1`, on the owner's own G2 instruction).
+  `f33b017`, on the owner's own G2 instruction).
 
 ### The owner-run publishing sequence
 
@@ -150,9 +150,9 @@ below.
 
 | # | Step | Command | Exit code | Timestamp (UTC) | Result |
 |---|------|---------|-----------|------------------|--------|
-| 1 | Deploy (baseline, fix applied) | `git checkout -b wh-rehearsal-g5-2026-09-14 ca43d4e` then `npm run build` | 0, 0 | start 2026-09-14T09:27:25Z, end 2026-09-14T09:27:36Z | `dist/assets/index-D4xY4LDD.css`, 0 `data:font` URLs (`grep -oiE "url\([[:space:]]*[\"']?data:font" dist/assets/*.css \| wc -l` printed `0`) |
-| 2 | Roll back | `git revert --no-edit 5627b6d a66ae0a 3bfafa1` (T3, T2, T1, in that order) then `npm run build` | 0, 0 | start 2026-09-14T09:27:54Z, end 2026-09-14T09:28:06Z | All three reverts applied with no conflicts. Rebuild produced `dist/assets/index-CkNgrI9O.css` (the exact filename `intent.md` names as today's live, broken artifact) with 12 `data:font` URLs, matching the documented pre-fix state exactly. `git diff main -- vite.config.js .github/workflows/deploy.yml scripts src` printed 0 lines: the reverted tree matches `main` (pre-change) byte for byte on every path this change touches. |
-| 3 | Deploy again (redo) | `git revert --no-edit bd9d208 75bbeed 40c7190` (revert the three reverts, in reverse order) then `npm run build` | 0, 0 | start 2026-09-14T09:28:15Z, end 2026-09-14T09:28:27Z | All three re-applied with no conflicts. Rebuild produced 0 `data:font` URLs again. `git diff ca43d4e -- vite.config.js .github/workflows/deploy.yml scripts src/neverInlineFonts.test.js src/checkBuiltCssFonts.test.js` printed 0 lines: the redeployed tree is byte-identical to the original fix. |
+| 1 | Deploy (baseline, fix applied) | `git checkout -b wh-rehearsal-g5-2026-09-14 1fada21` then `npm run build` | 0, 0 | start 2026-09-14T09:27:25Z, end 2026-09-14T09:27:36Z | `dist/assets/index-D4xY4LDD.css`, 0 `data:font` URLs (`grep -oiE "url\([[:space:]]*[\"']?data:font" dist/assets/*.css \| wc -l` printed `0`) |
+| 2 | Roll back | `git revert --no-edit c785118 497d1fe fbaf014` (T3, T2, T1, in that order) then `npm run build` | 0, 0 | start 2026-09-14T09:27:54Z, end 2026-09-14T09:28:06Z | All three reverts applied with no conflicts. Rebuild produced `dist/assets/index-CkNgrI9O.css` (the exact filename `intent.md` names as today's live, broken artifact) with 12 `data:font` URLs, matching the documented pre-fix state exactly. `git diff main -- vite.config.js .github/workflows/deploy.yml scripts src` printed 0 lines: the reverted tree matches `main` (pre-change) byte for byte on every path this change touches. |
+| 3 | Deploy again (redo) | `git revert --no-edit bd9d208 75bbeed 40c7190` (revert the three reverts, in reverse order) then `npm run build` | 0, 0 | start 2026-09-14T09:28:15Z, end 2026-09-14T09:28:27Z | All three re-applied with no conflicts. Rebuild produced 0 `data:font` URLs again. `git diff 1fada21 -- vite.config.js .github/workflows/deploy.yml scripts src/neverInlineFonts.test.js src/checkBuiltCssFonts.test.js` printed 0 lines: the redeployed tree is byte-identical to the original fix. |
 
 Clean-up: `git checkout wh/2026-09-13-no-inlined-data-font-urls-in-built-css` then
 `git branch -D wh-rehearsal-g5-2026-09-14`, both exit 0 (confirmed). No commit from the rehearsal
@@ -189,12 +189,12 @@ task commits (T1-T3), because they are folded into one merge commit. This matche
 "Production (GitHub Pages)" rollback note: "The owner reverts... the merge commit... and pushes.
 The workflow then rebuilds and republishes the previous site. The revert removes R99 and R100 too,
 so that deploy runs the old steps only. Expected effect: the 12 CSP font errors return... Do not
-revert `64f91c1`" — but `64f91c1` is a commit inside the merge, not on `main` directly, so a single
+revert `f33b017`" — but `f33b017` is a commit inside the merge, not on `main` directly, so a single
 merge-commit revert reverts it along with everything else in the PR. If only the profile-protection
-commit `64f91c1` should survive a rollback (for example, if the font regression is judged worse than
+commit `f33b017` should survive a rollback (for example, if the font regression is judged worse than
 losing that profile protection temporarily), the owner would instead need to revert the three task
 commits individually post-merge (`git revert -m 1 <merge-sha>` reverts everything; a targeted
-`git revert 5627b6d a66ae0a 3bfafa1` after locating their post-merge SHAs would revert only the fix)
+`git revert c785118 497d1fe fbaf014` after locating their post-merge SHAs would revert only the fix)
 and keep the profile change. This distinction was not asked for by the plan and is flagged here as a
 choice the owner should make consciously if he ever needs a partial rollback, not a default.
 
@@ -221,7 +221,7 @@ choice the owner should make consciously if he ever needs a partial rollback, no
   the same merge. A deploy running the rolled-back pipeline would no longer catch this exact
   regression if it recurred; the rollback restores the pre-change state completely, including its
   gap.
-- **`64f91c1` (profile protection) is already on the branch and inside the same merge commit.** A
+- **`f33b017` (profile protection) is already on the branch and inside the same merge commit.** A
   single-command merge-commit revert takes it out too, per the note above.
 
 ## Runbook
@@ -289,7 +289,7 @@ merge PR #8 yourself; no agent can merge, push, or perform the mandatory post-re
 |---|----------|-----------------|--------------|-------------------------------|
 | D1 | Merge method for PR #8 | Merge commit (matches PR #1 and #7's history; preserves the 14-commit SDLC trail; see "The owner-run publishing sequence") | Squash merge | The G1-G4 approval commits, the three task commits, and the verification commit collapse into one commit; commit SHAs already quoted in `approvals.md` stay valid (they are unaffected either way), but the branch history that shows the gate-by-gate approval trail is lost from `main` |
 | D2 | Disposition of the 7 open low-severity findings from the G4 review packet (D1-D5 there; two `CLAUDE.md` doc gaps, one security low on R100's URL concatenation, one bug low on an empty-string directory argument, one eval-wording gap) | Accept as fast-follow, not blocking this merge, as recommended at G4 and not revisited here | Fix one or more before merging | Reopens sensitive files (`deploy.yml`, `scripts/check-built-css-fonts.mjs`) for changes outside this change's approved scope, delaying the merge |
-| D3 | Whether to revert `64f91c1` (profile protection) along with the fix, in a future rollback | Keep it bundled: a single `git revert -m 1 <merge-sha>` reverts everything in the merge together, which is the simplest and best-tested rollback path (rehearsed above) | Preserve `64f91c1` in a rollback by reverting only the three task commits individually | More commands to run correctly under incident pressure, for a benefit (keeping the profile protection) that only matters if a rollback and a desire to keep that specific protection coincide |
+| D3 | Whether to revert `f33b017` (profile protection) along with the fix, in a future rollback | Keep it bundled: a single `git revert -m 1 <merge-sha>` reverts everything in the merge together, which is the simplest and best-tested rollback path (rehearsed above) | Preserve `f33b017` in a rollback by reverting only the three task commits individually | More commands to run correctly under incident pressure, for a benefit (keeping the profile protection) that only matters if a rollback and a desire to keep that specific protection coincide |
 
 ### 3. Evidence
 
@@ -301,9 +301,9 @@ merge PR #8 yourself; no agent can merge, push, or perform the mandatory post-re
 | PR #8 mergeability | `gh pr view 8 --json mergeable,mergeStateStatus` | n/a | `MERGEABLE`, `CLEAN` | confirmed |
 | Prior merge convention | `git log main --merges --oneline` | n/a | PR #1 and PR #7 both merged with an ordinary merge commit | confirmed |
 | Repository merge-method settings | `gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed` | n/a | all three `true` | confirmed |
-| Rollback rehearsal: deploy (baseline) | `npm run build` on scratch branch at `ca43d4e` | 0 | 0 `data:font` URLs | confirmed, this session, 2026-09-14T09:27:25Z-09:27:36Z |
-| Rollback rehearsal: roll back | `git revert --no-edit 5627b6d a66ae0a 3bfafa1` then `npm run build` | 0, 0 | 12 `data:font` URLs (matches documented pre-fix state); diff against `main` on all touched paths is empty | confirmed, this session, 2026-09-14T09:27:54Z-09:28:06Z |
-| Rollback rehearsal: deploy again | `git revert --no-edit bd9d208 75bbeed 40c7190` then `npm run build` | 0, 0 | 0 `data:font` URLs; diff against `ca43d4e` on all touched paths is empty | confirmed, this session, 2026-09-14T09:28:15Z-09:28:27Z |
+| Rollback rehearsal: deploy (baseline) | `npm run build` on scratch branch at `1fada21` | 0 | 0 `data:font` URLs | confirmed, this session, 2026-09-14T09:27:25Z-09:27:36Z |
+| Rollback rehearsal: roll back | `git revert --no-edit c785118 497d1fe fbaf014` then `npm run build` | 0, 0 | 12 `data:font` URLs (matches documented pre-fix state); diff against `main` on all touched paths is empty | confirmed, this session, 2026-09-14T09:27:54Z-09:28:06Z |
+| Rollback rehearsal: deploy again | `git revert --no-edit bd9d208 75bbeed 40c7190` then `npm run build` | 0, 0 | 0 `data:font` URLs; diff against `1fada21` on all touched paths is empty | confirmed, this session, 2026-09-14T09:28:15Z-09:28:27Z |
 | Scratch branch cleanup | `git checkout <change-branch>` then `git branch -D wh-rehearsal-g5-2026-09-14` | 0, 0 | Clean working tree on the change branch afterward | confirmed |
 | Owner's post-release browser check (R84 item 4, R103, NF24, GC105) | not run | n/a | n/a | Not verified: cannot run before merge. Owner-performed, tracked in this document's Runbook and "The owner-run publishing sequence" |
 | First live CI run of R97/R99/R100 in GitHub's actual Ubuntu runner | not run | n/a | n/a | Not verified: happens only on the real merge, believed to behave as rehearsed (14/14 R104 cases matched locally in Git Bash; POSIX ERE only, per `plan.md`) |
@@ -325,7 +325,7 @@ blocks this gate per this change's own rule. Verbatim resolutions unchanged sinc
 
 No new finding was raised by this release-engineering pass. The rollback rehearsal (new evidence
 this session) surfaced one process nuance not previously written down: a single merge-commit revert
-also reverts `64f91c1` (see D3 above), which `plan.md`'s rollback note did not address because it
+also reverts `f33b017` (see D3 above), which `plan.md`'s rollback note did not address because it
 predates the merge shape being final.
 
 ### 5. Risk register

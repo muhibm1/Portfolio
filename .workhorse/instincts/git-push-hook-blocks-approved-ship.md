@@ -28,6 +28,6 @@ BLOCKED status, since the work is complete and approved.
   open the PR and merge to main."
 - `docs/sdlc/2026-09-20-pin-node-22-12-minimum/conductor-log.md:54` deploy record shows the owner
   did exactly that outside the pipeline: "prod deployed by the owner via squash merge of PR 11 to
-  main at 7ea3583."
+  main at 8b5e7a7."
 - `.workhorse/profile.yml:97` `ask_commands` lists bare `git push` with no distinction between a
   feature branch and `main`.

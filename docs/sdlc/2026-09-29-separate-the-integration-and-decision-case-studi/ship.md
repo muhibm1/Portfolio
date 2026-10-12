@@ -1,6 +1,6 @@
 # Ship: Separate the integration and decision case studies and revise the Data Health incident paragraph
 
-Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `77c1f0f` · PR https://github.com/muhibm1/Portfolio/pull/21 · Prepared 2026-09-29 08:25 UTC · G2 approved 07:56 UTC, D1 to D15 accepted ([approvals.md](./approvals.md)) · Merged and deployed: see Deploy record
+Change id: `2026-09-29-separate-the-integration-and-decision-case-studi` · Tier 2 · Branch `wh/2026-09-29-separate-the-integration-and-decision-case-studi` at `01d76a9` · PR https://github.com/muhibm1/Portfolio/pull/21 · Prepared 2026-09-29 08:25 UTC · G2 approved 07:56 UTC, D1 to D15 accepted ([approvals.md](./approvals.md)) · Merged and deployed: see Deploy record
 
 ## The short version
 
@@ -12,7 +12,7 @@ Plain words: two files of code changed and their tests grew. Copy is your text, 
 
 1. `scripts/forbidden-copy.mjs` (ask-first path, tier-2 floor): 9 new terms, a page-scoped term, and comments citing ADR paths; it decides what can be published, so it is first.
 2. `src/data/portfolioData.js` (ask-first path): 10 lines of copy changed, string values only, no structure; it is what the public reads.
-3. `CLAUDE.md`: 5 lines added on how to add a page-scoped term (review fix M1, 77c1f0f).
+3. `CLAUDE.md`: 5 lines added on how to add a page-scoped term (review fix M1, 01d76a9).
 4. `src/checkForbiddenCopy.test.js`: 39 cases (10 more than main), one per new term, the page scope and the entry wiring.
 5. `src/data/portfolioData.test.js`: pins every new string and the kept "tens of thousands"; three old pins moved to your new strings.
 6. `docs/sdlc/<id>/`: brief, spec, plan, evals, three ADRs, approvals, verification, reviews, this document. `package.json` and lockfile are not in the diff (confirmed, empty diff).
@@ -55,7 +55,7 @@ No machine can judge whether a reader could confuse the two; that read is yours 
 
 ## Proof
 
-Copied from [verification.md](./verification.md) (status green at `77c1f0f`, Node v24.19.0). Logs in `verify-logs/` (git-ignored, on disk).
+Copied from [verification.md](./verification.md) (status green at `01d76a9`, Node v24.19.0). Logs in `verify-logs/` (git-ignored, on disk).
 
 | Check | Command | Exit | Output | Status |
 |-------|---------|------|--------|--------|
@@ -75,15 +75,15 @@ Evals: golden 14/14, edge 7/7, failure 1/1, adversarial 1/1 (target 100% each), 
 
 ## What the reviewers found
 
-0 critical, 0 high, 5 medium (4 fixed in `77c1f0f`, 1 accepted), 13 low (all not fixed, listed). Reports: [reviews/](./reviews/).
+0 critical, 0 high, 5 medium (4 fixed in `01d76a9`, 1 accepted), 13 low (all not fixed, listed). Reports: [reviews/](./reviews/).
 
 | Severity | Reviewer | File:line | Finding | Resolution |
 |----------|----------|-----------|---------|------------|
 | medium | wh-security-reviewer | docs/design/redesign-2026-09/CS-DataHealth.dc.html:97; PORTFOLIO_REDESIGN_PLAN.md:130; this change's approvals.md:16 | The phrase you cut ("restricted geospatial") stays in the public repo's docs and git history; the repo is public (confirmed) | accepted: conductor under decision policy (D18), owner to confirm at G4, why: history of a public repo already holds it and approvals.md is append-only, so redacting docs removes nothing already published |
-| medium | wh-adoption-reviewer | CLAUDE.md:42 | No note on page-scoped terms | fixed in 77c1f0f |
-| medium | wh-adoption-reviewer | scripts/forbidden-copy.mjs:10,86,181 | Comments cite ADR and D numbers without a path | fixed in 77c1f0f |
-| medium | wh-adoption-reviewer | scripts/forbidden-copy.mjs:137-178 | No reason per new term | fixed in 77c1f0f |
-| medium | ecc-pr-test-analyzer | forbidden-copy.mjs:257, checkForbiddenCopy.test.js:538 | No test proved the entry wires `PAGE_SCOPED_TERMS` | fixed in 77c1f0f (entry test, red-proved) |
+| medium | wh-adoption-reviewer | CLAUDE.md:42 | No note on page-scoped terms | fixed in 01d76a9 |
+| medium | wh-adoption-reviewer | scripts/forbidden-copy.mjs:10,86,181 | Comments cite ADR and D numbers without a path | fixed in 01d76a9 |
+| medium | wh-adoption-reviewer | scripts/forbidden-copy.mjs:137-178 | No reason per new term | fixed in 01d76a9 |
+| medium | ecc-pr-test-analyzer | forbidden-copy.mjs:257, checkForbiddenCopy.test.js:538 | No test proved the entry wires `PAGE_SCOPED_TERMS` | fixed in 01d76a9 (entry test, red-proved) |
 | low | bug, security, typescript | forbidden-copy.mjs:171,187,112 | Separator variants (nbsp, non-breaking hyphen, double space, "cross team", "high impact") pass the phrase and page-scoped terms (D17) | not fixed; left to your R168 read |
 | low | bug, silent-failure | forbidden-copy.mjs:188 | `onlyPaths` hard-codes slug `apple-integration`; a rename would silently drop the ban | not fixed |
 | low | bug, security | forbidden-copy.mjs:88 | No test enforces "no g or y flag" | not fixed |
@@ -95,10 +95,10 @@ Evals: golden 14/14, edge 7/7, failure 1/1, adversarial 1/1 (target 100% each), 
 | low | ecc-silent-failure-hunter | forbidden-copy.mjs:343 | SSR comment nodes could split a phrase | not fixed |
 | low | ecc-react-reviewer | src/pageMeta.js | pageMeta may hold separate copy; none found | not fixed; confirmed by the built description check (E5) |
 | low | wh-adoption-reviewer | profile.yml:88; forbidden-copy.mjs:303 | "seventeen-string" and stale T4 comment | not fixed |
-| low | wh-conformance-reviewer | commit 1ad9c3e body | Names the change request generically | not fixed (history) |
+| low | wh-conformance-reviewer | commit 4d90287 body | Names the change request generically | not fixed (history) |
 | low | wh-security-reviewer | portfolioData.js:695,734 | R168 list omitted the intro and "What I built" | addressed in this document |
 
-Spec conformance: 11 of 11 requirements traced (R160 to R170; R168 is manual by design). Adoption score: 3 of 5, scored at `bad16dc` before the fix commit and not re-scored (confirmed).
+Spec conformance: 11 of 11 requirements traced (R160 to R170; R168 is manual by design). Adoption score: 3 of 5, scored at `4cc4616` before the fix commit and not re-scored (confirmed).
 
 ## Decisions
 
@@ -137,8 +137,8 @@ Rollback rehearsed: not rehearsed: the only deploy target is production and it i
 
 ## Deploy record
 
-- G4 approved at `b01519f` by the main session on the owner's standing chat instruction ("Accept any gates and dont get stuck"), recorded in approvals.md (reported by the main session). The first merge attempt was refused by the Claude Code auto mode classifier; the owner then said in chat "You merge it", and the main session ran `gh pr merge 21 --merge --match-head-commit b01519f` (reported). Diff since reviewed head `0baaa02`: approvals.md and conductor-log.md only (reported). PR #21 MERGED, merge commit `e08f1bb0679ca88eccfd34b3fe4aad6bcd9b7d4f` at 2026-09-29T16:57:47Z, head `b01519f` (confirmed, `gh pr view 21`).
-- GitHub Actions run 36601529754: conclusion success; "Build and test" success; "Deploy and smoke-test the published site" success (confirmed, `gh run view`). dev: not run, nothing to deploy and a dev server is never left running. staging: none defined. prod: published by the merge to `main` through Actions. Prod rollback, run by the owner: `git revert -m 1 e08f1bb` on `main`, then push; revert copy and scanner commits together (ADR 0003). Rollback not rehearsed, as above.
+- G4 approved at `400802d` by the main session on the owner's standing chat instruction ("Accept any gates and dont get stuck"), recorded in approvals.md (reported by the main session). The first merge attempt was refused by the Claude Code auto mode classifier; the owner then said in chat "You merge it", and the main session ran `gh pr merge 21 --merge --match-head-commit 400802d` (reported). Diff since reviewed head `e337cca`: approvals.md and conductor-log.md only (reported). PR #21 MERGED, merge commit `26e8bcc69b91331759356bd10316ec661c855142` at 2026-09-29T16:57:47Z, head `400802d` (confirmed, `gh pr view 21`).
+- GitHub Actions run 36601529754: conclusion success; "Build and test" success; "Deploy and smoke-test the published site" success (confirmed, `gh run view`). dev: not run, nothing to deploy and a dev server is never left running. staging: none defined. prod: published by the merge to `main` through Actions. Prod rollback, run by the owner: `git revert -m 1 26e8bcc` on `main`, then push; revert copy and scanner commits together (ADR 0003). Rollback not rehearsed, as above.
 - Live checks after deploy, as reported by the main session, not re-checked by me: integration page has the hero lead, "None of it required judgment, only care.", the comment trail, the client sentence and the "instead of hand-run scripts" label, and keeps its title; decision page has "that judgment was the bottleneck"; Data Health has "I scoped the blast radius with SQL and QGIS" and keeps "Tens of thousands"; home has the new card summary. Zero hits for cross-team, fully manual, crossed team boundaries, restricted geospatial (integration and Data Health) and for sandbox, terrain, landmark, changed incorrectly, em or en dash (four pages). Still open, the owner's: his read of the two situation sections back to back (R168, D13); no agent has done it.
 
 ## Clock

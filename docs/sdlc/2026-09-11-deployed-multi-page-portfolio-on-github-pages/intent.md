@@ -294,7 +294,7 @@ Branch: `main`, clean
 PR: none
 Prepared: 2026-09-11
 Amended: 2026-09-13. Every form of the owner's phone number was redacted from this file under G4
-rejection note D3. This changes the bytes of the G1 packet approved at `a7ed654`, not its meaning:
+rejection note D3. This changes the bytes of the G1 packet approved at `d78220e`, not its meaning:
 D1 still removes the phone number from the public site and keeps email and LinkedIn. Git history
 keeps the original text and is out of scope. Also amended 2026-09-13 under the second G4 rejection
 (doc accuracy): the mockup citations on four lines now point to `docs/design/`, where G4-D4 (R92) moved the

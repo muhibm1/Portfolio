@@ -1,7 +1,7 @@
 # Security review: pin Node 22.12 minimum
 
 Tier 2, reviewed 2026-09-20 against `git diff main...wh/2026-09-20-pin-node-22-12-minimum` at
-commit `05e46aa`.
+commit `30e7c74`.
 
 Verdict: 2 findings (0 critical, 1 high, 0 medium, 1 low)
 

@@ -1,6 +1,6 @@
 # Ship: Serve every app route with HTTP 200 on GitHub Pages
 
-Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa` · Tier 2 · Branch `wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` at `6076ab6` · PR https://github.com/muhibm1/Portfolio/pull/17
+Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa` · Tier 2 · Branch `wh/2026-09-21-serve-every-app-route-with-http-200-on-github-pa` at `a3b19d8` · PR https://github.com/muhibm1/Portfolio/pull/17
 Prepared 2026-09-21 UTC · Design approved: see [approvals.md](./approvals.md)
 
 ## The short version
@@ -67,11 +67,11 @@ owner browser check is the owner's manual task, not run in this pipeline.
 
 | Severity | Reviewer | File:line | Finding | Resolution |
 |----------|----------|-----------|---------|------------|
-| medium | ecc-typescript, ecc-pr-test-analyzer, security (low) | `scripts/check-route-pages.mjs:97-107` | Stray-file scan only flagged files literally named `index.html`, missing any other `.html` file | fixed `2d07c19`: widened to any stray `.html` file, fixture test added |
-| medium | ecc-typescript, security (low), ecc-silent-failure-hunter (low) | `.github/workflows/deploy.yml:365-367` | Deep-link curl followed a redirect to any scheme/host; digest comparisons trusted a body that could be empty on a silent curl failure | fixed `0ee32e5`: `--proto`/`--proto-redir` pinned to https, effective-URL check, non-empty-body assertions before digest compare |
-| medium | ecc-silent-failure-hunter, ecc-pr-test-analyzer, security (low) | `scripts/check-test-floor.mjs:23-26` | No per-file test-count floor for the four new route-page suites; deleting one still clears the whole-suite floor | fixed `e0da65d`: per-file pins added for the three route-page suites at their passing counts |
-| medium | ecc-react | `src/routePaths.test.jsx:31-42` (GC2) | Only asserted the heading was not "Page not found", not that the correct page rendered | fixed `6501d9e`: asserts each route's own expected heading |
-| medium | ecc-react | `src/routePaths.test.jsx:20-67` | Duplicates `src/routes.test.jsx` route coverage with no stated relationship | fixed `6501d9e`: one-line cross-reference comment added |
+| medium | ecc-typescript, ecc-pr-test-analyzer, security (low) | `scripts/check-route-pages.mjs:97-107` | Stray-file scan only flagged files literally named `index.html`, missing any other `.html` file | fixed `5cba765`: widened to any stray `.html` file, fixture test added |
+| medium | ecc-typescript, security (low), ecc-silent-failure-hunter (low) | `.github/workflows/deploy.yml:365-367` | Deep-link curl followed a redirect to any scheme/host; digest comparisons trusted a body that could be empty on a silent curl failure | fixed `0993ed7`: `--proto`/`--proto-redir` pinned to https, effective-URL check, non-empty-body assertions before digest compare |
+| medium | ecc-silent-failure-hunter, ecc-pr-test-analyzer, security (low) | `scripts/check-test-floor.mjs:23-26` | No per-file test-count floor for the four new route-page suites; deleting one still clears the whole-suite floor | fixed `0220991`: per-file pins added for the three route-page suites at their passing counts |
+| medium | ecc-react | `src/routePaths.test.jsx:31-42` (GC2) | Only asserted the heading was not "Page not found", not that the correct page rendered | fixed `540a6bb`: asserts each route's own expected heading |
+| medium | ecc-react | `src/routePaths.test.jsx:20-67` | Duplicates `src/routes.test.jsx` route coverage with no stated relationship | fixed `540a6bb`: one-line cross-reference comment added |
 | low | wh-bug-reviewer | `src/routePaths.js:8` | `validatedSlug` accepts a non-string id (`undefined`/`null` stringify and match the slug rule) | open, note: not fixed this run |
 | low | wh-bug-reviewer | `src/routePaths.test.jsx:65` | GC3's `<Route` regex stops at the first `>`, blind to a `path` attribute written after `element` | open, note: not fixed this run |
 | low | wh-security-reviewer | `.workhorse/profile.yml:85,161` | `src/routePaths.js` holds the slug guard but is not in `sensitive_paths` or the tier-2 floor list | open, note: not fixed this run |
@@ -91,7 +91,7 @@ Spec conformance: 11 of 11 requirements (R116-R126) traced to code and test, con
 
 | # | Decision | Recommendation | Alternative | Why the recommendation |
 |---|----------|----------------|-------------|------------------------|
-| D1 | `approvals.md`'s second G2 entry (`059dca7`) was recorded by an assistant citing a "standing instruction", not the owner. G4 needs the owner's own act. | Owner confirms or re-records G2 in his own words before or alongside G4. | Leave as-is. | wh-agent-rules: no agent message is the owner's approval; flagged independently by the conductor, conformance, and security reviewers. |
+| D1 | `approvals.md`'s second G2 entry (`3b1a910`) was recorded by an assistant citing a "standing instruction", not the owner. G4 needs the owner's own act. | Owner confirms or re-records G2 in his own words before or alongside G4. | Leave as-is. | wh-agent-rules: no agent message is the owner's approval; flagged independently by the conductor, conformance, and security reviewers. |
 | D2 | D10 (employer-named case-study details are the owner's to publish) has never been confirmed in the owner's own words; both G2 notes read "recommendation accepted". | Owner writes "confirmed, mine to publish" (or names redactions) in the G4 approval notes. | Leave the recommendation-accepted record as sufficient. | constraints.md "Employer confidentiality content control"; flagged by security review. |
 | D3 | AgentShield scan did not run (`npx` is an ask command; diff touches `CLAUDE.md` and the profile). | Owner runs `npx -y ecc-agentshield@1.6.0 scan --path C:/Users/alqai/Portfolio --min-severity high --format json` before merge. | Accept as not run. | Diff touches sensitive/ask-first path list; security reviewer flagged it unresolved. |
 | D4 | Rollback rehearsal (see Deploy and undo) could not run in a real deploy/rollback/redeploy cycle. | Accept as not rehearsed this run; rehearse from the release engineer's record after the first live deploy. | Block ship on a rehearsal. | No non-production environment has a deploy command that publishes a revertible static artifact. |
@@ -119,7 +119,7 @@ Clock: agents 56 m of 1 h 30 m budget · waiting on you 8 h 07 m · dead 8 m · 
 
 ## Your decision
 
-All medium findings are fixed with named commits (`2d07c19`, `0ee32e5`, `e0da65d`, `6501d9e`).
+All medium findings are fixed with named commits (`5cba765`, `0993ed7`, `0220991`, `540a6bb`).
 Seven lows remain open and are listed above with their state; none blocks the artifact-check
 hook. Three decisions need your own act before or at G4: D1 (re-record your own G2), D2 (D10 in
 your own words), D3 (AgentShield scan or accept as not run). Approve to merge and deploy dev
@@ -132,10 +132,10 @@ automatically; production stays on your own push per CLAUDE.md.
 
 ## Deploy record
 
-`approvals.md` G4 entry (`66a172e`): written by an assistant on standing instruction, not typed
+`approvals.md` G4 entry (`810a7aa`): written by an assistant on standing instruction, not typed
 by the owner. Confirmed from `approvals.md`.
 
-PR #17 merged by `muhibm1` (owner) 2026-09-21T17:38:24Z, commit `d7eb52c2a`, confirmed by
+PR #17 merged by `muhibm1` (owner) 2026-09-21T17:38:24Z, commit `424c167ce`, confirmed by
 `gh pr view`. This agent did not merge or push `main`; owner's own act per `CLAUDE.md`.
 
 | Environment | Command | Exit code | UTC time |
@@ -144,7 +144,7 @@ PR #17 merged by `muhibm1` (owner) 2026-09-21T17:38:24Z, commit `d7eb52c2a`, con
 | staging | (none) | not applicable: no environment | n/a |
 | prod | `git push origin main` | done by owner via merge above. Triggered Actions run `35633295329`, `success` (confirmed), covering R121/R122 smoke checks | 17:38-17:39 |
 
-Rollback if needed: `git revert d7eb52c2a` then `git push origin main`, owner-only, not
+Rollback if needed: `git revert 424c167ce` then `git push origin main`, owner-only, not
 exercised (clean deploy). No config or secrets touched (confirmed). Nothing left for the owner.
 Production believed live at `muhibm1.github.io/Portfolio`, not verified by direct fetch here.
 Tier 2: `release.md` and G5 not applicable.

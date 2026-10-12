@@ -3,10 +3,10 @@
 Change id: `2026-09-21-serve-every-app-route-with-http-200-on-github-pa`
 Status: green
 Run at: 2026-09-21 UTC
-Commit: `e0da65d4f34022aecd6eafb9c274d1457656e740`
+Commit: `02209918f16967da776184068177a8ba5a31188e`
 
-Re-verification after the review-phase fixer's four commits on top of `b4d2f6e` (the last green
-verification): `2d07c19`, `6501d9e`, `0ee32e5`, `e0da65d`.
+Re-verification after the review-phase fixer's four commits on top of `98fe6ce` (the last green
+verification): `5cba765`, `540a6bb`, `0993ed7`, `0220991`.
 
 Status is green only when every defined check exited 0 and every eval category met its target.
 "No check defined" rows do not count as passes; they are listed so the gap is visible.
@@ -19,8 +19,8 @@ Status is green only when every defined check exited 0 and every eval category m
 - Test suite: 34 files, 329 tests, 329 passed, 0 failed, 0 skipped, 0 todo, 12.18s (`npm test`,
   `verify-logs/test.log`). Up from 285 tests across 30 files at the previous change,
   `2026-09-20-fix-phone-redaction-scanner`, and up from 322 tests across 34 files at this same
-  change's last green run (`b4d2f6e`). The gain of 7 tests over `b4d2f6e` matches
-  `0ee32e5`/`e0da65d` widening `src/deployWorkflowRoutePages.test.js` (8 to 11 tests, confirmed by
+  change's last green run (`98fe6ce`). The gain of 7 tests over `98fe6ce` matches
+  `0993ed7`/`0220991` widening `src/deployWorkflowRoutePages.test.js` (8 to 11 tests, confirmed by
   grep) and `src/checkRoutePages.test.js` (10 to 11 tests, confirmed by grep).
 - Test-count floors: `node scripts/check-test-floor.mjs vitest-results.json`, run the same way
   `deploy.yml`'s "Test-count floors (R52, R11)" step runs it, against the JSON report from
@@ -75,9 +75,9 @@ match dist/index.html.` (`verify-logs/check-route-pages.log`, GC8, timed at 0.09
 All 33 cases in `evals.md` are automated (no `manual` rows). GC1-GC3, EG3, FL1 confirmed present by
 case id in `src/routePaths.test.jsx` (13 tests); GC4, GC6, EG1, EG2, FL2, AD1 in
 `src/routePages.test.js` (6 tests); GC7, EG4, FL3-FL8, AD4, AD5 in `src/checkRoutePages.test.js`
-(11 tests, widened by `6501d9e`/`0ee32e5` from 10); GC9-GC12, AD2, AD3 in
-`src/deployWorkflowRoutePages.test.js` (11 tests, widened by `0ee32e5` from 8, GC10 now asserts
-each route's exact heading per `6501d9e`). All ran inside `npm test` above and passed.
+(11 tests, widened by `540a6bb`/`0993ed7` from 10); GC9-GC12, AD2, AD3 in
+`src/deployWorkflowRoutePages.test.js` (11 tests, widened by `0993ed7` from 8, GC10 now asserts
+each route's exact heading per `540a6bb`). All ran inside `npm test` above and passed.
 
 GC5, GC8, GC13, NF1, NF2, NF3 run as standalone commands: GC5 -
 `sha256sum dist/index.html dist/404.html dist/work/index.html dist/work/*/index.html`, all six
@@ -110,7 +110,7 @@ None cited. `node wh.js known-failure list` showed nothing recorded before this 
 
 - R121 and R122 on the published site: the live half of the smoke assertions only the first
   deploy run after merge can show. The workflow text proving the smoke-test logic (now
-  redirect-count and effective-URL aware, HTTPS-only, non-empty-body asserting per `0ee32e5`) is
+  redirect-count and effective-URL aware, HTTPS-only, non-empty-body asserting per `0993ed7`) is
   verified here (GC9-GC12, AD2, AD3, all passing); the served bytes on the real GitHub Pages
   deployment are deferred to the release engineer's `release.md` record after the owner merges.
 - `docs/hosted-config.md` section 6's owner browser check: stated manual in the plan because
