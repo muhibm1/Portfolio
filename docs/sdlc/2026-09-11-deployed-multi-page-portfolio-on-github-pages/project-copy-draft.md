@@ -32,7 +32,7 @@ The same search shows **`muhibm1/Portfolio` is private too**. See "Deploy blocke
   at gates that scale with risk. Hooks, not prompts, enforce the rules: protected paths, locked
   tests during fix loops, and no push while a required gate is open. This site was built through
   it.
-- **Stack:** the harness plugin · Node.js · Markdown agents and skills
+- **Stack:** harness plugin · Node.js · Markdown agents and skills
 - **Status:** Active
 - **repoPublic:** false
 - **Owner check:** the last sentence is true only once this change ships through G4 and G5. The

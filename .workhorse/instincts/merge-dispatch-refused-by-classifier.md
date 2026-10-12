@@ -10,7 +10,7 @@ scope: project
 ## Action
 
 After G4 was approved and the owner told the main session in chat "Merge and deploy it
-yourself," the conductor dispatched wh-shipper in deploy mode to merge PR #19. The the harness
+yourself," the conductor dispatched wh-shipper in deploy mode to merge PR #19. The harness
 permission classifier refused that dispatch as a production deploy (confirmed, conductor-log
 2026-09-28T17:47:24Z); nothing tried another route and the conductor reported a block. The
 owner's direct instruction to the main session is what actually resolved it: the main session
