@@ -57,6 +57,7 @@ const pinnedToolkit = [
 // R154: the featured card's four values (D52: 40, not 28) and the WorkHorse case-study stats.
 const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
+  agentops: ["15 of 15", "0 of 15", "9 of 15", "$0.02"],
   "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
@@ -130,6 +131,27 @@ const pinnedCaseStudyNarratives = {
     calloutText:
       "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
     contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
+  },
+  // Added 2026-10-12 with the AgentOps case study, from the agentops repository's README results.
+  agentops: {
+    eyebrow: "Case study · Personal system · Agentic AI · Incident response",
+    title: "AgentOps: an incident agent that can't act alone",
+    lead:
+      "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
+    atAGlance: [
+      { label: "My role", value: "Designed and built it end to end" },
+      {
+        label: "What it is",
+        value:
+          "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
+      },
+      { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, Claude" },
+      { label: "Quality", value: "984 tests, CI on every push, no model or key needed to run them" },
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText:
+      "A way to put an agent near production without trusting it with production: the model does the reading, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
+    contactHeading: "Want an agent near production? Let's talk.",
   },
   "apple-llm-triage": {
     eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
@@ -316,11 +338,12 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the five case studies in plan order (R127, G1)", () => {
+  it("names / then /work then /work/<id> for the six case studies in plan order (R127, G1)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
       "/work/workhorse",
+      "/work/agentops",
       "/work/apple-llm-triage",
       "/work/apple-integration",
       "/work/apple-data-health",
@@ -328,11 +351,27 @@ describe("portfolioData", () => {
     ]);
     expect(portfolioData.caseStudies.map((study) => study.id)).toEqual([
       "workhorse",
+      "agentops",
       "apple-llm-triage",
       "apple-integration",
       "apple-data-health",
       "neural-newsletters-llm",
     ]);
+  });
+
+  it("carries the AgentOps case study second, with no codeLink and a `measured` section holding its table (2026-10-12)", () => {
+    const agentops = findCaseStudy("agentops");
+
+    expect(agentops).toBeDefined();
+    expect(portfolioData.caseStudies[1].id).toBe("agentops");
+    expect(agentops).not.toHaveProperty("codeLink");
+
+    const measured = findSection(agentops, "measured");
+    expect(measured).toBeDefined();
+    const table = measured.blocks.find((block) => block.type === "table");
+    expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline"]);
+    expect(table.rows).toHaveLength(4);
+    expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "15 of 15", "0 of 15"]);
   });
 
   it("has no projects, demos, telemetry or philosophy key (R128)", () => {
@@ -574,12 +613,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the five 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+  it("keeps the six 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(5);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(6);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {

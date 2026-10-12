@@ -85,7 +85,7 @@ describe('SiteHeader inside App (E3)', () => {
 
     fireEvent.click(screen.getByRole('link', { name: /next case study/i }));
 
-    expect(document.title).toBe(pageMetaFor('/work/apple-llm-triage').title);
+    expect(document.title).toBe(pageMetaFor('/work/agentops').title);
   });
 });
 
