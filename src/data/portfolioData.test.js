@@ -57,7 +57,7 @@ const pinnedToolkit = [
 // R154: the featured card's four values (D52: 40, not 28) and the WorkHorse case-study stats.
 const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
-  agentops: ["15 of 15", "0 of 15", "9 of 15", "$0.02"],
+  agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
@@ -146,7 +146,7 @@ const pinnedCaseStudyNarratives = {
           "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
       },
       { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, Claude" },
-      { label: "Quality", value: "984 tests, CI on every push, no model or key needed to run them" },
+      { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -371,7 +371,7 @@ describe("portfolioData", () => {
     const table = measured.blocks.find((block) => block.type === "table");
     expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline"]);
     expect(table.rows).toHaveLength(4);
-    expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "15 of 15", "0 of 15"]);
+    expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
   });
 
   it("has no projects, demos, telemetry or philosophy key (R128)", () => {

@@ -15,8 +15,8 @@
 // atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
 // may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
-// 2026-10-12 from the agentops repository's README results, at commit f8d2c8e and later, pending
-// the owner's approval. It carries no codeLink: the AgentOps repository is private.
+// 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
+// and held-out splits), pending the owner's approval. It carries no codeLink: the AgentOps repository is private.
 
 // The three public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
@@ -597,13 +597,13 @@ export const portfolioData = {
             "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
         },
         { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, Claude" },
-        { label: "Quality", value: "984 tests, CI on every push, no model or key needed to run them" },
+        { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
       ],
       stats: [
-        { value: "15 of 15", label: "live runs with nothing changed before a person approved" },
-        { value: "0 of 15", label: "baseline runs that waited for anyone" },
-        { value: "9 of 15", label: "live runs that reached the right end state" },
-        { value: "$0.02", label: "average cost of a live run" },
+        { value: "24 of 24", label: "live runs with nothing changed before a person approved" },
+        { value: "3 of 24", label: "baseline runs that waited for anyone" },
+        { value: "23 of 24", label: "live runs that reached the right end state" },
+        { value: "$0.04", label: "average cost of a live run" },
       ],
       sections: [
         {
@@ -644,22 +644,22 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I measured it against the agent most teams build first: a ReAct agent with the same tools and the same simulated incidents, but no approval step and no allowlist. Five incidents, three runs each, on Claude Haiku 4.5.",
+                "I measured it against the agent most teams build first: a ReAct agent with the same tools and the same simulated incidents, but no approval step and no allowlist. Eight incidents, three runs each, on Claude Sonnet 5.5: five I tuned on, and three held out and scored once, after the version was frozen.",
             },
             {
               type: "table",
               columns: [{ label: "Measure" }, { label: "AgentOps" }, { label: "ReAct baseline" }],
               rows: [
-                { cells: ["Reached the right end state", "9 of 15", "12 of 15"] },
-                { cells: ["Read the evidence the diagnosis needs before acting", "15 of 15", "6 of 15"] },
-                { cells: ["Changed nothing without an approval", "15 of 15", "0 of 15"] },
-                { cells: ["Applied a wrong action", "0 of 15", "0 of 15"] },
+                { cells: ["Reached the right end state", "23 of 24", "21 of 24"] },
+                { cells: ["Read the evidence the diagnosis needs before acting", "24 of 24", "12 of 24"] },
+                { cells: ["Changed nothing without an approval", "24 of 24", "3 of 24"] },
+                { cells: ["Applied a wrong action", "0 of 24", "0 of 24"] },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The baseline reaches more good end states because it acts first: it changed the system without approval in every run, and usually before reading the evidence it needed. Every AgentOps miss was a hand-off to a person, never a wrong change. The first four paid runs each failed on a bug in my own code that no test with a fake model could catch, including a schema rewrite that made the fix's parameters impossible to send. I published all five runs with their fixes.",
+                "The baseline changed the system without approval in 21 of 24 runs, half the time before reading the evidence it needed. AgentOps never did, and its one miss was a hand-off to a person, never a wrong change. Getting here took eleven paid runs in a change, run, compare loop: the first four each failed on a bug in my own code that no test with a fake model could catch, including a schema rewrite that made the fix's parameters impossible to send, and the last found a scoring bug that had counted one approved rollback as unapproved. Every run is published with its fix, and the held-out numbers were never used to tune anything.",
             },
           ],
         },
