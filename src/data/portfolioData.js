@@ -644,7 +644,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I measured it against the agent most teams build first: a ReAct agent with the same tools and the same simulated incidents, but no approval step and no allowlist. Eight incidents, three runs each, on Claude Sonnet 5.5: five I tuned on, and three held out and scored once, after the version was frozen.",
+                "I measured it against the agent most teams build first: one that reads the evidence and then acts on its own, with the same tools and the same simulated incidents but no approval step and no fixed list of allowed actions. Eight scripted incidents, each with a known cause and a known right fix, run three times each on Claude Sonnet 5.5. Five of the incidents I used while improving the system; three were kept aside and scored once at the end, so they show how it does on incidents it was never tuned on.",
             },
             {
               type: "table",
@@ -659,7 +659,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The baseline changed the system without approval in 21 of 24 runs, half the time before reading the evidence it needed. AgentOps never did, and its one miss was a hand-off to a person, never a wrong change. Getting here took eleven paid runs in a change, run, compare loop: the first four each failed on a bug in my own code that no test with a fake model could catch, including a schema rewrite that made the fix's parameters impossible to send, and the last found a scoring bug that had counted one approved rollback as unapproved. Every run is published with its fix, and the held-out numbers were never used to tune anything.",
+                "The two agents are close on accuracy. The difference is what each does before it is sure. The baseline changed the system without approval in 21 of 24 runs, and in half of them it acted before reading the evidence it needed. AgentOps never did either, and the one time it fell short it stopped and handed the incident to a person with its findings, rather than guessing. Getting here took eleven paid runs, each one changing one thing, running the same incidents again, and comparing incident by incident. The first four runs each failed on a bug in my own code that no test with a stand-in model could catch; the last found a bug in my scoring that had marked one approved change as unapproved. Every run is published with what it found and what I changed, and the three held-out incidents were never used to tune anything.",
             },
           ],
         },
