@@ -10,7 +10,7 @@ scope: project
 ## Action
 
 After G4 was approved and the owner told the main session in chat "Merge and deploy it
-yourself," the conductor dispatched wh-shipper in deploy mode to merge PR #19. The Claude Code
+yourself," the conductor dispatched wh-shipper in deploy mode to merge PR #19. The harness
 permission classifier refused that dispatch as a production deploy (confirmed, conductor-log
 2026-09-28T17:47:24Z); nothing tried another route and the conductor reported a block. The
 owner's direct instruction to the main session is what actually resolved it: the main session
@@ -31,7 +31,7 @@ not to perform it.
   wh-shipper merges PR #19 with a merge commit at the approved head, any hook or permission
   denial is a true block and is not worked around"
 - `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/conductor-log.md:137` "BLOCKED:
-  dispatch of wh-shipper (mode deploy) to merge PR #19 was denied by the Claude Code permission
+  dispatch of wh-shipper (mode deploy) to merge PR #19 was denied by the harness permission
   classifier as a production deploy; merge not attempted by any other route; the owner merges
   PR #19 himself"
 - `docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/conductor-log.md:138` "resumed at

@@ -75,7 +75,7 @@ blocked on an unrelated gap (missing PDF, D21) — not a pipeline error.
 
 Confirmed from `conductor-log.md` and `ship.md`'s "Deploy record": after G4 was approved, the
 owner told the main session in chat "Merge and deploy it yourself." The conductor dispatched
-wh-shipper in deploy mode to merge PR #19 (D61, line 135). The Claude Code permission classifier
+wh-shipper in deploy mode to merge PR #19 (D61, line 135). The harness permission classifier
 refused that dispatch as a production deploy (line 137, 2026-09-28T17:47:24Z). Nothing tried
 another route; the conductor reported a true block. The owner's direct instruction to the main
 session is what resolved it: the main session merged PR #19 itself with
@@ -139,7 +139,7 @@ documents that agents are blocked from the push itself but not from a merge:
 -# Agents are blocked from running it by bash-guard's built-in rule; the owner pushes.
 +# Agents are blocked from running it by bash-guard's built-in rule; the owner pushes. Merging
 +# the shipped PR into the default branch is the same kind of production action and is expected
-+# to be refused by the Claude Code permission classifier when dispatched to a subagent (observed
++# to be refused by the harness permission classifier when dispatched to a subagent (observed
 +# 2026-09-25-rebuild-portfolio-to-approved-redesign); route the merge to the owner or the main
 +# session on the owner's direct instruction, not to a dispatched agent.
 ```

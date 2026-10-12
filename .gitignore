@@ -27,5 +27,5 @@ dist-ssr
 *.sw?
 .worktrees/
 
-# Agent worktrees and local Claude Code state, never part of the site
+# Agent worktrees and local harness state, never part of the site
 .claude/

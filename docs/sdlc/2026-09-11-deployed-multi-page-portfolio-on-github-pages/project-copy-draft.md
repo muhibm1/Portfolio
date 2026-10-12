@@ -26,13 +26,13 @@ The same search shows **`muhibm1/Portfolio` is private too**. See "Deploy blocke
 ## workhorse
 
 - **Tagline:** An agentic software delivery lifecycle for forward-deployed engineering, packaged
-  as a Claude Code plugin.
+  as a harness plugin.
 - **Description:** Give it a problem and an outcome inside a client repository. Single-purpose
   agents discover, specify, plan, build, verify, review, ship and hand over, and a human approves
   at gates that scale with risk. Hooks, not prompts, enforce the rules: protected paths, locked
   tests during fix loops, and no push while a required gate is open. This site was built through
   it.
-- **Stack:** Claude Code plugin · Node.js · Markdown agents and skills
+- **Stack:** harness plugin · Node.js · Markdown agents and skills
 - **Status:** Active
 - **repoPublic:** false
 - **Owner check:** the last sentence is true only once this change ships through G4 and G5. The

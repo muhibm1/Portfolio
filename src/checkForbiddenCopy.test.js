@@ -623,7 +623,7 @@ describe('forbidden-copy file scan', () => {
 
   // E21
   it('matches plugin, messy, self-hosted, Ollama, eleven times and zero rejected but not their near-misses (R12)', () => {
-    expectEachToHit(['A Claude Code plugin', 'plugins'], 'plugin');
+    expectEachToHit(['A harness plugin', 'plugins'], 'plugin');
     expectEachToHit(['systems are messy'], 'messy');
     expectEachToHit(['self-hosted', 'Self-Hosted models'], 'self-hosted');
     expectEachToHit(['Ollama'], 'Ollama');
