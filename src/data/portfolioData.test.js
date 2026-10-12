@@ -273,6 +273,7 @@ const pinnedRepositories = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   paddock: "https://github.com/muhibm1/paddock-snapshot",
+  agentops: "https://github.com/muhibm1/agentops-snapshot",
 };
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
@@ -359,12 +360,15 @@ describe("portfolioData", () => {
     ]);
   });
 
-  it("carries the AgentOps case study second, with no codeLink and a `measured` section holding its table (2026-10-12)", () => {
+  it("carries the AgentOps case study second, with its snapshot codeLink and a `measured` section holding its table (2026-10-12)", () => {
     const agentops = findCaseStudy("agentops");
 
     expect(agentops).toBeDefined();
     expect(portfolioData.caseStudies[1].id).toBe("agentops");
-    expect(agentops).not.toHaveProperty("codeLink");
+    expect(agentops.codeLink).toEqual({
+      label: "Code: agentops-snapshot",
+      href: "https://github.com/muhibm1/agentops-snapshot",
+    });
 
     const measured = findSection(agentops, "measured");
     expect(measured).toBeDefined();
@@ -629,7 +633,7 @@ describe("portfolioData", () => {
     expect(splitBlock.table.rows.at(-1).cells[0]).toBe("Hybrid + reranker, pool of 10 (shipped)");
   });
 
-  it("names personal.repositories with the three snapshot URLs, held once (R153)", () => {
+  it("names personal.repositories with the four snapshot URLs, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
