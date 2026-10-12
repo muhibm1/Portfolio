@@ -11,9 +11,12 @@
 //
 // Shape: personal (contact, header facts and the three public snapshot repositories), home
 // (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
-// toolkit, contact), caseStudies (five, in the plan's reading order, each carrying card,
+// toolkit, contact), caseStudies (six, in the plan's reading order, each carrying card,
 // atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
 // may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
+// The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
+// 2026-10-12 from the agentops repository's README results, at commit f8d2c8e and later, pending
+// the owner's approval. It carries no codeLink: the AgentOps repository is private.
 
 // The three public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
@@ -569,6 +572,104 @@ export const portfolioData = {
           "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
       },
       contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
+    },
+
+    {
+      id: "agentops",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · Agentic AI · Incident response",
+        title: "AgentOps: an incident agent that can't act alone",
+        summary:
+          "A LangGraph agent that investigates a production incident, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the model, decides what it may change, and every action runs exactly once.",
+        linkText: "Read the case study",
+        tags: ["Approval enforced in code", "Measured against a ReAct baseline"],
+      },
+      eyebrow: "Case study · Personal system · Agentic AI · Incident response",
+      title: "AgentOps: an incident agent that can't act alone",
+      intro:
+        "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
+      atAGlance: [
+        { label: "My role", value: "Designed and built it end to end" },
+        {
+          label: "What it is",
+          value:
+            "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
+        },
+        { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, Claude" },
+        { label: "Quality", value: "984 tests, CI on every push, no model or key needed to run them" },
+      ],
+      stats: [
+        { value: "15 of 15", label: "live runs with nothing changed before a person approved" },
+        { value: "0 of 15", label: "baseline runs that waited for anyone" },
+        { value: "9 of 15", label: "live runs that reached the right end state" },
+        { value: "$0.02", label: "average cost of a live run" },
+      ],
+      sections: [
+        {
+          id: "why",
+          heading: "Why I built it",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Most agent demos let the model decide everything, which is fine until the decision is a production change. I wanted to show the other design: the model proposes, code enforces every step, and nothing changes in the target system until a person approves an action from a fixed list.",
+            },
+          ],
+        },
+        {
+          id: "how",
+          heading: "How an incident moves through it",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                { title: "Investigate", note: "The model ranks causes; code picks what to read and when to stop" },
+                { title: "Propose", note: "One action from the runbook, citing the evidence behind it" },
+                { title: "Approve", note: "A person approves, rejects or edits. No flag skips it", emphasis: true },
+                { title: "Apply once", note: "Preconditions, a dry run, an idempotency key, then a check that it worked" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Every step is saved, so a run that crashes right after applying a fix resumes without applying it twice, and any past step can be replayed with a different belief to see what the agent would have done.",
+            },
+          ],
+        },
+        {
+          id: "measured",
+          heading: "What the live runs showed",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "I measured it against the agent most teams build first: a ReAct agent with the same tools and the same simulated incidents, but no approval step and no allowlist. Five incidents, three runs each, on Claude Haiku 4.5.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Measure" }, { label: "AgentOps" }, { label: "ReAct baseline" }],
+              rows: [
+                { cells: ["Reached the right end state", "9 of 15", "12 of 15"] },
+                { cells: ["Read the evidence the diagnosis needs before acting", "15 of 15", "6 of 15"] },
+                { cells: ["Changed nothing without an approval", "15 of 15", "0 of 15"] },
+                { cells: ["Applied a wrong action", "0 of 15", "0 of 15"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The baseline reaches more good end states because it acts first: it changed the system without approval in every run, and usually before reading the evidence it needed. Every AgentOps miss was a hand-off to a person, never a wrong change. The first four paid runs each failed on a bug in my own code that no test with a fake model could catch, including a schema rewrite that made the fix's parameters impossible to send. I published all five runs with their fixes.",
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "A way to put an agent near production without trusting it with production: the model does the reading, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
+      },
+      contactHeading: "Want an agent near production? Let's talk.",
     },
 
     {
