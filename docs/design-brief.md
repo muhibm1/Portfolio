@@ -77,7 +77,7 @@ It is a single page with modals, not a multi-page site, and its hero uses the mo
      title, tab chips (Challenge, System architecture, Production deployment, Measured impact),
      flow diagram left, metric cards right, tech stack, next/previous.
    - Projects to include beyond the three case studies (from GitHub `muhibm1`): `workhorse`
-     (agentic SDLC Claude Code plugin for FDE, 24 agents), `Shu` (autonomous intraday trading
+     (agentic SDLC harness plugin for FDE, 24 agents), `Shu` (autonomous intraday trading
      engine and dashboard, Alpaca), `wasl`, plus the interactive triage simulator as a live demo.
 4. **Hosting**: GitHub Pages from `muhibm1/Portfolio` via GitHub Actions, with a `404.html`
    SPA fallback so deep links to `/work/:slug` resolve. Base path `/Portfolio/` unless a
