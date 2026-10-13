@@ -196,8 +196,9 @@ describe('CaseStudyPage', () => {
     it('renders the outcomes and retrieval tables at /work/workhorse', () => {
       renderCaseStudyAt('/work/workhorse');
 
+      // The worked example, the outcomes, the 0.5 releases and the retrieval table (2026-10-13).
       const tables = screen.getAllByRole('table');
-      expect(tables).toHaveLength(2);
+      expect(tables).toHaveLength(4);
       for (const table of tables) {
         expect(within(table).getAllByRole('columnheader').length).toBeGreaterThan(0);
       }
