@@ -108,12 +108,12 @@ describe('CaseStudyPage', () => {
       expect(mcpLink).toBeDefined();
     });
 
-    it('renders the Paddock, Electron and 278-desktop-tests at-a-glance values', () => {
-      renderCaseStudyAt('/work/workhorse');
+    it('presents Paddock as an earlier desktop app that was replaced, not as a current part', () => {
+      const { container } = renderCaseStudyAt('/work/workhorse');
 
-      expect(screen.getAllByText(/paddock/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/electron/i).length).toBeGreaterThan(0);
-      expect(screen.getByText(/278 desktop tests/i)).toBeInTheDocument();
+      expect(container.textContent).toMatch(/Paddock, an earlier desktop app/);
+      expect(screen.queryByText(/278 desktop tests/i)).toBeNull();
+      expect(screen.queryAllByText(/electron/i)).toHaveLength(0);
     });
 
     it('never shows a retired, retirement, deprecated or dropped status word', () => {
