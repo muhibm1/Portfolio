@@ -19,6 +19,10 @@
 // and held-out splits), pending the owner's approval. Its codeLink points at the public
 // agentops-snapshot repository, published 2026-10-12.
 // The Flywheel case study (third, after AgentOps) was added 2026-10-13 from the flywheel and studbook-agent READMEs.
+// Refreshed 2026-10-13 (owner's request, from his case-studies-v2 draft): WorkHorse gains the 0.5
+// releases and the faster Studbook record, checked against muhibm1/workhorse and muhibm1/studbook;
+// AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
+// Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
 
 // The four public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
@@ -294,19 +298,20 @@ export const portfolioData = {
       eyebrow: "Case study · Personal system · Agentic AI · Active",
       title: "WorkHorse: AI-built software you can audit",
       intro:
-        "A delivery pipeline where 28 single-purpose agents take a change from a one-line request to merged, tested and documented code. A person approves at the moments that matter, and code, not prompts, enforces the rules. This site was built with it.",
+        "AI coding agents can write a feature in minutes. What they rarely leave behind is a reason to trust it: who decided what, what was checked, and what a person actually approved. WorkHorse is the delivery process I built around them. Twenty-eight single-purpose agents take a change from a one-line request to merged, tested and documented code, a person approves at the two moments that matter, and code the agents cannot argue with enforces the rules. This site was built with it.",
+      // Quality: hooks/tests/run.js in muhibm1/workhorse at 0.5.4 (master 4f5f78e), per CHANGELOG.md.
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end" },
         {
           label: "What it is",
           value:
-            "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server for agents",
+            "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server its agents search on every run",
         },
         {
           label: "Stack",
-          value: "Node.js, Python, FastAPI, Supabase Postgres with pgvector",
+          value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
         },
-        { label: "Quality", value: "224 pipeline tests, CI on every push" },
+        { label: "Quality", value: "454 pipeline tests, CI on every push" },
       ],
       stats: [
         { value: "28", label: "single-purpose agents" },
@@ -322,12 +327,29 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "AI coding tools move fast until something goes wrong, and then there's rarely a record of what happened or why. I wanted to find out what it takes to make AI-built software trustworthy, not just fast, so I built the whole delivery process and measured it.",
+                "AI coding tools move fast until something goes wrong, and then there's rarely a record of what happened or why. Anyone putting them to work on real software has to answer three questions. What did the agent change? Who checked it? Did a person sign off on what actually shipped? I wanted to find out what it takes to answer all three every time, so I built the whole delivery process and measured it.",
             },
             {
               type: "paragraph",
               text:
-                "Every step writes a document, every claim in it is labelled as confirmed or believed, and approvals are pinned to the exact version a person read.",
+                "The design rests on one idea. An AI agent is like a capable new hire who never gets tired and never remembers yesterday. Asking it to be careful does not fix that. Giving each agent a narrow job, writing everything down, and putting the rules that matter where it can't skip them does. Every step writes a document, every claim in it is labelled as confirmed or believed, and approvals are pinned to the exact version a person read.",
+            },
+            {
+              type: "paragraph",
+              text: "A few terms are used throughout:",
+            },
+            {
+              type: "cards",
+              items: [
+                { title: "Agent", note: "One AI session with one job, such as planning, building or reviewing, and only the tools that job needs." },
+                { title: "Gate", note: "A point where the pipeline stops until a person reads a document and approves it." },
+                { title: "Hook", note: "A small piece of code that runs before or after every action an agent takes, and can block it." },
+                {
+                  title: "Risk tier",
+                  note: "How much ceremony a change gets, from 0 (docs and tests) to 3 (regulated or hard to undo).",
+                  emphasis: true,
+                },
+              ],
             },
           ],
         },
@@ -352,12 +374,62 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Each agent gets one job and only the tools that job needs. Builders work in parallel in isolated git worktrees so they can't collide. The verifier can read the code but can't change it, so it never grades its own fix. Four reviewers run at once, and their findings go to the fixer before a person ever sees the ship document.",
+                "In plain terms: a person describes a problem and the outcome they want in one line. Agents investigate and write a design, and a person approves it before any code exists. A planning agent breaks the design into tasks and writes the tests that will prove each one works. Builder agents write the code in parallel, each in its own copy of the repository, so they can't overwrite each other.",
             },
             {
               type: "paragraph",
               text:
-                "Risk tiers from 0 to 3 decide how much ceremony a change gets. A low-risk change needs only the Ship approval; a tier 3 production change also needs a person to approve the deploy, with rollback rehearsed from tier 2 up.",
+                "A checker that can read the code but not change it runs every test. If something fails, a different agent fixes it, so nothing ever grades its own work. Four reviewers then read the result at once: for bugs, for security, for whether it matches the design, and for whether another engineer could maintain it from the repository alone. Their findings are fixed before a person sees the ship document, and only that person's approval lets the change merge.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Not every change deserves the same ceremony. A low-risk change needs only the Ship approval; a tier 3 production change also needs a person to approve the deploy, with rollback rehearsed from tier 2 up.",
+            },
+          ],
+        },
+        {
+          // From docs/sdlc/2026-09-20-fix-phone-redaction-scanner/ (brief.md, evals.md,
+          // approvals.md) and the run's row in the `measured` table below.
+          id: "example",
+          heading: "One change, start to finish",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "This site must never publish my phone number, and a scanner checks every file in the repository for it. The scanner had two defects. Here is how WorkHorse fixed them:",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Step" }, { label: "What happened" }],
+              rows: [
+                {
+                  cells: [
+                    "Request",
+                    "One line: the scanner misses the number in files that mix two text encodings, and silently does nothing when it is started through a shortcut path.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Design",
+                    "Agents reproduced both defects before proposing anything, so the design fixed real failures, not guessed ones. The audit also found the same kind of hole one level up: the publishing workflow stayed green even if the scanner's own tests never ran. A person approved the design.",
+                  ],
+                  emphasis: true,
+                },
+                {
+                  cells: [
+                    "Plan",
+                    "34 evaluation cases written before any code: numbers the scanner must catch, and look-alikes it must leave alone.",
+                  ],
+                },
+                { cells: ["Build, verify, review", "Code written and tested; the four reviewers raised 6 findings, all fixed before sign-off."] },
+                { cells: ["Ship", "A person approved the ship document, and the change was merged and published."], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Every step left a document behind, so anyone can see later why the scanner works the way it does and what it was tested against.",
             },
           ],
         },
@@ -368,7 +440,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "If a rule lives in a prompt, a model can reason its way around it. So the non-negotiables are nine hooks that run before or after every tool call:",
+                "A prompt is a request. A model can reason its way around a request, especially halfway through a long task when the rule is inconvenient. A hook is a lock. It runs outside the model, before or after every tool call, and it doesn't care how good the argument is. So the non-negotiables are nine hooks:",
             },
             {
               type: "cards",
@@ -387,7 +459,38 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
+                "The second card is the one people ask about. When code fails a test, the easiest way to make it pass is to change the test. During a fix the tests are locked, so the only way through is to fix the code.",
+            },
+            {
+              type: "paragraph",
+              text:
                 "A session also can't approve its own gate or grant itself permissions. A ship document with an open high-severity finding is refused when it's written and again when someone tries to approve it.",
+            },
+          ],
+        },
+        {
+          id: "who-decides",
+          heading: "Who decides what",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                { title: "Agents", note: "How to design, plan, build, test and fix the change, and what the reviewers flag." },
+                {
+                  title: "Code",
+                  note: "Which files may be touched, whether tests may change, whether a gate is open, and whether the required documents exist.",
+                },
+                {
+                  title: "A person",
+                  note: "Whether the design is right, whether the change ships, and at tier 3, whether it deploys.",
+                  emphasis: true,
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The split follows the cost of being wrong. An agent that writes a clumsy function costs a review comment. An agent that weakens a test, edits a protected file or approves its own work costs trust in everything the pipeline produces, so those decisions are taken away from it entirely.",
             },
           ],
         },
@@ -404,7 +507,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.",
+                "The first version had five human checkpoints, and it felt safe. I didn't redesign it from impressions. Timestamps from those runs showed that two thirds of the time a change spent in the pipeline was a person waiting at a checkpoint with nothing to decide. More gates were not making it safer, only slower.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document, so a person only sees finished work. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.",
             },
             {
               type: "stats",
@@ -459,12 +567,30 @@ export const portfolioData = {
           ],
         },
         {
+          // Approvals on the pull request: CHANGELOG.md 0.4.0 (2026-09-29) in muhibm1/workhorse.
+          id: "fell-short",
+          heading: "Where it fell short",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The most useful run was one that failed. The first version of the Studbook MCP server, described below, passed every reviewer and was still wrong: it missed a requirement written down before any code existed. Only a person reading the ship document against the original requirement caught it, and the gate sent it back. That is the gate doing its job.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request, and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not.",
+            },
+          ],
+        },
+        {
           // Counted, not remembered: every figure in this section is from the WorkHorse run
           // ledger, docs/ledger/RUNS.md and runs.json in muhibm1/workhorse (0.5.0, merged
           // 2026-10-13 as b94e431), which recomputes each run from its committed conductor log
           // and approvals. Finished runs at risk tiers 0 to 2: 2 on the first version (five
           // gates), 7 on two gates, 5 from the speed release on. Regenerate with
-          // `workhorse ledger` and update these figures together.
+          // `workhorse ledger` and update these figures together. The 0.5.x releases and the
+          // first Flywheel pass are from CHANGELOG.md 0.5.0 to 0.5.4 (master 4f5f78e).
           id: "ledger",
           heading: "Every run on the record, and what comes next",
           blocks: [
@@ -499,7 +625,53 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The ledger also shows the next limit. On the latest runs the agents were working for only a third of the time between the request and the merge. The rest was waiting: for a merge the agents aren't allowed to press, for a run that stopped and wasn't restarted, for a person reading a design document with twenty questions in it. So the current release removes the waiting. Approving the ship document now merges the change as soon as its checks pass, design documents are next to be cut to five questions, and every release has to show its effect in the ledger before it can claim one.",
+                "The ledger also shows the next limit. On the latest runs the agents were working for only a third of the time between the request and the merge. The rest was waiting: for a merge the agents aren't allowed to press, for a run that stopped and nobody restarted, for a person reading a design document with twenty questions in it.",
+            },
+            {
+              type: "paragraph",
+              text: "Version 0.5 goes after that waiting, one release at a time:",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Release" }, { label: "What it does" }],
+              rows: [
+                {
+                  cells: [
+                    "0.5.0, the ledger",
+                    "Every run is recomputed from its committed record, with its version and cost. A release can only claim a speedup the ledger shows.",
+                  ],
+                },
+                {
+                  cells: [
+                    "0.5.1, merge on approval",
+                    "Approving the ship document merges the change as soon as its checks are green. It never merges over a red check.",
+                  ],
+                },
+                {
+                  cells: [
+                    "0.5.2, a trace per run",
+                    "Every run becomes a LangSmith trace: the change at the top, then each phase and step, each step marked as agent work, waiting or a stopped run.",
+                  ],
+                  emphasis: true,
+                },
+                {
+                  cells: [
+                    "0.5.3, scored runs",
+                    "Each trace gets five scores: finished, within its time budget, never stalled, no unexplained gap, and every gate passed first time. Flywheel, the third case study, groups the failures by the phase where they went wrong.",
+                  ],
+                },
+                {
+                  cells: [
+                    "0.5.4, stall notices",
+                    "A run that stops and needs a person says so on its pull request, so the notice reaches a phone.",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first scoring pass, over 16 traced runs, flagged 13: 8 went over their time budget, 4 of them in the build phase; 3 stalled; 2 never closed their record. That list is what the next releases work from: fewer questions per design, review running alongside the build, and big changes split in two. No 0.5 run has reached the ledger yet, so none of these releases claims a speedup.",
             },
           ],
         },
@@ -516,6 +688,11 @@ export const portfolioData = {
               link: { text: "Studbook", href: REPOSITORIES.studbook },
             },
             {
+              type: "paragraph",
+              text:
+                "In plain terms, it is a search engine and a careful writer working together. The search half finds the five passages most likely to hold the answer. The writer half, a language model, may use only those passages, must cite one for every sentence, and must say so when they don't contain the answer. That pattern is called retrieval-augmented generation, or RAG.",
+            },
+            {
               type: "flow",
               columns: 6,
               steps: [
@@ -530,7 +707,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I built the evaluation before tuning anything: 60 gold questions across five types plus nine trap questions about things the record doesn't contain, split into a dev set for tuning and a sealed, hashed test set scored only after tuning froze. Every step in the pipeline above was chosen by measurement.",
+                "Read left to right: the question is searched two ways at once. Vector search matches meaning, so it finds \"rollback\" when you asked about undoing a release. Full-text search matches exact words, so it finds a specific file name. The two lists are merged into one, a second, slower model re-reads the best candidates and keeps the five most relevant, and only then does the writer answer.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "I built the test before tuning anything: 60 gold questions with known answers across five types, plus nine trap questions about things the record doesn't contain, where the only right answer is to refuse. They were split into a dev set for tuning and a sealed, hashed test set scored once, after tuning froze, so the final score is an exam the system never studied for. Every step in the pipeline above was chosen by measurement.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The table shows recall at five: how often the passage that holds the answer was among the five handed to the writer. If it isn't there, no writer can get the answer right.",
             },
             {
               type: "split",
@@ -560,12 +747,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
+                "Two results in that table are worth a sentence each. The textbook fusion setting is meant for large collections; on a small one, tuning it was worth more than any single feature. And a bigger pool for the reranker scored lower, not higher: more candidates gave it more near misses to choose among.",
+            },
+            {
+              type: "paragraph",
+              text:
                 "Measured and rejected: splitting questions into parts, capping chunks per document, synonym expansion, hypothetical-passage search, bigger rerank pools and more passages for the generator. None beat what shipped, and I kept the code so the results can be reproduced.",
             },
             {
               type: "paragraph",
               text:
-                "Conversations work too. A follow-up like \"was it ever fixed?\" is rewritten into a standalone question by a small model, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.",
+                "Conversations work too. A follow-up like \"was it ever fixed?\" means nothing to a search engine on its own, so a small model rewrites it into a standalone question first, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.",
             },
             {
               type: "paragraph",
@@ -576,6 +768,11 @@ export const portfolioData = {
           ],
         },
         {
+          // Speed and cost: docs/studbook-record.md in muhibm1/workhorse (#30), and README.md "Fast mode for agents" in muhibm1/studbook (#14,
+          // 961e567): p50 per search through MCP over the 40 dev questions, 4-core cloud CPU,
+          // 3,880 passages from six repositories; fused recall@10 0.8824 against reranked
+          // recall@8 0.8824 (studbook docs/retrieval-ceiling.md). Figures are written in words
+          // because the forbidden-copy scan withholds digit-plus-unit timing figures (D26, D36).
           id: "mcp",
           heading: "An MCP server over the record",
           eyebrow: "Inside WorkHorse",
@@ -583,36 +780,33 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Studbook also runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it. The server lives in the Studbook repository.",
+                "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
               link: { text: "Studbook repository", href: REPOSITORIES.studbook },
             },
             {
               type: "paragraph",
               text:
-                "Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
-            },
-            {
-              type: "paragraph",
-              text: "The first version missed a requirement written before the work started, and my own ship gate rejected it.",
+                "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
             },
             {
               type: "paragraph",
               text:
-                "The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with the results proved identical over the same 40 test questions.",
+                "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
             },
             {
               type: "paragraph",
               text:
-                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact.",
-            },
-            {
-              type: "paragraph",
-              text: "WorkHorse built it end to end, with 12 of 12 review findings fixed before approval.",
+                "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
             },
             {
               type: "paragraph",
               text:
-                "Every query runs as a read-only Postgres role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
+                "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, encodes the question on a faster engine with the same model and the same vectors, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On Postgres every query runs as a read-only role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
             },
           ],
         },
@@ -996,6 +1190,13 @@ export const portfolioData = {
                 },
               ],
             },
+            {
+              // agentops #23 (1fd8aec): .github/workflows/flywheel.yml runs the scripted model on
+              // every pull request; live comparisons are run by hand (flywheel/README.md).
+              type: "paragraph",
+              text:
+                "The loop no longer depends on me remembering to run it. Flywheel, the next case study, now checks every AgentOps pull request against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
+            },
           ],
         },
         {
@@ -1050,7 +1251,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "Where did it break?",
-                    "Gate state is local: an approval recorded on one machine stayed there when the work moved to the cloud, and had to be given again",
+                    "Gate state was local: an approval recorded on one machine stayed there when the work moved to the cloud. Gates now live on the pull request",
                     "The stand-in model hid prompt bugs: the first live run failed every incident on rules the code enforced but the prompts never stated",
                   ],
                 },
@@ -1324,6 +1525,24 @@ export const portfolioData = {
           ],
         },
         {
+          // muhibm1/workhorse CHANGELOG.md 0.5.3 (#34) and the first mining report,
+          // /mnt/project-files/workhorse/flywheel-mine-workhorse-runs-2026-10-13.md.
+          id: "workhorse-runs",
+          heading: "A third agent: WorkHorse's own runs",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The miner needs only two things from an agent: scores on its traces, and the name of the step each part of the trace belongs to. WorkHorse, the delivery pipeline in the first case study, is not a LangGraph app, but it now labels each phase of a run the way LangGraph labels its nodes and scores every run on five checks, such as \"finished within its time budget\". Flywheel read those traces with no WorkHorse-specific code.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 that never closed. Each one waits for a person to write down what the right outcome was before it becomes a test case. The grouping already did its job: it showed where WorkHorse's next releases should spend their effort.",
+            },
+          ],
+        },
+        {
           id: "langsmith",
           heading: "LangSmith, feature by feature",
           blocks: [
@@ -1486,6 +1705,9 @@ export const portfolioData = {
       contactHeading: "Have an agent that works in the demo? Let's talk.",
     },
 
+    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
+    // The draft's reviewer-agreement percentage is left out: the 2026-10-08 master copy keeps
+    // accuracy figures off this page (src/masterCopy.test.jsx, R13).
     {
       id: "apple-llm-triage",
       card: {
@@ -1501,7 +1723,7 @@ export const portfolioData = {
       eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
       title: "A review backlog, turned into an analysis the reviewer can trust",
       intro:
-        "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
+        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
       atAGlance: [
         { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
         { label: "Live since", value: "November 2025" },
@@ -1521,7 +1743,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Changes to certain map data needed a person to review the request before work could continue, and the review was not a rubber stamp. Someone had to pull the surrounding data, check the proposed edit against internal specification, and work out what else the change would affect. The queue grew faster than people could do that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
+                "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
             },
             { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
           ],
@@ -1545,33 +1772,72 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "An agent reads each unlock request, pulls a snapshot of the feature to be edited along with the features around it, checks the proposed edit against internal specification, and works through what else the change would touch, including effects that would only show up downstream. It returns a recommendation, unlock or keep locked, with the reasoning and the evidence behind it.",
+                "In plain terms: the agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
             },
             {
               type: "paragraph",
               text:
-                "It does not act on that recommendation. A reviewer reads the analysis and makes the decision, which is the point: the hard part of this review was never the decision, it was the work required before anyone could make one.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "I selected an open-source model, built the agent around it, and own it end to end. Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests.",
+                "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
             },
           ],
         },
         {
-          id: "why-a-person-decides",
-          heading: "Why a person still decides",
+          id: "who-decides",
+          heading: "Who decides what",
           blocks: [
             {
-              type: "paragraph",
-              text:
-                "The agent has no authority to change anything. It produces an assessment, and every recommendation carries the reasoning and the evidence that produced it, so a reviewer can disagree with it on the merits rather than taking it on faith.",
+              type: "cards",
+              items: [
+                {
+                  title: "The agent",
+                  note: "Works out what the edit is meant to do and what it could affect, checks it against the spec, and writes a recommendation it must justify.",
+                },
+                {
+                  title: "Code",
+                  note: "Fixes what the agent can reach: no write access to anything, and only the data and repositories the review needs.",
+                },
+                {
+                  title: "The reviewer",
+                  note: "Makes every unlock decision. The agent has no authority to change anything.",
+                  emphasis: true,
+                },
+              ],
             },
             {
               type: "paragraph",
               text:
-                "That line is deliberate rather than cautious. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
+            },
+          ],
+        },
+        {
+          id: "model",
+          heading: "Choosing and tuning the model",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to be platform agnostic. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right.",
             },
           ],
         },
@@ -1582,7 +1848,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I worked directly with the stakeholder teams who own these requests to decide what the system should handle, and changed its scope as live results came in.",
+                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards.",
             },
           ],
         },
@@ -1599,6 +1875,11 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
             },
             {
               type: "paragraph",
@@ -1632,7 +1913,7 @@ export const portfolioData = {
       eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
       title: "Three systems, one tool, half the turnaround",
       intro:
-        "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
+        "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own authenticated API, and records why each change was made. Turnaround dropped by about half.",
       atAGlance: [
         { label: "My role", value: "Built it end to end" },
         { label: "Systems", value: "Ticketing, code repository, geo-data" },
@@ -1652,7 +1933,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Locking and unlocking protected map data already worked, but the path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care.",
+                "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the geo-data system that holds the feature itself.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care, which is exactly the kind of work a tool should do.",
             },
             {
               type: "paragraph",
@@ -1675,7 +1961,35 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A Python tool that locks and unlocks map feature edit permissions on demand. It works through each system's authenticated REST API, so no one has to change the tools they already use, and every lock or unlock carries a comment explaining why, so the next person who asks why a feature is locked finds the answer on the feature itself.",
+                "In plain terms: the tool reads an approved request from the ticketing system, signs in to the other two systems with the right permissions, changes the lock on the feature, and writes a comment on it saying why. Nobody has to change the tools they already use, because it talks to each system through the official interface each one already offers, its REST API.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Step" }, { label: "Before" }, { label: "After" }],
+              rows: [
+                { cells: ["Starting a change", "Long command-line invocations, set up by hand", "One request, handled on demand"] },
+                { cells: ["Paperwork", "Extra tickets raised just to carry the change", "The original request is enough"] },
+                {
+                  cells: ["Record of why", "Often nowhere: for a long time, a reason wasn't required", "A comment on the feature itself"],
+                  emphasis: true,
+                },
+                { cells: ["Turnaround", "The starting point", "About 50% faster"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The comment matters more than it looks. For a long time, recording why a feature was locked wasn't required, so many locks have no reason attached. When someone needs to change one, the person who set it has to be tracked down. When they can't be, often because they have left, the reasoning has to be rebuilt from scratch. That redoes work someone already did, and the rebuilt answer is often wrong.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "A wrong answer has real consequences. Many locks exist because a partner or an end user asked for them directly, and some carry legal weight. A lock might keep navigation out of a restricted location, or stop the map sending commercial or recreational traffic through a business that isn't open to the public. At face value, enabling navigation can look like the obvious fix, and without the record, nothing says otherwise.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Now the reason is written on the feature at the moment the lock changes, which is the cheapest moment to capture it.",
             },
           ],
         },
@@ -1686,7 +2000,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Getting three separate systems to accept one tool was most of the work. When the tool's original authentication path was deprecated, I moved it to OAuth2 and worked through the permission errors that cascaded across the systems as a result.",
+                "The code that changes a lock is short. Getting three separate systems to accept one tool was most of the work, because each one has to trust the tool with permissions it guards carefully.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was deprecated. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors cascaded from one to the next.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Most of that work was diagnosis rather than code. A permission error usually says that a request was refused, not why. So I took each system in turn and compared what the new sign-in was actually allowed to do with what that system expected of it, until all three accepted it.",
             },
           ],
         },
@@ -1698,6 +2022,11 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "A script-driven process became access control on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Next I'd add timed unlocks: a feature unlocked for a set window and locked again automatically when the window closes. Today an unlock stays open until someone remembers to relock it. A timed unlock means the protection comes back on its own once the edit is done.",
             },
           ],
         },
@@ -1725,7 +2054,7 @@ export const portfolioData = {
       eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
       title: "Keeping a 50+ region data pipeline shippable",
       intro:
-        "Apple's Data Health team helps set the data quality and engineering standards for a pipeline spanning more than 50 regions. My part is keeping bad data from blocking releases: fixing it on live data, stopping it at the gate, and cleaning up fast when something slips through.",
+        "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
       atAGlance: [
         { label: "My role", value: "Data Engineer, Data Health team" },
         { label: "Partners", value: "DataOps and the data evaluation team" },
@@ -1745,13 +2074,18 @@ export const portfolioData = {
       ],
       sections: [
         {
-          id: "live",
-          heading: "Fixing data that's already live",
+          id: "three-places",
+          heading: "Three places bad data shows up",
           blocks: [
+            {
+              type: "paragraph",
+              text:
+                "In plain terms: map data is checked by automated validations, rules the data has to meet before it can ship. When data breaks a rule, that's a validation failure. Some failures are minor. Others are release-blocking: until they're fixed, the region's data can't be promoted, which means moved into the version the map is actually built from.",
+            },
             {
               type: "cards",
               items: [
-                { title: "Already live", note: "Remediation jobs clean it up" },
+                { title: "Already live", note: "Remediation jobs find and fix it" },
                 { title: "At the gate", note: "Validation decides what gets promoted" },
                 { title: "In an incident", note: "Find it, triage it, fix it", emphasis: true },
               ],
@@ -1759,7 +2093,28 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I run and continuously tune ML-driven remediation jobs, orchestrated in Jenkins, that clean up and modernize production data. Tuning means changing trigger logic, batching and retry behavior based on live results, so fixes land more accurately and jobs stop looping on failures. Those jobs have resolved hundreds of thousands of validation failures.",
+                "Each place needs a different response. Data that is already live needs fixing at volume, without breaking anything that works. Data at the gate needs a fast, correct call so a release stays on schedule. And an incident needs someone to find out how big the damage is before deciding what to do about it.",
+            },
+          ],
+        },
+        {
+          id: "live",
+          heading: "Fixing data that's already live",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A remediation job is an automated repair: it finds data that fails a rule and corrects it. I run and continuously tune ML-driven remediation jobs, orchestrated in Jenkins, that clean up and modernize production data. Those jobs have resolved hundreds of thousands of validation failures.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Tuning is most of the work. A job that triggers too eagerly fixes things that weren't broken; one that retries blindly can loop on the same failure for hours. So I adjust trigger logic, batching and retry behavior based on what the live results show, so fixes land more accurately and jobs stop looping.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The jobs also compete for room. The team can only run so many at once, and a job started past that limit fails instead of waiting. I'm building a queue in front of them, on Jenkins' own API, so extra jobs wait their turn rather than fail.",
             },
           ],
         },
@@ -1770,7 +2125,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "When gating or critical-path validation failures stop a repository from being promoted to production, I resolve them with DataOps and the data evaluation team so releases stay on schedule. I also maintain the quality gates, validation checkpoints and rollback logic that keep builds moving across concurrent regional deployments.",
+                "When gating or critical-path validation failures stop a repository from being promoted to production, I resolve them with DataOps and the data evaluation team so releases stay on schedule. That means working out whether the failure is real bad data, a rule that needs updating, or a fault in the check itself, and getting the right team to the right fix.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "I also maintain the quality gates, validation checkpoints and rollback logic that keep builds moving across concurrent regional deployments, so a problem in one region can be held back or undone without stopping the rest.",
             },
           ],
         },
@@ -1781,7 +2141,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Working with DataOps and the data evaluation team, I migrated data validation from AWS EMR to AWS EKS, restructured how often validation runs, and moved checks earlier in the pipeline. Since the migration, release-blocking failures have dropped by about 40%, and the number keeps improving as our data standards tighten.",
+                "The cheapest bad data to fix is the data you catch early. Working with DataOps and the data evaluation team, I migrated data validation from AWS EMR to AWS EKS, restructured how often validation runs, and moved checks earlier in the pipeline.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "In plain terms: EMR and EKS are two ways of renting computing power to run large data jobs. Moving to EKS made it practical to run validation closer to where the data enters the pipeline. Problems now surface earlier, when they are smaller and before they reach the gate. Since the migration, release-blocking failures have dropped by about 40%, and the number keeps improving as our data standards tighten.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That has a compounding effect. When more problems are caught early, the large validation jobs further down have fewer failures to deal with, so their results are more predictable and they finish sooner, which saves both time and computing cost. It also changed how builds ship. Instead of waiting for a large validation run to approve every build, we can ship new builds sooner and catch the few failures that get through as they happen. For people using the map, that means faster, more frequent updates.",
             },
           ],
         },
@@ -1792,7 +2162,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each group.",
+                "A mass building-generation incident put tens of thousands of buildings into the data. An ML-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first job in an incident is scoping the blast radius: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Deciding by group rather than building by building is what made tens of thousands tractable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks.",
             },
           ],
         },
@@ -1820,7 +2200,7 @@ export const portfolioData = {
       eyebrow: "Case study · Neural Newsletters · Software Engineer · May 2024 to Feb 2025",
       title: "Rebuilding an LLM content pipeline that shipped broken output",
       intro:
-        "Neural Newsletters used an LLM to personalize content for each reader, and the generation pipeline behind it was producing malformed output that couldn't ship. I diagnosed it, rebuilt the data handling and schema underneath, and hardened the path from ingestion to the reader's screen.",
+        "Neural Newsletters used an LLM to write a personalized version of each article for each reader. The pipeline behind that feature was producing broken output that couldn't ship. The prompt looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
       atAGlance: [
         { label: "My role", value: "Owned the LLM integration end to end" },
         { label: "Worked with", value: "The CTO, on turning business goals into requirements" },
@@ -1851,7 +2231,23 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The content-generation pipeline behind the product's core feature was producing malformed, unshippable output. Source data arrived in inconsistent formats, and the pipeline processed thousands of articles across recurring runs.",
+                "In plain terms: articles came in from many sources, were stored in a database, handed to a language model to personalize, and served to the reader through an API. The personalization feature was the product's core, and the pipeline behind it was producing malformed, unshippable output: truncated articles, text from one article showing up in another, odd formatting and stray characters. It processed thousands of articles across recurring runs, so a fault anywhere showed up everywhere.",
+            },
+          ],
+        },
+        {
+          id: "diagnosis",
+          heading: "Why the prompt wasn't the problem",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "When an LLM produces bad output, the instinct is to rewrite the prompt. I looked at what the model was being given first. Source articles arrived in different formats, some reached the model only half parsed, and fields in the database no longer meant what the code assumed they did.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "A model can only be as good as its input. No prompt fixes an article that arrives with half its text missing, so the fix had to go below the prompt.",
             },
           ],
         },
@@ -1862,7 +2258,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The fix went below the prompt. I rebuilt the pipeline's data handling and schema from the ground up, and wrote ETL that normalizes the inconsistent source formats and isolates parse failures per article, so one bad input can't take down a run.",
+                "I rebuilt the pipeline's data handling and schema from the ground up. The schema is the database's structure: which fields exist and what they mean. Restructuring it removed dead fields that no longer meant anything, and rewriting the queries behind it cut generation latency by 15 to 20%.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "I also wrote ETL, the step that extracts data from each source, transforms it into one consistent shape and loads it into the database, so every source reached the model looking the same. Parse failures are isolated per article: one bad input is set aside and reported, instead of taking down the whole run.",
             },
           ],
         },
@@ -1873,7 +2274,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I owned the LLM integration behind the personalization feature, writing and iterating on prompt logic directly against production behavior to keep outputs accurate and consistent for real readers.",
+                "With clean input in place, I owned the LLM integration behind the personalization feature, writing and iterating on prompt logic directly against production behavior to keep outputs accurate and consistent for real readers. Most of that tuning was about structure: getting the model to return its output in exactly the shape the rest of the pipeline expected, every time.",
             },
           ],
         },
@@ -1884,7 +2285,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I set up CI/CD with quality gates and automated tests, which cut production incidents by about 40%. Restructuring the Postgres schema and the queries behind it removed dead fields and cut generation latency by 15 to 20%.",
+                "Fixing a pipeline once is not the same as keeping it fixed. I set up CI/CD with quality gates and automated tests: every change runs the tests automatically, and a change that fails them can't be deployed. That cut production incidents by about 40%.",
             },
           ],
         },
@@ -1895,7 +2296,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I designed and built the REST API layer connecting the Elixir Phoenix backend to the React and TypeScript frontend, and the WebSocket infrastructure that streams live generation status to users, balancing latency, scale and fault tolerance.",
+                "I designed and built the REST API layer connecting the Elixir Phoenix backend to the React and TypeScript frontend. Generating a personalized article takes a while, so I also built the WebSocket infrastructure that streams live generation status to readers. A WebSocket keeps a connection open between the page and the server, so the page updates the moment an article is ready instead of making the reader refresh. The design balanced how fast updates arrive, how many readers it can hold at once, and what happens when a connection drops.",
             },
             {
               type: "paragraph",
