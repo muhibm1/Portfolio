@@ -61,6 +61,7 @@ const pinnedToolkit = [
 const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
+  flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
   "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
@@ -155,6 +156,30 @@ const pinnedCaseStudyNarratives = {
     calloutText:
       "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
     contactHeading: "Want an agent near production? Let's talk.",
+  },
+  // Added 2026-10-13 with the Flywheel case study, from the flywheel and studbook-agent READMEs.
+  flywheel: {
+    eyebrow: "Case study · Personal system · LLM evaluation · LangSmith",
+    title: "Flywheel: an agent's real failures, turned into its tests",
+    lead:
+      "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases, and checks every pull request against them case by case. On two different agents it blocked a change that looked fine: one passed every behavioural unit test, the other looked like noise on the averages.",
+    atAGlance: [
+      { label: "My role", value: "Designed and built it end to end" },
+      {
+        label: "What it is",
+        value:
+          "A regression gate for LLM agents: it mines failing LangSmith traces into test cases and gates each pull request case by case",
+      },
+      { label: "Stack", value: "Python, LangSmith, LangGraph, GitHub Actions, Claude" },
+      {
+        label: "Quality",
+        value: "33 tests, CI on Python 3.11 and 3.13, and its own action gating its example agent",
+      },
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText:
+      "A way to take a customer's agent from demos well to provably works: its real failures in LangSmith become reviewed test cases, every change is compared with main case by case, and a red check means a real regression, not model noise.",
+    contactHeading: "Have an agent that works in the demo? Let's talk.",
   },
   "apple-llm-triage": {
     eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
@@ -277,6 +302,8 @@ const pinnedRepositories = {
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   paddock: "https://github.com/muhibm1/paddock-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
+  flywheel: "https://github.com/muhibm1/flywheel",
+  studbookAgent: "https://github.com/muhibm1/studbook-agent",
 };
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
@@ -342,12 +369,13 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the six case studies in plan order (R127, G1)", () => {
+  it("names / then /work then /work/<id> for the seven case studies in plan order (R127, G1)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
       "/work/workhorse",
       "/work/agentops",
+      "/work/flywheel",
       "/work/apple-llm-triage",
       "/work/apple-integration",
       "/work/apple-data-health",
@@ -356,6 +384,7 @@ describe("portfolioData", () => {
     expect(portfolioData.caseStudies.map((study) => study.id)).toEqual([
       "workhorse",
       "agentops",
+      "flywheel",
       "apple-llm-triage",
       "apple-integration",
       "apple-data-health",
@@ -379,6 +408,35 @@ describe("portfolioData", () => {
     expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline"]);
     expect(table.rows).toHaveLength(4);
     expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
+  });
+
+  it("carries the Flywheel case study third, after AgentOps, with its repository codeLink and the AgentOps gate table (2026-10-13)", () => {
+    const flywheel = findCaseStudy("flywheel");
+
+    expect(flywheel).toBeDefined();
+    expect(portfolioData.caseStudies[2].id).toBe("flywheel");
+    expect(flywheel.codeLink).toEqual({
+      label: "Code: flywheel",
+      href: "https://github.com/muhibm1/flywheel",
+    });
+
+    const flow = findSection(flywheel, "how").blocks.find((block) => block.type === "flow");
+    expect(flow.steps.map((step) => step.title)).toEqual(["Trace", "Score", "Mine", "Review", "Promote", "Gate"]);
+    expect(flow.steps.map((step) => step.gate === true)).toEqual([false, false, false, true, false, false]);
+
+    const table = findSection(flywheel, "agentops").blocks.find((block) => block.type === "table");
+    expect(table.rows.map((row) => row.cells.slice(1))).toEqual([
+      ["2 of 3", "0 of 3", "Broken"],
+      ["3 of 3", "1 of 3", "Broken"],
+      ["2 of 3", "1 of 3", "Wobble"],
+      ["19 of 21", "14 of 21", "Blocked"],
+    ]);
+
+    const studbookLink = findSection(flywheel, "studbook-agent").blocks.find((block) => block.link);
+    expect(studbookLink.link).toEqual({
+      text: "Studbook agent",
+      href: "https://github.com/muhibm1/studbook-agent",
+    });
   });
 
   it("has no projects, demos, telemetry or philosophy key (R128)", () => {
@@ -620,12 +678,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the six 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+  it("keeps the seven 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(6);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(7);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {
@@ -636,7 +694,7 @@ describe("portfolioData", () => {
     expect(splitBlock.table.rows.at(-1).cells[0]).toBe("Hybrid + reranker, pool of 10 (shipped)");
   });
 
-  it("names personal.repositories with the four snapshot URLs, held once (R153)", () => {
+  it("names personal.repositories with the four snapshot URLs and the two public repositories, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
