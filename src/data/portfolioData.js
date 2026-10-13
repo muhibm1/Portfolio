@@ -9,21 +9,23 @@
 // WorkHorse wording to the owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), word for word.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
-// Shape: personal (contact, header facts and the three public snapshot repositories), home
+// Shape: personal (contact, header facts and the four public snapshot repositories), home
 // (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
 // toolkit, contact), caseStudies (six, in the plan's reading order, each carrying card,
 // atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
 // may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
 // 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
-// and held-out splits), pending the owner's approval. It carries no codeLink: the AgentOps repository is private.
+// and held-out splits), pending the owner's approval. Its codeLink points at the public
+// agentops-snapshot repository, published 2026-10-12.
 
-// The three public snapshot repositories, held once (R153) and referenced from every place the
+// The four public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   paddock: "https://github.com/muhibm1/paddock-snapshot",
+  agentops: "https://github.com/muhibm1/agentops-snapshot",
 };
 
 const GITHUB_PROFILE = "https://github.com/muhibm1";
@@ -585,6 +587,7 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["Approval enforced in code", "Measured against a ReAct baseline"],
       },
+      codeLink: { label: "Code: agentops-snapshot", href: REPOSITORIES.agentops },
       eyebrow: "Case study · Personal system · Agentic AI · Incident response",
       title: "AgentOps: an incident agent that can't act alone",
       intro:
