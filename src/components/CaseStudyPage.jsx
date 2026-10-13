@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router';
 import { portfolioData } from '../data/portfolioData';
 import NotFoundPage from '../pages/NotFoundPage';
 import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagram';
+import CaseStudyBarChart from './CaseStudyBarChart';
 import CaseStudyTable from './CaseStudyTable';
 import ContactBand from './ContactBand';
 
@@ -159,6 +160,8 @@ function Block({ block }) {
       return <CaseStudyHubDiagram left={block.left} edge={block.edge} hub={block.hub} right={block.right} />;
     case 'split':
       return <SplitBlock table={block.table} stats={block.stats} />;
+    case 'bars':
+      return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }
