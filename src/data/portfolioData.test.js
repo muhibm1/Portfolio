@@ -123,13 +123,13 @@ const pinnedCaseStudyNarratives = {
       {
         label: "What it is",
         value:
-          "An agentic software delivery pipeline, a desktop app (Paddock) and a retrieval system (Studbook), with an MCP server for agents",
+          "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server for agents",
       },
       {
         label: "Stack",
-        value: "Node.js, Python, FastAPI, TypeScript, Electron, Supabase Postgres with pgvector",
+        value: "Node.js, Python, FastAPI, Supabase Postgres with pgvector",
       },
-      { label: "Quality", value: "224 pipeline tests, 278 desktop tests, CI on every push" },
+      { label: "Quality", value: "224 pipeline tests, CI on every push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -261,7 +261,7 @@ const pinnedMcpParagraphs = [
 
 // R154, D44: the mockup's line 177, verbatim.
 const pinnedPaddockParagraph =
-  "Paddock, the desktop app, runs the same query path in TypeScript. A parity gate checks it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated.";
+  "Paddock, an earlier desktop app, ran the same query path in TypeScript. A parity gate checked it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated. Measured runs then showed the app itself cost hours, because it kept its own copies of things the pipeline owns and they drifted. It was replaced by one terminal command, approvals on the pull request from a phone, and a LangSmith trace of every run.";
 
 // R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
 const pinnedMeasuredFirstParagraph =
@@ -632,7 +632,7 @@ describe("portfolioData", () => {
     expect(mcp.blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
   });
 
-  it("carries the Paddock paragraph verbatim, with Paddock linked to its snapshot (R154, D44)", () => {
+  it("carries the Paddock paragraph verbatim, with Paddock linked to its snapshot (R154, D44, replaced 2026-10-13)", () => {
     const studbook = findSection(portfolioData.caseStudies[0], "studbook");
     const paddockBlock = studbook.blocks.find((block) => block.text === pinnedPaddockParagraph);
 
