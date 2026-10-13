@@ -9,23 +9,27 @@
 // WorkHorse wording to the owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), word for word.
 // Only the owner approves a change to this file (CLAUDE.md "Protected").
 //
-// Shape: personal (contact, header facts and the four public snapshot repositories), home
+// Shape: personal (contact, header facts and the public repositories), home
 // (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
-// toolkit, contact), caseStudies (six, in the plan's reading order, each carrying card,
+// toolkit, contact), caseStudies (seven, in the plan's reading order, each carrying card,
 // atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
 // may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
 // 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
 // and held-out splits), pending the owner's approval. Its codeLink points at the public
 // agentops-snapshot repository, published 2026-10-12.
+// The Flywheel case study (third, after AgentOps) was added 2026-10-13 from the flywheel and studbook-agent READMEs.
 
 // The four public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
+// Flywheel and the Studbook agent (added 2026-10-13) are public repositories, not snapshots.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   paddock: "https://github.com/muhibm1/paddock-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
+  flywheel: "https://github.com/muhibm1/flywheel",
+  studbookAgent: "https://github.com/muhibm1/studbook-agent",
 };
 
 const GITHUB_PROFILE = "https://github.com/muhibm1";
@@ -1066,6 +1070,420 @@ export const portfolioData = {
           "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
       },
       contactHeading: "Want an agent near production? Let's talk.",
+    },
+
+    // Added 2026-10-13 from the flywheel and studbook-agent READMEs and their results pages.
+    {
+      id: "flywheel",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · LLM evaluation · LangSmith",
+        title: "Flywheel: an agent's real failures, turned into its tests",
+        summary:
+          "A regression gate for AI agents. It turns failing runs recorded in LangSmith into test cases a person reviews, then compares every pull request with main, case by case, and blocks the ones that break a case.",
+        linkText: "Read the case study",
+        tags: ["Test cases mined from real traces", "Gated case by case, not on averages"],
+      },
+      codeLink: { label: "Code: flywheel", href: REPOSITORIES.flywheel },
+      eyebrow: "Case study · Personal system · LLM evaluation · LangSmith",
+      title: "Flywheel: an agent's real failures, turned into its tests",
+      intro:
+        "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases, and checks every pull request against them case by case. On two different agents it blocked a change that looked fine: one passed every behavioural unit test, the other looked like noise on the averages.",
+      atAGlance: [
+        { label: "My role", value: "Designed and built it end to end" },
+        {
+          label: "What it is",
+          value:
+            "A regression gate for LLM agents: it mines failing LangSmith traces into test cases and gates each pull request case by case",
+        },
+        { label: "Stack", value: "Python, LangSmith, LangGraph, GitHub Actions, Claude" },
+        {
+          label: "Quality",
+          value: "33 tests, CI on Python 3.11 and 3.13, and its own action gating its example agent",
+        },
+      ],
+      stats: [
+        { value: "19 to 14", label: "correct AgentOps runs of 21, after a prompt cleanup that passed 996 unit tests" },
+        { value: "2 of 2", label: "broken AgentOps cases that were mined from real traffic" },
+        { value: "3 fixed, 5 broken", label: "Studbook questions, behind an average that moved only from 95 to 91 of 108" },
+        { value: "0 broken", label: "when main ran against itself; one case wobbled inside the noise allowance" },
+      ],
+      sections: [
+        {
+          id: "why",
+          heading: "Why I built it",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "An agent built on a language model can pass every unit test and still get worse. The unit tests run on a scripted stand-in for the model, so they check the code around the model, not what the model does. Change a prompt, and the real model reads it and behaves differently. The scripted one does not notice.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That gap is the forward deployed engineer's job in miniature. A customer's agent demos well. The real questions are whether it provably works, and whether anyone will know when a change breaks it. Flywheel is my answer to both, built on LangSmith, LangChain's tracing and evaluation service. A few terms are used throughout:",
+            },
+            {
+              type: "cards",
+              items: [
+                { title: "Trace", note: "The recording of one agent run: every model call and tool call, in order." },
+                { title: "Evaluator", note: "A small function that scores one run, such as \"did it pick the right team\"." },
+                { title: "Dataset", note: "A saved list of inputs with the answers expected." },
+                { title: "Experiment", note: "One version of the agent scored against one version of the dataset." },
+                { title: "Repetition", note: "Running the same case more than once, because a live model does not answer the same way twice." },
+                {
+                  title: "Regression",
+                  note: "A change that makes something that used to work stop working.",
+                  emphasis: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "how",
+          heading: "How the loop works",
+          blocks: [
+            {
+              type: "flow",
+              columns: 6,
+              steps: [
+                { title: "Trace", note: "Real runs recorded in LangSmith" },
+                { title: "Score", note: "Evaluators grade each trace" },
+                { title: "Mine", note: "Failures grouped by where they went wrong" },
+                { title: "Review", note: "A person confirms the right answer", gate: true },
+                { title: "Promote", note: "The case joins the test file" },
+                { title: "Gate", note: "Every pull request, case by case" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "In plain terms: the agent's real runs are recorded. Flywheel grades them with the same checks the tests use, finds the runs that went wrong, and proposes each one as a test case. A person confirms what the right answer was. The case then joins a test file that lives in the repository, next to the code. On every pull request, Flywheel runs all the cases on the change and on the main branch, compares them case by case, and posts the result as a comment. If a case that used to pass now fails, the check fails.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The comment reads like this: \"Flywheel ran the agent on 7 test cases, 3 times each, before and after this change. 2 cases that passed before now fail.\" Each broken case links to its trace, so the reviewer goes straight from the red check to the run that went wrong.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Mining reads each root run, its feedback and the LangGraph node metadata, so every failure gets a signature: the reason, and the node where it went wrong, such as correct_outcome below 1 at the escalate node. Failures group by signature, so twenty failures are often three bugs. A failure already covered by the dataset is not proposed twice.",
+            },
+          ],
+        },
+        {
+          id: "decide",
+          heading: "How it decides",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A live model does not answer the same way twice, so one failed run proves little. Flywheel runs every case several times, three by default, and counts how many passed. That count is the pass rate, such as 2 of 3.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The question a reviewer asks is which cases a change broke, not whether the average moved. An average hides one case going from always passing to always failing behind two that improved. So Flywheel decides per case:",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Verdict" }, { label: "What it means" }, { label: "Blocks the change?" }],
+              rows: [
+                {
+                  cells: [
+                    "Broken",
+                    "The pass rate fell by at least half. With 3 repetitions, at least two runs flipped from pass to fail.",
+                    "Yes",
+                  ],
+                  emphasis: true,
+                },
+                { cells: ["Fixed", "The pass rate rose by as much.", "No"] },
+                {
+                  cells: [
+                    "Wobble",
+                    "A smaller move. One run in three flipping is what a live model's noise looks like.",
+                    "No, reported only",
+                  ],
+                },
+                {
+                  cells: [
+                    "New",
+                    "A case added by the pull request. Adding a test for a known bug is how the bug gets fixed, so a failing new case is reported, not blocked.",
+                    "No, reported only",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The gate also fails when a case starts raising an error it did not raise before. The report adds a sign test: the chance that a split this uneven between broken and fixed cases would appear if the change did nothing. On the main branch side, the pull request's own test cases run against the old code, so a fix that arrives with its regression test shows up as fixed, not new.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "How far a pass rate must move, and how many broken cases to tolerate, are two settings in the config file. The defaults are half and zero. The point is to agree them before the first argument, not during it.",
+            },
+          ],
+        },
+        {
+          id: "agentops",
+          heading: "The AgentOps result",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "AgentOps is the incident-response agent I built on LangGraph, in the previous case study. Its suite of about 1,000 tests runs on a scripted model. I wired Flywheel into it, then made the kind of edit that passes code review.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "First, traffic. I sent 11 realistic incidents through AgentOps on Claude Haiku 4.5 and traced them to LangSmith. Each was a known scenario, with its symptoms worded the way real alerts arrive, such as \"orders error budget exhausted\".",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Then, mining. Flywheel scored the traces with AgentOps's own evaluators and found 2 failures. Both were the same scenario, two faults at once. The terse wording led the agent to give up and hand the incident to a person, when it should have fixed one fault and then the other. Both were promoted to test cases, with the scenario's known answer as the reference, so the dataset grew from 5 hand-written cases to 7.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Then, the change: a prompt cleanup that deleted one paragraph of the root-cause prompt that looked redundant. Every behavioural unit test still passed, 996 of them. The only 2 failures were tests that pin the prompt's exact wording, which a cleanup edits along with the prompt.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Finally, the gate. Flywheel ran all 7 cases 3 times each on Claude Sonnet 5.5, on main and on the change. It blocked the change:",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Case" },
+                { label: "Main", numeric: true },
+                { label: "With the cleanup", numeric: true },
+                { label: "Verdict" },
+              ],
+              rows: [
+                { cells: ["Mined from traffic: \"orders error budget exhausted\"", "2 of 3", "0 of 3", "Broken"], emphasis: true },
+                { cells: ["Mined from traffic: \"orders API degraded since ~11:00\"", "3 of 3", "1 of 3", "Broken"], emphasis: true },
+                { cells: ["Hand-written: the same scenario", "2 of 3", "1 of 3", "Wobble"] },
+                { cells: ["All 7 cases, correct outcomes", "19 of 21", "14 of 21", "Blocked"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The lesson is in the third row. The hand-written version of the same scenario only wobbled, inside the noise allowance, so on its own it would not have blocked anything. The cases that caught the regression came from traffic, not from imagination.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling inside the allowance. So a red check means a real change, not model noise.",
+            },
+          ],
+        },
+        {
+          id: "studbook-agent",
+          heading: "A second agent: the Studbook agent",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The Studbook agent answers questions about my projects' design records, with citations, and refuses when the records do not say. It shares no code with AgentOps. Flywheel needed no change to run it, only three new checks: did it cite the right section, did it refuse exactly when it should, and did a model judge the answer correct.",
+              link: { text: "Studbook agent", href: REPOSITORIES.studbookAgent },
+            },
+            {
+              type: "paragraph",
+              text: "On 36 questions, each asked 3 times on Claude Haiku 4.5, it scored:",
+            },
+            {
+              type: "stats",
+              items: [
+                { value: "95 of 108", label: "runs with an answer judged correct" },
+                { value: "99 of 108", label: "runs that cited the section holding the answer" },
+                { value: "108 of 108", label: "runs that refused exactly when they should" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Its weak spot was questions that need two records together. The obvious fix was a prompt paragraph on how to compare two records. On averages it looked like a small dip that could be noise: correct answers went from 95 to 91 of 108.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Case by case, it was not. The paragraph fixed 3 questions completely and broke 5. One of the broken questions was unanswerable, and the agent started answering it with an invented fact instead of refusing. A wrong answer delivered with confidence is the failure this agent exists to avoid. Flywheel blocked the change, and I kept the original prompt.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The report's sign test came out at p = 0.727, nowhere near significant. The gate does not depend on it: one broken case is enough to block, and here there were five.",
+            },
+          ],
+        },
+        {
+          id: "langsmith",
+          heading: "LangSmith, feature by feature",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Each step of the loop maps to one LangSmith feature, used as the product intends rather than worked around. The table reads left to right: the feature, then what Flywheel does with it.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "LangSmith feature" }, { label: "What Flywheel does with it" }],
+              rows: [
+                {
+                  cells: [
+                    "Tracing projects",
+                    "The mine command reads root runs, their feedback and the LangGraph node metadata, and names the node where each failing run went wrong.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Feedback",
+                    "The score command writes evaluator scores onto existing traces. It works like an online evaluator, using the same functions the tests use.",
+                  ],
+                },
+                {
+                  cells: ["Annotation queues", "Mining can put failing runs in a queue, in front of a reviewer who confirms the right answer."],
+                },
+                {
+                  cells: [
+                    "Datasets and version tags",
+                    "The sync command mirrors the repository's test file into a dataset and tags each version with the file's content hash, so an experiment records exactly which cases it ran.",
+                  ],
+                  emphasis: true,
+                },
+                {
+                  cells: [
+                    "Experiments with repetitions",
+                    "The run command runs the agent through Client.evaluate with repetitions. Every run becomes a trace with its scores attached.",
+                  ],
+                },
+                {
+                  cells: ["Comparison view", "The pull-request comment links both experiments, main and the change, side by side."],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Evaluators use LangSmith's own signature: inputs, outputs and reference outputs. So the same function grades a run in CI, in a LangSmith experiment and on a production trace. In CI, a scripted or recorded model is the right default where the agent has one, because it is free and repeatable. Prompt and model changes need a live run, because a scripted model does not read the prompt.",
+            },
+          ],
+        },
+        {
+          id: "customer",
+          heading: "How I'd use it with a customer",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The repository carries the plan I would follow when a team hands me an agent that works in the demo and asks whether it is ready for production. It is written for the team's engineers and for whoever signs off on the launch, so each step says what it gives the business as well as what gets built. The short version: you cannot improve what you cannot see, and you cannot ship what you cannot compare.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "When" }, { label: "What gets built" }, { label: "What the business gets" }],
+              rows: [
+                {
+                  cells: [
+                    "Day 1",
+                    "Tracing everywhere the agent runs, one project per environment, root runs named after the business action, and customer-facing ids in the metadata",
+                    "\"What did the agent do?\" takes a minute to answer, not a day",
+                  ],
+                },
+                {
+                  cells: [
+                    "Days 2 to 3",
+                    "Evaluators written with the people who own the outcome: cheap, certain checks first, and a model judge only where code cannot check, tested against a dozen human labels",
+                    "A shared, written definition of a good answer, which often exposes a disagreement worth settling before launch",
+                  ],
+                },
+                {
+                  cells: [
+                    "Days 4 to 5",
+                    "The first dataset, mined from a week of real traces, each expected answer written by a domain expert in an annotation queue, plus hand-written cases for the rules that must never break",
+                    "A test set that reflects what customers actually send, with a named person behind every expected answer",
+                  ],
+                },
+                {
+                  cells: [
+                    "Days 6 to 7",
+                    "The gate on every pull request: a scripted model in CI, live runs for prompt and model changes",
+                    "Whether a change made anything worse is known before it ships, with a link to the exact case and trace",
+                  ],
+                  emphasis: true,
+                },
+                {
+                  cells: [
+                    "Day 8",
+                    "The noise policy, agreed in advance and written into the config",
+                    "A red check means something, so people stop ignoring it",
+                  ],
+                },
+                {
+                  cells: [
+                    "Days 9 to 10",
+                    "A daily mining job, one full cycle run together, and a frozen held-out set (cases nobody tunes against) scored only when a version is ready to ship",
+                    "The team can run the loop without me, and the launch decision rests on numbers they trust",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text: "What I watch for along the way:",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "An average that hides a broken case",
+                  note: "Two cases fixed and one broken reads as better in an average. The gate reports cases, not averages, for this reason.",
+                },
+                {
+                  title: "A prompt change tested on a scripted model",
+                  note: "It passes every time, because the script does not read the prompt. Prompt and model changes need a live run.",
+                },
+                {
+                  title: "A dataset that only grows from imagination",
+                  note: "If no case came from a trace, the dataset tests what the team expects, not what customers do.",
+                },
+                {
+                  title: "Tuning against the held-out set",
+                  note: "Once a team has seen held-out scores while making changes, those scores stop meaning anything. Freeze it and protect it.",
+                  emphasis: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "limits",
+          heading: "Limits",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Mining finds failures that a score or an error can see. A wrong answer that every evaluator passes stays invisible, so the evaluators deserve as much review as the agent.",
+                "Three repetitions tell a real break from noise only for large moves. A case that goes from 3 of 3 to 2 of 3 is reported as a wobble, not blocked. Cases where a single failure matters need more repetitions.",
+                "Each result here is one change on one agent: 7 or 36 cases, 3 repetitions, one model. It shows the mechanism working. It is not a benchmark.",
+                "The Studbook agent's answer judge is itself a model, Claude Haiku 4.5, and its verdicts have not been audited by a person.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "A way to take a customer's agent from demos well to provably works: its real failures in LangSmith become reviewed test cases, every change is compared with main case by case, and a red check means a real regression, not model noise.",
+      },
+      contactHeading: "Have an agent that works in the demo? Let's talk.",
     },
 
     {
