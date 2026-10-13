@@ -7,7 +7,7 @@ import CaseStudyCards from "./CaseStudyCards.jsx";
 const { caseStudies } = portfolioData;
 
 describe("CaseStudyCards", () => {
-  it("renders six route links in R127 order, the first inside the featured article", () => {
+  it("renders seven route links in R127 order, the first inside the featured article", () => {
     render(
       <MemoryRouter>
         <CaseStudyCards caseStudies={caseStudies} />
@@ -15,7 +15,7 @@ describe("CaseStudyCards", () => {
     );
 
     const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
-    expect(routeLinks).toHaveLength(6);
+    expect(routeLinks).toHaveLength(7);
     expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(
       caseStudies.map((study) => `/work/${study.id}`),
     );
