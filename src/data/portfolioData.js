@@ -455,6 +455,51 @@ export const portfolioData = {
           ],
         },
         {
+          // Counted, not remembered: every figure in this section is from the WorkHorse run
+          // ledger, docs/ledger/RUNS.md and runs.json in muhibm1/workhorse (0.5.0, merged
+          // 2026-10-13 as b94e431), which recomputes each run from its committed conductor log
+          // and approvals. Finished runs at risk tiers 0 to 2: 2 on the first version (five
+          // gates), 7 on two gates, 5 from the speed release on. Regenerate with
+          // `workhorse ledger` and update these figures together.
+          id: "ledger",
+          heading: "Every run on the record, and what comes next",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Each change WorkHorse carries leaves its log and its approvals in the repository. A ledger recomputes every run from those records, so these numbers are counted, not remembered. Across 18 runs on five projects, the agents went from about eight hours of work on an ordinary change to about one.",
+            },
+            {
+              type: "bars",
+              charts: [
+                {
+                  title: "Agent working time, median per change",
+                  items: [
+                    { label: "First version, five approvals", value: 479, display: "8 h" },
+                    { label: "Two approvals", value: 103, display: "1 h 43 m" },
+                    { label: "Speed release onward", value: 65, display: "1 h 05 m" },
+                  ],
+                },
+                {
+                  title: "Request to merge, median per change",
+                  items: [
+                    { label: "First version, five approvals", value: 2714, display: "45 h" },
+                    { label: "Two approvals", value: 665, display: "11 h" },
+                    { label: "Speed release onward", value: 146, display: "2 h 26 m" },
+                  ],
+                },
+              ],
+              caption:
+                "Finished changes at risk tiers 0 to 2, from the WorkHorse run ledger. Request to merge counts nights, weekends and time waiting for a person.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The ledger also shows the next limit. On the latest runs the agents were working for only a third of the time between the request and the merge. The rest was waiting: for a merge the agents aren't allowed to press, for a run that stopped and wasn't restarted, for a person reading a design document with twenty questions in it. So the current release removes the waiting. Approving the ship document now merges the change as soon as its checks pass, design documents are next to be cut to five questions, and every release has to show its effect in the ledger before it can claim one.",
+            },
+          ],
+        },
+        {
           id: "studbook",
           heading: "Studbook: answers with receipts",
           eyebrow: "Inside WorkHorse",
