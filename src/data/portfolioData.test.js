@@ -2,6 +2,7 @@
 // amended by the owner's resume and the 2026-09-28 rejection notes) and the seven mockups, word
 // for word. A failure here means a fact or a string drifted from what the owner approved; only
 // he may change portfolioData.js (CLAUDE.md "Protected"). G14 (R138, R146, R153, R154, R155).
+// 2026-10-13: pins moved to the case-study refresh the owner asked for (his case-studies-v2 draft).
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -74,8 +75,11 @@ const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
 const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer can trust";
 const DECISION_INTRO =
   "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
+const DECISION_LEAD =
+  "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.";
 const DECISION_SITUATION =
-  "Changes to certain map data needed a person to review the request before work could continue, and the review was not a rubber stamp. Someone had to pull the surrounding data, check the proposed edit against internal specification, and work out what else the change would affect. The queue grew faster than people could do that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.";
+  "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.";
+const DECISION_SITUATION_PARAGRAPHS = ["Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.", "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.", "Building a fix was not part of my assigned role. I took it on anyway."];
 const DECISION_CALLOUT =
   "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.";
 const PRINCIPLE_ONE =
@@ -94,17 +98,17 @@ const DECISION_FLOW_TITLES = [
   "Reviewer decides",
 ];
 const DECISION_BUILT_PARAGRAPHS = [
-  "An agent reads each unlock request, pulls a snapshot of the feature to be edited along with the features around it, checks the proposed edit against internal specification, and works through what else the change would touch, including effects that would only show up downstream. It returns a recommendation, unlock or keep locked, with the reasoning and the evidence behind it.",
-  "It does not act on that recommendation. A reviewer reads the analysis and makes the decision, which is the point: the hard part of this review was never the decision, it was the work required before anyone could make one.",
-  "I selected an open-source model, built the agent around it, and own it end to end. Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests.",
+  "In plain terms: the agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
+  "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
 ];
 const DECISION_WHY_PARAGRAPHS = [
-  "The agent has no authority to change anything. It produces an assessment, and every recommendation carries the reasoning and the evidence that produced it, so a reviewer can disagree with it on the merits rather than taking it on faith.",
-  "That line is deliberate rather than cautious. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+  "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+  "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
 ];
 const DECISION_CHANGED_PARAGRAPHS = [
   "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+  "The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
   "The decision this produces is carried out by a separate tool I built, covered in the next case study.",
 ];
 const INTEGRATION_CROSS_REFERENCE =
@@ -117,19 +121,19 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Personal system · Agentic AI · Active",
     title: "WorkHorse: AI-built software you can audit",
     lead:
-      "A delivery pipeline where 28 single-purpose agents take a change from a one-line request to merged, tested and documented code. A person approves at the moments that matter, and code, not prompts, enforces the rules. This site was built with it.",
+      "AI coding agents can write a feature in minutes. What they rarely leave behind is a reason to trust it: who decided what, what was checked, and what a person actually approved. WorkHorse is the delivery process I built around them. Twenty-eight single-purpose agents take a change from a one-line request to merged, tested and documented code, a person approves at the two moments that matter, and code the agents cannot argue with enforces the rules. This site was built with it.",
     atAGlance: [
       { label: "My role", value: "Designed and built it end to end" },
       {
         label: "What it is",
         value:
-          "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server for agents",
+          "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server its agents search on every run",
       },
       {
         label: "Stack",
-        value: "Node.js, Python, FastAPI, Supabase Postgres with pgvector",
+        value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
       },
-      { label: "Quality", value: "224 pipeline tests, CI on every push" },
+      { label: "Quality", value: "454 pipeline tests, CI on every push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -184,7 +188,7 @@ const pinnedCaseStudyNarratives = {
   "apple-llm-triage": {
     eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
     title: "A review backlog, turned into an analysis the reviewer can trust",
-    lead: DECISION_INTRO,
+    lead: DECISION_LEAD,
     atAGlance: [
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
@@ -199,7 +203,7 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
     lead:
-      "Locking and unlocking permissions on protected map features already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built a Python tool that does it on demand through the ticketing, repository and geo-data systems' own authenticated APIs, and records why each change was made.",
+      "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own authenticated API, and records why each change was made. Turnaround dropped by about half.",
     atAGlance: [
       { label: "My role", value: "Built it end to end" },
       { label: "Systems", value: "Ticketing, code repository, geo-data" },
@@ -218,7 +222,7 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
     title: "Keeping a 50+ region data pipeline shippable",
     lead:
-      "Apple's Data Health team helps set the data quality and engineering standards for a pipeline spanning more than 50 regions. My part is keeping bad data from blocking releases: fixing it on live data, stopping it at the gate, and cleaning up fast when something slips through.",
+      "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
     atAGlance: [
       { label: "My role", value: "Data Engineer, Data Health team" },
       { label: "Partners", value: "DataOps and the data evaluation team" },
@@ -234,7 +238,7 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Neural Newsletters · Software Engineer · May 2024 to Feb 2025",
     title: "Rebuilding an LLM content pipeline that shipped broken output",
     lead:
-      "Neural Newsletters used an LLM to personalize content for each reader, and the generation pipeline behind it was producing malformed output that couldn't ship. I diagnosed it, rebuilt the data handling and schema underneath, and hardened the path from ingestion to the reader's screen.",
+      "Neural Newsletters used an LLM to write a personalized version of each article for each reader. The pipeline behind that feature was producing broken output that couldn't ship. The prompt looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
     atAGlance: [
       { label: "My role", value: "Owned the LLM integration end to end" },
       { label: "Worked with", value: "The CTO, on turning business goals into requirements" },
@@ -248,15 +252,14 @@ const pinnedCaseStudyNarratives = {
   },
 };
 
-// R154's seven MCP paragraphs, in order, word for word.
+// The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
 const pinnedMcpParagraphs = [
-  "Studbook also runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it. The server lives in the Studbook repository.",
-  "Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
-  "The first version missed a requirement written before the work started, and my own ship gate rejected it.",
-  "The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with the results proved identical over the same 40 test questions.",
-  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact.",
-  "WorkHorse built it end to end, with 12 of 12 review findings fixed before approval.",
-  "Every query runs as a read-only Postgres role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
+  "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
+  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
+  "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
+  "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
+  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, encodes the question on a faster engine with the same model and the same vectors, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
+  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On Postgres every query runs as a read-only role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
 ];
 
 // R154, D44: the mockup's line 177, verbatim.
@@ -265,7 +268,7 @@ const pinnedPaddockParagraph =
 
 // R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
 const pinnedMeasuredFirstParagraph =
-  "I didn't redesign from impressions. Timestamps from the first version showed that two thirds of the wall-clock time was a person waiting at checkpoints with nothing to decide. So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.";
+  "The first version had five human checkpoints, and it felt safe. I didn't redesign it from impressions. Timestamps from those runs showed that two thirds of the time a change spent in the pipeline was a person waiting at a checkpoint with nothing to decide. More gates were not making it safer, only slower.";
 const pinnedMeasuredLastParagraph =
   "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine releases came out of those four runs.";
 
@@ -507,10 +510,10 @@ describe("portfolioData", () => {
     );
 
     expect(findSection(integration, "situation").blocks[0].text).toBe(
-      "Locking and unlocking protected map data already worked, but the path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care.",
+      "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the geo-data system that holds the feature itself.",
     );
     expect(builtParagraph.text).toBe(
-      "A Python tool that locks and unlocks map feature edit permissions on demand. It works through each system's authenticated REST API, so no one has to change the tools they already use, and every lock or unlock carries a comment explaining why, so the next person who asks why a feature is locked finds the answer on the feature itself.",
+      "In plain terms: the tool reads an approved request from the ticketing system, signs in to the other two systems with the right permissions, changes the lock on the feature, and writes a comment on it saying why. Nobody has to change the tools they already use, because it talks to each system through the official interface each one already offers, its REST API.",
     );
     expect(findSection(integration, "changed").blocks[0].text).toBe(
       "A script-driven process became access control on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
@@ -547,7 +550,7 @@ describe("portfolioData", () => {
       right: [{ title: "Code repository" }, { title: "Geo-data system" }],
     });
     expect(findSection(integration, "hard").blocks[0].text).toBe(
-      "Getting three separate systems to accept one tool was most of the work. When the tool's original authentication path was deprecated, I moved it to OAuth2 and worked through the permission errors that cascaded across the systems as a result.",
+      "The code that changes a lock is short. Getting three separate systems to accept one tool was most of the work, because each one has to trust the tool with permissions it guards carefully.",
     );
     expect(integration.disclaimer).toBe(
       "Details are limited to what I can share publicly. Internal system names are withheld.",
@@ -560,7 +563,7 @@ describe("portfolioData", () => {
     const situationBlocks = findSection(decision, "situation").blocks;
 
     expect(situationBlocks[0].text).toBe(DECISION_SITUATION);
-    expect(situationBlocks[1].text).toBe(
+    expect(situationBlocks[2].text).toBe(
       "Building a fix was not part of my assigned role. I took it on anyway.",
     );
     expect(decision.intro).toBe(pinnedCaseStudyNarratives["apple-llm-triage"].lead);
@@ -599,13 +602,7 @@ describe("portfolioData", () => {
     const incident = findSection(findCaseStudy("apple-data-health"), "incident");
 
     expect(incident.heading).toBe("When it breaks at scale");
-    expect(incident.blocks).toEqual([
-      {
-        type: "paragraph",
-        text:
-          "A mass building-generation incident put tens of thousands of buildings into the data. I scoped the blast radius with SQL and QGIS and drove a delete, correct or retain decision on each group.",
-      },
-    ]);
+    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. An ML-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is scoping the blast radius: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands tractable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
     expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
   });
 
@@ -619,7 +616,7 @@ describe("portfolioData", () => {
     expect(portfolioData.caseStudies[0].callout).not.toHaveProperty("note");
   });
 
-  it("carries the seven pinned MCP paragraphs in order, after the studbook section (R154)", () => {
+  it("carries the pinned MCP paragraphs in order, after the studbook section (R154)", () => {
     const workhorse = portfolioData.caseStudies[0];
     const mcp = findSection(workhorse, "mcp");
 
@@ -860,7 +857,7 @@ describe("portfolioData", () => {
     expect(decision.card.summary).toBe(DECISION_INTRO);
     expect(decision.eyebrow).toBe("Case study · Apple Maps · Data Health team · Feb 2025 to present");
     expect(decision.title).toBe(DECISION_TITLE);
-    expect(decision.intro).toBe(DECISION_INTRO);
+    expect(decision.intro).toBe(DECISION_LEAD);
     expect(decision.atAGlance).toEqual([
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
@@ -872,22 +869,12 @@ describe("portfolioData", () => {
       { value: "2 weeks", label: "to clear two months of accumulated tickets" },
       { value: "Zero", label: "backlog since launch" },
     ]);
-    expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([
-      ["situation", "The situation"],
-      ["built", "What I built"],
-      ["why-a-person-decides", "Why a person still decides"],
-      ["people", "Working with the teams"],
-      ["changed", "What changed"],
-    ]);
-    expect(paragraphsOf("situation")).toEqual([
-      DECISION_SITUATION,
-      "Building a fix was not part of my assigned role. I took it on anyway.",
-    ]);
+    expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([["situation", "The situation"], ["built", "What I built"], ["who-decides", "Who decides what"], ["model", "Choosing and tuning the model"], ["people", "Working with the teams"], ["changed", "What changed"]]);
+    expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
     expect(paragraphsOf("built")).toEqual(DECISION_BUILT_PARAGRAPHS);
-    expect(paragraphsOf("why-a-person-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
-    expect(paragraphsOf("people")).toEqual([
-      "I worked directly with the stakeholder teams who own these requests to decide what the system should handle, and changed its scope as live results came in.",
-    ]);
+    expect(paragraphsOf("who-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
+    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to be platform agnostic. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
+    expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
     expect(paragraphsOf("changed")).toEqual(DECISION_CHANGED_PARAGRAPHS);
     expect(decision.callout.text).toBe(DECISION_CALLOUT);
     expect(decision.disclaimer).toBe(
@@ -906,11 +893,11 @@ describe("portfolioData", () => {
     expect(flow.steps.map((step) => step.gate === true)).toEqual([false, false, false, false, false, true]);
   });
 
-  it("carries the integration cross-reference as the situation's second paragraph (R6)", () => {
+  it("carries the integration cross-reference as the situation's last paragraph (R6)", () => {
     const blocks = findSection(findCaseStudy("apple-integration"), "situation").blocks;
 
-    expect(blocks).toHaveLength(2);
-    expect(blocks[1]).toEqual({ type: "paragraph", text: INTEGRATION_CROSS_REFERENCE });
+    expect(blocks).toHaveLength(3);
+    expect(blocks[2]).toEqual({ type: "paragraph", text: INTEGRATION_CROSS_REFERENCE });
   });
 
   it("replaces every deciding description with the resume's or document's words (R8)", () => {
@@ -989,11 +976,12 @@ describe("portfolioData", () => {
     expect(findCaseStudy("apple-llm-triage").intro).toMatch(/cross-team/i);
   });
 
+  // 5 and 15 (minutes per manual review) and 3 (3D edits) come from the owner's 2026-10-13 draft.
   it("uses only the approved numerals on the decision study (R4, item 12)", () => {
     const text = collectStrings(findCaseStudy("apple-llm-triage")).join("\n");
     const numerals = new Set(text.match(/\d+/g));
 
-    expect([...numerals].every((numeral) => ["30", "350", "2", "2025"].includes(numeral))).toBe(true);
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3"].includes(numeral))).toBe(true);
   });
 
   it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
