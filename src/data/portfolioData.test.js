@@ -25,6 +25,9 @@ const KNOWN_BLOCK_TYPES = new Set([
   "table",
   "link-diagram",
   "split",
+  // Added 2026-10-13 for the WorkHorse run-ledger chart: one series per chart, every value also
+  // written as text, so the set grows by one renderer with its own test file.
+  "bars",
 ]);
 
 // Copied verbatim from plan section 4.3 (home stats) and plan section 6 (approved facts table).
@@ -726,6 +729,20 @@ describe("portfolioData", () => {
     for (const study of portfolioData.caseStudies) {
       for (const block of collectBlocks(study)) {
         expect(KNOWN_BLOCK_TYPES.has(block.type)).toBe(true);
+      }
+    }
+  });
+
+  it("gives every bars chart a title and positive values written out as text", () => {
+    for (const study of portfolioData.caseStudies) {
+      for (const block of collectBlocks(study).filter((b) => b.type === "bars")) {
+        for (const chart of block.charts) {
+          expect(chart.title).toBeTruthy();
+          for (const item of chart.items) {
+            expect(item.value).toBeGreaterThan(0);
+            expect(item.display).toBeTruthy();
+          }
+        }
       }
     }
   });
