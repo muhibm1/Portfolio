@@ -299,7 +299,7 @@ export const portfolioData = {
       title: "WorkHorse: AI-built software you can audit",
       intro:
         "AI coding agents can write a feature in minutes. What they rarely leave behind is a reason to trust it: who decided what, what was checked, and what a person actually approved. WorkHorse is the delivery process I built around them. Twenty-eight single-purpose agents take a change from a one-line request to merged, tested and documented code, a person approves at the two moments that matter, and code the agents cannot argue with enforces the rules. This site was built with it.",
-      // Quality: hooks/tests/run.js in muhibm1/workhorse at 0.5.4 (master 4f5f78e), per CHANGELOG.md.
+      // Quality: hooks/tests/run.js in muhibm1/workhorse at 0.6.1, per CHANGELOG.md.
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end" },
         {
@@ -311,7 +311,7 @@ export const portfolioData = {
           label: "Stack",
           value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
         },
-        { label: "Quality", value: "454 pipeline tests, CI on every push" },
+        { label: "Quality", value: "507 pipeline tests, CI on every push" },
       ],
       stats: [
         { value: "28", label: "single-purpose agents" },
@@ -579,7 +579,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request, and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not.",
+                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request, and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not. Version 0.6 closes the rest of the gap: with its event log on, every approval is also written to one shared log, pinned to the exact text the person read, so a change continues on any machine without asking again, and the gates stay shut if the log can't be reached.",
             },
           ],
         },
@@ -590,7 +590,8 @@ export const portfolioData = {
           // and approvals. Finished runs at risk tiers 0 to 2: 2 on the first version (five
           // gates), 7 on two gates, 5 from the speed release on. Regenerate with
           // `workhorse ledger` and update these figures together. The 0.5.x releases and the
-          // first Flywheel pass are from CHANGELOG.md 0.5.0 to 0.5.4 (master 4f5f78e).
+          // first Flywheel pass are from CHANGELOG.md 0.5.0 to 0.5.4 (master 4f5f78e); 0.6.0 and
+          // 0.6.1 from CHANGELOG.md and docs/superpowers/specs/2026-10-14-event-bus-design.md.
           id: "ledger",
           heading: "Every run on the record, and what comes next",
           blocks: [
@@ -629,7 +630,7 @@ export const portfolioData = {
             },
             {
               type: "paragraph",
-              text: "Version 0.5 goes after that waiting, one release at a time:",
+              text: "Version 0.5 goes after that waiting, one release at a time, and 0.6 puts every run on a shared log:",
             },
             {
               type: "table",
@@ -666,12 +667,24 @@ export const portfolioData = {
                     "A run that stops and needs a person says so on its pull request, so the notice reaches a phone.",
                   ],
                 },
+                {
+                  cells: [
+                    "0.6.0, an event log",
+                    "Every step of a run and every approval goes to one shared log on Redpanda, which speaks the Kafka protocol. An approval follows the change to any machine, and the gates close if the log is down. Run timings and replays are read from the same log, and match the ledger on all 18 recorded runs.",
+                  ],
+                },
+                {
+                  cells: [
+                    "0.6.1, fresh search",
+                    "Each document a run writes reaches Studbook's search a few seconds later, through the same steps as a full rebuild, with the same results on all 40 test questions.",
+                  ],
+                },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The first scoring pass, over 16 traced runs, flagged 13: 8 went over their time budget, 4 of them in the build phase; 3 stalled; 2 never closed their record. That list is what the next releases work from: fewer questions per design, review running alongside the build, and big changes split in two. No 0.5 run has reached the ledger yet, so none of these releases claims a speedup.",
+                "The first scoring pass, over 16 traced runs, flagged 13: 8 went over their time budget, 4 of them in the build phase; 3 stalled; 2 never closed their record. That list is what the next releases, 0.6.2 to 0.6.4, work from: fewer questions per design, review running alongside the build, and big changes split in two. The event log now times each of them per gate and per phase. No 0.5 or 0.6 run has reached the ledger yet, so none of these releases claims a speedup.",
             },
           ],
         },
