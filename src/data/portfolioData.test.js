@@ -133,7 +133,7 @@ const pinnedCaseStudyNarratives = {
         label: "Stack",
         value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
       },
-      { label: "Quality", value: "454 pipeline tests, CI on every push" },
+      { label: "Quality", value: "507 pipeline tests, CI on every push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
