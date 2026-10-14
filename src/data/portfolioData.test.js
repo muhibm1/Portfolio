@@ -63,7 +63,7 @@ const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
-  "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
+  "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero", "~98%"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
@@ -108,7 +108,7 @@ const DECISION_WHY_PARAGRAPHS = [
 const DECISION_CHANGED_PARAGRAPHS = [
   "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
-  "The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+  "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
   "The decision this produces is carried out by a separate tool I built, covered in the next case study.",
 ];
 const INTEGRATION_CROSS_REFERENCE =
@@ -868,6 +868,7 @@ describe("portfolioData", () => {
       { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
       { value: "2 weeks", label: "to clear two months of accumulated tickets" },
       { value: "Zero", label: "backlog since launch" },
+      { value: "~98%", label: "of recommendations match the reviewer's decision" },
     ]);
     expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([["situation", "The situation"], ["built", "What I built"], ["who-decides", "Who decides what"], ["model", "Choosing and tuning the model"], ["people", "Working with the teams"], ["changed", "What changed"]]);
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
@@ -976,12 +977,12 @@ describe("portfolioData", () => {
     expect(findCaseStudy("apple-llm-triage").intro).toMatch(/cross-team/i);
   });
 
-  // 5 and 15 (minutes per manual review) and 3 (3D edits) come from the owner's 2026-10-13 draft.
+  // 5 and 15 (minutes per manual review), 3 (3D edits) and 98 (reviewer agreement) come from the owner's draft.
   it("uses only the approved numerals on the decision study (R4, item 12)", () => {
     const text = collectStrings(findCaseStudy("apple-llm-triage")).join("\n");
     const numerals = new Set(text.match(/\d+/g));
 
-    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3"].includes(numeral))).toBe(true);
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "98"].includes(numeral))).toBe(true);
   });
 
   it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
