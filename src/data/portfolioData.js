@@ -1719,8 +1719,8 @@ export const portfolioData = {
     },
 
     // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
-    // The draft's reviewer-agreement percentage is left out: the 2026-10-08 master copy keeps
-    // accuracy figures off this page (src/masterCopy.test.jsx, R13).
+    // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
+    // copy's no-accuracy-figure rule for this page on 2026-10-14.
     {
       id: "apple-llm-triage",
       card: {
@@ -1747,6 +1747,7 @@ export const portfolioData = {
         { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
         { value: "2 weeks", label: "to clear two months of accumulated tickets" },
         { value: "Zero", label: "backlog since launch" },
+        { value: "~98%", label: "of recommendations match the reviewer's decision" },
       ],
       sections: [
         {
@@ -1892,7 +1893,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+                "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
             },
             {
               type: "paragraph",
