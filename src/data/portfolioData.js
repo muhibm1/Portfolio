@@ -1722,6 +1722,170 @@ export const portfolioData = {
     // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
     // copy's no-accuracy-figure rule for this page on 2026-10-14.
     {
+      id: "esper",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · Research agent · LangGraph",
+        title: "Esper: a research agent that proves every sentence",
+        summary:
+          "A deep research agent built so that a reader can check it. Every sentence of an answer cites a quote that code has found on a saved copy of the page, and a separate checker reads each claim against its source before the writer may use it. Measured against a one-call baseline and LangChain's Open Deep Research on the same questions, with the same models and the same web.",
+        linkText: "Read the case study",
+        tags: ["Every sentence cites a checked quote", "Scored against Open Deep Research"],
+      },
+      eyebrow: "Case study · Personal system · Research agent · LangGraph",
+      title: "Esper: a research agent that proves every sentence",
+      intro:
+        "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind: a LangGraph pipeline where the writer may only use claims a separate checker has verified, code confirms every quote exists on the saved page, and a reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, against 29% for LangChain's Open Deep Research and 35% for a single model call.",
+      atAGlance: [
+        { label: "My role", value: "Designed and built it end to end, with an agent doing the typing" },
+        {
+          label: "What it is",
+          value:
+            "A deep research agent whose every sentence cites a quote found on a saved page, with a library that remembers what it verified",
+        },
+        { label: "Stack", value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel" },
+        {
+          label: "Quality",
+          value: "93 tests on a scripted model, CI, and a Flywheel gate that replays 22 recorded runs in under a minute",
+        },
+      ],
+      stats: [
+        { value: "79%", label: "of sentences backed by the page they cite, against 29% for Open Deep Research and 35% for one model call" },
+        { value: "0%", label: "of sentences without a citation, against 59% for Open Deep Research" },
+        { value: "11 of 11", label: "cases where the Flywheel gate caught a planted regression, replayed for free" },
+        { value: "$0", label: "of API credit for the whole evaluation; every call ran on a Claude subscription" },
+      ],
+      sections: [
+        {
+          id: "why",
+          heading: "Why I built it",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Every deep research agent I tried writes well and cites some of what it says. The question a careful reader has is which sentences are backed by a source and which are the model's own memory, and no report I read could answer it. So I set the rule first and built the agent around it: a sentence may only be written if it rests on a claim that was verified against the page it came from, and the quote behind every claim must be found by code on a saved copy of that page.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That rule is also a forward deployed engineer's question in miniature. A customer's agent reads convincingly in a demo. The work is making it provably right, measuring it honestly against the alternatives, and knowing when a change has made it worse.",
+            },
+          ],
+        },
+        {
+          id: "how",
+          heading: "How an answer is built",
+          blocks: [
+            {
+              type: "flow",
+              columns: 7,
+              steps: [
+                { title: "Intake", note: "Reads the question, names its readings" },
+                { title: "Brief and plan", note: "An expert brief, then sub-questions" },
+                { title: "Research", note: "Parallel researchers search, read, record claims with quotes" },
+                { title: "Verify", note: "A separate checker reads each claim against its page" },
+                { title: "Write", note: "Only verified claims; every sentence cites them" },
+                { title: "Review", note: "An expert reviewer and a red team attack the draft" },
+                { title: "Deliver", note: "Markdown, an HTML page, and the library" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "In plain terms: the agent splits the question into parts and sends several researchers to work on them at once. Each researcher searches the web, reads pages, and records claims, and a claim is only accepted if the quote it gives is found on the saved page, character for character. A second model, which did no research and has nothing to defend, then reads every claim next to its page and passes or fails it. The writer sees only the claims that passed, and code checks the draft: every sentence must cite claims, and the text of a sentence may not drift from what its claims say. A reviewer looks for overclaims, a red team searches for evidence against the load-bearing claims, and code decides whether to revise or deliver. Every limit, budget and decision in that loop is code, not the model's feeling that it is done.",
+            },
+            {
+              type: "cards",
+              items: [
+                { title: "Quote lock", note: "A claim's quote must be found on the saved page, or the claim is dropped." },
+                { title: "Separate checker", note: "The model that verifies a claim is not the one that found it." },
+                { title: "Text lock", note: "A sentence may not say more than the claims it cites; code compares them." },
+                { title: "Labels", note: "Each sentence carries established, supported, unverified or contested, from its sources." },
+                { title: "Budgets in code", note: "Researchers, rounds, searches and pages are capped in code, never asked of the model." },
+                { title: "Library", note: "Verified claims, graded sources and corrections are kept and recalled on the next question.", emphasis: true },
+              ],
+            },
+          ],
+        },
+        {
+          id: "measured",
+          heading: "What the measurement showed",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "I wrote 40 development questions of seven kinds, from plain facts to contested questions, false premises and my own projects, each with an expert checklist written before any system answered. Esper, a single Claude call with no tools, and LangChain's Open Deep Research answered them with the same models, the same search and the same saved pages. Two model judges graded every answer: one reads each sentence next to the page it cites and says whether the page backs it; the other ticks the checklist. Esper's quotes are also checked by code, which the baselines cannot be, because they cite pages rather than quotes.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Eleven questions, deep mode" }, { label: "Esper", numeric: true }, { label: "One call", numeric: true }, { label: "Open Deep Research", numeric: true }],
+              rows: [
+                { cells: ["Sentences backed by the page they cite", "79%", "35%", "29%"] },
+                { cells: ["Backed, among the sentences that cite anything", "79%", "46%", "71%"] },
+                { cells: ["Sentences with no citation", "0%", "25%", "59%"] },
+                { cells: ["Expert checklist covered", "86%", "76%", "91%"] },
+                { cells: ["Quotes found on the saved page by code", "100%", "not applicable", "not applicable"] },
+                { cells: ["Subscription tokens per question", "2.3 million", "0.02 million", "4.1 million"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The result is the first row. Four in five of Esper's sentences are backed by the exact page they cite, against fewer than a third for either alternative. Open Deep Research's sources are fine where it cites them, 71% backed, but it cites two sentences in five and writes the rest from memory, four and a half times as much text, which is also why it covers more of the checklists. A reader of its report cannot tell the checked part from the remembered part. A reader of Esper's can, sentence by sentence, and in the HTML page a click on any sentence shows the quotes behind it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "On the full 40-question set Esper backed 78% of 1,878 sentences and covered 82% of the checklists; the one-call baseline backed 28% and covered 73%. The gap in coverage is small on ordinary facts, where a model remembers a lot, and widest on my own projects, where there is nothing to remember.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The gate came from Flywheel, my regression gate for agents: eleven cases, six checks that are pure code over the outputs, two repetitions. A cache layer records every page, search and model reply, so the gate replays the whole run in under a minute with no model and no web. To prove it, I replayed the recording against a copy of the code carrying a deliberate regression, a tidy-up that silently stopped citing claims under sentences marked unverified. The gate blocked it on all eleven cases.",
+            },
+          ],
+        },
+        {
+          id: "cost",
+          heading: "What it costs, and the version for daily use",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The whole evaluation spent no API credit. Every model call, web search, baseline answer and grading call ran through headless Claude Code on a subscription, including Open Deep Research, whose LangChain model and search were swapped for thin wrappers over the same calls and the same page store. Dollar figures in this study are API spend only; subscription use is counted in tokens.",
+            },
+            {
+              type: "paragraph",
+              text: "Deep mode, the mode measured above, costs about 2.3 million subscription tokens and a quarter of an hour per question, so I profiled where the tokens went: the researchers' turns were 54% and the searches 29%, the strong models under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep's 78% and covered 90% of the checklists against 87%, the same within the noise of twelve questions, at 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this is a third off, not an order of magnitude; the next saving is structural, fewer and larger researcher turns, and is measurable on the same set for nothing.",
+            },
+          ],
+        },
+        {
+          id: "fell-short",
+          heading: "Where it fell short",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "The confidence labels do not predict the judge. Sentences marked established, supported and unverified were backed 77%, 80% and 80% of the time, so the labels count sources without measuring truth. Only contested stands apart, which is right. Calibrating them is the first thing to fix.",
+                "Coverage is only a little better than a single model call on ordinary facts and synthesis. Esper's advantage is that it can show where every sentence came from, not that it knows more.",
+                "Open Deep Research covers more of the expert checklists because it writes far more, most of it uncited. Which trade a reader wants depends on what the report is for.",
+                "The judge fetches pages again instead of reading the saved copies. The weakest answer in the set scored low because the judge could not load most of the pages it cited; Esper's own code check had found every quote.",
+                "Twenty held-out questions were written and sealed with a checksum but not scored. The eleven-question comparison was enough to decide whether to finish the build, and the held-out score is kept for the cheaper version.",
+                "The evaluation is one person's questions and two model judges, graded once. It shows the mechanism working and the gap between the three systems. It is not a benchmark.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
+      },
+      contactHeading: "Need an agent whose answers can be checked? Let's talk.",
+    },
+    {
       id: "apple-llm-triage",
       card: {
         featured: false,
