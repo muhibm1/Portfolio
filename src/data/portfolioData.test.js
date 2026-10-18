@@ -63,6 +63,7 @@ const pinnedCaseStudyStats = {
   workhorse: ["28", "9", "5 to 2", "100%"],
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
+  esper: ["79%", "0%", "11 of 11", "$0"],
   "apple-llm-triage": ["30 to 350+", "2 weeks", "Zero"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
@@ -184,6 +185,30 @@ const pinnedCaseStudyNarratives = {
     calloutText:
       "A way to take a customer's agent from demos well to provably works: its real failures in LangSmith become reviewed test cases, every change is compared with main case by case, and a red check means a real regression, not model noise.",
     contactHeading: "Have an agent that works in the demo? Let's talk.",
+  },
+  // Added 2026-10-18 with the Esper case study, from the esper README's stage 5 and 6 sections.
+  esper: {
+    eyebrow: "Case study · Personal system · Research agent · LangGraph",
+    title: "Esper: a research agent that proves every sentence",
+    lead:
+      "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind: a LangGraph pipeline where the writer may only use claims a separate checker has verified, code confirms every quote exists on the saved page, and a reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, against 29% for LangChain's Open Deep Research and 35% for a single model call.",
+    atAGlance: [
+      { label: "My role", value: "Designed and built it end to end, with an agent doing the typing" },
+      {
+        label: "What it is",
+        value:
+          "A deep research agent whose every sentence cites a quote found on a saved page, with a library that remembers what it verified",
+      },
+      { label: "Stack", value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel" },
+      {
+        label: "Quality",
+        value: "93 tests on a scripted model, CI, and a Flywheel gate that replays 22 recorded runs in under a minute",
+      },
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText:
+      "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
+    contactHeading: "Need an agent whose answers can be checked? Let's talk.",
   },
   "apple-llm-triage": {
     eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
@@ -372,13 +397,14 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the seven case studies in plan order (R127, G1)", () => {
+  it("names / then /work then /work/<id> for the eight case studies in plan order (R127, G1)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
       "/work/workhorse",
       "/work/agentops",
       "/work/flywheel",
+      "/work/esper",
       "/work/apple-llm-triage",
       "/work/apple-integration",
       "/work/apple-data-health",
@@ -388,6 +414,7 @@ describe("portfolioData", () => {
       "workhorse",
       "agentops",
       "flywheel",
+      "esper",
       "apple-llm-triage",
       "apple-integration",
       "apple-data-health",
@@ -675,12 +702,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the seven 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+  it("keeps the eight 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(7);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(8);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {
