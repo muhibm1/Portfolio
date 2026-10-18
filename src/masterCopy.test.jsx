@@ -151,12 +151,12 @@ describe('master copy served on every route (2026-10-08)', () => {
     expect(pages[DECISION_PATH]).toMatch(CROSS_TEAM);
   });
 
-  it('explains the throughput gain and gives the agent no authority and no accuracy figure (R13, items 3, 4)', () => {
+  // The no-accuracy-figure half of R13 was lifted by the owner on 2026-10-14; the page now
+  // carries his reviewer-agreement figure.
+  it('explains the throughput gain and gives the agent no authority (R13, item 3)', () => {
     const text = textOf(pages[DECISION_PATH]);
 
     expect(text).toContain(THROUGHPUT_SENTENCE);
-    expect(text).not.toContain('%');
-    expect(text).not.toMatch(/accura/i);
     expect(text).not.toMatch(AGENT_AUTHORITY);
   });
 
