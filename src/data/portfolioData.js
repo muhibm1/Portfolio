@@ -1843,7 +1843,7 @@ export const portfolioData = {
             },
             {
               type: "paragraph",
-              text: "ESPER_EFFICIENCY_PARAGRAPH",
+              text: "Deep mode, the mode measured above, costs about 2.3 million subscription tokens and a quarter of an hour per question, so I profiled where the tokens went: the researchers' turns were 54% and the searches 29%, the strong models under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep's 78% and covered 90% of the checklists against 87%, the same within the noise of twelve questions, at 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this is a third off, not an order of magnitude; the next saving is structural, fewer and larger researcher turns, and is measurable on the same set for nothing.",
             },
           ],
         },
