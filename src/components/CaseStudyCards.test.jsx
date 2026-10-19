@@ -7,7 +7,7 @@ import CaseStudyCards from "./CaseStudyCards.jsx";
 const { caseStudies } = portfolioData;
 
 describe("CaseStudyCards", () => {
-  it("renders eight route links in R127 order, the first inside the featured article", () => {
+  it("renders nine route links in R127 order, the first inside the featured article (TG-07)", () => {
     render(
       <MemoryRouter>
         <CaseStudyCards caseStudies={caseStudies} />
@@ -15,7 +15,7 @@ describe("CaseStudyCards", () => {
     );
 
     const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
-    expect(routeLinks).toHaveLength(8);
+    expect(routeLinks).toHaveLength(9);
     expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(
       caseStudies.map((study) => `/work/${study.id}`),
     );
@@ -85,5 +85,21 @@ describe("CaseStudyCards", () => {
     });
 
     expect(screen.getAllByText("View the code")).toHaveLength(1);
+  });
+
+  it("shows Ongoing project on Orion's card where a code link would sit, and links nowhere outside the site (TG-07, D2)", () => {
+    render(
+      <MemoryRouter>
+        <CaseStudyCards caseStudies={caseStudies} />
+      </MemoryRouter>,
+    );
+
+    const orion = caseStudies.find((study) => study.id === "orion");
+    expect(orion.status).toBe("Ongoing project");
+    const card = screen.getByRole("link", { name: new RegExp(orion.card.title) });
+    expect(within(card).getByText("Ongoing project")).toBeInTheDocument();
+    expect(card.getAttribute("href")).toBe("/work/orion");
+    expect(document.querySelectorAll('a[href*="github.com/muhibm1/orion"]')).toHaveLength(0);
+    expect(screen.getAllByText("Ongoing project")).toHaveLength(1);
   });
 });

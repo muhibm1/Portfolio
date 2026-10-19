@@ -66,12 +66,14 @@ describe('CaseStudyPage', () => {
       }
     });
 
-    it('shows the callout text and no callout note or walkthrough or private-repository text', () => {
+    it('shows the callout text and no callout note or private-repository text, and the word walkthrough only on a study that has one (TG-07)', () => {
       const { container } = renderCaseStudyAt(`/work/${study.id}`);
 
       expect(screen.getByText(study.callout.text)).toBeInTheDocument();
       expect(study.callout.note).toBeUndefined();
-      expect(container.textContent).not.toMatch(/private repository|walkthrough/i);
+      expect(container.textContent).not.toMatch(/private repository/i);
+      const hasWalkthrough = study.sections.some((section) => section.blocks.some((block) => block.type === 'walkthrough'));
+      if (!hasWalkthrough) expect(container.textContent).not.toMatch(/walkthrough/i);
     });
 
     it('shows the disclaimer only when the case study has one', () => {
@@ -130,6 +132,33 @@ describe('CaseStudyPage', () => {
       expect(
         screen.getByRole('heading', { name: 'Want to talk through WorkHorse? I reply to email within a day.' }),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('the orion case study only (TG-07, D2)', () => {
+    const orion = caseStudies.find((study) => study.id === 'orion');
+
+    it('says Ongoing project in the header where a code link would sit, with no link to GitHub or anywhere private', () => {
+      const { container } = renderCaseStudyAt('/work/orion');
+
+      expect(orion.status).toBe('Ongoing project');
+      expect(orion.codeLink).toBeUndefined();
+      expect(screen.getByText('Ongoing project').closest('header')).not.toBeNull();
+      expect(container.querySelectorAll('a[href*="github.com"]')).toHaveLength(0);
+      expect(screen.queryByRole('link', { name: /code:|view the code/i })).toBeNull();
+    });
+
+    it('shows the walkthrough, with all thirteen steps tagged built or designed and listed in full', () => {
+      renderCaseStudyAt('/work/orion');
+
+      const region = screen.getByRole('region', { name: 'Orion walkthrough' });
+      expect(region).toBeInTheDocument();
+      const list = document.getElementById('wt-steps');
+      const items = within(list).getAllByRole('listitem');
+      expect(items).toHaveLength(13);
+      const tags = items.map((item) => item.querySelector('[data-tag]').getAttribute('data-tag'));
+      expect(tags.filter((tag) => tag === 'built')).toHaveLength(12);
+      expect(tags.filter((tag) => tag === 'designed')).toHaveLength(1);
     });
   });
 

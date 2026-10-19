@@ -4,6 +4,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagram';
 import CaseStudyBarChart from './CaseStudyBarChart';
 import CaseStudyTable from './CaseStudyTable';
+import WalkthroughBlock from './WalkthroughBlock';
 import ContactBand from './ContactBand';
 
 // Literal Tailwind class names, one per supported column count, so Tailwind's scanner sees them
@@ -43,7 +44,7 @@ export default function CaseStudyPage() {
 
       <section className="grid grid-cols-1 gap-8 px-4 sm:px-8 md:grid-cols-[220px_1fr] md:gap-12 md:px-16">
         <OnThisPageNav sections={caseStudy.sections} />
-        <div className="flex flex-col gap-16 pb-16">
+        <div className="flex min-w-0 flex-col gap-16 pb-16">
           {caseStudy.sections.map((section) => (
             <CaseStudySection key={section.id} section={section} />
           ))}
@@ -83,6 +84,9 @@ function CaseStudyHeader({ caseStudy }) {
           >
             {caseStudy.codeLink.label}
           </a>
+        )}
+        {!caseStudy.codeLink && caseStudy.status && (
+          <span className="font-mono text-xs uppercase tracking-widest text-muted">{caseStudy.status}</span>
         )}
       </div>
       <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.04] tracking-tight text-ink sm:text-6xl">
@@ -124,10 +128,12 @@ function OnThisPageNav({ sections }) {
 }
 
 // A section is `{ id, heading, eyebrow?, subtitle?, blocks }`; the subtitle is one line that
-// sits between the heading and the first block.
+// sits between the heading and the first block. A section that holds a walkthrough runs the full
+// width of the column, because its console needs the room the prose measure does not.
 function CaseStudySection({ section }) {
+  const hasWalkthrough = section.blocks.some((block) => block.type === 'walkthrough');
   return (
-    <div id={section.id} className="flex max-w-3xl flex-col gap-5">
+    <div id={section.id} className={`flex flex-col gap-5 ${hasWalkthrough ? 'min-w-0' : 'max-w-3xl'}`}>
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
       <h2 className="font-display text-2xl font-medium text-ink sm:text-3xl">{section.heading}</h2>
       {section.subtitle && <p className="text-base text-muted sm:text-lg">{section.subtitle}</p>}
@@ -162,6 +168,8 @@ function Block({ block }) {
       return <SplitBlock table={block.table} stats={block.stats} />;
     case 'bars':
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
+    case 'walkthrough':
+      return <WalkthroughBlock block={block} />;
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }
