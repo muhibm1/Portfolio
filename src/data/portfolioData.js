@@ -2233,7 +2233,7 @@ export const portfolioData = {
                   does:
                     "The benchmark: sixty scenarios with hand-written ground truth, four context conditions (none, repo, rag, orion), mechanical graders.",
                   evidence:
-                    "AI agents given Orion's verdict made 0 unsafe decisions out of 50, and scored 0.82 and 0.83.",
+                    "Unsafe decisions by AI agents: 0 of 50 with Orion, against 8 of 50 with no context.",
                 },
                 {
                   id: "next",
@@ -2359,7 +2359,7 @@ export const portfolioData = {
                 "Step 4. Bring in what the model doesn't know. Today's misses need facts that aren't in the diff: what Buffer.byteLength does with a Buffer, and that a cloned request body can be read only once. Pull the definitions and documentation of the library calls a change uses into the review, the same way Orion already pulls in the functions it calls.",
                 "Step 5. Prove bugs by running them. A test that fails is hard evidence, so the warning ships with proof. A test that passes is a reason to drop the warning, which cuts false alarms too. Gate: 90% or more on held-out bugs.",
                 "Step 6. Hold the line on noise. Every gain has to pass a ceiling of at most one false alarm per 20 correct changes on both the planted-bug set and the replay of real merged changes. Recall bought with noise doesn't count.",
-                "Step 7. Confirm on fresh bugs.",
+                "Step 7. Confirm on fresh bugs. That's the number that goes on this page.",
               ],
             },
             {

@@ -216,8 +216,16 @@ export default function useWalkthrough(block) {
     }
   });
 
-  const goTo = useCallback((index) => dispatch({ type: 'goTo', index, user: true }), []);
-  const next = useCallback(() => dispatch({ type: 'goTo', index: idx + 1, user: true }), [idx]);
+  // A step the visitor picks by hand counts as the start, so the first time the console scrolls into
+  // view the run does not start over from step one.
+  const goTo = useCallback((index) => {
+    startedRef.current = true;
+    dispatch({ type: 'goTo', index, user: true });
+  }, []);
+  const next = useCallback(() => {
+    startedRef.current = true;
+    dispatch({ type: 'goTo', index: idx + 1, user: true });
+  }, [idx]);
   const togglePlay = useCallback(() => dispatch({ type: 'togglePlay' }), []);
   const replay = useCallback(() => dispatch({ type: 'reset' }), []);
   const decide = useCallback((kind) => {
@@ -233,6 +241,7 @@ export default function useWalkthrough(block) {
       const target = railTarget(event.key, at, last);
       if (target === undefined) return;
       event.preventDefault();
+      startedRef.current = true;
       dispatch({ type: 'goTo', index: target, user: true });
       tabRefs.current[target]?.focus({ preventScroll: true });
     },

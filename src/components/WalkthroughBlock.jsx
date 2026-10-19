@@ -24,7 +24,7 @@ export default function WalkthroughBlock({ block }) {
   const total = steps.length;
   const fill = (template, values) => Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, String(value)), template);
   const stepName = (i) => fill(block.announce.step, { n: i + 1, label: steps[i].label, tag: steps[i].tag });
-  const readout = step.id === 'decision' && decision ? fill(labels.decisionReadout, { kind: decision }) : step.readout;
+  const readoutOf = (item) => (item.id === 'decision' && decision ? fill(labels.decisionReadout, { kind: decision }) : item.readout);
 
   return (
     <div className="wt">
@@ -94,7 +94,13 @@ export default function WalkthroughBlock({ block }) {
               <span className="wt-corner wt-fig-t">{block.caption.title}</span>
             </div>
             <Figure stepId={step.id} calm={calm} decision={decision} runId={runId} />
-            <p className="wt-figfoot wt-readout">{readout}</p>
+            <div className="wt-figfoots">
+              {steps.map((item, i) => (
+                <p key={item.id} className="wt-figfoot wt-readout" data-current={i === idx ? '' : undefined} aria-hidden={i === idx ? undefined : 'true'}>
+                  {readoutOf(item)}
+                </p>
+              ))}
+            </div>
           </div>
 
           <div
@@ -104,49 +110,59 @@ export default function WalkthroughBlock({ block }) {
             onPointerEnter={actions.onReadoutEnter}
             onPointerLeave={actions.onReadoutLeave}
           >
-            <p key={`k-${idx}-${runId}`} className="wt-ro-k wt-in" style={{ '--i': 0 }}>
-              <span className="wt-ro-n">{fill(labels.stepOf, { n: idx + 1, total })}</span>
-              {step.label}
-              <span className="wt-tag" data-tag={step.tag}>
-                {step.tag}
-              </span>
-            </p>
-            <p key={`d-${idx}-${runId}`} className="wt-ro-does wt-in" style={{ '--i': 1 }}>
-              {step.does}
-            </p>
-            {step.person && (
-              <p key={`p-${idx}-${runId}`} className="wt-ro-person wt-in" style={{ '--i': 2 }}>
-                <b>{labels.person} </b>
-                {step.person}
-              </p>
-            )}
-            {step.id === 'decision' && (
-              <>
-                <p key={`w-${idx}-${runId}`} className="wt-kick wt-in" style={{ '--i': 3 }}>
-                  <span className={`wt-pdot${decision ? ' wt-grey' : ''}`} aria-hidden="true" />
-                  {decision ? fill(labels.recorded, { kind: decision }) : labels.waiting}
-                </p>
-                <div key={`b-${idx}-${runId}`} className="wt-btns wt-in" style={{ '--i': 4 }}>
-                  {DECISION_KINDS.map((kind) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      className={`wt-pill ${kind === 'approve' ? 'wt-pill-dark' : 'wt-pill-line'}`}
-                      disabled={decision !== null}
-                      onClick={() => actions.decide(kind)}
-                    >
-                      {controls[kind]}
-                    </button>
-                  ))}
+            {steps.map((item, i) => {
+              const here = i === idx;
+              // Only the open step is replayed (its key carries the run); the others sit still and unseen.
+              const run = here ? runId : 'rest';
+              const text = item.id === 'decision' && decision ? fill(labels.recorded, { kind: decision }) : labels.waiting;
+              return (
+                <div key={item.id} className="wt-ro-step" data-current={here ? '' : undefined} aria-hidden={here ? undefined : 'true'}>
+                  <p key={`k-${run}`} className="wt-ro-k wt-in" style={{ '--i': 0 }}>
+                    <span className="wt-ro-n">{fill(labels.stepOf, { n: i + 1, total })}</span>
+                    {item.label}
+                    <span className="wt-tag" data-tag={item.tag}>
+                      {item.tag}
+                    </span>
+                  </p>
+                  <p key={`d-${run}`} className="wt-ro-does wt-in" style={{ '--i': 1 }}>
+                    {item.does}
+                  </p>
+                  {item.person && (
+                    <p key={`p-${run}`} className="wt-ro-person wt-in" style={{ '--i': 2 }}>
+                      <b>{labels.person} </b>
+                      {item.person}
+                    </p>
+                  )}
+                  {item.id === 'decision' && (
+                    <>
+                      <p key={`w-${run}`} className="wt-kick wt-in" style={{ '--i': 3 }}>
+                        <span className={`wt-pdot${decision ? ' wt-grey' : ''}`} aria-hidden="true" />
+                        {text}
+                      </p>
+                      <div key={`b-${run}`} className="wt-btns wt-in" style={{ '--i': 4 }}>
+                        {DECISION_KINDS.map((kind) => (
+                          <button
+                            key={kind}
+                            type="button"
+                            className={`wt-pill ${kind === 'approve' ? 'wt-pill-dark' : 'wt-pill-line'}`}
+                            disabled={decision !== null}
+                            onClick={() => actions.decide(kind)}
+                          >
+                            {controls[kind]}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {item.evidence && (
+                    <p key={`e-${run}`} className="wt-ro-ev wt-in" style={{ '--i': 5 }}>
+                      <span className="wt-muted">{labels.evidence}</span>
+                      <span>{item.evidence}</span>
+                    </p>
+                  )}
                 </div>
-              </>
-            )}
-            {step.evidence && (
-              <p key={`e-${idx}-${runId}`} className="wt-ro-ev wt-in" style={{ '--i': 5 }}>
-                <span className="wt-muted">{labels.evidence}</span>
-                <span>{step.evidence}</span>
-              </p>
-            )}
+              );
+            })}
           </div>
         </div>
 
@@ -157,7 +173,7 @@ export default function WalkthroughBlock({ block }) {
           <button type="button" className="wt-ctl" hidden={ended} onClick={actions.next}>
             {controls.next}
           </button>
-          <p className="wt-hint" hidden={!waiting}>
+          <p className="wt-hint" data-show={waiting ? '' : undefined} aria-hidden={waiting ? undefined : 'true'}>
             {block.hint}
           </p>
           <button

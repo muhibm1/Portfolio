@@ -142,7 +142,7 @@ describe('WalkthroughBlock', () => {
 
     const ro = readout();
     expect(within(ro).getByText(block.labels.waiting)).toBeInTheDocument();
-    expect(screen.getByText(block.hint)).toBeVisible();
+    expect(screen.getByText(block.hint)).toHaveAttribute('data-show');
     expect(screen.getByRole('region', { name: block.regionLabel })).toHaveTextContent(block.states.waiting);
     const decisionButtons = () => ['approve', 'waive', 'reject'].map((kind) => within(ro).getByRole('button', { name: block.controls[kind] }));
     for (const button of decisionButtons()) expect(button).toBeEnabled();
@@ -151,9 +151,10 @@ describe('WalkthroughBlock', () => {
 
     expect(within(ro).getByText(block.labels.recorded.replace('{kind}', 'waive'))).toBeInTheDocument();
     for (const button of decisionButtons()) expect(button).toBeDisabled();
-    expect(document.querySelector('.wt-readout')).toHaveTextContent('decision_recorded · waive');
+    expect(document.querySelector('.wt-readout[data-current]')).toHaveTextContent('decision_recorded · waive');
     expect(document.querySelector('.sr-only[aria-live]')).toHaveTextContent('Decision waive recorded to the ledger.');
-    expect(screen.getByText(block.hint)).not.toBeVisible();
+    // The hint keeps its place (so the controls keep their height) and is hidden by look.css, which jsdom does not load.
+    expect(screen.getByText(block.hint)).not.toHaveAttribute('data-show');
   });
 
   it('lets the visitor skip the decision with Next step', () => {
@@ -232,6 +233,17 @@ describe('WalkthroughBlock', () => {
       expect(after).toBeGreaterThan(before);
     });
 
+    it('does not start over from step one when a step picked by hand comes before the console is first seen', () => {
+      const fire = installObserver();
+      installAnimate();
+      setup();
+      fireEvent.click(tab('mcp'));
+      fire(true);
+
+      expect(tab('mcp')).toHaveAttribute('aria-current', 'step');
+      expect(screen.getByRole('region', { name: block.regionLabel })).toHaveTextContent(block.states.paused);
+    });
+
     it('stops the autoplay when the visitor picks a step, and offers Play again', () => {
       const fire = installObserver();
       installAnimate();
@@ -244,20 +256,29 @@ describe('WalkthroughBlock', () => {
       expect(screen.getByRole('button', { name: block.controls.play })).toBeVisible();
     });
 
-    it('pauses while the console is off screen and while the visitor reads the rail', () => {
+    it('pauses the step clock itself while the console is off screen and while the visitor reads the rail', () => {
       const fire = installObserver();
-      installAnimate();
+      const animations = installAnimate();
       setup();
       const region = screen.getByRole('region', { name: block.regionLabel });
+      // The step clock is the animation drawn on the rail's track; the newest one that was not cancelled.
+      const clock = () => animations.filter((a) => a.target.tagName === 'I' && !a.cancelled).at(-1);
+
       fire(true);
       expect(region).toHaveTextContent(block.states.playing);
+      expect(clock()).toBeDefined();
+      expect(clock().paused).toBe(false);
 
       fire(false);
       expect(region).toHaveTextContent(block.states.offscreen);
+      expect(clock().paused).toBe(true);
 
       fire(true);
+      expect(clock().paused).toBe(false);
+
       act(() => tab('sync').focus());
       expect(region).toHaveTextContent(block.states.reading);
+      expect(clock().paused).toBe(true);
     });
   });
 
