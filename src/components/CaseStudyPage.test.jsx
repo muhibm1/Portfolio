@@ -108,10 +108,12 @@ describe('CaseStudyPage', () => {
       expect(mcpLink).toBeDefined();
     });
 
-    it('presents Paddock as an earlier desktop app that was replaced, not as a current part', () => {
+    it('mentions the old desktop app nowhere on the page, because the owner removed it on 2026-10-19', () => {
       const { container } = renderCaseStudyAt('/work/workhorse');
 
-      expect(container.textContent).toMatch(/Paddock, an earlier desktop app/);
+      expect(container.textContent).not.toMatch(/paddock/i);
+      expect(screen.queryByRole('link', { name: /paddock/i })).toBeNull();
+      expect(container.querySelector('a[href*="paddock"]')).toBeNull();
       expect(screen.queryByText(/278 desktop tests/i)).toBeNull();
       expect(screen.queryAllByText(/electron/i)).toHaveLength(0);
     });
@@ -266,13 +268,13 @@ describe('CaseStudyPage', () => {
   });
 
   describe('repository links (G26)', () => {
-    it('renders exactly four public-snapshot anchors with the right attributes and destinations', () => {
+    it('renders exactly three public-snapshot anchors with the right attributes and destinations, now that the old desktop app link is gone', () => {
       renderCaseStudyAt('/work/workhorse');
 
       const repoLinks = screen
         .getAllByRole('link')
         .filter((link) => link.getAttribute('href')?.startsWith('https://github.com/muhibm1/'));
-      expect(repoLinks).toHaveLength(4);
+      expect(repoLinks).toHaveLength(3);
 
       for (const link of repoLinks) {
         expect(link).toHaveAttribute('target', '_blank');
@@ -287,8 +289,6 @@ describe('CaseStudyPage', () => {
       const mcpSection = document.getElementById('mcp');
       const studbookLink = within(studbookSection).getByRole('link', { name: /^studbook on github/i });
       expect(studbookLink).toHaveAttribute('href', personal.repositories.studbook);
-      const paddockLink = within(studbookSection).getByRole('link', { name: /paddock/i });
-      expect(paddockLink).toHaveAttribute('href', personal.repositories.paddock);
       const mcpStudbookLink = within(mcpSection).getByRole('link', { name: /studbook repository/i });
       expect(mcpStudbookLink).toHaveAttribute('href', personal.repositories.studbook);
     });

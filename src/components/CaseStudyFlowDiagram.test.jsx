@@ -32,14 +32,14 @@ describe('CaseStudyFlowDiagram (flow block)', () => {
     expect(gateNode.className).not.toEqual(plainNode.className);
   });
 
-  it('marks a gate step with data-gate and dark classes, and omits the note span when there is none', () => {
+  it('marks a gate step with data-gate and the dark band class of the Look (bg-dark, replacing bg-ink, which now flips light in dark theme), and omits the note span when there is none', () => {
     const steps = [{ title: 'Plain', note: 'Has a note' }, { title: 'Gate', gate: true }, { title: 'No note' }];
 
     render(<CaseStudyFlowDiagram columns={3} steps={steps} />);
 
     const [plainNode, gateNode, noNoteNode] = screen.getAllByRole('listitem');
     expect(gateNode).toHaveAttribute('data-gate', 'true');
-    expect(gateNode.className).toContain('bg-ink');
+    expect(gateNode.className).toContain('bg-dark');
     expect(plainNode).not.toHaveAttribute('data-gate');
     expect(noNoteNode).not.toHaveAttribute('data-gate');
     expect(gateNode.children).toHaveLength(1);

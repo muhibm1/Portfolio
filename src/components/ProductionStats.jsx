@@ -1,34 +1,41 @@
+import { wrapClasses } from './lookClasses';
+
 /**
- * "Measured in production" (R132). Five stat cards in a row from 768px up; below that, only the
- * first four in a 2 by 2 grid, the fifth omitted per D9 (Home-Mobile.dc.html has no fifth card).
+ * "Measured in production" on the always-dark band (the Look). The five stat cells sit in a
+ * three-column grid with the caption as a sixth cell. Four of the stats carry a shorter wording
+ * for a phone (mobileText); the fifth has one wording for every width.
  */
 export default function ProductionStats({ stats }) {
-  const mobileItems = stats.items.slice(0, 4);
-
   return (
-    <section className="flex flex-col gap-5 px-5 pb-10 md:px-[120px] md:pb-28">
-      <div className="flex flex-col gap-1 border-t border-rule pt-5 md:flex-row md:items-baseline md:justify-between">
-        <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{stats.eyebrow}</h2>
-        <p className="hidden text-sm text-muted md:block">{stats.caption}</p>
-      </div>
-
-      <div className="hidden grid-cols-5 gap-4 md:grid">
-        {stats.items.map((item) => (
-          <div key={item.label} className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface p-6">
-            <span className="font-display text-4xl font-medium tracking-tight text-ink">{item.value}</span>
-            <span className="text-sm font-semibold text-ink">{item.label}</span>
-            <span className="text-sm text-muted">{item.context}</span>
-          </div>
-        ))}
-      </div>
-
-      <div data-testid="mobile-stats-grid" className="grid grid-cols-2 gap-2.5 md:hidden">
-        {mobileItems.map((item) => (
-          <div key={item.label} className="flex flex-col gap-2 rounded-[10px] border border-border bg-surface p-4">
-            <span className="font-display text-2xl font-medium tracking-tight text-ink">{item.value}</span>
-            <span className="text-xs text-muted">{item.mobileText}</span>
-          </div>
-        ))}
+    <section aria-labelledby="stats-heading" className="on-dark-band bg-dark py-20 text-dark-ink tab:py-[136px]">
+      <div className={wrapClasses}>
+        <h2 id="stats-heading" className="text-sm font-medium tracking-[0.01em] text-dark-muted">
+          {stats.eyebrow}
+        </h2>
+        <ul className="mt-9 mb-11 grid grid-cols-1 gap-9 tab:mt-14 tab:mb-16 tab:grid-cols-2 tab:gap-x-8 tab:gap-y-[72px] mid:grid-cols-3">
+          {stats.items.map((item) => (
+            <li key={item.label} className="grid content-start gap-2.5 border-t border-dark-edge pt-[22px]">
+              <p className="font-display text-[clamp(48px,5.2vw,72px)] leading-none font-semibold tracking-[-0.045em]">
+                {item.value}
+              </p>
+              {item.mobileText ? (
+                <>
+                  <p className="hidden text-lg font-medium tab:block">{item.label}</p>
+                  <p className="hidden text-[15px] text-dark-muted tab:block">{item.context}</p>
+                  <p className="text-lg font-medium tab:hidden">{item.mobileText}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-lg font-medium">{item.label}</p>
+                  <p className="text-[15px] text-dark-muted">{item.context}</p>
+                </>
+              )}
+            </li>
+          ))}
+          <li className="grid content-end gap-2.5 border-t border-dark-edge pt-[22px]">
+            <p className="text-sm text-dark-muted">{stats.caption}</p>
+          </li>
+        </ul>
       </div>
     </section>
   );

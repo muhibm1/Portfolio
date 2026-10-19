@@ -26,7 +26,7 @@ export default function CaseStudyFlowDiagram({ columns, steps }) {
         <li key={index} className={stepClasses(step)} data-gate={step.gate ? 'true' : undefined}>
           <span className="font-display text-sm font-semibold break-words hyphens-auto">{step.title}</span>
           {step.note && (
-            <span className={`text-xs ${step.gate ? 'text-on-dark-tertiary' : 'text-muted'}`}>{step.note}</span>
+            <span className={`text-xs ${step.gate ? 'text-dark-muted' : 'text-muted'}`}>{step.note}</span>
           )}
         </li>
       ))}
@@ -36,7 +36,7 @@ export default function CaseStudyFlowDiagram({ columns, steps }) {
 
 function stepClasses(step) {
   const base = 'flex min-w-0 flex-col gap-1 rounded-lg border p-3';
-  const tone = step.gate ? 'border-ink bg-ink text-on-dark' : 'border-border bg-surface text-ink';
+  const tone = step.gate ? 'border-ink bg-dark text-dark-ink' : 'border-line bg-surface text-ink';
   const style = step.dashed ? 'border-dashed' : '';
   return [base, tone, style].filter(Boolean).join(' ');
 }
@@ -62,9 +62,9 @@ export function CaseStudyHubDiagram({ left, edge, hub, right }) {
 
 function DiagramNode({ title, note, dark }) {
   return (
-    <div className={`rounded-lg border p-4 ${dark ? 'border-ink bg-ink text-on-dark' : 'border-border bg-surface text-ink'}`}>
+    <div className={`rounded-lg border p-4 ${dark ? 'border-ink bg-dark text-dark-ink' : 'border-line bg-surface text-ink'}`}>
       <span className="block font-display text-sm font-semibold">{title}</span>
-      {note && <span className={`block text-xs ${dark ? 'text-on-dark-tertiary' : 'text-muted'}`}>{note}</span>}
+      {note && <span className={`block text-xs ${dark ? 'text-dark-muted' : 'text-muted'}`}>{note}</span>}
     </div>
   );
 }

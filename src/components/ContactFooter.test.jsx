@@ -13,14 +13,14 @@ describe('ContactFooter', () => {
     expect(footerLinkHrefs()).toContain(`mailto:${personal.email}`);
   });
 
-  it('links to exactly email and LinkedIn, with no resume or GitHub control', () => {
+  it('links to exactly email, LinkedIn and the one public-code line (the Look moves the GitHub mention here from the header), with no resume control', () => {
     render(<ContactFooter />);
 
     const hrefs = footerLinkHrefs();
-    expect(hrefs).toHaveLength(2);
+    expect(hrefs).toHaveLength(3);
     expect(hrefs).toContain(`mailto:${personal.email}`);
     expect(hrefs).toContain(personal.linkedin);
-    expect(hrefs).not.toContain(personal.github);
+    expect(hrefs).toContain(home.hero.codeLine.href);
     expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
   });
 
