@@ -65,7 +65,10 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'ascii-2x.txt', text: '2x faster' },
   { fileName: 'plus-fifty-two-percent.txt', text: 'saw a +52% jump' },
   { fileName: 'timing-figure.txt', text: 'the query took 1.5s' },
-  { fileName: 'paddock-retirement.txt', text: 'Paddock was retired last quarter.' },
+  // 2026-10-19: the owner removed Paddock from the site, so the plain word is banned. The
+  // retirement-wording fixture ('Paddock was retired last quarter.') now hits two terms and is
+  // covered by its own test below, not by this one-hit-per-file list.
+  { fileName: 'paddock-plain.txt', text: 'Paddock runs the same path' },
   // 2026-09-29 integration and decision case studies (G8, R163): one rendering per new global term.
   { fileName: 'crossed-team.txt', text: 'crossed team lines' },
   { fileName: 'fully-manual.txt', text: 'a fully manual process' },
@@ -380,8 +383,10 @@ describe('forbidden-copy file scan', () => {
     expect(hitLines).toEqual([]);
   });
 
-  // E4: the Paddock pattern requires both words in the same sentence, either order.
-  it('does not match "dropped" and "Paddock" in different sentences', () => {
+  // E4, revised 2026-10-19: the retirement pattern still requires both words in the same
+  // sentence, either order. A lone "Paddock" in another sentence now hits only the plain-word
+  // term, because the owner removed Paddock from the site.
+  it('hits only the plain Paddock term, not the retirement wording, when "dropped" and "Paddock" are in different sentences', () => {
     const noPaddockPath = writeFixture('studbook-dropped.txt', 'Studbook dropped a duplicated model pass.\n');
     const differentSentencePath = writeFixture(
       'dropped-then-paddock.txt',
@@ -391,7 +396,37 @@ describe('forbidden-copy file scan', () => {
     const { hitLines } = scanFiles([noPaddockPath, differentSentencePath], matchers);
 
     expect(hitLines.some((line) => line.includes('studbook-dropped.txt'))).toBe(false);
-    expect(hitLines.some((line) => line.includes('dropped-then-paddock.txt'))).toBe(false);
+    const differentSentenceHits = hitLines.filter((line) => line.includes('dropped-then-paddock.txt'));
+    expect(differentSentenceHits).toHaveLength(1);
+    expect(differentSentenceHits[0]).toMatch(/: Paddock$/);
+  });
+
+  it('bans the plain word Paddock in any file, in either case, as a whole word', () => {
+    const upperPath = writeFixture('paddock-upper.txt', 'Paddock\n');
+    const lowerPath = writeFixture('paddock-lower.txt', 'the paddock app\n');
+    const insidePath = writeFixture('paddocks.txt', 'paddocks and fences\n');
+
+    const { hitLines } = scanFiles([upperPath, lowerPath, insidePath], matchers);
+
+    expect(hitLines.filter((line) => line.includes('paddock-upper.txt'))).toHaveLength(1);
+    expect(hitLines.filter((line) => line.includes('paddock-lower.txt'))).toHaveLength(1);
+    expect(hitLines.some((line) => line.includes('paddocks.txt'))).toBe(false);
+  });
+
+  it('reports both the plain term and the retirement wording for a retirement sentence about Paddock', () => {
+    const fixturePath = writeFixture('paddock-retirement.txt', 'Paddock was retired last quarter.\n');
+
+    const hits = hitsFor(fixturePath, matchers);
+
+    expect(hits).toHaveLength(2);
+    expect(hits.some((line) => line.endsWith(': Paddock'))).toBe(true);
+    expect(hits.some((line) => line.endsWith(': Paddock retirement wording'))).toBe(true);
+  });
+
+  it('finds the word Paddock in no file of the real src tree or index.html', () => {
+    const { hitLines } = scanFiles(realSourceFiles(), buildMatchers(['Paddock']));
+
+    expect(hitLines).toEqual([]);
   });
 
   it('matches Paddock retirement wording in either order within one sentence', () => {
@@ -751,3 +786,14 @@ describe('check-forbidden-copy entry', () => {
     expect(elapsedMs).toBeLessThan(2000);
   });
 });
+
+// Every file under src/ plus index.html, the same default scope scripts/forbidden-copy.mjs scans
+// (test files are skipped by scanFiles itself).
+function realSourceFiles() {
+  const sourceDirectory = path.join(REPOSITORY_ROOT, 'src');
+  const sourceFiles = fs
+    .readdirSync(sourceDirectory, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => path.join(entry.parentPath, entry.name));
+  return [...sourceFiles, path.join(REPOSITORY_ROOT, 'index.html')];
+}

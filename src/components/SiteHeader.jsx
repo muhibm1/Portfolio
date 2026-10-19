@@ -1,12 +1,12 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { portfolioData } from '../data/portfolioData';
-import { navLinkClasses, secondaryButtonClasses } from './buttonClasses';
+import { wrapClasses } from './lookClasses';
+import ThemeButton from './ThemeButton';
 
 // R133. On the home page the links jump to sections on the page; everywhere else they point back
 // at home, the work index, and the current page's own contact anchor.
 const HOME_LINKS = [
-  { label: 'Case studies', href: '#work' },
+  { label: 'Work', href: '#work' },
   { label: 'How I work', href: '#approach' },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
@@ -18,111 +18,65 @@ const OTHER_ROUTE_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
-const MOBILE_MENU_PANEL_ID = 'mobile-menu-panel';
+const navLink = 'inline-flex min-h-11 items-center text-[13.5px] text-ink-2 no-underline transition-colors hover:text-ink tab:text-sm';
 
+/**
+ * The sticky header of the Look: name and role, the section links, the email address and the
+ * light and dark switch. On a phone it is two rows (name and email, then links and switch).
+ */
 export default function SiteHeader() {
   const { personal } = portfolioData;
   const { pathname } = useLocation();
-  const isHome = pathname === '/';
-  const links = isHome ? HOME_LINKS : OTHER_ROUTE_LINKS;
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const closeMenu = () => setIsMenuOpen(false);
+  const links = pathname === '/' ? HOME_LINKS : OTHER_ROUTE_LINKS;
 
   return (
-    <header className="relative border-b border-border px-5 py-4 md:px-[120px] md:py-6">
-      <div className="flex items-center justify-between">
-        <Link to="/" onClick={closeMenu} className="flex flex-col gap-0.5 text-ink no-underline">
-          <span className="font-display text-lg font-semibold">{personal.name}</span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
-            {personal.headerEyebrow}
-          </span>
+    <header className="sticky top-0 z-20 border-b border-hairline bg-page">
+      <div
+        className={`${wrapClasses} grid min-h-[60px] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-3 pt-2 tab:grid-cols-[auto_1fr_auto_auto] tab:gap-x-6 tab:pt-0`}
+      >
+        <Link
+          to="/"
+          className="col-[1/2] row-start-1 flex flex-col leading-[1.2] text-ink no-underline tab:col-[1]"
+        >
+          <span className="font-display text-base font-semibold tracking-[-0.01em]">{personal.name}</span>
+          <span className="text-[13px] text-muted">{personal.headerEyebrow}</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav
+          aria-label="Sections"
+          className="col-[1/3] row-start-2 mt-2 flex justify-between gap-2 border-t border-hairline py-0.5 tab:col-[2] tab:row-start-1 tab:mt-0 tab:justify-center tab:gap-7 tab:border-t-0 tab:py-0"
+        >
           {links.map((link) => (
-            <HeaderLink key={link.label} link={link} className={navLinkClasses} />
+            <HeaderLink key={link.label} link={link} />
           ))}
-          <GitHubLink href={personal.github} name={personal.name} className={secondaryButtonClasses} />
         </nav>
 
-        <button
-          type="button"
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={isMenuOpen}
-          aria-controls={MOBILE_MENU_PANEL_ID}
-          onClick={() => setIsMenuOpen((open) => !open)}
-          className="flex h-11 w-11 items-center justify-center rounded-lg border border-rule md:hidden"
+        <a
+          href={`mailto:${personal.email}`}
+          className="col-[2/4] row-start-1 justify-self-end font-mono text-[12.5px] text-ink no-underline hover:text-ink tab:col-[3] tab:text-sm"
         >
-          <MenuIcon />
-        </button>
-      </div>
+          {personal.email}
+        </a>
 
-      {/* Stays mounted at all times (hidden when closed) so aria-controls on the toggle button
-          always resolves to a real element, open or closed (review group 3). */}
-      <div
-        id={MOBILE_MENU_PANEL_ID}
-        data-testid="mobile-menu-panel"
-        hidden={!isMenuOpen}
-        className="flex flex-col gap-4 border-t border-border bg-ground px-1 py-4 md:hidden"
-      >
-        {links.map((link) => (
-          <HeaderLink key={link.label} link={link} className={navLinkClasses} onClick={closeMenu} />
-        ))}
-        <GitHubLink
-          href={personal.github}
-          name={personal.name}
-          className={secondaryButtonClasses}
-          onClick={closeMenu}
-        />
+        <div className="col-[3] row-start-2 mt-2 justify-self-end tab:col-[4] tab:row-start-1 tab:mt-0">
+          <ThemeButton />
+        </div>
       </div>
     </header>
   );
 }
 
-function HeaderLink({ link, className, onClick }) {
+function HeaderLink({ link }) {
   if (link.to) {
     return (
-      <Link to={link.to} onClick={onClick} className={className}>
+      <Link to={link.to} className={navLink}>
         {link.label}
       </Link>
     );
   }
   return (
-    <a href={link.href} onClick={onClick} className={className}>
+    <a href={link.href} className={navLink}>
       {link.label}
     </a>
-  );
-}
-
-// R133: the external link to the GitHub profile, shown on every route.
-function GitHubLink({ href, name, className, onClick }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${name} on GitHub`}
-      onClick={onClick}
-      className={className}
-    >
-      GitHub
-    </a>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M3 6h14M3 10h14M3 14h14" />
-    </svg>
   );
 }

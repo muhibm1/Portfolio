@@ -287,10 +287,6 @@ const pinnedMcpParagraphs = [
   "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On Postgres every query runs as a read-only role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
 ];
 
-// R154, D44: the mockup's line 177, verbatim.
-const pinnedPaddockParagraph =
-  "Paddock, an earlier desktop app, ran the same query path in TypeScript. A parity gate checked it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated. Measured runs then showed the app itself cost hours, because it kept its own copies of things the pipeline owns and they drifted. It was replaced by one terminal command, approvals on the pull request from a phone, and a LangSmith trace of every run.";
-
 // R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
 const pinnedMeasuredFirstParagraph =
   "The first version had five human checkpoints, and it felt safe. I didn't redesign it from impressions. Timestamps from those runs showed that two thirds of the time a change spent in the pipeline was a person waiting at a checkpoint with nothing to decide. More gates were not making it safer, only slower.";
@@ -328,7 +324,6 @@ const pinnedStudbookSplitStats = ["100%", "3 of 3", "2 to 11", "9 of 12"];
 const pinnedRepositories = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
-  paddock: "https://github.com/muhibm1/paddock-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
@@ -656,12 +651,22 @@ describe("portfolioData", () => {
     expect(mcp.blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
   });
 
-  it("carries the Paddock paragraph verbatim, with Paddock linked to its snapshot (R154, D44, replaced 2026-10-13)", () => {
+  it("keeps the old desktop app out of the Studbook section and the repository list, because the owner removed it on 2026-10-19", () => {
     const studbook = findSection(portfolioData.caseStudies[0], "studbook");
-    const paddockBlock = studbook.blocks.find((block) => block.text === pinnedPaddockParagraph);
+    const studbookText = collectStrings(studbook).join("\n");
 
-    expect(paddockBlock).toBeDefined();
-    expect(paddockBlock.link).toEqual({ text: "Paddock", href: pinnedRepositories.paddock });
+    expect(studbookText).not.toMatch(/paddock/i);
+    expect(studbook.blocks.some((block) => block.link?.href?.includes("paddock"))).toBe(false);
+    expect(Object.keys(portfolioData.personal.repositories)).not.toContain("paddock");
+    expect(Object.values(portfolioData.personal.repositories).join(" ")).not.toMatch(/paddock/i);
+  });
+
+  it("ends the Studbook section's blocks on the conversations paragraph now that nothing follows it", () => {
+    const studbook = findSection(portfolioData.caseStudies[0], "studbook");
+    const lastBlock = studbook.blocks.at(-1);
+
+    expect(lastBlock.type).toBe("paragraph");
+    expect(lastBlock.text.startsWith("Conversations work too.")).toBe(true);
   });
 
   it("carries the `measured` first and last paragraphs verbatim, five runs and the first-four-run closing sentence (R154, D41, D43, D47, D50, D53)", () => {
@@ -718,7 +723,7 @@ describe("portfolioData", () => {
     expect(splitBlock.table.rows.at(-1).cells[0]).toBe("Hybrid + reranker, pool of 10 (shipped)");
   });
 
-  it("names personal.repositories with the four snapshot URLs and the two public repositories, held once (R153)", () => {
+  it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
@@ -772,17 +777,13 @@ describe("portfolioData", () => {
     expect(allText).not.toMatch(timingFigure);
   });
 
-  it("never says Paddock is retired, deprecated or dropped (R138, R156, D44)", () => {
-    // Mirrors R156's "Paddock retirement wording" pattern: paddock and a retirement word in the
-    // same sentence, either order, case-insensitive.
-    const retirementWords = /retired|retire\b|retirement|deprecated|dropped|dropping|discontinued|abandoned/i;
-    const sentences = collectStrings(portfolioData).join(" ").split(/(?<=[.!?])\s+/);
+  it("carries the word Paddock nowhere in the content module, because the owner removed it from the site on 2026-10-19", () => {
+    // Replaces the 2026-09 rule that Paddock must never be called retired: it is now not
+    // mentioned at all, in any sentence, link, key or comment-free string.
+    const allText = collectStrings(portfolioData).join("\n");
 
-    for (const sentence of sentences) {
-      if (/paddock/i.test(sentence)) {
-        expect(sentence).not.toMatch(retirementWords);
-      }
-    }
+    expect(allText).not.toMatch(/paddock/i);
+    expect(JSON.stringify(portfolioData)).not.toMatch(/paddock/i);
   });
 
   it("writes the edX bullet as 1:1 mentorship, never 1 Technical Mentorship (R138, G14)", () => {
@@ -952,7 +953,7 @@ describe("portfolioData", () => {
     );
   });
 
-  it("says plugin nowhere and carries the Studbook subtitle, with the MCP and Paddock copy unchanged (R9)", () => {
+  it("says plugin nowhere and carries the Studbook subtitle, with the MCP copy unchanged (R9)", () => {
     const workhorse = findCaseStudy("workhorse");
 
     expect(collectStrings(workhorse).join("\n")).not.toMatch(/\bplugins?\b/i);
@@ -1035,5 +1036,35 @@ describe("portfolioData", () => {
     for (const note of allNotes) {
       expect(note).not.toMatch(/\bvia\b/i);
     }
+  });
+});
+
+// TG-06: the home page's AgentOps replay reads every word from the homeReplay record.
+describe("homeReplay (TG-06)", () => {
+  const replay = portfolioData.homeReplay;
+
+  it("lists the nine steps in the order the run takes them", () => {
+    expect(replay.steps.map((step) => step.id)).toEqual([
+      "alert", "triage", "evidence", "merge", "rca", "approval", "execute", "verify", "postmortem",
+    ]);
+  });
+
+  it("gives every step a label and a log entry, so the text reads without any animation", () => {
+    for (const step of replay.steps) {
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(replay.log[step.id]).toBeDefined();
+    }
+  });
+
+  it("names the clean_bad_deploy scenario it is taken from", () => {
+    expect(replay.scenario).toBe("clean_bad_deploy");
+  });
+
+  it("skips to the AgentOps section on the page", () => {
+    expect(replay.skip.href).toBe("#agentops");
+  });
+
+  it("never mentions Paddock anywhere in the site data", () => {
+    expect(JSON.stringify(portfolioData)).not.toMatch(/paddock/i);
   });
 });

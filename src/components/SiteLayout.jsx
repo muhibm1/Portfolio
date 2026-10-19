@@ -11,7 +11,7 @@ export default function SiteLayout() {
   usePageTitle();
 
   return (
-    <div className="min-h-screen bg-ground font-sans text-body antialiased selection:bg-ink selection:text-on-dark">
+    <div className="min-h-screen bg-page font-sans text-ink antialiased selection:bg-ink selection:text-on-ink">
       <SiteHeader />
       <Outlet />
     </div>

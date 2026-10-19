@@ -32,9 +32,10 @@ shape. In summary, **confirmed** by reading the tree at this change's head:
   silently.
 - The resume PDF planned during the build was withdrawn on 2026-09-28 and never published (D24);
   no PDF is served from the site or committed to this repository; `docs/hosted-config.md`
-  section 6a records the withdrawal. GitHub appears instead as a code link: three public snapshot
-  repositories (WorkHorse, Studbook, Paddock) are linked wherever that work is discussed, and the
-  header carries a GitHub link on every page.
+  section 6a records the withdrawal. GitHub appears instead as a code link: the public snapshot
+  repositories (WorkHorse, Studbook, AgentOps) are linked wherever that work is discussed. Since the
+  2026-10-19 Look the header carries no GitHub link; the contact band's last line points at the
+  profile.
 
 ---
 

@@ -11,7 +11,7 @@
 //
 // Shape: personal (contact, header facts and the public repositories), home
 // (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
-// toolkit, contact), caseStudies (seven, in the plan's reading order, each carrying card,
+// toolkit, contact), homeReplay (the home page's AgentOps replay, 2026-10-19), caseStudies (seven, in the plan's reading order, each carrying card,
 // atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
 // may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
@@ -24,13 +24,13 @@
 // AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
 // Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
 
-// The four public snapshot repositories, held once (R153) and referenced from every place the
-// work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
+// The three public snapshot repositories, held once (R153) and referenced from every place the
+// work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
+// desktop app was removed from the site on 2026-10-19 at his word.
 // Flywheel and the Studbook agent (added 2026-10-13) are public repositories, not snapshots.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
-  paddock: "https://github.com/muhibm1/paddock-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
@@ -265,6 +265,211 @@ export const portfolioData = {
       mobileEmailButton: "Email me",
       linkedinButton: "LinkedIn",
       location: "Austin, TX · Open to relocation and remote",
+    },
+  },
+
+  // The AgentOps replay on the home page (src/components/AgentOpsReplay.jsx). Every value is the
+  // recorded sample run of the AgentOps scenario clean_bad_deploy (scenarios/clean_bad_deploy.json
+  // in the agentops repository, run with the scripted model): its service, symptoms, log lines,
+  // metric points, deploy record, the scripted triage and rca outputs, the runbook's two
+  // preconditions for rollback_deploy, and the status, evidence and budget counts the history and
+  // report commands print for that run. Times are shortened to hours and minutes. Nothing is
+  // invented for the page; the words around the values (labels, hints) are plain interface text.
+  homeReplay: {
+    scenario: "clean_bad_deploy",
+    name: "AgentOps",
+    regionLabel: "AgentOps replay",
+    note: "Replay of a recorded run with a scripted model, not a live model.",
+    skip: { text: "Skip to the page", href: "#agentops" },
+    stepsLabel: "Steps of the run",
+    logLabel: "Agent log",
+    logHeading: "agent log",
+    stageLabel: "Current step",
+    previewTag: "Preview",
+    logPrefix: { next: "next", audit: "audit", note: "page note" },
+    states: {
+      investigating: "Investigating",
+      waiting: "Waiting for you",
+      preview: "Preview",
+      rejected: "No action applied",
+      applying: "Applying",
+      resolved: "Resolved",
+    },
+    controls: {
+      play: "Play",
+      pause: "Pause",
+      next: "Next step",
+      jump: "Jump to the decision",
+      back: "Back to the decision",
+      replay: "Replay",
+      approve: "Approve",
+      reject: "Reject",
+      hintWaiting: "Approve or Reject to continue.",
+      hintPreview: "Preview from the recorded run. Your decision is still open.",
+    },
+    announce: {
+      waiting: "The agent stopped. It is waiting for your decision.",
+      step: "Step {n}, {label}.",
+      stepPreview: "Step {n}, {label}, a preview from the recorded run. Your decision is still open.",
+      endPreview: "End of the preview. Your decision is still open.",
+      resolved: "Resolved.",
+      rejected: "No action was applied. Your decision is recorded.",
+      approvedResolved: "Approved. The run is resolved.",
+      approvedRunning: "Approved. The agent is running the action.",
+    },
+    steps: [
+      { id: "alert", label: "Alert" },
+      { id: "triage", label: "Triage" },
+      { id: "evidence", label: "Evidence" },
+      { id: "merge", label: "Merge" },
+      { id: "rca", label: "Root cause" },
+      { id: "approval", label: "Approval" },
+      { id: "execute", label: "Execute" },
+      { id: "verify", label: "Verify" },
+      { id: "postmortem", label: "Postmortem" },
+    ],
+    alert: {
+      stamp: "2026-03-10T10:30:00Z",
+      serviceLabel: "service",
+      service: "checkout",
+      symptoms: ["checkout error rate 12% since 10:13", "p99 latency doubled since 10:13"],
+      metric: "error_rate",
+      change: "0.002 → 0.12",
+      rangeLabel: "10:00 to 10:30",
+      chartLabel: "error_rate rising from 0.002 to 0.12",
+    },
+    metrics: {
+      errorRate: [
+        { at: "10:00", value: 0.002 },
+        { at: "10:10", value: 0.002 },
+        { at: "10:15", value: 0.07 },
+        { at: "10:20", value: 0.11 },
+        { at: "10:25", value: 0.12 },
+        { at: "10:30", value: 0.12 },
+      ],
+      errorRateAfterRollback: [
+        { at: "10:40", value: 0.004 },
+        { at: "10:45", value: 0.002 },
+      ],
+      p99Before: { from: 210, to: 425 },
+      p99After: { from: 230, to: 212 },
+      poolUtilisation: { name: "db_pool_utilisation", from: "0.40", to: "0.40" },
+      errorRateName: "error_rate",
+    },
+    triage: {
+      note: "first guesses, before any evidence",
+      hypotheses: [
+        { name: "recent_deploy_regression", score: 0.7 },
+        { name: "database_saturation", score: 0.2 },
+      ],
+      next: "next logs,metrics,deploys",
+    },
+    evidence: {
+      note: "three readers at once",
+      logs: {
+        label: "logs",
+        lines: [
+          { id: "log-002", at: "10:12:31", level: "INFO", message: "checkout-api-7f3 started version v2.15.0" },
+          { id: "log-003", at: "10:13:12", level: "ERROR", message: "KeyError: 'shipping_option' in handle_shipping_selection (order_id=ord-58211)", lift: true },
+          { id: "log-004", at: "10:15:40", level: "ERROR", message: "KeyError: 'shipping_option' in handle_shipping_selection (order_id=ord-58240)" },
+          { id: "log-005", at: "10:18:02", level: "ERROR", message: "KeyError: 'shipping_option' in handle_shipping_selection (order_id=ord-58297)" },
+          { id: "log-008", at: "10:28:00", level: "INFO", message: "checkout-api-7f3 database connections in use 26 of 64" },
+        ],
+      },
+      metrics: { label: "metrics", p99Label: "p99 latency", change: "0.002 → 0.12" },
+      deploys: {
+        label: "deploys",
+        id: "deploy-001",
+        from: "v2.14.3",
+        to: "v2.15.0",
+        at: "10:12:00",
+        author: "ci-bot",
+        diff: "Adds handle_shipping_selection, which reads request['shipping_option'] to price express and standard shipping.",
+      },
+    },
+    merge: {
+      chips: ["logs", "metrics", "deploys"],
+      count: 14,
+      countLabel: "evidence",
+      foot: "top recent_deploy_regression (0.70), database_saturation (0.20)",
+    },
+    rca: {
+      cause: "Version v2.15.0 (deploy-001) added a handler that reads shipping_option without a default; from 10:13 every request missing that key fails with KeyError (log-003). Database pool utilisation stayed flat at 0.40.",
+      citedLabel: "Cited",
+      cites: ["deploy-001", "log-003"],
+      hypotheses: [
+        { name: "recent_deploy_regression", from: 0.7, score: 0.9 },
+        { name: "database_saturation", from: 0.2, score: 0.1 },
+      ],
+    },
+    approval: {
+      kick: "The agent stopped. It is waiting for you.",
+      kickApproved: "You approved this action.",
+      proposedLabel: "Proposed action",
+      action: "rollback_deploy on deploy-001 (risk high)",
+      pending: "Would apply rollback_deploy to deployment deploy-001 with no parameters (risk high); nothing changes until an operator approves.",
+      budgetLabel: "Budget",
+      budget: "8 of 12 left",
+      statusLabel: "Status",
+      status: "awaiting_approval",
+    },
+    execute: {
+      note: "checks first, then one apply",
+      checks: [
+        { kind: "precondition · deployment_within_minutes", text: "The latest deployment is 18 minutes old, within the 120 minute limit." },
+        { kind: "precondition · previous_version_available", text: "Previous version v2.14.3 is available." },
+        { kind: "apply", text: "Applied rollback_deploy to deploy-001." },
+      ],
+    },
+    verify: {
+      note: "round 1",
+      metric: "error_rate",
+      chartLabel: "error_rate falling back to 0.002 after the rollback",
+      sequence: "0.12 → 0.004 → 0.002",
+      p99: "p99 latency 230 → 212",
+      logLine: { id: "log-009", at: "10:38:10", level: "INFO", message: "checkout-api-7f3 started version v2.14.3" },
+    },
+    postmortem: {
+      status: "resolved",
+      summary: "Version v2.15.0 of checkout read shipping_option without a default, so every request missing that key failed. Rolling back the deployment restored the error rate and latency.",
+      metric: "error_rate",
+      chartLabel: "error_rate before and after the rollback",
+      from: "0.12",
+      to: "0.002",
+    },
+    rejected: {
+      kick: "Rejected",
+      text: "No action was applied. Your decision is recorded.",
+      declinedLabel: "The root cause it had proposed",
+    },
+    log: {
+      alert: [{ type: "next", key: "__start__", value: "status none · evidence 0" }],
+      triage: [{ type: "next", key: "triage", value: "status triage · evidence 0" }],
+      evidence: [{ type: "next", key: "logs,metrics,deploys", value: "status investigating · top recent_deploy_regression (0.70), database_saturation (0.20)" }],
+      merge: [{ type: "next", key: "merge", value: "status investigating · evidence 14" }],
+      rca: [{ type: "next", key: "rca", value: "status investigating · evidence 14" }],
+      approval: [
+        { type: "next", key: "approval", value: "status awaiting_approval · top recent_deploy_regression (0.90), database_saturation (0.10)" },
+        { type: "audit", key: "proposal", value: "rollback_deploy on deploy-001 · risk high · evidence deploy-001, log-003" },
+      ],
+      execute: [
+        { type: "audit", key: "approval", value: "decision approve" },
+        { type: "next", key: "execute", value: "status remediating · evidence 14" },
+        { type: "audit", key: "precondition", value: "deployment_within_minutes · passed" },
+        { type: "audit", key: "precondition", value: "previous_version_available · passed" },
+        { type: "audit", key: "dry_run", value: "rollback_deploy on deploy-001" },
+        { type: "audit", key: "apply", value: "applied · ok" },
+      ],
+      verify: [
+        { type: "next", key: "verify", value: "status verifying · evidence 15" },
+        { type: "audit", key: "verify", value: "round 1 · cleared" },
+      ],
+      postmortem: [
+        { type: "next", key: "postmortem", value: "status verifying · evidence 18" },
+        { type: "next", key: "end", value: "status resolved · evidence 18" },
+      ],
+      rejected: [{ type: "note", key: "your decision", value: "reject · no action applied" }],
+      preview: [{ type: "note", key: "preview", value: "the recorded run after its approval · your decision is still open" }],
     },
   },
 
@@ -771,12 +976,6 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Conversations work too. A follow-up like \"was it ever fixed?\" means nothing to a search engine on its own, so a small model rewrites it into a standalone question first, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Paddock, an earlier desktop app, ran the same query path in TypeScript. A parity gate checked it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated. Measured runs then showed the app itself cost hours, because it kept its own copies of things the pipeline owns and they drifted. It was replaced by one terminal command, approvals on the pull request from a phone, and a LangSmith trace of every run.",
-              link: { text: "Paddock", href: REPOSITORIES.paddock },
             },
           ],
         },

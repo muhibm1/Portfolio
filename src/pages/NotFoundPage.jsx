@@ -8,10 +8,10 @@ export default function NotFoundPage() {
     <>
       <main className="min-h-screen bg-ground px-5 pt-40 pb-20 md:px-[120px]">
         <div className="mx-auto flex max-w-3xl flex-col gap-6">
-          <h1 className="font-display text-4xl font-medium tracking-tight text-ink sm:text-6xl">
+          <h1 className="font-display text-4xl font-semibold tracking-[-0.03em] text-ink sm:text-6xl">
             Page not found
           </h1>
-          <p className="text-base text-body">There is no page at this address.</p>
+          <p className="text-base text-ink-2">There is no page at this address.</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/" className={primaryButtonClasses}>
               Back to home

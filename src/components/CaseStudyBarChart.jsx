@@ -22,19 +22,19 @@ function BarChart({ chart }) {
     throw new Error(`Bar chart "${chart.title}" needs at least one positive value.`);
   }
   return (
-    <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface p-5">
+    <div className="flex flex-col gap-3 rounded-[10px] border border-line bg-surface p-5">
       <p className="font-display text-sm font-semibold text-ink">{chart.title}</p>
       <ul className="flex flex-col gap-3">
         {chart.items.map((item) => (
           <li key={item.label} className="flex flex-col gap-1" title={`${item.label}: ${item.display}`}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className="text-body">{item.label}</span>
+              <span className="text-ink-2">{item.label}</span>
               <span className="font-medium text-ink">{item.display}</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-ground" aria-hidden="true">
+            <div className="h-2 w-full rounded-full bg-surface-2" aria-hidden="true">
               <div
                 data-testid="bar"
-                className="h-2 rounded-full bg-accent"
+                className="h-2 rounded-full bg-ink"
                 style={{ width: `${Math.max(2, Math.round((item.value / max) * 100))}%` }}
               />
             </div>

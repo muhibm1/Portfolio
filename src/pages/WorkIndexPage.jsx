@@ -1,4 +1,5 @@
 import CaseStudyCards from '../components/CaseStudyCards';
+import { wrapClasses } from '../components/lookClasses';
 import ContactFooter from '../components/ContactFooter';
 import { portfolioData } from '../data/portfolioData';
 import { pageMetaFor } from '../pageMeta';
@@ -18,7 +19,7 @@ export default function WorkIndexPage() {
 
   return (
     <>
-      <main className="px-5 pt-32 pb-20 md:px-[120px] md:pt-40">
+      <main className={`${wrapClasses} pt-32 pb-20 md:pt-40`}>
         <h1 className="sr-only">{PAGE_HEADING}</h1>
         <CaseStudyCards caseStudies={caseStudies} />
       </main>
