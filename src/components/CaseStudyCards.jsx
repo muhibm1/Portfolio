@@ -26,7 +26,7 @@ export default function CaseStudyCards({ caseStudies }) {
 }
 
 function FeaturedCard({ study }) {
-  const { card, codeLink } = study;
+  const { card, codeLink, status } = study;
 
   return (
     <article className={`${cardBase} grid grid-cols-1 gap-[26px] px-5 py-6 tab:p-8 wide:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] wide:gap-10 wide:p-11`}>
@@ -56,6 +56,7 @@ function FeaturedCard({ study }) {
             View the code
           </a>
         )}
+        {!codeLink && status && <p className="text-[15px] text-ink-2">{status}</p>}
       </div>
       <ul className="grid grid-cols-2 content-center gap-x-6 gap-y-7">
         {card.stats.map((stat) => (
@@ -72,7 +73,7 @@ function FeaturedCard({ study }) {
 }
 
 function GridCard({ study }) {
-  const { card } = study;
+  const { card, codeLink, status } = study;
 
   return (
     <Link
@@ -89,7 +90,8 @@ function GridCard({ study }) {
           </li>
         ))}
       </ul>
-      <span className="mt-auto pt-2 text-[15px] font-medium">
+      {!codeLink && status && <p className="mt-auto text-[13px] text-muted">{status}</p>}
+      <span className={`${!codeLink && status ? '' : 'mt-auto '}pt-2 text-[15px] font-medium`}>
         {card.linkText} <span aria-hidden="true">→</span>
       </span>
     </Link>
