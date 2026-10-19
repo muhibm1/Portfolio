@@ -6,7 +6,10 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { render } from "@testing-library/react";
+import { createElement } from "react";
 import { describe, expect, it } from "vitest";
+import WalkthroughBlock from "../components/WalkthroughBlock.jsx";
 import { portfolioData } from "./portfolioData.js";
 import { staticRoutePaths } from "../routePaths.js";
 // R156's term list and matcher functions live in scripts/forbidden-copy.mjs; this test imports
@@ -1105,18 +1108,59 @@ describe("the Orion case study (TG-07)", () => {
   const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
   const walkthrough = collectBlocks(orion).find((block) => block.type === "walkthrough");
 
-  // Every number the owner's document states, outside the sentences left out. Model names such as
-  // "Sonnet 5.5" are removed before counting, and so are digits stuck to letters, as in the
-  // project name h3.
-  const NUMBERS_IN_THE_DOCUMENT = new Set([
-    "0", "0.39", "0.56", "0.58", "0.72", "0.76", "0.82", "0.83", "0.95", "1", "1.00", "2", "2.77",
-    "3", "4", "5", "6", "7", "8", "9", "12", "16", "18", "19", "20", "21", "27", "30", "39", "42",
-    "45", "50", "60", "80", "87", "90", "95", "100", "150", "621", "625", "2026",
-  ]);
+  // Every figure the owner's document states, as the exact phrase it appears in, so a number cannot
+  // be swapped for another one that happens to appear somewhere else (27 of 45 cannot become
+  // 21 of 45, although 21 Airflow pipelines is true). Sentences left out are not listed.
+  const PHRASES_IN_THE_DOCUMENT = [
+    "0 of 50", "8 of 50", "27 of 45 (60%)", "27 of 45", "87% (39 of 45)", "6 false alarms on 19 correct changes",
+    "625-model", "tier-1", "625 dbt models", "625", "621 of them", "21 Airflow pipelines", "45 real historical bugs",
+    "45 held-out bugs", "from 8 open-source projects", "50-change benchmark", "50-bug tuning set", "60 scenarios",
+    "95 hand-labelled", "0.82 and 0.83", "0.39 with no context", "0.72 to 0.76", "0.56 to 0.58", "1.00", "0.95",
+    "16% with no context", "8 to 18%", "18% to 42%", "100% of relevant", "80% got a warning", "80% or more",
+    "90% or more", "60%", "$2.77", "$3 to $5", "$30 to $60", "2 min 9 s", "20 minutes", "raised 1",
+    "9 got a warning", "3 were raised", "from 45 to about 150", "Hand-check 30", "12 near-misses", "3 or fewer",
+    "one false alarm per 20 correct changes", "October 2026",
+  ];
+  // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
+  // each step's place among them, the plan's step numbers, and the figure caption.
+  const DERIVED_NUMBERS = [
+    /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
+    /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
+    /Step [1-7]\./g, // the plan's own numbering
+    /Fig 1/g, // the figure caption
+    /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
+  ];
 
+  // Model names such as "Sonnet 5.5" are removed before counting, and so are digits stuck to
+  // letters, as in the project name h3.
   function numbersIn(text) {
     const withoutModels = text.replace(/\b(?:Sonnet|Opus|Haiku) 5\.5\b/g, "");
     return withoutModels.match(/(?<![A-Za-z])\d+(?:\.\d+)?/g) ?? [];
+  }
+
+  // The numbers left in a text once every phrase the document states and every derived number is taken out.
+  function unknownNumbersIn(text) {
+    const escape = (phrase) => phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // One pass from the left, so a phrase that starts first is taken whole even where another overlaps it.
+    const phrases = new RegExp([...PHRASES_IN_THE_DOCUMENT].sort((x, y) => y.length - x.length).map(escape).join("|"), "g");
+    let rest = text.replace(phrases, " ");
+    for (const pattern of DERIVED_NUMBERS) rest = rest.replace(pattern, " ");
+    return numbersIn(rest);
+  }
+
+  // All the words a visitor reads or hears from the walkthrough once rendered: text, labels and titles.
+  function renderedWords() {
+    const { container, unmount } = render(createElement(WalkthroughBlock, { block: walkthrough }));
+    const numbering = [...container.querySelectorAll(".wt-n")].map((node) => node.textContent);
+    container.querySelectorAll(".wt-n").forEach((node) => node.remove());
+    const attributes = [...container.querySelectorAll("[aria-label], [title], [alt]")].flatMap((node) => [
+      node.getAttribute("aria-label"),
+      node.getAttribute("title"),
+      node.getAttribute("alt"),
+    ]);
+    const words = [container.textContent, ...attributes.filter(Boolean)].join("\n");
+    unmount();
+    return { words, numbering };
   }
 
   it("is fourth, after Flywheel, with the words Ongoing project and no code link (D2, D10)", () => {
@@ -1126,9 +1170,21 @@ describe("the Orion case study (TG-07)", () => {
     expect(orion).not.toHaveProperty("codeLink");
   });
 
-  it("states only numbers that appear in the owner's document, on the page and in the walkthrough (D3)", () => {
-    const unknown = collectStrings(orion).flatMap(numbersIn).filter((number) => !NUMBERS_IN_THE_DOCUMENT.has(number));
-    expect(unknown).toEqual([]);
+  it("states only figures the owner's document states, in the phrase it states them, on the page and in the walkthrough (D3)", () => {
+    expect(collectStrings(orion).flatMap(unknownNumbersIn)).toEqual([]);
+  });
+
+  it("states only those figures in what the walkthrough renders, including its step counts and the drawing's description (D3)", () => {
+    const { words, numbering } = renderedWords();
+    expect(words).toContain("Step 1 of 13");
+    expect(unknownNumbersIn(words)).toEqual([]);
+    expect(numbering).toEqual(Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, "0")));
+  });
+
+  it("notices a figure that was changed to another one the document also states (D3)", () => {
+    expect(unknownNumbersIn("It caught 27 of 45 real historical bugs.")).toEqual([]);
+    expect(unknownNumbersIn("It caught 21 of 45 real historical bugs.")).toEqual(["21"]);
+    expect(unknownNumbersIn("It made 0 of 50 unsafe decisions, against 9 of 50.")).toEqual(["9", "50"]);
   });
 
   it("leaves out the sentences that use words the copy scan bans, and the sample verdict (D3)", () => {

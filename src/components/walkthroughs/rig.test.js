@@ -60,3 +60,31 @@ describe('the rig (D6)', () => {
     }
   });
 });
+
+// The drawing is placed into the page as raw markup, so it must hold nothing that can run, load or
+// link: only shapes, groups, clip paths and inline presentation styles.
+describe('the committed Orion bench figure is safe to place as raw markup (D5)', () => {
+  it('holds no script, handler, link, embedded content or style element', () => {
+    expect(svg).not.toMatch(/<script/i);
+    expect(svg).not.toMatch(/\son[a-z]+\s*=/i);
+    expect(svg).not.toMatch(/\b(?:xlink:)?href\s*=/i);
+    expect(svg).not.toMatch(/<foreignObject/i);
+    expect(svg).not.toMatch(/<use[\s>/]/i);
+    expect(svg).not.toMatch(/<image[\s>/]/i);
+    expect(svg).not.toMatch(/<style/i);
+    expect(svg).not.toMatch(/data:/i);
+    expect(svg).not.toMatch(/javascript:/i);
+  });
+
+  it('refers to nothing outside itself: every url( is a local #id that exists', () => {
+    const urls = [...svg.matchAll(/url\(([^)]*)\)/gi)].map((match) => match[1].trim());
+    for (const target of urls) {
+      expect(target).toMatch(/^#[A-Za-z][\w-]*$/);
+      expect(svg).toContain(`id="${target.slice(1)}"`);
+    }
+  });
+
+  it('declares no external reference in any attribute', () => {
+    expect(svg).not.toMatch(/(?:https?:)?\/\/(?!www\.w3\.org\/2000\/svg)/i);
+  });
+});

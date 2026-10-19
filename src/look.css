@@ -360,7 +360,10 @@ html { background: var(--page); scroll-padding-top: 76px; }
 .wt-body { display: grid; grid-template-columns: minmax(0, 1fr); }
 .wt-stage { position: relative; overflow: hidden; background: var(--surface); outline: none; padding: 34px 10px 12px; display: flex; flex-direction: column; }
 .wt-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--ink); }
-.wt-ro { position: relative; border-top: 1px solid var(--line); background: var(--surface-log); padding: 16px 14px 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.wt-ro { position: relative; border-top: 1px solid var(--line); background: var(--surface-log); padding: 16px 14px 18px; display: grid; min-width: 0; }
+/* Every step's readout sits in the same grid cell, so the tallest one sets the height for all of them and the page below never moves when the step changes. */
+.wt-ro-step { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; align-content: start; }
+.wt-ro-step:not([data-current]) { visibility: hidden; }
 @container wt (min-width: 900px) {
   .wt-body { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
   .wt-stage { padding: 36px 22px 14px; }
@@ -372,6 +375,9 @@ html { background: var(--page); scroll-padding-top: 76px; }
 .wt-fig-t { right: 0; text-transform: uppercase; letter-spacing: .1em; }
 @container wt (max-width: 759px) { .wt-corner { font-size: 10.5px; } .wt-fig-t { display: none; } }
 .wt-figbox { position: relative; z-index: 1; width: 100%; max-width: 640px; margin: 0 auto; }
+.wt-figfoots { display: grid; }
+.wt-figfoots > .wt-figfoot { grid-area: 1 / 1; }
+.wt-figfoots > .wt-figfoot:not([data-current]) { visibility: hidden; }
 .wt-figfoot { position: relative; z-index: 1; margin-top: 6px; font-family: var(--mono); font-size: 11.5px; line-height: 1.4; letter-spacing: .04em; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 /* The figure. Its stroke widths stay in screen pixels at any size; its blur and lift are written
@@ -458,13 +464,13 @@ html { background: var(--page); scroll-padding-top: 76px; }
 .wt-ctl { min-height: 38px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-mid); background: var(--surface); font-size: 13.5px; cursor: pointer; transition: border-color .2s var(--out); }
 .wt-ctl:hover { border-color: var(--ink); }
 .wt-ctl.wt-primary { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
-.wt-hint { font-size: 13.5px; color: var(--ink-2); flex: 1 0 100%; }
+.wt-hint { font-size: 13.5px; color: var(--ink-2); flex: 1 0 100%; order: 2; }
+.wt-hint:not([data-show]) { visibility: hidden; }
 .wt-again { margin-left: auto; }
-.wt-hint:not([hidden]) + .wt-again { margin-left: 0; }
 @container wt (min-width: 760px) {
   .wt-controls { gap: 8px; padding: 10px 14px; }
   .wt-ctl { padding: 0 16px; font-size: 14px; }
-  .wt-hint { flex: 0 1 auto; margin-right: auto; font-size: 14px; }
+  .wt-hint { font-size: 14px; }
 }
 .wt-legend { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; margin-top: 14px; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 .wt-legend b { font-weight: 500; color: var(--ink-2); }
