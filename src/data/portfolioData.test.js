@@ -29,6 +29,8 @@ const KNOWN_BLOCK_TYPES = new Set([
   // Added 2026-10-13 for the WorkHorse run-ledger chart: one series per chart, every value also
   // written as text, so the set grows by one renderer with its own test file.
   "bars",
+  // Added 2026-10-19 (TG-07) for the Orion walkthrough: a console with a step rail and a figure.
+  "walkthrough",
 ]);
 
 // Copied verbatim from plan section 4.3 (home stats) and plan section 6 (approved facts table).
@@ -68,6 +70,8 @@ const pinnedCaseStudyStats = {
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
+  // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
+  orion: ["0 of 50", "0.82 and 0.83", "27 of 45", "625"],
 };
 
 const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
@@ -275,6 +279,29 @@ const pinnedCaseStudyNarratives = {
       "When an LLM feature misbehaves, the fix is often underneath it: the data going in and the schema holding it. I look there before blaming the prompt, and I own the path all the way to the user's screen.",
     contactHeading: "An LLM feature that won't behave? Let's talk.",
   },
+  // Added 2026-10-19 (TG-07): the Orion study's frame, copied from the owner's own Orion document.
+  orion: {
+    eyebrow: "Case study · Personal system · Code review",
+    title: "Orion: early results",
+    lead:
+      "Orion is a code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it: what the change reaches downstream, which rules protect those parts, who owns them and what broke there before.",
+    atAGlance: [
+      { label: "My role", value: "My own project, built and tested in October 2026" },
+      {
+        label: "What it is",
+        value: "A code reviewer for coding agents and the people who work with them",
+      },
+      { label: "Where it stands", value: "An early, ongoing project" },
+      {
+        label: "Tested on",
+        value:
+          "PipelineBench, 45 real historical bugs from 8 open-source projects, and a 625-model warehouse",
+      },
+    ],
+    calloutEyebrow: "Where Orion stands",
+    calloutText: "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
+    contactHeading: "Hiring for forward deployed engineering? Let's talk.",
+  },
 };
 
 // The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
@@ -392,13 +419,14 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the eight case studies in plan order (R127, G1)", () => {
+  it("names / then /work then /work/<id> for the nine case studies in plan order, Orion fourth (R127, G1, TG-07)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
       "/work/workhorse",
       "/work/agentops",
       "/work/flywheel",
+      "/work/orion",
       "/work/esper",
       "/work/apple-llm-triage",
       "/work/apple-integration",
@@ -409,6 +437,7 @@ describe("portfolioData", () => {
       "workhorse",
       "agentops",
       "flywheel",
+      "orion",
       "esper",
       "apple-llm-triage",
       "apple-integration",
@@ -707,12 +736,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the eight 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-07)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(8);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {
@@ -1066,5 +1095,84 @@ describe("homeReplay (TG-06)", () => {
 
   it("never mentions Paddock anywhere in the site data", () => {
     expect(JSON.stringify(portfolioData)).not.toMatch(/paddock/i);
+  });
+});
+
+// TG-07: the Orion case study. Its words are the owner's own Orion document, copied sentence by
+// sentence; a sentence using a word the copy scan bans is left out. Its thirteen walkthrough
+// steps come from the approved Look. Every number on the page is one the document states.
+describe("the Orion case study (TG-07)", () => {
+  const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
+  const walkthrough = collectBlocks(orion).find((block) => block.type === "walkthrough");
+
+  // Every number the owner's document states, outside the sentences left out. Model names such as
+  // "Sonnet 5.5" are removed before counting, and so are digits stuck to letters, as in the
+  // project name h3.
+  const NUMBERS_IN_THE_DOCUMENT = new Set([
+    "0", "0.39", "0.56", "0.58", "0.72", "0.76", "0.82", "0.83", "0.95", "1", "1.00", "2", "2.77",
+    "3", "4", "5", "6", "7", "8", "9", "12", "16", "18", "19", "20", "21", "27", "30", "39", "42",
+    "45", "50", "60", "80", "87", "90", "95", "100", "150", "621", "625", "2026",
+  ]);
+
+  function numbersIn(text) {
+    const withoutModels = text.replace(/\b(?:Sonnet|Opus|Haiku) 5\.5\b/g, "");
+    return withoutModels.match(/(?<![A-Za-z])\d+(?:\.\d+)?/g) ?? [];
+  }
+
+  it("is fourth, after Flywheel, with the words Ongoing project and no code link (D2, D10)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("orion")).toBe(3);
+    expect(portfolioData.caseStudies[2].id).toBe("flywheel");
+    expect(orion.status).toBe("Ongoing project");
+    expect(orion).not.toHaveProperty("codeLink");
+  });
+
+  it("states only numbers that appear in the owner's document, on the page and in the walkthrough (D3)", () => {
+    const unknown = collectStrings(orion).flatMap(numbersIn).filter((number) => !NUMBERS_IN_THE_DOCUMENT.has(number));
+    expect(unknown).toEqual([]);
+  });
+
+  it("leaves out the sentences that use words the copy scan bans, and the sample verdict (D3)", () => {
+    const text = collectStrings(orion).join("\n");
+    expect(text).not.toMatch(/95%|sandbox|boundar/i);
+    expect(text).not.toMatch(/88\/100|CON-031|INC-230/);
+  });
+
+  it("holds a walkthrough block of thirteen uniquely named steps, each tagged built or designed (D6)", () => {
+    expect(walkthrough.figure).toBe("orion-bench");
+    expect(walkthrough.steps).toHaveLength(13);
+    const ids = walkthrough.steps.map((step) => step.id);
+    expect(new Set(ids).size).toBe(13);
+    for (const step of walkthrough.steps) {
+      expect(["built", "designed"]).toContain(step.tag);
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(step.does.length).toBeGreaterThan(0);
+      expect(step.readout.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("tags exactly one step designed, the last, and names where a person decides on five steps (D6)", () => {
+    const designed = walkthrough.steps.filter((step) => step.tag === "designed");
+    expect(designed.map((step) => step.id)).toEqual(["next"]);
+    expect(walkthrough.steps.at(-1).id).toBe("next");
+    const withPerson = walkthrough.steps.filter((step) => step.person).map((step) => step.id);
+    expect(withPerson).toEqual(["preflight", "gate", "mcp", "decision", "propose"]);
+  });
+
+  it("carries every control, chrome and announcement string in the block, so no component holds words", () => {
+    for (const key of ["play", "pause", "next", "replay", "skip", "show", "approve", "waive", "reject"]) {
+      expect(walkthrough.controls[key]).toBeTruthy();
+    }
+    for (const key of ["paused", "playing", "offscreen", "reading", "waiting", "done"]) {
+      expect(walkthrough.states[key]).toBeTruthy();
+    }
+    for (const key of ["step", "waiting", "decision"]) {
+      expect(walkthrough.announce[key]).toBeTruthy();
+    }
+    expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed"]);
+  });
+
+  it("never names the private pipeline or any repository address in the Orion text", () => {
+    const text = collectStrings(orion).join("\n");
+    expect(text).not.toMatch(/tannhauser|github\.com|https?:\/\//i);
   });
 });
