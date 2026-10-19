@@ -11,15 +11,45 @@ import HomePage from './HomePage';
 describe('HomePage', () => {
   const { home, personal } = portfolioData;
 
-  it('renders the hero heading, eyebrow, the three "Right now" titles and the code line', () => {
+  it('renders the hero heading, eyebrow and the code line in the footer', () => {
     renderHomePage();
 
     expect(screen.getByRole('heading', { level: 1, name: home.hero.heading })).toBeInTheDocument();
     expect(screen.getByText(home.hero.eyebrow)).toBeInTheDocument();
-    expect(screen.getByText('At Apple Maps')).toBeInTheDocument();
-    expect(screen.getByText('Building WorkHorse')).toBeInTheDocument();
-    expect(screen.getByText('Looking for')).toBeInTheDocument();
     expect(screen.getByText(home.hero.codeLine.text)).toBeInTheDocument();
+  });
+
+  it('no longer renders the "Right now" card, the toolkit or the education heading, though the data stays (the Look drops them from the page)', () => {
+    renderHomePage();
+
+    for (const item of home.hero.rightNow.items) {
+      expect(screen.queryByText(item.title)).toBeNull();
+    }
+    for (const column of home.toolkit.columns) {
+      expect(screen.queryByRole('heading', { name: column.title })).toBeNull();
+    }
+    expect(home.hero.rightNow.items.length).toBeGreaterThan(0);
+    expect(home.toolkit.columns.length).toBeGreaterThan(0);
+  });
+
+  it('shows the AgentOps replay in the hero with its nine steps as text', () => {
+    renderHomePage();
+
+    const replay = portfolioData.homeReplay;
+    expect(screen.getByRole('region', { name: replay.regionLabel })).toBeInTheDocument();
+    expect(replay.steps).toHaveLength(9);
+  });
+
+  it('shows the AgentOps proof band with the case study results and a link to the case study', () => {
+    renderHomePage();
+
+    const agentOps = portfolioData.caseStudies.find((study) => study.id === 'agentops');
+    const band = document.getElementById('agentops');
+    expect(band).not.toBeNull();
+    for (const stat of agentOps.stats) {
+      expect(within(band).getByText(stat.value)).toBeInTheDocument();
+    }
+    expect(within(band).getByRole('link', { name: agentOps.card.linkText })).toHaveAttribute('href', '/work/agentops');
   });
 
   it('renders the five production stat values', () => {
@@ -30,12 +60,10 @@ describe('HomePage', () => {
     }
   });
 
-  it('carries the mobile-only stat grid with the md:hidden class', () => {
+  it('shows the production stats band with every caption, in one band that serves phone and desktop', () => {
     renderHomePage();
 
-    const mobileGrid = document.querySelector('[data-testid="mobile-stats-grid"]');
-    expect(mobileGrid).not.toBeNull();
-    expect(mobileGrid.className).toContain('md:hidden');
+    expect(screen.getByText(home.stats.caption)).toBeInTheDocument();
   });
 
   it('renders the four section eyebrows in order', () => {
@@ -66,14 +94,6 @@ describe('HomePage', () => {
     }
   });
 
-  it('renders the five toolkit headings', () => {
-    renderHomePage();
-
-    for (const column of home.toolkit.columns) {
-      expect(screen.getByRole('heading', { name: column.title })).toBeInTheDocument();
-    }
-  });
-
   it('keeps a single h1 first, with every other heading an h2 or h3 and no level skipped', () => {
     renderHomePage();
 
@@ -93,7 +113,7 @@ describe('HomePage', () => {
     expect(mobileNodes.length).toBeGreaterThan(0);
   });
 
-  it('renders the five case-study cards linking into /work', () => {
+  it('renders every case-study card linking into /work', () => {
     renderHomePage();
 
     for (const study of portfolioData.caseStudies) {
@@ -113,27 +133,26 @@ describe('HomePage', () => {
     expect(screen.queryByText('Curriculum Vitae')).toBeNull();
   });
 
-  it('links the footer to exactly email and LinkedIn', () => {
+  it('links the footer to exactly email, LinkedIn and the one public-code line', () => {
     renderHomePage();
 
     const footerLinks = within(screen.getByRole('contentinfo'))
       .getAllByRole('link')
       .map((link) => link.getAttribute('href'));
 
-    expect(footerLinks).toHaveLength(2);
-    expect(footerLinks).toEqual(expect.arrayContaining([`mailto:${personal.email}`, personal.linkedin]));
-    expect(footerLinks).not.toContain(personal.github);
+    expect(footerLinks).toHaveLength(3);
+    expect(footerLinks).toEqual(
+      expect.arrayContaining([`mailto:${personal.email}`, personal.linkedin, home.hero.codeLine.href]),
+    );
   });
 
   // R132: one primary button plus the email link, no second "Download resume" button.
-  it('renders one hero button and an email link, and no second button', () => {
+  it('renders one hero call to action, the email address as selectable text with a Copy button, and no resume link', () => {
     renderHomePage();
 
-    expect(screen.getByRole('link', { name: home.hero.primaryCta })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: home.hero.emailLinkText })).toHaveAttribute(
-      'href',
-      `mailto:${personal.email}`,
-    );
+    expect(screen.getByRole('link', { name: home.hero.primaryCta })).toHaveAttribute('href', '#work');
+    expect(screen.getByRole('button', { name: 'Copy the email address' })).toBeInTheDocument();
+    expect(screen.getAllByText(personal.email).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: 'Download resume' })).toBeNull();
   });
 });

@@ -1,51 +1,46 @@
+import AgentOpsReplay from './AgentOpsReplay';
+import CopyEmail from './CopyEmail';
 import { primaryButtonClasses } from './buttonClasses';
+import { eyebrowClasses } from './lookClasses';
 
 /**
- * The hero (R132): eyebrow, h1, lead, one call to action and the email link in every viewport,
- * and the "Right now" card, ending with the code line, from 768px up. Copy comes straight from
- * home.hero; the mobile eyebrow and lead swap in below 768px (Home-Mobile.dc.html).
+ * The hero of the Look: eyebrow, the one big heading, the call to action with the email address,
+ * the lead paragraph, and the AgentOps replay under them so it sits on the first screen. On a
+ * wide screen the lead sits beside the heading; on a tablet or phone it follows the replay.
+ * Copy comes straight from home.hero and homeReplay.
  */
-export default function HomeHero({ hero, emailHref }) {
+export default function HomeHero({ hero, email, replay }) {
   return (
-    <section className="flex flex-col gap-7 px-5 pt-16 pb-9 md:grid md:grid-cols-12 md:gap-6 md:px-[120px] md:pt-28 md:pb-24">
-      <div className="flex flex-col gap-6 md:col-span-8 md:gap-7">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted md:hidden">
-          {hero.mobileEyebrow}
-        </p>
-        <p className="hidden font-mono text-xs uppercase tracking-widest text-muted md:block">
-          {hero.eyebrow}
-        </p>
-        <h1 className="font-display text-4xl font-medium leading-[1.06] tracking-tight text-ink md:text-6xl md:leading-[1.03]">
-          {hero.heading}
-        </h1>
-        <p className="text-base leading-relaxed text-body md:hidden">{hero.mobileLead}</p>
-        <p className="hidden max-w-xl text-xl leading-relaxed text-body md:block">{hero.lead}</p>
-        <div className="flex flex-col gap-3 pt-1 md:flex-row md:items-center md:gap-3">
-          <a href="#work" className={primaryButtonClasses}>
-            {hero.primaryCta}
-          </a>
-          <a href={emailHref} className="hidden text-sm text-soft md:ml-3 md:inline">
-            {hero.emailLinkText}
-          </a>
-        </div>
-      </div>
-      <aside className="hidden flex-col gap-5 rounded-xl border border-border bg-surface p-7 md:col-span-3 md:col-start-10 md:flex md:self-end">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">{hero.rightNow.eyebrow}</p>
-        {hero.rightNow.items.map((item) => (
-          <div key={item.title} className="flex flex-col gap-1">
-            <span className="font-display text-base font-semibold text-ink">{item.title}</span>
-            <span className="text-sm text-muted">{item.text}</span>
-          </div>
-        ))}
-        <a
-          href={hero.codeLine.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-muted underline decoration-dotted underline-offset-2 hover:text-ink"
-        >
-          {hero.codeLine.text}
+    <section
+      aria-labelledby="home-heading"
+      className="mx-auto grid w-full max-w-[1296px] grid-cols-1 gap-x-6 px-4 pt-[14px] pb-[72px] tab:px-8 tab:pt-8 wide:grid-cols-12 wide:px-12 wide:pb-24"
+    >
+      <p className={`${eyebrowClasses} col-span-full mb-2 overflow-hidden text-ellipsis whitespace-nowrap tab:mb-3.5`}>
+        <span className="hidden tab:inline">{hero.eyebrow}</span>
+        <span className="tab:hidden">{hero.mobileEyebrow}</span>
+      </p>
+
+      <h1
+        id="home-heading"
+        className="h-[3.06em] max-w-[8em] font-display text-[44px] font-semibold leading-[1.02] tracking-[-0.04em] text-balance text-ink tab:h-[2.04em] tab:max-w-[12em] tab:text-[clamp(40px,4.8vw,70px)] wide:col-span-8"
+      >
+        {hero.heading}
+      </h1>
+
+      <div className="mt-3 flex flex-col items-start gap-2 tab:mt-[22px] tab:flex-row tab:flex-wrap tab:items-center tab:gap-x-[22px] tab:gap-y-3 wide:col-span-8 wide:flex-nowrap wide:self-start">
+        <a href="#work" className={primaryButtonClasses}>
+          {hero.primaryCta}
         </a>
-      </aside>
+        <CopyEmail email={email} />
+      </div>
+
+      <p className="order-last mt-8 max-w-[62ch] text-[17px] leading-[1.6] text-ink-2 wide:order-none wide:col-span-4 wide:col-start-9 wide:row-span-2 wide:row-start-2 wide:mt-0 wide:self-start wide:pt-2 wide:text-base">
+        {hero.lead}
+      </p>
+
+      <div className="col-span-full mt-[18px] tab:mt-7 wide:mt-[30px]">
+        <AgentOpsReplay replay={replay} />
+      </div>
     </section>
   );
 }

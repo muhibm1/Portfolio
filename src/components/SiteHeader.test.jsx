@@ -1,33 +1,37 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { portfolioData } from '../data/portfolioData';
 import { pageMetaFor } from '../pageMeta';
 import SiteLayout from './SiteLayout';
 
-// G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet
-// rather than App: HomePage and CaseStudyPage are still red until T8 and T7 land.
+// G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet.
 describe('SiteHeader', () => {
-  it('shows the home section links and a GitHub link to the profile on /', () => {
+  it('shows the home section links, the email address and the theme button on /, with no GitHub link (the Look moves it to the footer)', () => {
     renderSiteLayoutAt('/');
 
-    expect(headerLinkHref('Case studies')).toBe('#work');
+    expect(headerLinkHref('Work')).toBe('#work');
     expect(headerLinkHref('How I work')).toBe('#approach');
     expect(headerLinkHref('Experience')).toBe('#experience');
     expect(headerLinkHref('Contact')).toBe('#contact');
-    expectGitHubLink(within(screen.getByRole('banner')));
+    const banner = within(screen.getByRole('banner'));
+    expect(banner.getByRole('link', { name: portfolioData.personal.email })).toHaveAttribute(
+      'href',
+      `mailto:${portfolioData.personal.email}`,
+    );
+    expect(banner.queryByRole('link', { name: /github/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
   });
 
-  it('shows Home, All case studies, Contact and the GitHub link on a case-study page', () => {
+  it('shows Home, All case studies and Contact on a case-study page, with no GitHub link', () => {
     renderSiteLayoutAt('/work/workhorse');
 
     expect(headerLinkHref('Home')).toBe('/');
     expect(headerLinkHref('All case studies')).toBe('/work');
     expect(headerLinkHref('Contact')).toBe('#contact');
-    expect(screen.queryByRole('link', { name: 'Case studies' })).toBeNull();
-    expectGitHubLink(within(screen.getByRole('banner')));
+    expect(screen.queryByRole('link', { name: 'Work' })).toBeNull();
+    expect(within(screen.getByRole('banner')).queryByRole('link', { name: /github/i })).toBeNull();
   });
 
   it('has no copy-email control', () => {
@@ -37,35 +41,65 @@ describe('SiteHeader', () => {
     expect(screen.queryByText(/copy email/i)).toBeNull();
   });
 
-  it('toggles the mobile menu panel on the Open menu button', () => {
+  it('has no mobile menu button, because the links sit inline at every width (the Look replaces the menu)', () => {
     renderSiteLayoutAt('/');
-    const menuButton = screen.getByRole('button', { name: 'Open menu' });
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    expect(menuButton).toHaveAttribute('aria-controls', 'mobile-menu-panel');
-    expect(panel()).toHaveAttribute('id', 'mobile-menu-panel');
-    expect(panel()).toHaveAttribute('hidden');
-    expect(panel()).not.toBeVisible();
-    expect(panelLinks()).toHaveLength(0);
 
-    fireEvent.click(menuButton);
+    expect(screen.queryByRole('button', { name: /menu/i })).toBeNull();
+    expect(document.querySelector('[data-testid="mobile-menu-panel"]')).toBeNull();
+  });
+});
 
-    const closeButton = screen.getByRole('button', { name: 'Close menu' });
-    expect(closeButton).toBe(menuButton);
-    expect(closeButton).toHaveAttribute('aria-expanded', 'true');
-    expect(closeButton).toHaveAttribute('aria-controls', 'mobile-menu-panel');
-    expect(panel()).toHaveAttribute('id', 'mobile-menu-panel');
-    expect(panelLinks().map((link) => link.textContent)).toEqual(
-      expect.arrayContaining(['Case studies', 'How I work', 'Experience', 'Contact']),
-    );
-    expectGitHubLink(within(panel()));
+describe('ThemeButton in the header', () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
 
-    fireEvent.click(closeButton);
+  it('starts unpressed when the system is light and nothing is chosen', () => {
+    renderSiteLayoutAt('/');
 
-    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    );
-    expect(panelLinks()).toHaveLength(0);
+    expect(themeButton()).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('starts pressed when the page already carries data-theme dark', () => {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    renderSiteLayoutAt('/');
+
+    expect(themeButton()).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('sets data-theme dark and saves dark under the key theme when pressed once', () => {
+    renderSiteLayoutAt('/');
+
+    fireEvent.click(themeButton());
+
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(localStorage.getItem('theme')).toBe('dark');
+    expect(themeButton()).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('goes back to light and saves light when pressed twice', () => {
+    renderSiteLayoutAt('/');
+
+    fireEvent.click(themeButton());
+    fireEvent.click(themeButton());
+
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(localStorage.getItem('theme')).toBe('light');
+    expect(themeButton()).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('still switches the page for this visit when storage refuses the write', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('storage blocked');
+    });
+    renderSiteLayoutAt('/');
+
+    expect(() => fireEvent.click(themeButton())).not.toThrow();
+
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(themeButton()).toHaveAttribute('aria-pressed', 'true');
   });
 });
 
@@ -114,22 +148,6 @@ function headerLinkHref(name) {
   return within(screen.getByRole('banner')).getByRole('link', { name }).getAttribute('href');
 }
 
-function panel() {
-  return document.querySelector('[data-testid="mobile-menu-panel"]');
-}
-
-function panelLinks() {
-  const node = panel();
-  // The panel stays mounted (hidden, not removed) when closed, so accessible-role queries
-  // correctly find nothing; use queryAllByRole, which does not throw on an empty result.
-  return node ? within(node).queryAllByRole('link') : [];
-}
-
-// R133: the header's GitHub link, in the nav or the mobile panel, points at personal.github,
-// opens in a new tab safely, and names the profile for a screen reader.
-function expectGitHubLink(scope) {
-  const link = scope.getByRole('link', { name: /github/i });
-  expect(link).toHaveAttribute('href', portfolioData.personal.github);
-  expect(link).toHaveAttribute('target', '_blank');
-  expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+function themeButton() {
+  return screen.getByRole('button', { name: 'Dark theme' });
 }

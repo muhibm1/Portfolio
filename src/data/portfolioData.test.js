@@ -1038,3 +1038,33 @@ describe("portfolioData", () => {
     }
   });
 });
+
+// TG-06: the home page's AgentOps replay reads every word from the homeReplay record.
+describe("homeReplay (TG-06)", () => {
+  const replay = portfolioData.homeReplay;
+
+  it("lists the nine steps in the order the run takes them", () => {
+    expect(replay.steps.map((step) => step.id)).toEqual([
+      "alert", "triage", "evidence", "merge", "rca", "approval", "execute", "verify", "postmortem",
+    ]);
+  });
+
+  it("gives every step a label and a log entry, so the text reads without any animation", () => {
+    for (const step of replay.steps) {
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(replay.log[step.id]).toBeDefined();
+    }
+  });
+
+  it("names the clean_bad_deploy scenario it is taken from", () => {
+    expect(replay.scenario).toBe("clean_bad_deploy");
+  });
+
+  it("skips to the AgentOps section on the page", () => {
+    expect(replay.skip.href).toBe("#agentops");
+  });
+
+  it("never mentions Paddock anywhere in the site data", () => {
+    expect(JSON.stringify(portfolioData)).not.toMatch(/paddock/i);
+  });
+});

@@ -6,6 +6,11 @@
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-display: "Space Grotesk", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* The Look's three breakpoints: phone below 760, tablet from 900, wide from 1100. */
+  --breakpoint-tab: 760px;
+  --breakpoint-mid: 900px;
+  --breakpoint-wide: 1100px;
 }
 
 /* Colour tokens: every name reads a variable from src/look.css, so each utility class

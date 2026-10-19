@@ -6,7 +6,7 @@ export default function CaseStudyTable({ columns, rows }) {
   return (
     <table className="w-full border-collapse text-left">
       <thead>
-        <tr className="border-b border-rule">
+        <tr className="border-b border-line-mid">
           {columns.map((column) => (
             <th
               key={column.label}
@@ -39,6 +39,6 @@ export default function CaseStudyTable({ columns, rows }) {
 }
 
 function rowClasses(row) {
-  const base = 'border-b border-border text-body';
+  const base = 'border-b border-line text-ink-2';
   return row.emphasis ? `${base} font-semibold text-ink` : base;
 }
