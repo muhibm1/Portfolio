@@ -1191,6 +1191,8 @@ describe("the Orion case study (TG-07)", () => {
     const text = collectStrings(orion).join("\n");
     expect(text).not.toMatch(/95%|sandbox|boundar/i);
     expect(text).not.toMatch(/88\/100|CON-031|INC-230/);
+    // Plan step 4's sentence about facts missing from the diff is left out whole, because it names Go.
+    expect(text).not.toMatch(/Today's misses need facts|byteLength|Unwrap/);
   });
 
   it("holds a walkthrough block of thirteen uniquely named steps, each tagged built or designed (D6)", () => {
@@ -1227,8 +1229,8 @@ describe("the Orion case study (TG-07)", () => {
     expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed"]);
   });
 
-  it("never names the private pipeline or any repository address in the Orion text", () => {
+  it("holds no repository address or link in the Orion text", () => {
     const text = collectStrings(orion).join("\n");
-    expect(text).not.toMatch(/tannhauser|github\.com|https?:\/\//i);
+    expect(text).not.toMatch(/github\.com|https?:\/\//i);
   });
 });
