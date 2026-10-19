@@ -61,7 +61,9 @@ export const TIMING_FIGURE_TERM = {
 }
 
 // R156, D44: "paddock" and a retirement word in the same sentence (no ".", "!" or "?" between
-// them), in either order, case-insensitive, no skipped extensions. Owner rule: Paddock is current.
+// them), in either order, case-insensitive, no skipped extensions. Paddock is no longer mentioned
+// anywhere on the site (owner ruling, 2026-10-19), so the plain word is banned too (it is listed in
+// FORBIDDEN_TERMS); this pattern stays so retirement wording about it is banned either way.
 export const PADDOCK_RETIREMENT_TERM = {
   label: 'Paddock retirement wording',
   pattern: new RegExp(
@@ -191,6 +193,7 @@ export const FORBIDDEN_TERMS = [
   '+52%',
   TIMING_FIGURE_TERM,
   PADDOCK_RETIREMENT_TERM,
+  'Paddock',
   TWO_X_TERM,
   ELEVEN_X_TERM,
   FOUR_OF_FOUR_TERM,
