@@ -1,19 +1,26 @@
 import { Link } from 'react-router';
+import { h3Classes } from './lookClasses';
 
-// Renders "01 · Case studies" (R132, R134): the first study as a dark featured card with its
-// mini stats and mobile tags, the remaining four as a 2 by 2 grid. Shared by the home page and
-// /work, so the study list comes in as a prop rather than being read from the data module here.
+// Renders the case-study list (R132, R134) in the Look: the first study as a wide featured card
+// with its four stats beside it, then every other study as a card in a three-column grid (two
+// on a tablet, one on a phone). Shared by the home page and /work, so the study list comes in as
+// a prop rather than being read from the data module here.
+const cardBase =
+  'rounded-[var(--r-lg)] border border-line bg-surface text-ink transition-[transform,box-shadow,border-color] duration-300 ease-[var(--glide)] hover:-translate-y-[3px] hover:border-line-mid hover:shadow-[var(--shadow-window)]';
+
 export default function CaseStudyCards({ caseStudies }) {
   const [featured, ...rest] = caseStudies;
 
   return (
     <div className="flex flex-col gap-6">
       <FeaturedCard study={featured} />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-3.5 tab:grid-cols-2 tab:gap-6 wide:grid-cols-3">
         {rest.map((study) => (
-          <GridCard key={study.id} study={study} />
+          <li key={study.id} className="flex">
+            <GridCard study={study} />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
@@ -22,54 +29,44 @@ function FeaturedCard({ study }) {
   const { card, codeLink } = study;
 
   return (
-    <article className="grid grid-cols-1 gap-6 rounded-xl bg-ink p-8 md:grid-cols-12 md:gap-6">
-      <div className="flex flex-col gap-4 md:col-span-7">
-        <p className="hidden font-mono text-xs uppercase tracking-widest text-on-dark-tertiary md:block">
-          {card.eyebrow}
+    <article className={`${cardBase} grid grid-cols-1 gap-[26px] px-5 py-6 tab:p-8 wide:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] wide:gap-10 wide:p-11`}>
+      <div className="grid content-start gap-4">
+        <p className="text-[13px] font-medium text-muted">
+          <span className="hidden tab:inline">{card.eyebrow}</span>
+          <span className="tab:hidden">{card.mobileEyebrow}</span>
         </p>
-        <p className="font-mono text-xs uppercase tracking-widest text-on-dark-tertiary md:hidden">
-          {card.mobileEyebrow}
-        </p>
-        <Link to={`/work/${study.id}`} className="flex flex-col gap-4 no-underline">
-          <h3 className="font-display text-2xl font-semibold text-on-dark md:text-4xl">
+        <Link to={`/work/${study.id}`} className="grid gap-4 text-ink no-underline">
+          <h3 className="font-display text-[clamp(28px,3vw,40px)] font-semibold leading-[1.1] tracking-[-0.03em]">
             {card.title}
           </h3>
-          <p className="hidden text-on-dark-secondary md:block">{card.summary}</p>
-          <p className="text-sm text-on-dark-secondary md:hidden">{card.mobileSummary}</p>
-          <span className="self-start border-b border-on-dark pb-0.5 text-sm font-medium text-on-dark">
-            {card.linkText}
+          <p className="hidden text-base leading-[1.55] text-ink-2 tab:block">{card.summary}</p>
+          <p className="text-base leading-[1.55] text-ink-2 tab:hidden">{card.mobileSummary}</p>
+          <span className="text-[15px] font-medium">
+            {card.linkText} <span aria-hidden="true">→</span>
           </span>
         </Link>
-        <div className="flex flex-wrap gap-2 md:hidden">
-          {card.mobileTags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-soft px-3 py-1 text-xs text-on-dark-secondary"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
         {codeLink && (
           <a
             href={codeLink.href}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`View the code: ${codeLink.label} on GitHub, public snapshot`}
-            className="self-start border-b border-soft pb-0.5 text-sm font-medium text-on-dark-secondary transition-colors hover:text-on-dark"
+            className="justify-self-start text-[15px] text-ink-2 underline decoration-[var(--underline)] underline-offset-4 hover:text-ink"
           >
             View the code
           </a>
         )}
       </div>
-      <div className="hidden grid-cols-2 content-center gap-3 md:col-span-4 md:col-start-9 md:grid">
+      <ul className="grid grid-cols-2 content-center gap-x-6 gap-y-7">
         {card.stats.map((stat) => (
-          <div key={stat.label} className="rounded-lg border border-soft p-4">
-            <span className="block font-mono text-2xl text-on-dark">{stat.value}</span>
-            <span className="text-xs text-on-dark-tertiary">{stat.label}</span>
-          </div>
+          <li key={stat.label} className="grid content-start gap-1.5">
+            <span className="font-display text-[clamp(34px,3.4vw,46px)] leading-none font-semibold tracking-[-0.035em]">
+              {stat.value}
+            </span>
+            <span className="text-[14.5px] leading-[1.4] text-muted">{stat.label}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </article>
   );
 }
@@ -80,23 +77,20 @@ function GridCard({ study }) {
   return (
     <Link
       to={`/work/${study.id}`}
-      className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-9 no-underline"
+      className={`${cardBase} flex flex-1 flex-col gap-3 px-5 py-[22px] no-underline tab:p-7`}
     >
-      <p className="font-mono text-xs uppercase tracking-widest text-muted">{card.eyebrow}</p>
-      <h3 className="font-display text-xl font-semibold text-ink">{card.title}</h3>
-      <p className="text-body">{card.summary}</p>
-      <div className="flex flex-wrap gap-2">
+      <p className="text-[13px] font-medium text-muted">{card.eyebrow}</p>
+      <h3 className={h3Classes}>{card.title}</h3>
+      <p className="text-base leading-[1.55] text-ink-2">{card.summary}</p>
+      <ul className="flex flex-wrap gap-1.5">
         {card.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-rule px-3 py-1 text-xs text-muted"
-          >
+          <li key={tag} className="rounded-full bg-surface-2 px-2.5 py-1 text-[12.5px] text-ink">
             {tag}
-          </span>
+          </li>
         ))}
-      </div>
-      <span className="self-start border-b border-ink pb-0.5 text-sm font-medium text-ink">
-        {card.linkText}
+      </ul>
+      <span className="mt-auto pt-2 text-[15px] font-medium">
+        {card.linkText} <span aria-hidden="true">→</span>
       </span>
     </Link>
   );

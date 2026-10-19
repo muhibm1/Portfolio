@@ -79,7 +79,7 @@ function CaseStudyHeader({ caseStudy }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={githubSnapshotLabel(caseStudy.codeLink.label)}
-            className="font-mono text-xs uppercase tracking-widest text-soft transition-colors hover:text-ink"
+            className="font-mono text-xs uppercase tracking-widest text-muted transition-colors hover:text-ink"
           >
             {caseStudy.codeLink.label}
           </a>
@@ -88,7 +88,7 @@ function CaseStudyHeader({ caseStudy }) {
       <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.04] tracking-tight text-ink sm:text-6xl">
         {caseStudy.title}
       </h1>
-      <p className="max-w-3xl text-lg leading-relaxed text-body sm:text-xl">{caseStudy.intro}</p>
+      <p className="max-w-3xl text-lg leading-relaxed text-ink-2 sm:text-xl">{caseStudy.intro}</p>
     </header>
   );
 }
@@ -97,11 +97,11 @@ function AtAGlanceAndStats({ caseStudy }) {
   const desktopColumnsClass = DESKTOP_COLUMNS_CLASS[caseStudy.atAGlance.length] ?? 'md:grid-cols-4';
   return (
     <section className="flex flex-col gap-4 px-4 pb-10 sm:px-8 md:px-16">
-      <div className={`grid grid-cols-1 border-y border-rule sm:grid-cols-2 ${desktopColumnsClass}`}>
+      <div className={`grid grid-cols-1 border-y border-line-mid sm:grid-cols-2 ${desktopColumnsClass}`}>
         {caseStudy.atAGlance.map((item, index) => (
-          <div key={item.label} className={`flex flex-col gap-1.5 py-5 ${index > 0 ? 'border-t border-rule sm:border-l sm:border-t-0 sm:pl-5' : ''}`}>
+          <div key={item.label} className={`flex flex-col gap-1.5 py-5 ${index > 0 ? 'border-t border-line-mid sm:border-l sm:border-t-0 sm:pl-5' : ''}`}>
             <span className="font-mono text-xs uppercase tracking-widest text-muted">{item.label}</span>
-            <span className="text-base text-body">{item.value}</span>
+            <span className="text-base text-ink-2">{item.value}</span>
           </div>
         ))}
       </div>
@@ -115,7 +115,7 @@ function OnThisPageNav({ sections }) {
     <nav aria-label="On this page" className="flex flex-col gap-3 pt-2">
       <span className="font-mono text-xs uppercase tracking-widest text-muted">On this page</span>
       {sections.map((section) => (
-        <a key={section.id} href={`#${section.id}`} className="text-sm text-soft transition-colors hover:text-ink">
+        <a key={section.id} href={`#${section.id}`} className="text-sm text-muted transition-colors hover:text-ink">
           {section.heading}
         </a>
       ))}
@@ -142,7 +142,7 @@ function Block({ block }) {
   switch (block.type) {
     case 'paragraph':
       return (
-        <p className="text-base leading-relaxed text-body sm:text-lg">
+        <p className="text-base leading-relaxed text-ink-2 sm:text-lg">
           {block.link ? <ParagraphWithLink text={block.text} link={block.link} /> : block.text}
         </p>
       );
@@ -187,7 +187,7 @@ function ParagraphWithLink({ text, link }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={githubSnapshotLabel(link.text)}
-        className="text-ink underline decoration-soft underline-offset-4 hover:text-ink"
+        className="text-ink underline decoration-[var(--underline)] underline-offset-4 hover:text-ink"
       >
         {link.text}
       </a>
@@ -198,7 +198,7 @@ function ParagraphWithLink({ text, link }) {
 
 function BulletsBlock({ items }) {
   return (
-    <ul className="flex flex-col gap-2 pl-5 text-base leading-relaxed text-body sm:text-lg">
+    <ul className="flex flex-col gap-2 pl-5 text-base leading-relaxed text-ink-2 sm:text-lg">
       {items.map((item, index) => (
         <li key={index} className="list-disc">
           {item}
@@ -217,9 +217,9 @@ function CardsBlock({ items }) {
         const note = isString ? item : item.note;
         const emphasis = !isString && item.emphasis;
         return (
-          <div key={index} className={`rounded-[10px] border bg-surface p-4 ${emphasis ? 'border-ink' : 'border-border'}`}>
+          <div key={index} className={`rounded-[10px] border bg-surface p-4 ${emphasis ? 'border-ink' : 'border-line'}`}>
             {title && <p className="font-display text-sm font-semibold text-ink">{title}</p>}
-            <p className="text-sm text-body">{note}</p>
+            <p className="text-sm text-ink-2">{note}</p>
           </div>
         );
       })}
@@ -232,7 +232,7 @@ function StatsGrid({ items }) {
   return (
     <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${desktopColumnsClass}`}>
       {items.map((item) => (
-        <div key={item.label} className="flex flex-col gap-2 rounded-[10px] border border-border bg-surface p-5">
+        <div key={item.label} className="flex flex-col gap-2 rounded-[10px] border border-line bg-surface p-5">
           <span className="font-display text-3xl font-medium tracking-tight text-ink">{item.value}</span>
           <span className="text-sm text-muted">{item.label}</span>
         </div>
@@ -249,7 +249,7 @@ function SplitBlock({ table, stats }) {
       </div>
       <div className="grid grid-cols-2 content-start gap-3 md:col-span-5">
         {stats.items.map((item) => (
-          <div key={item.label} className="flex flex-col gap-1.5 rounded-[10px] border border-border bg-surface p-4">
+          <div key={item.label} className="flex flex-col gap-1.5 rounded-[10px] border border-line bg-surface p-4">
             <span className="font-display text-2xl font-medium tracking-tight text-ink">{item.value}</span>
             <span className="text-xs text-muted">{item.label}</span>
           </div>
@@ -261,17 +261,17 @@ function SplitBlock({ table, stats }) {
 
 function Callout({ callout }) {
   return (
-    <div className="flex flex-col gap-3 rounded-[10px] border border-ink bg-ink p-9">
-      <p className="font-mono text-xs uppercase tracking-widest text-on-dark-tertiary">{callout.eyebrow}</p>
-      <p className="text-lg leading-relaxed text-on-dark sm:text-xl">{callout.text}</p>
-      {callout.note && <p className="text-sm text-on-dark-tertiary">{callout.note}</p>}
+    <div className="flex flex-col gap-3 rounded-[10px] border border-dark bg-dark p-9">
+      <p className="font-mono text-xs uppercase tracking-widest text-dark-muted">{callout.eyebrow}</p>
+      <p className="text-lg leading-relaxed text-dark-ink sm:text-xl">{callout.text}</p>
+      {callout.note && <p className="text-sm text-dark-muted">{callout.note}</p>}
     </div>
   );
 }
 
 function CaseStudyNeighbours({ previous, next }) {
   return (
-    <nav aria-label="Case studies" className="flex flex-col gap-4 border-t border-rule px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-16">
+    <nav aria-label="Case studies" className="flex flex-col gap-4 border-t border-line-mid px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-16">
       <Link to={`/work/${previous.id}`} rel="prev" className="flex flex-col gap-1">
         <span className="font-mono text-xs uppercase tracking-widest text-muted">Previous</span>
         <span className="font-display text-base font-semibold text-ink">{previous.title}</span>

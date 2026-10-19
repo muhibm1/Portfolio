@@ -1,49 +1,45 @@
-// The "/" route (R132): the mockup sections in order, composed from home in the data module.
+// The "/" route (R132): the hero with the replay, the AgentOps proof, the measured stats, the work, the approach, the experience and the contact footer, composed from the data module.
 // useScrollToHashTarget makes a header link such as #work, #approach or #experience land on the
 // right section; React Router does not scroll to hashes on its own.
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { portfolioData } from '../data/portfolioData';
 import { prefersReducedMotion } from '../prefersReducedMotion';
+import AgentOpsProof from '../components/AgentOpsProof';
 import CaseStudyCards from '../components/CaseStudyCards';
 import ContactFooter from '../components/ContactFooter';
 import ExperienceSection from '../components/ExperienceSection';
 import HomeHero from '../components/HomeHero';
 import HowIWork from '../components/HowIWork';
 import ProductionStats from '../components/ProductionStats';
-import Toolkit from '../components/Toolkit';
+import { bodyLargeClasses, eyebrowClasses, h2Classes, wrapClasses } from '../components/lookClasses';
 
 export default function HomePage() {
   useScrollToHashTarget();
   const { personal, home, caseStudies } = portfolioData;
-  const emailHref = `mailto:${personal.email}`;
+  const agentOps = caseStudies.find((study) => study.id === 'agentops');
 
   return (
     <main>
-      <HomeHero hero={home.hero} emailHref={emailHref} />
+      <HomeHero hero={home.hero} email={personal.email} replay={portfolioData.homeReplay} />
+      <AgentOpsProof study={agentOps} />
       <ProductionStats stats={home.stats} />
 
-      <section
-        id="work"
-        className="flex flex-col gap-12 border-y border-border bg-surface px-5 py-16 md:px-[120px] md:py-28"
-      >
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
-          <div className="flex flex-col gap-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              {home.caseStudiesIntro.eyebrow}
-            </p>
-            <h2 className="font-display text-3xl font-medium text-ink md:text-5xl">
-              {home.caseStudiesIntro.heading}
-            </h2>
+      <section id="work" className="border-t border-line py-[72px] tab:py-[120px]">
+        <div className={`${wrapClasses} grid gap-10 tab:gap-12`}>
+          <div className="grid gap-4 md:grid-cols-12 md:items-end md:gap-6">
+            <div className="grid gap-4 md:col-span-7">
+              <p className={eyebrowClasses}>{home.caseStudiesIntro.eyebrow}</p>
+              <h2 className={h2Classes}>{home.caseStudiesIntro.heading}</h2>
+            </div>
+            <p className={`${bodyLargeClasses} md:col-span-5`}>{home.caseStudiesIntro.lead}</p>
           </div>
-          <p className="max-w-md text-base text-body">{home.caseStudiesIntro.lead}</p>
+          <CaseStudyCards caseStudies={caseStudies} />
         </div>
-        <CaseStudyCards caseStudies={caseStudies} />
       </section>
 
       <HowIWork principles={home.principles} workingWithPeople={home.workingWithPeople} />
       <ExperienceSection experience={home.experience} education={home.education} />
-      <Toolkit toolkit={home.toolkit} />
       <ContactFooter />
     </main>
   );
