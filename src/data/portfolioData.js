@@ -1917,6 +1917,467 @@ export const portfolioData = {
       contactHeading: "Have an agent that works in the demo? Let's talk.",
     },
 
+    // Orion (fourth, after Flywheel), added 2026-10-19 (TG-07) from the owner's own Orion document,
+    // sentence by sentence. A sentence that uses a word the copy scan bans is left out, not reworded.
+    // The thirteen walkthrough steps come from the approved Look. `status` stands where a code link
+    // would, because the repository is private; there is no codeLink.
+    {
+      id: "orion",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · Code review",
+        title: "Orion: early results",
+        summary:
+          "A code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it.",
+        linkText: "Read the case study",
+        tags: ["0 of 50 unsafe agent decisions", "27 of 45 real bugs caught"],
+      },
+      status: "Ongoing project",
+      eyebrow: "Case study · Personal system · Code review",
+      title: "Orion: early results",
+      intro:
+        "Orion is a code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it: what the change reaches downstream, which rules protect those parts, who owns them and what broke there before.",
+      atAGlance: [
+        { label: "My role", value: "My own project, built and tested in October 2026" },
+        {
+          label: "What it is",
+          value: "A code reviewer for coding agents and the people who work with them",
+        },
+        { label: "Where it stands", value: "An early, ongoing project" },
+        {
+          label: "Tested on",
+          value:
+            "PipelineBench, 45 real historical bugs from 8 open-source projects, and a 625-model warehouse",
+        },
+      ],
+      stats: [
+        {
+          value: "0 of 50",
+          label: "unsafe decisions by AI agents with Orion, against 8 of 50 with no context",
+        },
+        { value: "0.82 and 0.83", label: "benchmark score with Orion, against 0.39 with no context" },
+        { value: "27 of 45", label: "real bugs caught on unseen code" },
+        { value: "625", label: "dbt models read at real scale, with column-level lineage for 621 of them" },
+      ],
+      sections: [
+        {
+          id: "what",
+          heading: "What Orion is, and where it stands",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "This is an early, ongoing project. Everything below comes from a few days of building and testing in October 2026. Most results come from one run on a small budget, often on the cheapest model. Read them as a first measurement, not a final score.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The idea behind it is simple. A general reviewer reads the diff. Orion also reads the system the diff lands in. Language models are good at reading code but bad at knowing what a change will break two systems away. Orion answers that part with code, and the model only interprets the answer.",
+            },
+            { type: "paragraph", text: "A few terms used on this page, in plain words:" },
+            {
+              type: "cards",
+              items: [
+                { title: "AI agent", note: "A program that acts on its own, such as one that writes code." },
+                { title: "Diff", note: "The list of lines a change adds, removes and edits." },
+                {
+                  title: "PipelineBench",
+                  note: "Orion's own benchmark: a fixed set of test cases with answers written by hand.",
+                },
+                { title: "dbt model", note: "A saved recipe for building one data table." },
+                { title: "Airflow pipeline", note: "A scheduled job that moves or prepares data." },
+                { title: "Data warehouse", note: "The large store where a company keeps its business data." },
+                { title: "Column-level lineage", note: "A map of which columns feed which other columns." },
+                { title: "Recall", note: "The share of real bugs that were caught." },
+                {
+                  title: "Held-out bugs",
+                  note:
+                    "Bugs kept aside and never used for tuning, so they test code Orion has not seen.",
+                },
+                { title: "MCP server", note: "A standard way for coding agents to call a tool." },
+              ],
+            },
+          ],
+        },
+        {
+          id: "results",
+          heading: "Early results",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the whole repository or plain search.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Result" },
+                { label: "Number" },
+                { label: "What it rests on" },
+              ],
+              rows: [
+                {
+                  cells: [
+                    "Unsafe decisions by AI agents",
+                    "0 of 50 with Orion, against 8 of 50 with no context",
+                    "PipelineBench, Claude Sonnet 5.5 and Haiku 5.5, one run each. Both models scored zero with Orion.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Benchmark score",
+                    "0.82 and 0.83 with Orion, against 0.39 with no context and 0.72 to 0.76 with the whole repo",
+                    "Same runs. The score weighs the decision, cited evidence, named downstream tables and required approvers.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Evidence the agents cited",
+                    "100% of relevant rules and past incidents, every affected table, every required approver",
+                    "Same runs, with Orion. Grading is mechanical; no model grades another.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Real bugs caught on unseen code",
+                    "27 of 45 (60%), and 80% got a warning in the right file",
+                    "45 real historical bugs from 8 open-source projects (starlette, werkzeug, gin, chi, echo, ky, h3, express), never used for tuning. Cheapest model, one run.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Gain from reviewing in four focused passes",
+                    "18% to 42% recall on the same model",
+                    "50-bug tuning set (httpx, hono, cobra). One redesign, one day.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Real-world scale",
+                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s",
+                    "cal-itp/data-infra, California's public transit data warehouse. The first attempt was killed after 20 minutes.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Benchmark built for this",
+                    "60 scenarios with hand-written answers, plus 95 hand-labelled real bugs",
+                    "Answers are written from the platform's rules, never derived from Orion.",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Source for every number: the pipelinebench/results/ folder in the Orion repository (llm-agents.md, accuracy.md, partner-calitp-dbt.md).",
+            },
+          ],
+        },
+        {
+          id: "walkthrough",
+          heading: "Walkthrough",
+          blocks: [
+            {
+              type: "walkthrough",
+              figure: "orion-bench",
+              name: "Orion",
+              regionLabel: "Orion walkthrough",
+              note: "The whole design on one bench. Each step says built or designed.",
+              stepsLabel: "Steps of the walkthrough",
+              stageLabel: "The bench",
+              caption: { number: "Fig 1", title: "The pre-flight bench" },
+              hint: "Record a decision to continue, or press Next step to skip it.",
+              listHeading: "The thirteen steps",
+              legend: [
+                { term: "built", meaning: "means it exists and works today." },
+                { term: "designed", meaning: "means it is planned and not built yet." },
+              ],
+              controls: {
+                play: "Play",
+                pause: "Pause",
+                next: "Next step",
+                replay: "Replay",
+                skip: "Skip to the list",
+                show: "Show on the bench",
+                approve: "Approve",
+                waive: "Waive",
+                reject: "Reject",
+              },
+              states: {
+                paused: "Paused",
+                playing: "Playing",
+                offscreen: "Plays when in view",
+                reading: "Paused while you read",
+                waiting: "Waiting for you",
+                done: "All thirteen steps shown",
+              },
+              announce: {
+                step: "Step {n}, {label}, {tag}.",
+                waiting: "The bench stopped. It is waiting for your decision.",
+                decision: "Decision {kind} recorded to the ledger.",
+              },
+              labels: {
+                stepOf: "Step {n} of {total}",
+                person: "A person decides.",
+                personInList: "A person decides:",
+                evidence: "Evidence",
+                waiting: "The bench stopped. It is waiting for you.",
+                recorded: "You recorded {kind}. The bench carries on.",
+                decisionReadout: "decision_recorded · {kind}",
+                designedSuffix: "· designed",
+                showAria: "Show step {n}, {label}, on the bench",
+              },
+              steps: [
+                {
+                  id: "sync",
+                  label: "Sync",
+                  tag: "built",
+                  readout: "dbt · Airflow · Git · postmortems",
+                  does:
+                    "Pulls a typed asset graph and an append-only ledger from dbt, Airflow, Git and postmortems-as-code into one DuckDB file.",
+                  evidence:
+                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s, on cal-itp/data-infra, California's public transit data warehouse.",
+                },
+                {
+                  id: "store",
+                  label: "One store",
+                  tag: "built",
+                  readout: "provenance on every fact",
+                  does:
+                    "Every node, edge and event carries provenance; the store refuses facts without it.",
+                },
+                {
+                  id: "explain",
+                  label: "Explain",
+                  tag: "built",
+                  readout: "owner · tier · blast radius · incidents",
+                  does:
+                    "Owner, tier, upstream and downstream, tier-1 consumers within the full blast radius, which DAG task builds it, column-level lineage, constraints in scope, and recent incidents, all with ids.",
+                },
+                {
+                  id: "preflight",
+                  label: "Preflight",
+                  tag: "built",
+                  readout: "inform · warn · block",
+                  does:
+                    "The verdict. Get back typed change ops, the column-level blast radius, the constraints that fire, the incidents on the same path, a transparent risk score, recommended checks and a summary, every claim with evidence ids.",
+                  person: "block means a human decides.",
+                },
+                {
+                  id: "review",
+                  label: "Review",
+                  tag: "built",
+                  readout: "gather · generate · validate · format",
+                  does:
+                    "Four stages. Deterministic findings come first; the model's candidate findings follow; then code checks each candidate against the diff and the store; then the output is formatted. A finding with no valid evidence is marked uncertain, and one outside the diff is rejected.",
+                },
+                {
+                  id: "gate",
+                  label: "Gate",
+                  tag: "built",
+                  readout: "fail-on warn|block",
+                  does:
+                    "CI entry point: pre-flight the diff and exit non-zero at --fail-on warn|block. The verdict is advisory until a team wires this in.",
+                  person: "Orion never blocks on its own; orion gate is how CI makes it binding.",
+                },
+                {
+                  id: "mcp",
+                  label: "MCP",
+                  tag: "built",
+                  readout: "nine tools · no write path",
+                  does:
+                    "The MCP server. Nine tools: preflight, explain, history, record_decision, propose_constraint, ask, review, and the record's search_record and read_record. No write path into the platform.",
+                  person:
+                    "The server's instructions tell the agent to call preflight before writing and again before opening a PR, to cite evidence ids rather than paraphrase, and that block means a human decides.",
+                },
+                {
+                  id: "record",
+                  label: "Record",
+                  tag: "built",
+                  readout: "search_record · read_record",
+                  does:
+                    "Search and read the projects' written record: design notes, decision records, plans, retros, and my build pipeline's lessons, ledger and run folders, across every repository record.toml names. Standard library only, no model call.",
+                },
+                {
+                  id: "decision",
+                  label: "Decision",
+                  tag: "built",
+                  readout: "approve / waive / reject",
+                  does: "Writes a human's approve / waive / reject on a verdict to the ledger.",
+                  person: "This is the step. Nothing lands until a person records a decision.",
+                },
+                {
+                  id: "postflight",
+                  label: "Postflight",
+                  tag: "built",
+                  readout: "next three runs · outcome_observed",
+                  does:
+                    "Closes the loop. For each verdict, finds the commit that landed it and watches the touched and affected assets for the next three runs; writes one outcome_observed event (clean, failed, sla_missed, incident) linked to the verdict.",
+                },
+                {
+                  id: "propose",
+                  label: "Propose",
+                  tag: "built",
+                  readout: "constraints drafted from ledger patterns",
+                  does:
+                    "Drafts constraints from ledger patterns (repeated SLA misses, failures after changes, postmortems with no matching constraint, verdicts that under-called) into constraints/proposed/. A nightly workflow opens them as a pull request; merging is the approval.",
+                  person:
+                    "Git is the store for decisions. Constraints and postmortems are files; merging is approval; history is the audit trail.",
+                },
+                {
+                  id: "bench",
+                  label: "PipelineBench",
+                  tag: "built",
+                  readout: "sixty scenarios · four conditions",
+                  does:
+                    "The benchmark: sixty scenarios with hand-written ground truth, four context conditions (none, repo, rag, orion), mechanical graders.",
+                  evidence:
+                    "Unsafe decisions by AI agents: 0 of 50 with Orion, against 8 of 50 with no context.",
+                },
+                {
+                  id: "next",
+                  label: "Next",
+                  tag: "designed",
+                  readout: "designed · not built",
+                  does:
+                    "Next: more platform adapters (Dagster, Snowflake query history), Postgres as a shared team store, an LLM intent extractor behind ops_from_intent, and more seeds and a larger fixture for PipelineBench.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "numbers",
+          heading: "What the numbers do and don't say yet",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The safety result is strong, and real-bug recall is the open problem. Today it sits at 60%.",
+            },
+            {
+              type: "bullets",
+              items: [
+                "Early and small. Every result is a single run. Two runs of the same build differ by a few cases.",
+                "Mostly the cheapest model. The 60% figure comes from Claude Haiku 5.5, because that round had $2.77 of model credit. Larger models have not been measured on the newest design yet.",
+                "A test platform plus one real warehouse. The benchmark runs on a purpose-built sample platform. The 625-model warehouse shows Orion works at real scale, but Orion read it; no team used it there.",
+                "More passes, more noise. The four-pass review raised 6 false alarms on 19 correct changes, where a single pass raised 1. Cutting that noise is part of the plan below.",
+                "Agents still hedge. Plain decision accuracy is only 0.56 to 0.58, because the models never answer a plain \"go ahead\", even with Orion. That costs every condition equally.",
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The benchmark itself is built to be hard to game. Answers are written by hand from the platform's rules, a check fails the build if Orion and the answers drift apart, and a held-out bug set exists so tuning can't leak into the score.",
+            },
+          ],
+        },
+        {
+          id: "studbook",
+          heading: "From Studbook to Orion",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Studbook answers questions about past decisions. Orion uses that kind of record to judge the next change before it ships. Orion is the next step of the same idea, and in October 2026 it replaced Studbook as the engineering record in my own build pipeline.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Compared" },
+                { label: "Studbook (public)" },
+                { label: "Orion (private, in progress)" },
+              ],
+              rows: [
+                {
+                  cells: [
+                    "The question it answers",
+                    "\"Why was this decided?\"",
+                    "\"Is this change safe, and who needs to know?\"",
+                  ],
+                },
+                {
+                  cells: [
+                    "When it helps",
+                    "After the fact, when someone asks",
+                    "Before merge, on every change",
+                  ],
+                },
+                {
+                  cells: [
+                    "What it reads",
+                    "An engineering record: specs, decision records, retros, commits",
+                    "The diff, plus a graph of the system: lineage, rules, owners, past incidents",
+                  ],
+                },
+                {
+                  cells: [
+                    "How it decides",
+                    "Cited retrieval: hybrid vector and keyword search, reranking, an answer or a refusal",
+                    "Code works out what a change reaches and which rules apply. The model reviews the diff and summarises inside those facts, never overriding them.",
+                  ],
+                },
+                {
+                  cells: [
+                    "What comes out",
+                    "A cited answer, or \"that's not in the record\"",
+                    "A verdict an agent or a CI gate can act on, where every claim cites its evidence",
+                  ],
+                },
+                {
+                  cells: [
+                    "How it is measured",
+                    "Held-out questions: faithfulness 1.00, citation validity 0.95",
+                    "A safety benchmark for agents and recall on real historical bugs (above)",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The through-line is the same rule: never state what the record doesn't support. Studbook applied it to answers. Orion applies it to decisions, where a wrong answer costs a broken pipeline instead of a bad paragraph. Retrieval is still at its core, but it's scoped by the system graph, so a review pulls up the incidents and rules for what the change actually touches.",
+            },
+          ],
+        },
+        {
+          id: "plan",
+          heading: "The plan",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The gap is smaller than 60% suggests. Of the 45 held-out bugs, 9 got a warning in the right file about something else and 3 were raised but marked as minor. Turning those into catches alone would reach 87% (39 of 45).",
+            },
+            {
+              type: "bullets",
+              items: [
+                "Step 1. Make the score trustworthy first. Run every build three times and report the average and the spread. Grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls to confirm it grades fairly. Gate: three runs of today's build agree within a few points.",
+                "Step 2. Measure the stronger models. Every recall number today comes from the cheapest model. Run the four-pass design with Claude Sonnet 5.5 and Opus 5.5 on both bug sets. This costs about $3 to $5 per Sonnet run and double for Opus, roughly $30 to $60 for the full round. Gate: held-out recall of 80% or more, the current floor.",
+                "Step 3. Turn near-misses into catches. Review each changed region in its own pass, so a long change can't use up the model's attention on its first file. Stop the second reading from downgrading correct warnings, which it did about six times per run on Sonnet. Gate: the 12 near-misses drop to 3 or fewer.",
+                "Step 4. Bring in what the model doesn't know. Pull the definitions and documentation of the library calls a change uses into the review, the same way Orion already pulls in the functions it calls.",
+                "Step 5. Prove bugs by running them. A test that fails is hard evidence, so the warning ships with proof. A test that passes is a reason to drop the warning, which cuts false alarms too. Gate: 90% or more on held-out bugs.",
+                "Step 6. Hold the line on noise. Every gain has to pass a ceiling of at most one false alarm per 20 correct changes on both the planted-bug set and the replay of real merged changes. Recall bought with noise doesn't count.",
+                "Step 7. Confirm on fresh bugs. That's the number that goes on this page.",
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Each step is small and measured before and after, and the result goes back on this page whether it moves the number or not.",
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "Where Orion stands",
+        text:
+          "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
+      },
+      contactHeading: "Hiring for forward deployed engineering? Let's talk.",
+    },
+
     // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
     // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
     // copy's no-accuracy-figure rule for this page on 2026-10-14.

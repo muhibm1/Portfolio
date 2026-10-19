@@ -6,7 +6,10 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { render } from "@testing-library/react";
+import { createElement } from "react";
 import { describe, expect, it } from "vitest";
+import WalkthroughBlock from "../components/WalkthroughBlock.jsx";
 import { portfolioData } from "./portfolioData.js";
 import { staticRoutePaths } from "../routePaths.js";
 // R156's term list and matcher functions live in scripts/forbidden-copy.mjs; this test imports
@@ -29,6 +32,8 @@ const KNOWN_BLOCK_TYPES = new Set([
   // Added 2026-10-13 for the WorkHorse run-ledger chart: one series per chart, every value also
   // written as text, so the set grows by one renderer with its own test file.
   "bars",
+  // Added 2026-10-19 (TG-07) for the Orion walkthrough: a console with a step rail and a figure.
+  "walkthrough",
 ]);
 
 // Copied verbatim from plan section 4.3 (home stats) and plan section 6 (approved facts table).
@@ -68,6 +73,8 @@ const pinnedCaseStudyStats = {
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
+  // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
+  orion: ["0 of 50", "0.82 and 0.83", "27 of 45", "625"],
 };
 
 const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
@@ -275,6 +282,29 @@ const pinnedCaseStudyNarratives = {
       "When an LLM feature misbehaves, the fix is often underneath it: the data going in and the schema holding it. I look there before blaming the prompt, and I own the path all the way to the user's screen.",
     contactHeading: "An LLM feature that won't behave? Let's talk.",
   },
+  // Added 2026-10-19 (TG-07): the Orion study's frame, copied from the owner's own Orion document.
+  orion: {
+    eyebrow: "Case study · Personal system · Code review",
+    title: "Orion: early results",
+    lead:
+      "Orion is a code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it: what the change reaches downstream, which rules protect those parts, who owns them and what broke there before.",
+    atAGlance: [
+      { label: "My role", value: "My own project, built and tested in October 2026" },
+      {
+        label: "What it is",
+        value: "A code reviewer for coding agents and the people who work with them",
+      },
+      { label: "Where it stands", value: "An early, ongoing project" },
+      {
+        label: "Tested on",
+        value:
+          "PipelineBench, 45 real historical bugs from 8 open-source projects, and a 625-model warehouse",
+      },
+    ],
+    calloutEyebrow: "Where Orion stands",
+    calloutText: "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
+    contactHeading: "Hiring for forward deployed engineering? Let's talk.",
+  },
 };
 
 // The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
@@ -392,13 +422,14 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the eight case studies in plan order (R127, G1)", () => {
+  it("names / then /work then /work/<id> for the nine case studies in plan order, Orion fourth (R127, G1, TG-07)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
       "/work/workhorse",
       "/work/agentops",
       "/work/flywheel",
+      "/work/orion",
       "/work/esper",
       "/work/apple-llm-triage",
       "/work/apple-integration",
@@ -409,6 +440,7 @@ describe("portfolioData", () => {
       "workhorse",
       "agentops",
       "flywheel",
+      "orion",
       "esper",
       "apple-llm-triage",
       "apple-integration",
@@ -707,12 +739,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the eight 'My role' at-a-glance labels, outside the ownership ban's scope (D55)", () => {
+  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-07)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(8);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {
@@ -1066,5 +1098,139 @@ describe("homeReplay (TG-06)", () => {
 
   it("never mentions Paddock anywhere in the site data", () => {
     expect(JSON.stringify(portfolioData)).not.toMatch(/paddock/i);
+  });
+});
+
+// TG-07: the Orion case study. Its words are the owner's own Orion document, copied sentence by
+// sentence; a sentence using a word the copy scan bans is left out. Its thirteen walkthrough
+// steps come from the approved Look. Every number on the page is one the document states.
+describe("the Orion case study (TG-07)", () => {
+  const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
+  const walkthrough = collectBlocks(orion).find((block) => block.type === "walkthrough");
+
+  // Every figure the owner's document states, as the exact phrase it appears in, so a number cannot
+  // be swapped for another one that happens to appear somewhere else (27 of 45 cannot become
+  // 21 of 45, although 21 Airflow pipelines is true). Sentences left out are not listed.
+  const PHRASES_IN_THE_DOCUMENT = [
+    "0 of 50", "8 of 50", "27 of 45 (60%)", "27 of 45", "87% (39 of 45)", "6 false alarms on 19 correct changes",
+    "625-model", "tier-1", "625 dbt models", "625", "621 of them", "21 Airflow pipelines", "45 real historical bugs",
+    "45 held-out bugs", "from 8 open-source projects", "50-change benchmark", "50-bug tuning set", "60 scenarios",
+    "95 hand-labelled", "0.82 and 0.83", "0.39 with no context", "0.72 to 0.76", "0.56 to 0.58", "1.00", "0.95",
+    "16% with no context", "8 to 18%", "18% to 42%", "100% of relevant", "80% got a warning", "80% or more",
+    "90% or more", "60%", "$2.77", "$3 to $5", "$30 to $60", "2 min 9 s", "20 minutes", "raised 1",
+    "9 got a warning", "3 were raised", "from 45 to about 150", "Hand-check 30", "12 near-misses", "3 or fewer",
+    "one false alarm per 20 correct changes", "October 2026",
+  ];
+  // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
+  // each step's place among them, the plan's step numbers, and the figure caption.
+  const DERIVED_NUMBERS = [
+    /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
+    /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
+    /Step [1-7]\./g, // the plan's own numbering
+    /Fig 1/g, // the figure caption
+    /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
+  ];
+
+  // Model names such as "Sonnet 5.5" are removed before counting, and so are digits stuck to
+  // letters, as in the project name h3.
+  function numbersIn(text) {
+    const withoutModels = text.replace(/\b(?:Sonnet|Opus|Haiku) 5\.5\b/g, "");
+    return withoutModels.match(/(?<![A-Za-z])\d+(?:\.\d+)?/g) ?? [];
+  }
+
+  // The numbers left in a text once every phrase the document states and every derived number is taken out.
+  function unknownNumbersIn(text) {
+    const escape = (phrase) => phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // One pass from the left, so a phrase that starts first is taken whole even where another overlaps it.
+    const phrases = new RegExp([...PHRASES_IN_THE_DOCUMENT].sort((x, y) => y.length - x.length).map(escape).join("|"), "g");
+    let rest = text.replace(phrases, " ");
+    for (const pattern of DERIVED_NUMBERS) rest = rest.replace(pattern, " ");
+    return numbersIn(rest);
+  }
+
+  // All the words a visitor reads or hears from the walkthrough once rendered: text, labels and titles.
+  function renderedWords() {
+    const { container, unmount } = render(createElement(WalkthroughBlock, { block: walkthrough }));
+    const numbering = [...container.querySelectorAll(".wt-n")].map((node) => node.textContent);
+    container.querySelectorAll(".wt-n").forEach((node) => node.remove());
+    const attributes = [...container.querySelectorAll("[aria-label], [title], [alt]")].flatMap((node) => [
+      node.getAttribute("aria-label"),
+      node.getAttribute("title"),
+      node.getAttribute("alt"),
+    ]);
+    const words = [container.textContent, ...attributes.filter(Boolean)].join("\n");
+    unmount();
+    return { words, numbering };
+  }
+
+  it("is fourth, after Flywheel, with the words Ongoing project and no code link (D2, D10)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("orion")).toBe(3);
+    expect(portfolioData.caseStudies[2].id).toBe("flywheel");
+    expect(orion.status).toBe("Ongoing project");
+    expect(orion).not.toHaveProperty("codeLink");
+  });
+
+  it("states only figures the owner's document states, in the phrase it states them, on the page and in the walkthrough (D3)", () => {
+    expect(collectStrings(orion).flatMap(unknownNumbersIn)).toEqual([]);
+  });
+
+  it("states only those figures in what the walkthrough renders, including its step counts and the drawing's description (D3)", () => {
+    const { words, numbering } = renderedWords();
+    expect(words).toContain("Step 1 of 13");
+    expect(unknownNumbersIn(words)).toEqual([]);
+    expect(numbering).toEqual(Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, "0")));
+  });
+
+  it("notices a figure that was changed to another one the document also states (D3)", () => {
+    expect(unknownNumbersIn("It caught 27 of 45 real historical bugs.")).toEqual([]);
+    expect(unknownNumbersIn("It caught 21 of 45 real historical bugs.")).toEqual(["21"]);
+    expect(unknownNumbersIn("It made 0 of 50 unsafe decisions, against 9 of 50.")).toEqual(["9", "50"]);
+  });
+
+  it("leaves out the sentences that use words the copy scan bans, and the sample verdict (D3)", () => {
+    const text = collectStrings(orion).join("\n");
+    expect(text).not.toMatch(/95%|sandbox|boundar/i);
+    expect(text).not.toMatch(/88\/100|CON-031|INC-230/);
+    // Plan step 4's sentence about facts missing from the diff is left out whole, because it names Go.
+    expect(text).not.toMatch(/Today's misses need facts|byteLength|Unwrap/);
+  });
+
+  it("holds a walkthrough block of thirteen uniquely named steps, each tagged built or designed (D6)", () => {
+    expect(walkthrough.figure).toBe("orion-bench");
+    expect(walkthrough.steps).toHaveLength(13);
+    const ids = walkthrough.steps.map((step) => step.id);
+    expect(new Set(ids).size).toBe(13);
+    for (const step of walkthrough.steps) {
+      expect(["built", "designed"]).toContain(step.tag);
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(step.does.length).toBeGreaterThan(0);
+      expect(step.readout.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("tags exactly one step designed, the last, and names where a person decides on five steps (D6)", () => {
+    const designed = walkthrough.steps.filter((step) => step.tag === "designed");
+    expect(designed.map((step) => step.id)).toEqual(["next"]);
+    expect(walkthrough.steps.at(-1).id).toBe("next");
+    const withPerson = walkthrough.steps.filter((step) => step.person).map((step) => step.id);
+    expect(withPerson).toEqual(["preflight", "gate", "mcp", "decision", "propose"]);
+  });
+
+  it("carries every control, chrome and announcement string in the block, so no component holds words", () => {
+    for (const key of ["play", "pause", "next", "replay", "skip", "show", "approve", "waive", "reject"]) {
+      expect(walkthrough.controls[key]).toBeTruthy();
+    }
+    for (const key of ["paused", "playing", "offscreen", "reading", "waiting", "done"]) {
+      expect(walkthrough.states[key]).toBeTruthy();
+    }
+    for (const key of ["step", "waiting", "decision"]) {
+      expect(walkthrough.announce[key]).toBeTruthy();
+    }
+    expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed"]);
+  });
+
+  it("holds no repository address or link in the Orion text", () => {
+    const text = collectStrings(orion).join("\n");
+    expect(text).not.toMatch(/github\.com|https?:\/\//i);
   });
 });
