@@ -1,67 +1,86 @@
 @import "tailwindcss";
+@import "./look.css";
 
-/* Bundled families (loaded in src/main.jsx), each with a system fallback. Redesign tokens
-   per plan section 2 and R130; the twelve hex values below are the only colour source, so
-   components use the token classes (bg-ground, text-ink, ...) instead of hex literals. */
+/* Bundled families (loaded in src/main.jsx), each with a system fallback. */
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-display: "Space Grotesk", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
 
-  --color-ground: #ECEAE5;
-  --color-surface: #F7F6F3;
-  --color-border: #D6D3CC;
-  --color-rule: #C9C6BE;
-  --color-ink: #17171A;
-  --color-body: #2B2A27;
-  --color-muted: #55534E;
-  --color-soft: #3A3935;
-  --color-accent: #B4400B;
-  --color-on-dark: #F7F6F3;
-  --color-on-dark-secondary: #DCDAD4;
-  --color-on-dark-tertiary: #B9B6AE;
+/* Colour tokens: every name reads a variable from src/look.css, so each utility class
+   (bg-page, text-ink, border-line) follows the light or dark theme with no dark: variant.
+   `ground`, `body` and `on-dark` are older names kept because index.html's body classes use
+   them; they point at the nearest Look variable. */
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-mid: var(--line-mid);
+  --color-line-strong: var(--line-strong);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-on-ink: var(--on-ink);
+  --color-grey: var(--grey);
+  --color-grey-2: var(--grey-2);
+  --color-dark: var(--dark);
+  --color-dark-2: var(--dark-2);
+  --color-dark-ink: var(--dark-ink);
+  --color-dark-muted: var(--dark-muted);
+  --color-dark-edge: var(--dark-edge);
+  --color-dark-edge-strong: var(--dark-edge-strong);
+  --color-peach: var(--peach);
+  --color-lilac: var(--lilac);
+  --color-ground: var(--page);
+  --color-body: var(--ink-2);
+  --color-on-dark: var(--on-ink);
 }
 
 @layer base {
   body {
-    background-color: var(--color-ground);
-    color: var(--color-body);
+    background-color: var(--page);
+    color: var(--ink);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* Visible on every interactive element, keyboard-only; R130, R148. */
   :focus-visible {
-    outline: 2px solid var(--color-ink);
-    outline-offset: 2px;
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* On the dark bands the ring turns light. */
+  .on-dark-band :focus-visible {
+    outline-color: var(--dark-ink);
   }
 }
 
-/* Custom scrollbar for clean editorial look */
+/* Custom scrollbar for a clean editorial look */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-ground);
+  background: var(--page);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--line-mid);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-rule);
-}
-
-/* Subtle dot-matrix technical grid background */
-.bg-grid-technical {
-  background-size: 32px 32px;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background: var(--line-strong);
 }
 
 /* Honour the visitor's reduced-motion setting everywhere */
