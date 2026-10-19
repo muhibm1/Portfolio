@@ -39,7 +39,7 @@ export default function HomePage() {
       </section>
 
       <HowIWork principles={home.principles} workingWithPeople={home.workingWithPeople} />
-      <ExperienceSection experience={home.experience} education={home.education} />
+      <ExperienceSection experience={home.experience} />
       <ContactFooter />
     </main>
   );

@@ -19,7 +19,7 @@ describe('HomePage', () => {
     expect(screen.getByText(home.hero.codeLine.text)).toBeInTheDocument();
   });
 
-  it('no longer renders the "Right now" card, the toolkit or the education heading, though the data stays (the Look drops them from the page)', () => {
+  it('no longer renders the "Right now" card, the toolkit or the education box (both degrees), though the data stays (the Look drops them from the page)', () => {
     renderHomePage();
 
     for (const item of home.hero.rightNow.items) {
@@ -28,6 +28,12 @@ describe('HomePage', () => {
     for (const column of home.toolkit.columns) {
       expect(screen.queryByRole('heading', { name: column.title })).toBeNull();
     }
+    for (const item of home.education.items) {
+      expect(screen.queryByText(item.degree)).toBeNull();
+      expect(screen.queryByText(item.date)).toBeNull();
+    }
+    expect(screen.queryByRole('heading', { name: /education/i })).toBeNull();
+    expect(home.education.items.length).toBeGreaterThan(0);
     expect(home.hero.rightNow.items.length).toBeGreaterThan(0);
     expect(home.toolkit.columns.length).toBeGreaterThan(0);
   });
@@ -83,14 +89,11 @@ describe('HomePage', () => {
     }
   });
 
-  it('renders the five experience role headings and the two degrees', () => {
+  it('renders the five experience role headings, and no degrees (education is dropped from the page)', () => {
     renderHomePage();
 
     for (const role of home.experience.roles) {
       expect(screen.getByText(`${role.title} · ${role.company}`)).toBeInTheDocument();
-    }
-    for (const item of home.education.items) {
-      expect(screen.getByText(item.degree)).toBeInTheDocument();
     }
   });
 

@@ -135,7 +135,7 @@ describe('AgentOpsReplay at rest (with motion allowed, before it is on screen)',
 describe('every step is readable as plain text (nothing depends on animation)', () => {
   beforeEach(() => setMotion({ reduced: false }));
 
-  it('holds the words of all nine steps in the markup at rest', () => {
+  it('has the words of every step in the page text at rest, whichever one is showing (it does not test how many show at once or the rail)', () => {
     const { container } = render(<AgentOpsReplay replay={replay} />);
     const text = container.textContent;
 
@@ -169,6 +169,16 @@ describe('every step is readable as plain text (nothing depends on animation)', 
     // postmortem
     expect(text).toContain(replay.postmortem.summary);
     expect(text).toContain(`${replay.postmortem.from}`);
+  });
+
+  it('reaches every one of the nine steps from its rail button, and shows exactly one step pane at a time', () => {
+    render(<AgentOpsReplay replay={replay} />);
+
+    for (const step of replay.steps) {
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${step.label}`) }));
+      const shown = replay.steps.filter((other) => paneFor(other.id).className.includes('rp-on'));
+      expect(shown.map((other) => other.id)).toEqual([step.id]);
+    }
   });
 
   it('gives each of the nine steps its own pane, labelled with the step name', () => {

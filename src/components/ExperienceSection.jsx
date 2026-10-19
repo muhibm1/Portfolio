@@ -1,11 +1,11 @@
 import { eyebrowClasses, h2Classes, h3Classes, wrapClasses } from './lookClasses';
 
 /**
- * "03 · Experience": the roles with their highlights and the degrees. The first role is open;
+ * "03 · Experience": the roles with their highlights. The degrees stay in the data but are not shown (the approved design drops the education box). The first role is open;
  * the others are closed `<details>` the visitor opens, so the text is still in the page when
  * script has not run and a keyboard can open each one.
  */
-export default function ExperienceSection({ experience, education }) {
+export default function ExperienceSection({ experience }) {
   return (
     <section id="experience" className="border-t border-line bg-surface py-[72px] tab:py-[120px]">
       <div className={`${wrapClasses} grid gap-10 md:grid-cols-12 md:gap-6`}>
@@ -33,15 +33,6 @@ export default function ExperienceSection({ experience, education }) {
               </ul>
             </details>
           ))}
-
-          <div className="flex flex-col gap-3 border-t border-line-mid pt-6">
-            {education.items.map((item) => (
-              <div key={item.degree} className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                <h3 className="font-display text-base font-semibold text-ink">{item.degree}</h3>
-                <span className="text-sm text-muted">{item.date}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
