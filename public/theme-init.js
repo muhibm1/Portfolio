@@ -4,6 +4,6 @@
 try {
   var saved = localStorage.getItem('theme');
   if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
-} catch (error) {
+} catch {
   // Storage is refused or empty: follow the system setting.
 }
