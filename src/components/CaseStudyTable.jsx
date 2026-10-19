@@ -4,7 +4,8 @@
 /** `columns` is `[{ label, numeric? }]`, `rows` is `[{ cells, emphasis? }]`. */
 export default function CaseStudyTable({ columns, rows }) {
   return (
-    <table className="w-full border-collapse text-left">
+    <div role="region" aria-label="Table, scrolls sideways on a narrow screen" tabIndex={0} className="max-w-full overflow-x-auto">
+    <table className="w-full min-w-max border-collapse text-left">
       <thead>
         <tr className="border-b border-line-mid">
           {columns.map((column) => (
@@ -35,6 +36,7 @@ export default function CaseStudyTable({ columns, rows }) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 
