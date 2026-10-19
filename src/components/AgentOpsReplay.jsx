@@ -479,7 +479,7 @@ function round(value) {
 // One pane's frame: the pane is always in the markup, and is visible when `on`.
 function Pane({ id, label, on, className = '', children }) {
   return (
-    <div className={`rp-pane${on ? ' rp-on' : ''}${className ? ` ${className}` : ''}`} data-pane={id} aria-label={label}>
+    <div className={`rp-pane${on ? ' rp-on' : ''}${className ? ` ${className}` : ''}`} data-pane={id} role="group" aria-label={label}>
       {children}
     </div>
   );
