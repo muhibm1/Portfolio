@@ -1,7 +1,7 @@
 # 0006: Model case-study pages as ordered content blocks in the data module rendered by one template
 
 Date: 2026-09-25
-Status: proposed
+Status: proposed; amended 2026-10-19 (walkthrough block, status field, committed figure)
 Change: 2026-09-25-rebuild-portfolio-to-approved-redesign
 
 ## Context
@@ -43,3 +43,16 @@ Harder: the data module grows to several hundred lines and a wrong block `type` 
 nothing, so the template throws a readable error on an unknown type rather than skipping it, and
 a data test checks every block type against the fixed set. The data file is ask-first; the plan
 puts its whole rewrite in one task so the owner is prompted once.
+
+## Amendment 2026-10-19
+
+Change TG-07 added the Orion case study. Three things in this decision grew, and the rest stands.
+
+- A new block type, `walkthrough`, joins the fixed set. It holds an ordered list of steps, the
+  words around them and the name of one figure. The template still throws on an unknown block type,
+  and the new block throws on an unknown figure name.
+- A study may carry a `status` line (for example "Ongoing project") instead of a `codeLink`. The
+  cards and the page show the status when there is no link.
+- The figure is a committed data file, `orion-bench.svg`, kept beside its rig
+  (`orion-bench.rig.js`) in `src/components/walkthroughs/`. The rig holds the part names, the
+  distances and the timings, and a test checks that the drawing and the rig agree.

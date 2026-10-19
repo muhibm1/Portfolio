@@ -36,6 +36,12 @@ shape. In summary, **confirmed** by reading the tree at this change's head:
   repositories (WorkHorse, Studbook, AgentOps) are linked wherever that work is discussed. Since the
   2026-10-19 Look the header carries no GitHub link; the contact band's last line points at the
   profile.
+- 2026-10-19 (TG-07): the Orion study adds a `walkthrough` block (`src/components/WalkthroughBlock.jsx`,
+  step state in `src/components/walkthroughs/useWalkthrough.js`) and a `status` field shown when a study
+  has no code link.
+- The Orion figure is a committed drawing, `src/components/walkthroughs/orion-bench.svg`, with its rig
+  `orion-bench.rig.js` beside it; the page is prerendered with the drawing at rest and animated after
+  hydration.
 
 ---
 
