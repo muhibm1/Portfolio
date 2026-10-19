@@ -106,7 +106,6 @@ export default function WalkthroughBlock({ block }) {
           <div
             ref={readoutRef}
             className="wt-ro"
-            aria-live="polite"
             onPointerEnter={actions.onReadoutEnter}
             onPointerLeave={actions.onReadoutLeave}
           >

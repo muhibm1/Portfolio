@@ -2,7 +2,7 @@
 // the two things that keep the console the same height on every step: the markup holds every
 // step's readout and the hint at all times, and look.css stacks them in one grid cell and hides
 // the ones not open with visibility (never display). The real measurement, with all thirteen steps
-// pressed at four widths, is runs/TG-07/checks/no-jump.mjs and runs in Chromium.
+// pressed at four widths, is a browser script run at review time.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
