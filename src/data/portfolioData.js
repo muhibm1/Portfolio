@@ -24,13 +24,13 @@
 // AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
 // Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
 
-// The four public snapshot repositories, held once (R153) and referenced from every place the
-// work is discussed: the header, the featured card, the hero code line and the WorkHorse page.
+// The three public snapshot repositories, held once (R153) and referenced from every place the
+// work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
+// desktop app was removed from the site on 2026-10-19 at his word.
 // Flywheel and the Studbook agent (added 2026-10-13) are public repositories, not snapshots.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
-  paddock: "https://github.com/muhibm1/paddock-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
@@ -771,12 +771,6 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Conversations work too. A follow-up like \"was it ever fixed?\" means nothing to a search engine on its own, so a small model rewrites it into a standalone question first, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Paddock, an earlier desktop app, ran the same query path in TypeScript. A parity gate checked it against the Python reference on every dev question, and it caught two bugs a careful port would have shipped: a reranker silently truncating long inputs, and a database connection that was encrypted but never authenticated. Measured runs then showed the app itself cost hours, because it kept its own copies of things the pipeline owns and they drifted. It was replaced by one terminal command, approvals on the pull request from a phone, and a LangSmith trace of every run.",
-              link: { text: "Paddock", href: REPOSITORIES.paddock },
             },
           ],
         },
