@@ -106,7 +106,7 @@ export const portfolioData = {
         {
           value: "~40%",
           label: "Fewer release-blocking failures",
-          context: "After data checks moved earlier in the pipeline, with DataOps (the team that runs data pipelines)",
+          context: "After data checks moved earlier in the pipeline, with DataOps (data operations)",
           mobileText: "fewer release-blocking failures after data checks moved earlier in the pipeline",
         },
         {
@@ -1038,7 +1038,7 @@ export const portfolioData = {
         eyebrow: "Personal system · Agentic AI · Incident response",
         title: "AgentOps: an incident agent that can't act alone",
         summary:
-          "An AI agent, built with the LangGraph framework, that investigates a live failure in production, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the AI model, decides what it may change, and every action runs exactly once.",
+          "An AI agent, built with the LangGraph framework, that investigates a simulated production failure, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the AI model, decides what it may change, and every action runs exactly once.",
         linkText: "Read the case study",
         tags: ["Approval enforced in code", "Compared with a plain read-think-act agent"],
       },
@@ -2048,7 +2048,7 @@ export const portfolioData = {
                   cells: [
                     "Gain from reviewing in four focused passes",
                     "18% to 42% recall on the same model",
-                    "50-bug tuning set (the bugs used to adjust the method: httpx, hono, cobra). One redesign, one day.",
+                    "50-bug tuning set (bugs used to adjust the method, taken from httpx, hono and cobra). One redesign, one day.",
                   ],
                 },
                 {
@@ -2070,7 +2070,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Source for every number: the results notes kept alongside Orion's benchmark. Each figure above comes from one of three of them: the agent test, the real-bug accuracy test and the real-warehouse test.",
+                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug accuracy test and the real-warehouse test.",
             },
           ],
         },
@@ -2471,7 +2471,7 @@ export const portfolioData = {
                 number: "Fig 1",
                 title: "The studio floor",
               },
-              hint: "Pick a phase on the rail; with a mouse, the numbered stations on the bench work too. Arrow keys move between phases.",
+              hint: "Pick a phase on the rail; with a mouse or a touch screen, the numbered stations on the bench work too. Arrow keys move between phases.",
               listHeading: "Every phase, in order",
               autoplay: false,
               glowStep: "pick",
@@ -2740,7 +2740,7 @@ export const portfolioData = {
                   id: "visitors",
                   label: "Simulated visitors",
                   tag: "designed",
-                  does: "Not built yet. The full studio design adds simulated visitors, stand-in users who try the page. It also includes concepts in three directions, a Motion Score that every animation must follow, critics and quality checks run by code, and a taste memory built from Muhammad's picks.",
+                  does: "Designed, not built yet: simulated visitors, stand-in users who try the page. The wider studio design also includes concepts in three directions, a Motion Score that every animation must follow, critics and quality checks run by code, and a taste memory built from Muhammad's picks.",
                   agents: [],
                 },
               ],
@@ -2799,7 +2799,7 @@ export const portfolioData = {
                 {
                   title: "Measuring movement",
                   note:
-                    "The tool scrolls in quarter-screen steps. At each step it records every element's position, size, transparency and transform (its rotation and scaling), twice: right after the scroll and after the page settles. A change that tracks scroll position is scroll-linked, meaning tied to the scroll. A change that keeps going after the scroll stopped is a timed \"enter\" animation. Canvases (drawing areas on a page) are identified by comparing screenshots, because their pixels often cannot be read directly. Videos are checked to see whether they stay paused while their playback position follows the scroll.",
+                    "The tool scrolls in quarter-screen steps. At each step it records every element's position, size, transparency and transform (its rotation and scaling), twice: right after the scroll and after the page settles. A change that tracks scroll position is scroll-linked, meaning tied to the scroll. A change that keeps going after the scroll stopped is a timed \"enter\" animation. Canvases (drawing areas on a page) are tracked by a compact signature taken from screenshots, because their pixels often cannot be read directly. Videos are checked to see whether they stay paused while their playback position follows the scroll.",
                 },
                 {
                   title: "Tests",
@@ -2956,7 +2956,7 @@ export const portfolioData = {
             },
             {
               type: "paragraph",
-              text: "Deep mode, the mode measured above, costs about 2.3 million subscription tokens and a quarter of an hour per question. So I measured where the tokens went. The researchers' steps took 54% and the searches 29%. The strongest models took under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep mode's 78%, and covered 90% of the checklists against 87%. With only twelve questions, that gap is within the noise, so I read the two as the same. Standard mode used 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this saves a third, not ten times. The next saving is to use fewer, larger researcher steps, which I can test on the same questions at no cost.",
+              text: "Deep mode, the mode measured above, costs about 2.3 million subscription tokens and a quarter of an hour per question. So I measured where the tokens went. The researchers' steps took 54% and the searches 29%. The strong models took under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep mode's 78%, and covered 90% of the checklists against 87%. With only twelve questions, that gap is within the noise, so I read the two as the same. Standard mode used 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this saves a third, not ten times. The next saving is to use fewer, larger researcher steps, which I can test on the same questions at no cost.",
             },
           ],
         },
@@ -3191,7 +3191,7 @@ export const portfolioData = {
       eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
       title: "Three systems, one tool, half the turnaround",
       intro:
-        "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts typed by hand at a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API (the interface programs use to talk to it), and records why each change was made. Turnaround dropped by about half.",
+        "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line (a text screen where commands are typed) and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API (the interface programs use to talk to it), and records why each change was made. Turnaround dropped by about half.",
       atAGlance: [
         { label: "My role", value: "Built it end to end" },
         { label: "Systems", value: "Ticketing, code repository, geo-data" },
