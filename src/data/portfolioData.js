@@ -2773,7 +2773,7 @@ export const portfolioData = {
                 "Code-native art. Visuals are drawn in code (CSS, SVG, canvas or WebGL, the web's own drawing tools), written for the page. No AI image generator is used.",
                 "No scroll-jacking. The page never takes over the mouse wheel and never forces the scroll to jump to set points on a long page.",
                 "The page is complete at rest: it reads fully before any animation runs, and nothing stays hidden waiting for a scroll.",
-                "Reduced motion. Some visitors set their device to ask for less movement. For them, every animated scene in the Motion Score (the studio's written plan for the page's animation) has a calm version, such as a still image or a gentle fade, and the page switches to it automatically.",
+                "Reduced motion. Some visitors set their device to ask for less movement. For them, every animated scene in the Motion Score (the studio's written plan for the page's animation) has a calm version, and the page switches to it automatically.",
                 "Both themes (light and dark) are supported, unless the idea deliberately commits to one look. In that case the background and every colour are set explicitly.",
               ],
             },
