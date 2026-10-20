@@ -2083,10 +2083,10 @@ export const portfolioData = {
               figure: "orion-bench",
               name: "Orion",
               regionLabel: "Orion walkthrough",
-              note: "The whole design on one bench. A pre-flight check is a review done before a change ships. Each step says built or designed.",
+              note: "The whole design on one bench. Each step says built or designed.",
               stepsLabel: "Steps of the walkthrough",
               stageLabel: "The bench",
-              caption: { number: "Fig 1", title: "The pre-flight bench" },
+              caption: { number: "Fig 1", title: "The pre-flight bench, where a change is checked before it ships" },
               hint: "Record a decision (approve, waive or reject) to continue, or press Next step to skip it.",
               listHeading: "The thirteen steps",
               legend: [
