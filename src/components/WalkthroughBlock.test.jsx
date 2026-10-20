@@ -426,6 +426,57 @@ describe('the Atelier walkthrough', () => {
     expect(consoleOf()).toHaveTextContent('Phase 12 of 12');
   });
 
+  // A browser drops focus from a control the moment it is hidden and cannot focus a hidden control;
+  // jsdom does neither, so this stand-in does both.
+  const hidingDropsFocus = () => {
+    const setAttribute = Element.prototype.setAttribute;
+    const focus = HTMLElement.prototype.focus;
+    Element.prototype.setAttribute = function hide(name, value) {
+      if (name === 'hidden' && document.activeElement === this) this.blur();
+      return setAttribute.call(this, name, value);
+    };
+    HTMLElement.prototype.focus = function tryFocus(...args) {
+      if (this.hidden) return undefined;
+      return focus.apply(this, args);
+    };
+    return () => {
+      Element.prototype.setAttribute = setAttribute;
+      HTMLElement.prototype.focus = focus;
+    };
+  };
+
+  for (const reduced of [false, true]) {
+    it(`sends focus to the first phase tab when Back to the start is pressed from the keyboard, with${reduced ? '' : 'out'} reduced motion`, () => {
+      if (reduced) replaceWindow('matchMedia', (query) => ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }));
+      const restore = hidingDropsFocus();
+      try {
+        setupFloor();
+        fireEvent.click(tab('critics'));
+        const again = screen.getByText(floor.controls.replay);
+        act(() => again.focus());
+        expect(document.activeElement).toBe(again);
+
+        fireEvent.click(again);
+
+        expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+        expect(document.activeElement).toBe(tab('intake'));
+      } finally {
+        restore();
+      }
+    });
+  }
+
+  it('leaves the autoplay block\'s Replay as it was: it goes back to the first step and does not move focus itself', () => {
+    const { container } = render(<WalkthroughBlock block={block} />);
+    fireEvent.click(tab(steps[3].id));
+    const again = container.querySelector('.wt-again');
+    const firstTab = tab(steps[0].id);
+    const focusSpy = vi.spyOn(firstTab, 'focus');
+    fireEvent.click(again);
+    expect(focusSpy).not.toHaveBeenCalled();
+    expect(firstTab).toHaveAttribute('aria-current', 'step');
+  });
+
   it('never marks the autoplay block\'s controls as disabled', () => {
     const { container } = render(<WalkthroughBlock block={block} />);
     expect(container.querySelectorAll('.wt-controls [aria-disabled]')).toHaveLength(0);

@@ -146,7 +146,7 @@ export default function WalkthroughBlock({ block }) {
                   <p key={`d-${run}`} className="wt-ro-does wt-in" style={{ '--i': 1 }}>
                     {item.does}
                   </p>
-                  {item.person && (
+                  {typeof item.person === 'string' && (
                     <p key={`p-${run}`} className="wt-ro-person wt-in" style={{ '--i': 2 }}>
                       <b>{labels.person} </b>
                       {item.person}
@@ -314,7 +314,7 @@ export default function WalkthroughBlock({ block }) {
               </p>
               <p className="wt-d">{item.does}</p>
               {item.rule && <p className="wt-d wt-rule">{item.rule}</p>}
-              {item.person && (
+              {typeof item.person === 'string' && (
                 <p className="wt-p">
                   {labels.personInList} {item.person}
                 </p>

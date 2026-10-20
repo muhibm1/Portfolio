@@ -295,7 +295,12 @@ export default function useWalkthrough(block) {
     [agent, back],
   );
   const togglePlay = useCallback(() => dispatch({ type: 'togglePlay' }), []);
-  const replay = useCallback(() => dispatch({ type: 'reset' }), []);
+  // A click-driven console hides its Back to the start button once the first phase is open, and a
+  // browser drops focus from a button that hides, so focus is sent to the first phase tab first.
+  const replay = useCallback(() => {
+    if (clickDriven) tabRefs.current[0]?.focus({ preventScroll: true });
+    dispatch({ type: 'reset' });
+  }, [clickDriven]);
   const decide = useCallback((kind) => {
     dispatch({ type: 'decide', kind });
     stageRef.current?.focus({ preventScroll: true });
