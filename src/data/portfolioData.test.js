@@ -237,7 +237,7 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
     lead:
-      "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts typed by hand at a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API (the interface programs use to talk to it), and records why each change was made. Turnaround dropped by about half.",
+      "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line (a text screen where commands are typed) and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API (the interface programs use to talk to it), and records why each change was made. Turnaround dropped by about half.",
     atAGlance: [
       { label: "My role", value: "Built it end to end" },
       { label: "Systems", value: "Ticketing, code repository, geo-data" },
