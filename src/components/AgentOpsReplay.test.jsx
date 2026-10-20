@@ -205,7 +205,7 @@ describe('every step is readable as plain text (nothing depends on animation)', 
   it('takes its values from the clean_bad_deploy sample run, not from placeholder text', () => {
     expect(replay.scenario).toBe('clean_bad_deploy');
     expect(replay.alert.service).toBe('checkout');
-    expect(replay.alert.stamp).toBe('2026-03-10T10:30:00Z');
+    expect(replay.alert.stamp).toBe('10 Mar 2026, 10:30 UTC');
     expect(replay.approval.action).toBe('rollback_deploy on deploy-001 (risk high)');
     expect(replay.rca.cites).toEqual(['deploy-001', 'log-003']);
   });
@@ -264,7 +264,7 @@ describe('the calm version under prefers-reduced-motion', () => {
 
     fireEvent.click(screen.getByRole('button', { name: replay.controls.approve }));
 
-    expect(currentTab().textContent).toBe('Postmortem');
+    expect(currentTab().textContent).toBe('Write-up');
     expect(screen.getByText(replay.states.resolved)).toBeInTheDocument();
     const log = screen.getByRole('region', { name: replay.logLabel });
     for (const line of replay.log.postmortem) expect(within(log).getAllByText(line.value).length).toBeGreaterThan(0);
@@ -314,7 +314,7 @@ describe('with motion allowed, once the console is on screen', () => {
     expect(screen.getByText(replay.controls.hintWaiting)).toBeInTheDocument();
   });
 
-  it('carries on past the approval only after Approve, and finishes at Postmortem as resolved', () => {
+  it('carries on past the approval only after Approve, and finishes at Write-up as resolved', () => {
     render(<AgentOpsReplay replay={replay} />);
     scrollIntoView();
     fireEvent.click(screen.getByRole('button', { name: replay.steps[APPROVAL_INDEX].label }));
@@ -324,10 +324,10 @@ describe('with motion allowed, once the console is on screen', () => {
     expect(screen.getByRole('button', { name: replay.controls.approve })).toBeDisabled();
     expect(screen.getByRole('button', { name: replay.controls.reject })).toBeDisabled();
 
-    for (let guard = 0; guard < 6 && currentTab().textContent !== 'Postmortem'; guard += 1) {
+    for (let guard = 0; guard < 6 && currentTab().textContent !== 'Write-up'; guard += 1) {
       act(() => animations.at(-1).onfinish());
     }
-    expect(currentTab().textContent).toBe('Postmortem');
+    expect(currentTab().textContent).toBe('Write-up');
     expect(screen.getByText(replay.states.resolved)).toBeInTheDocument();
   });
 
