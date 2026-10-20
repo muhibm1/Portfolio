@@ -144,7 +144,7 @@ export const portfolioData = {
           number: "03",
           title: "Put the rules in code",
           text:
-            "Models reason; code enforces. In WorkHorse, the reviewing agent has no permission to edit code, and the AI cannot approve its own work. Both are enforced by hooks, small pieces of code that block an action, not by instructions in a prompt.",
+            "Models reason; code enforces. In WorkHorse, a verifier (a read-only checker) that can't edit code, and gates the AI can't approve for itself, are hooks, small pieces of code that block an action, not instructions in a prompt.",
         },
         {
           number: "04",
@@ -283,7 +283,7 @@ export const portfolioData = {
     skip: { text: "Skip to the page", href: "#agentops" },
     stepsLabel: "Steps of the run",
     logLabel: "Agent log",
-    logHeading: "agent log (the agent's own step-by-step record, shown as written)",
+    logHeading: "agent log (its step-by-step record)",
     stageLabel: "Current step",
     previewTag: "Preview",
     logPrefix: { next: "next", audit: "audit", note: "page note" },
@@ -1516,10 +1516,10 @@ export const portfolioData = {
         },
       ],
       stats: [
-        { value: "19 to 14", label: "correct runs of 21 by AgentOps (my incident-response agent), after a cleanup of the agent's written instructions (its prompt) that passed all 996 of its unit tests" },
+        { value: "19 to 14", label: "correct runs of 21 by AgentOps (my incident-response agent), after a cleanup of the agent's written instructions (its prompt) that passed 996 unit tests" },
         { value: "2 of 2", label: "test cases the change broke, both mined from AgentOps's real recorded traffic" },
         { value: "3 fixed, 5 broken", label: "questions for the Studbook agent (a question-answering agent of mine), hidden behind an average that moved only from 95 to 91 correct runs of 108" },
-        { value: "0 broken", label: "when I tested the unchanged code against itself; one case wobbled, within the normal run-to-run variation" },
+        { value: "0 broken", label: "when I tested the unchanged code against itself; one case wobbled, within the noise allowance (the margin of random run-to-run variation the gate tolerates)" },
       ],
       sections: [
         {
@@ -1637,7 +1637,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "How far a pass rate must fall to count as broken, and how many broken cases to tolerate, are two settings in the config file (the project's settings file). The defaults are a drop of half, and zero broken cases. The point is to agree them before the first argument, not during it.",
+                "How far a pass rate must fall to count as broken, and how many broken cases to tolerate, are two settings in the config file (the project's settings file). The defaults are half and zero. The point is to agree them before the first argument, not during it.",
             },
           ],
         },
@@ -1688,7 +1688,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The lesson is in the third row. The hand-written version of the same scenario only wobbled, within the normal run-to-run variation, so on its own it would not have blocked anything. The cases that caught the regression came from traffic, not from imagination.",
+                "The lesson is in the third row. The hand-written version of the same scenario only wobbled, inside the noise allowance (the margin of random run-to-run variation the gate tolerates), so on its own it would not have blocked anything. The cases that caught the regression came from traffic, not from imagination.",
             },
             {
               type: "paragraph",
@@ -1732,7 +1732,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The report's sign test came out at p = 0.727. That means a split this uneven would happen by chance about 73 times in 100, so it proves nothing either way. The gate does not depend on it: one broken case is enough to block, and here there were five.",
+                "The report's sign test came out at p = 0.727. That is nowhere near significant: a split this uneven could easily be chance, so it proves nothing either way. The gate does not depend on it: one broken case is enough to block, and here there were five.",
             },
           ],
         },
@@ -2187,7 +2187,7 @@ export const portfolioData = {
                   tag: "built",
                   readout: "nine tools · no write path",
                   does:
-                    "The MCP server, a standard way for coding agents to call a tool. It offers nine tools: preflight, explain, history, record_decision (log a person's choice), propose_constraint (suggest a new rule), ask (question the written record), review, and the record's search_record and read_record. None of them can change the data platform.",
+                    "The MCP server, a standard way for coding agents to call a tool. It offers nine tools: preflight, explain, history, record_decision (log a person's choice), propose_constraint (suggest a new rule), ask (ask a free-form question about the platform), review, and the record's search_record and read_record. None of them can change the data platform.",
                   person:
                     "The server's instructions tell the agent to call preflight before writing code and again before opening a pull request (a proposed change awaiting review), to cite evidence ids rather than paraphrase, and that block means a person decides.",
                 },
@@ -2464,7 +2464,7 @@ export const portfolioData = {
               figure: "atelier-floor",
               name: "How a design moves through the studio",
               regionLabel: "Atelier walkthrough",
-              note: "A brief (the written request) goes in and three concepts (different design ideas) come out. One is refined into a page and published for Muhammad to pick. Every phase and every agent is clickable.",
+              note: "A brief (the written request) goes in and three concepts (different design ideas) come out. Muhammad picks one, and the refined page is published. Every phase and every agent is clickable.",
               stepsLabel: "Phases of the studio",
               stageLabel: "The studio floor",
               caption: {
@@ -2595,7 +2595,7 @@ export const portfolioData = {
                   id: "lanes",
                   label: "Three lanes",
                   tag: "built",
-                  does: "Three lanes run side by side, one per concept. In each lane three agents work in order: the Art Director, the Motion Director and the Engineer.",
+                  does: "Three lanes run side by side, one per concept. Each lane is one agent that plays three roles in order: the Art Director, the Motion Director and the Engineer.",
                   agents: [
                     {
                       name: "Art Director",
