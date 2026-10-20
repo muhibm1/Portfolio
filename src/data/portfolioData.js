@@ -2675,8 +2675,8 @@ export const portfolioData = {
                   id: "pick",
                   label: "His pick",
                   tag: "built",
-                  person: "His pick goes into verdict.md (his exact words) and the taste ledger.",
-                  does: "After his pick, save it to the library (next section).",
+                  person: "",
+                  does: "His pick goes into verdict.md (his exact words) and the taste ledger.",
                   agents: [
                     {
                       name: "Muhammad",
@@ -2760,8 +2760,8 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Design only. He asks for a design and nothing is built: \"design me a pricing page\". Never open a pull request, never touch a project repository. After his pick, save it to the library (next section).",
-                "Called by my build pipeline. A change needs a new look (\"add another case study\"). My build pipeline's gate starts the studio, and its Look page (concepts and motion, for him to approve) comes before the design page. After his pick, write the handoff (next section) and stop; my build pipeline builds. If the studio does not run, my build pipeline asks for no Look approval at all.",
+                "Design only. He asks for a design and nothing is built: \"design me a pricing page\". Never open a pull request, never touch a project repository.",
+                "Called by my build pipeline. A change needs a new look (\"add another case study\"). My build pipeline's gate starts the studio, and its Look page (concepts and motion, for him to approve) comes before the design page. If the studio does not run, my build pipeline asks for no Look approval at all.",
                 "From the library. If a saved design fits, show it to him as a starting point and brief the lane from it instead of from nothing.",
               ],
             },

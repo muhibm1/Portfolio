@@ -1357,7 +1357,7 @@ describe("the Atelier case study (TG-08)", () => {
     expect(designed).toEqual(["visitors"]);
     expect(walkthrough.steps.at(-1).id).toBe("visitors");
     expect(walkthrough.steps.filter((step) => step.tag === "built")).toHaveLength(11);
-    expect(walkthrough.steps.filter((step) => step.person).map((step) => step.id)).toEqual(["brief", "pick", "handoff"]);
+    expect(walkthrough.steps.filter((step) => typeof step.person === "string").map((step) => step.id)).toEqual(["brief", "pick", "handoff"]);
     expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed", "a person decides"]);
   });
 
