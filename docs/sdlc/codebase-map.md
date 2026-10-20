@@ -42,6 +42,11 @@ shape. In summary, **confirmed** by reading the tree at this change's head:
 - The Orion figure is a committed drawing, `src/components/walkthroughs/orion-bench.svg`, with its rig
   `orion-bench.rig.js` beside it; the page is prerendered with the drawing at rest and animated after
   hydration.
+- 2026-10-20 (TG-08): the Atelier study is the fifth case study. Its walkthrough is click-driven
+  (`autoplay: false`) and its steps carry agent cards; the drawing is `atelier-floor.svg` with
+  `atelier-floor.rig.js` and `AtelierFloor.jsx`.
+- The page shows no measured figures, only counters and labels of its own (Phase n of 12, list numbers, the
+  figure caption and the station numerals); a test fails if any other number appears in the walkthrough.
 
 ---
 

@@ -21,6 +21,7 @@
   --f-paper: #ffffff; --f-face: #ffffff; --f-s0: #d9d9dd; --f-s1: #e4e4e8; --f-s2: #ededf0; --f-s3: #f4f4f6;
   --f-hi: #26262a; --f-mid: #8a8a8f; --f-lo: #b4b4b8; --f-faint: #d8d8dc; --f-lit: #000000; --f-halo: #8a8a80; --f-halo-o: .32; --f-dot: #3a3a3e;
   --f-on-top: #fdebe3; --f-on-shade: #f6ddd2;
+  --f-lit-top: #ffffff; --f-lit-shade: #eeeeeb;
   --display: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
   --body: "IBM Plex Sans", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -54,6 +55,7 @@ color-scheme: dark;
     --f-paper: #18181b; --f-face: #1f1f23; --f-s0: #111114; --f-s1: #151518; --f-s2: #1a1a1e; --f-s3: #1e1e22;
     --f-hi: #d6d6da; --f-mid: #6c6c72; --f-lo: #424248; --f-faint: #2c2c31; --f-lit: #ffffff; --f-halo: #050505; --f-halo-o: .9; --f-dot: #e6e6e6;
     --f-on-top: #4a332b; --f-on-shade: #35251f;
+    --f-lit-top: #2c2c31; --f-lit-shade: #232327;
     --shadow-window: 0 1px 2px rgba(0,0,0,.5), 0 24px 60px -24px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.02);
     --shadow-lift: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px -12px rgba(0,0,0,.65);
     --shadow-warm: 0 40px 80px -40px rgba(247,190,169,.22);
@@ -78,6 +80,7 @@ color-scheme: dark;
     --f-paper: #18181b; --f-face: #1f1f23; --f-s0: #111114; --f-s1: #151518; --f-s2: #1a1a1e; --f-s3: #1e1e22;
     --f-hi: #d6d6da; --f-mid: #6c6c72; --f-lo: #424248; --f-faint: #2c2c31; --f-lit: #ffffff; --f-halo: #050505; --f-halo-o: .9; --f-dot: #e6e6e6;
     --f-on-top: #4a332b; --f-on-shade: #35251f;
+    --f-lit-top: #2c2c31; --f-lit-shade: #232327;
     --shadow-window: 0 1px 2px rgba(0,0,0,.5), 0 24px 60px -24px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.02);
     --shadow-lift: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px -12px rgba(0,0,0,.65);
     --shadow-warm: 0 40px 80px -40px rgba(247,190,169,.22);
@@ -488,6 +491,70 @@ html { background: var(--page); scroll-padding-top: 76px; }
 .wt-show { grid-column: 2; justify-self: start; min-height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-mid); background: var(--surface); font-size: 13px; cursor: pointer; margin-top: 2px; }
 .wt-show:hover { border-color: var(--ink); }
 @container wt (min-width: 900px) { .wt-sl { grid-template-columns: 1fr 1fr; } .wt-sl li { padding: 20px 0; } }
+
+/* The Atelier studio floor and its two-level readout (TG-08). Every rule below starts with
+   .wt[data-agents], the attribute only a block with agents carries, so nothing here can reach the
+   Orion console or its bench. A test fails if a rule in this section loses that start. */
+.wt[data-agents] .wt-figbox .iso-line[data-dashed] { stroke-dasharray: 3 3; }
+.wt[data-agents] .wt-figbox .iso-line[data-free="start"] { stroke-width: 1.1px; }
+.wt[data-agents] .wt-figbox .st { cursor: pointer; }
+.wt[data-agents] .wt-figbox .st:hover .iso-solid > .iso-edge { stroke: var(--f-hi); }
+.wt[data-agents] .wt-figbox .iso-line[data-tone="lo"] { stroke: var(--f-lo); }
+.wt[data-agents] .wt-figbox [data-on] .iso-line[data-tone="lo"] { stroke: var(--f-hi); }
+.wt[data-agents] .wt-figbox .st-mark { opacity: 0; stroke-width: 1.5px; transition: opacity .5s var(--out); }
+.wt[data-agents] .wt-figbox .st[data-on] .st-mark { opacity: 1; }
+.wt[data-agents] .wt-figbox .iso-face-text { fill: var(--f-mid); font-family: var(--mono); letter-spacing: .04em; }
+.wt[data-agents] .wt-figbox .iso-solid[data-lit] > .iso-fill { fill: var(--f-face); }
+.wt[data-agents] .wt-figbox .iso-solid[data-lit] > .iso-top { fill: var(--f-lit-top); }
+.wt[data-agents] .wt-figbox .iso-solid[data-lit] > .iso-shade { fill: var(--f-lit-shade); }
+/* The ringed station keeps its own greys: the page's warm colour is kept for the one step where a person decides. */
+.wt[data-agents] .wt-figbox .fig[data-at] [data-on] .iso-solid > .iso-top { fill: var(--f-face); }
+.wt[data-agents] .wt-figbox .fig[data-at] [data-on] .iso-solid > .iso-shade[data-shade="0"] { fill: var(--f-s0); }
+.wt[data-agents] .wt-figbox .fig[data-at] [data-on] .iso-solid > .iso-shade[data-shade="1"] { fill: var(--f-s1); }
+.wt[data-agents] .wt-figbox .fig[data-at] [data-on] .iso-solid > .iso-shade[data-shade="2"] { fill: var(--f-s2); }
+.wt[data-agents] .wt-figbox .fig[data-at] [data-on] .iso-solid > .iso-shade[data-shade="3"] { fill: var(--f-s3); }
+/* The work is one plate; at the lanes it is three, one on each rail. */
+.wt[data-agents] .wt-figbox .fig [data-part="plate-2"], .wt[data-agents] .wt-figbox .fig [data-part="plate-3"] { opacity: 0; transition: opacity .4s var(--out); }
+.wt[data-agents] .wt-figbox .fig[data-at="lanes"] [data-part="plate-2"], .wt[data-agents] .wt-figbox .fig[data-at="lanes"] [data-part="plate-3"] { opacity: 1; }
+
+.wt[data-agents] .wt-tab[data-go="pick"] .wt-track { background: var(--peach-ring); }
+.wt[data-agents] .wt-tab[data-go="pick"][aria-current="step"] .wt-track { background: linear-gradient(90deg, var(--peach), var(--lilac)); }
+.wt[data-agents] .wt-tab[data-tag="designed"] .wt-track { background: repeating-linear-gradient(90deg, var(--line-strong) 0 4px, transparent 4px 8px); }
+.wt[data-agents] .wt-console[data-phase="still"] .wt-sdot { border-color: var(--ink); background: var(--ink); }
+.wt[data-agents] .wt-ro-rule { font-size: 14px; line-height: 1.5; color: var(--muted); }
+.wt[data-agents] .wt-ro-who, .wt[data-agents] .wt-rw dt { font-size: 12px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.wt[data-agents] .wt-ro-who { margin-top: 6px; }
+.wt[data-agents] .wt-roles { display: grid; gap: 8px; }
+.wt[data-agents] .wt-role { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); cursor: pointer; text-align: left; font-size: 15px; transition: border-color .2s var(--out), transform .2s var(--out); }
+.wt[data-agents] .wt-role:hover { border-color: var(--ink); transform: translateX(2px); }
+.wt[data-agents] .wt-role-n { font-weight: 500; }
+.wt[data-agents] .wt-role-kind { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+/* Every agent card sits in the readout's one grid cell with the phase readouts, so the tallest sets the height for all of them and the page below never moves when a phase or an agent is opened. */
+.wt[data-agents] .wt-ro-agent { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; align-content: start; }
+.wt[data-agents] .wt-ro-agent:not([data-current]) { visibility: hidden; }
+.wt[data-agents] .wt-back { align-self: start; min-height: 32px; padding: 0 12px 0 10px; border-radius: 999px; border: 1px solid var(--line-mid); background: var(--surface); font-size: 13.5px; cursor: pointer; }
+.wt[data-agents] .wt-back::before { content: "\2190"; font-family: var(--mono); margin-right: 6px; color: var(--muted); }
+.wt[data-agents] .wt-back:hover { border-color: var(--ink); }
+.wt[data-agents] .wt-rw { display: grid; gap: 12px; }
+.wt[data-agents] .wt-rw div { display: grid; gap: 2px; }
+.wt[data-agents] .wt-rw dd { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); overflow-wrap: anywhere; }
+.wt[data-agents] .wt-ctl[aria-disabled="true"] { opacity: .5; cursor: default; }
+.wt[data-agents] .wt-who { grid-column: 2; font-size: 13.5px; color: var(--muted); }
+.wt[data-agents] .wt-d.wt-rule { color: var(--muted); font-size: 14px; }
+/* The Atelier title is long, so on a narrow console the header stacks and wraps instead of pushing the note and the skip link out of the window. */
+@container wt (max-width: 899px) {
+  .wt[data-agents] .wt-chrome { grid-template-columns: auto minmax(0, 1fr); }
+  .wt[data-agents] .wt-ttl { white-space: normal; min-width: 0; }
+  .wt[data-agents] .wt-note { grid-row: 2; min-width: 0; }
+  .wt[data-agents] .wt-skip { grid-column: 1 / -1; grid-row: 3; justify-self: start; }
+}
+@container wt (min-width: 900px) {
+  .wt[data-agents] .wt-body { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .wt[data-agents] .wt-ro { contain: none; overflow: visible; }
+}
+@container wt (min-width: 1120px) {
+  .wt[data-agents] .wt-rail { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+}
 
 /* Reduced motion: every scene has a still version. */
 @media (prefers-reduced-motion: reduce) {

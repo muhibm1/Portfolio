@@ -56,3 +56,13 @@ Change TG-07 added the Orion case study. Three things in this decision grew, and
 - The figure is a committed data file, `orion-bench.svg`, kept beside its rig
   (`orion-bench.rig.js`) in `src/components/walkthroughs/`. The rig holds the part names, the
   distances and the timings, and a test checks that the drawing and the rig agree.
+
+Change TG-08 (2026-10-20) added the Atelier case study on the same block. The walkthrough block gained
+three optional fields and nothing was removed.
+
+- `autoplay: false` makes the walkthrough click-driven: it holds still until a visitor picks a
+  phase, with Previous and Next buttons. `glowStep` names the one phase that carries the lit mood.
+- A step may carry `agents`, each shown as a card with what it reads and writes. The console stays
+  one height because the readouts and cards share one grid cell.
+- A second committed drawing, `atelier-floor.svg`, sits beside its rig, `atelier-floor.rig.js`. The
+  figure name is added to the fixed set; an unknown name still throws.

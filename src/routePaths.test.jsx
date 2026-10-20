@@ -17,7 +17,7 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the nine case studies in plan order, Orion fourth (G1, TG-07)', () => {
+  it('returns / then /work then /work/<id> for each of the ten case studies in plan order, Orion fourth and Atelier fifth (G1, TG-08)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
@@ -25,6 +25,7 @@ describe('staticRoutePaths', () => {
       '/work/agentops',
       '/work/flywheel',
       '/work/orion',
+      '/work/atelier',
       '/work/esper',
       '/work/apple-llm-triage',
       '/work/apple-integration',
