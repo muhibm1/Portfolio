@@ -2412,6 +2412,10 @@ export const portfolioData = {
           blocks: [
             {
               type: "paragraph",
+              text: "This repository is being built in stages.",
+            },
+            {
+              type: "paragraph",
               text:
                 "When you drop in a piece of inspiration, Atelier studies it the way a designer would and writes a genome card: the colours, type sizes, spacing and motion that make it work, plus a plain-language judgement of why it works and what not to copy.",
             },
