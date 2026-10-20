@@ -184,7 +184,7 @@ export const portfolioData = {
           highlights: [
             "Owned the connection to a large language model (LLM, the AI behind chatbots) that powered the product's core personalization feature, refining its instructions against how it behaved in real use.",
             "Rebuilt a broken content-generation pipeline. Automated release checks (CI/CD) and tests cut production incidents by about 40%.",
-            "Built the API layer (how the app's parts talk to each other) and the live-update infrastructure (WebSockets) on Elixir Phoenix and Postgres.",
+            "Built the REST API layer (the way the web page asks the server for data) and the live-update infrastructure (WebSockets) on Elixir Phoenix and Postgres.",
           ],
         },
         {
@@ -286,7 +286,7 @@ export const portfolioData = {
     logHeading: "agent log (its step-by-step record)",
     stageLabel: "Current step",
     previewTag: "Preview",
-    logPrefix: { next: "moved to", audit: "audit", note: "page note" },
+    logPrefix: { next: "next step", audit: "audit", note: "page note" },
     states: {
       investigating: "Investigating",
       waiting: "Waiting for you",
@@ -918,7 +918,7 @@ export const portfolioData = {
                 { title: "Vector + full text", note: "Top 10 from each" },
                 { title: "Fusion", note: "Merge the two lists by rank (merge setting k = 10)" },
                 { title: "Rerank", note: "A slower model re-reads them, keeps 5" },
-                { title: "Answer", note: "Haiku 4.5 (a small language model), set to answer the same way each time" },
+                { title: "Answer", note: "Haiku 4.5 (a small language model), set to vary as little as possible" },
                 { title: "Receipts", note: "Citations or \"Not in the record\"", gate: true },
               ],
             },
@@ -1156,7 +1156,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict template (a Pydantic object, a Python checking tool) and may cite only evidence the run has actually collected. The evidence it reads is wrapped in a random marker and treated as data rather than instructions, and the action registry refuses anything not in the runbook (the fixed list of allowed actions), however convincing the request. One scripted incident plants a log line telling the operator to drop a table; the agent reports the line and never acts on it.",
+                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict template (Pydantic, a Python checking library) and may cite only evidence the run has actually collected. The evidence it reads is wrapped in a random marker and treated as data rather than instructions, and the action registry refuses anything not in the runbook (the fixed list of allowed actions), however convincing the request. One scripted incident plants a log line telling the operator to drop a table; the agent reports the line and never acts on it.",
             },
           ],
         },
@@ -1637,7 +1637,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "How far a pass rate must fall to count as broken, and how many broken cases to tolerate, are two settings in the config file (the project's settings file). The defaults are half and zero. The point is to agree them before the first argument, not during it.",
+                "How far a pass rate must move to count, and how many broken cases to tolerate, are two settings in the config file (the project's settings file). The defaults are half and zero. The point is to agree them before the first argument, not during it.",
             },
           ],
         },
@@ -2006,7 +2006,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the whole repository or plain search.",
+                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the repository's files or plain search.",
             },
             {
               type: "table",
@@ -2231,7 +2231,7 @@ export const portfolioData = {
                   tag: "built",
                   readout: "sixty scenarios · four setups",
                   does:
-                    "The benchmark: sixty scenarios with answers written by hand, tried in four setups for what the agent is given (nothing, the whole repository, plain document search, or Orion), all graded by code.",
+                    "The benchmark: sixty scenarios with answers written by hand, tried in four setups for what the agent is given (nothing, the repository's files, plain document search, or Orion), all graded by code.",
                   evidence:
                     "Unsafe decisions by AI agents: 0 of 50 with Orion, against 8 of 50 with no context.",
                 },
@@ -2609,7 +2609,7 @@ export const portfolioData = {
                       name: "Motion Director",
                       kind: "agent",
                       role: "Writes the motion down before it is built, like a musical score written before the orchestra plays.",
-                      reads: "Only your concept's section of the ideas document, the design tokens, the art plan, the motion parts of the saved inspiration items it names, and the studio rules.",
+                      reads: "Only its own concept's section of the ideas document, the design tokens, the art plan, the motion parts of the saved inspiration items it names, and the studio rules.",
                       writes: "The Motion Score, a list of every animated scene. Each scene names the idea it explains and has a version with little movement for visitors who ask for less movement.",
                       next: "Engineer, Motion critic.",
                     },
@@ -2804,7 +2804,7 @@ export const portfolioData = {
                 {
                   title: "Tests",
                   note:
-                    "The tests capture a small test page on my own computer holding one of each motion kind, and check the tool names every one with the right curve.",
+                    "The tests capture a small test page kept with the code, holding one of each motion kind, and check the tool names every one with the right curve.",
                 },
               ],
             },
