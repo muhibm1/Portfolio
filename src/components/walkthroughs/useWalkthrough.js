@@ -31,8 +31,8 @@ export function railTarget(key, at, last) {
 }
 
 // Fills a template such as "Step {n}, {label}, {tag}." from one step.
-function say(template, index, step) {
-  return template.replace('{n}', String(index + 1)).replace('{label}', step.label).replace('{tag}', step.tag);
+function say(template, index, step, total) {
+  return template.replace('{n}', String(index + 1)).replace('{total}', String(total)).replace('{label}', step.label).replace('{tag}', step.tag);
 }
 
 /**
@@ -43,34 +43,53 @@ export function createReducer(block) {
   const { steps, announce } = block;
   const last = steps.length - 1;
   const decisionIndex = steps.findIndex((step) => step.id === DECISION_STEP);
-  const move = (state, patch) => ({ ...state, ...patch, runId: state.runId + 1 });
+  const clickDriven = block.autoplay === false;
+  // Any move to another step closes an open agent card.
+  const move = (state, patch) => ({ ...state, agent: null, ...patch, runId: state.runId + 1 });
 
   return function reducer(state, action) {
     switch (action.type) {
       case 'calm':
-        // The visitor asks for less motion: rest on the first step and play nothing.
-        return move(state, { calm: true, decision: null, idx: 0, playing: false, live: '' });
+        // The visitor asks for less motion: rest on the first step and play nothing. A
+        // click-driven block never moved by itself, so it stays on the step the visitor chose.
+        return move(state, { calm: true, decision: null, idx: clickDriven ? state.idx : 0, playing: false, live: '' });
+      case 'motion':
+        // A click-driven block never starts by itself: motion coming back only lifts the calm.
+        return state.calm ? { ...state, calm: false } : state;
       case 'start':
         // Motion is allowed and the console is in view: begin from the first step.
         return move(state, { calm: false, decision: null, idx: 0, playing: true, live: '' });
       case 'reset':
-        return move(state, { decision: null, idx: 0, playing: !state.calm, live: '' });
+        return move(state, { decision: null, idx: 0, playing: !state.calm && !clickDriven, live: '' });
       case 'goTo': {
         const idx = Math.max(0, Math.min(last, action.index));
         const waiting = idx === decisionIndex && state.decision === null;
         return move(state, {
           idx,
           playing: action.user ? false : state.playing,
-          live: waiting ? announce.waiting : say(announce.step, idx, steps[idx]),
+          live: waiting ? announce.waiting : say(announce.step, idx, steps[idx], steps.length),
         });
       }
       case 'advance': {
         const waiting = state.idx === decisionIndex && state.decision === null;
         if (waiting || state.idx >= last) return state;
         const idx = state.idx + 1;
-        const live = idx === decisionIndex && state.decision === null ? announce.waiting : say(announce.step, idx, steps[idx]);
+        const live = idx === decisionIndex && state.decision === null ? announce.waiting : say(announce.step, idx, steps[idx], steps.length);
         return move(state, { idx, live });
       }
+      case 'openAgent': {
+        // A role card opens only for an agent the open step actually has.
+        const agents = steps[state.idx].agents ?? [];
+        if (!Number.isInteger(action.index) || action.index < 0 || action.index >= agents.length) return state;
+        const agent = agents[action.index];
+        return {
+          ...state,
+          agent: action.index,
+          live: (announce.agent ?? '').replace('{name}', agent.name).replace('{kind}', agent.kind),
+        };
+      }
+      case 'back':
+        return state.agent === null ? state : { ...state, agent: null };
       case 'screen':
         // Whether the console is on screen; it does not count as a move.
         return state.onScreen === action.visible ? state : { ...state, onScreen: action.visible };
@@ -95,17 +114,21 @@ export function createReducer(block) {
  * show the first step at rest; nothing reads the browser until an effect runs, so the markup
  * matches on hydration. The run starts by itself once the console is on screen, stops at the
  * decision until a decision is recorded, and never starts for a visitor who asked for less motion.
+ * A block with `autoplay: false` has no clock: it never starts by itself and moves only when the
+ * visitor chooses a step, and a step with `agents` can open one role card at a time (closed by
+ * Back, by Escape on the console, or by any move to another step).
  */
 export default function useWalkthrough(block) {
   const { steps } = block;
   const last = steps.length - 1;
   const decisionIndex = steps.findIndex((step) => step.id === DECISION_STEP);
   const reducer = useMemo(() => createReducer(block), [block]);
-  const [state, dispatch] = useReducer(reducer, { idx: 0, decision: null, playing: false, calm: false, runId: 0, live: '', onScreen: false });
+  const clickDriven = block.autoplay === false;
+  const [state, dispatch] = useReducer(reducer, { idx: 0, agent: null, decision: null, playing: false, calm: false, runId: 0, live: '', onScreen: false });
   const [tabHidden, setTabHidden] = useState(false);
   const [held, setHeld] = useState(false);
 
-  const { idx, decision, playing, calm, runId, onScreen } = state;
+  const { idx, agent, decision, playing, calm, runId, onScreen } = state;
   const waiting = idx === decisionIndex && decision === null;
   const ended = idx === last;
   const dwells = useMemo(() => steps.map(dwellMilliseconds), [steps]);
@@ -119,6 +142,7 @@ export default function useWalkthrough(block) {
   const trackRefs = useRef([]);
   const clockRef = useRef(null);
   const startedRef = useRef(false);
+  const focusRef = useRef(null);
 
   // Reads the motion setting, the console's place on the page and the tab's visibility after
   // mount, and starts the run the first time the console is on screen.
@@ -130,6 +154,8 @@ export default function useWalkthrough(block) {
     const onQueryChange = () => {
       if (prefersReducedMotion()) {
         dispatch({ type: 'calm' });
+      } else if (clickDriven) {
+        dispatch({ type: 'motion' });
       } else {
         startedRef.current = true;
         dispatch({ type: 'start' });
@@ -145,7 +171,7 @@ export default function useWalkthrough(block) {
             const entry = entries[entries.length - 1];
             const visible = entry.isIntersecting && entry.intersectionRatio >= VISIBLE_SHARE;
             dispatch({ type: 'screen', visible });
-            if (visible && !startedRef.current && !prefersReducedMotion()) {
+            if (!clickDriven && visible && !startedRef.current && !prefersReducedMotion()) {
               startedRef.current = true;
               dispatch({ type: 'start' });
             }
@@ -155,10 +181,13 @@ export default function useWalkthrough(block) {
         observer.observe(consoleRef.current);
       }
     } else if (!reduced) {
-      // No way to tell where the console is, so treat it as on screen and start now.
+      // No way to tell where the console is, so treat it as on screen and, unless the block waits
+      // for the visitor, start now.
       dispatch({ type: 'screen', visible: true });
-      startedRef.current = true;
-      dispatch({ type: 'start' });
+      if (!clickDriven) {
+        startedRef.current = true;
+        dispatch({ type: 'start' });
+      }
     }
 
     const onVisibility = () => setTabHidden(document.hidden);
@@ -169,13 +198,13 @@ export default function useWalkthrough(block) {
       observer?.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, []);
+  }, [clickDriven]);
 
   // Runs the step clock: a timer drawn on the step's rail track that moves the run on when it
   // fills. It pauses when the visitor pauses, reads, scrolls away or leaves the tab, and it never
   // runs at the decision, on the last step or in the calm version.
   useEffect(() => {
-    const go = !calm && playing && onScreen && !held && !tabHidden && !ended && !waiting;
+    const go = !clickDriven && !calm && playing && onScreen && !held && !tabHidden && !ended && !waiting;
     const clock = clockRef.current;
     if (clock && (clock.idx !== idx || clock.runId !== runId)) {
       clock.animation.cancel();
@@ -197,7 +226,7 @@ export default function useWalkthrough(block) {
     } else {
       clockRef.current.animation.play();
     }
-  }, [idx, runId, playing, calm, onScreen, held, tabHidden, ended, waiting, decision, dwells]);
+  }, [idx, runId, playing, calm, onScreen, held, tabHidden, ended, waiting, decision, dwells, clickDriven]);
 
   // Stops any running clock when the console leaves the page.
   useEffect(
@@ -216,6 +245,19 @@ export default function useWalkthrough(block) {
     }
   });
 
+  // Moves focus to where an agent card's open or close sent it: the card's Back button when it
+  // opens, the role button that opened it when it closes.
+  useEffect(() => {
+    const want = focusRef.current;
+    focusRef.current = null;
+    if (!want || !consoleRef.current) return;
+    const selector =
+      want.kind === 'back'
+        ? '.wt-ro-agent[data-current] .wt-back'
+        : `.wt-ro-step[data-current] .wt-role[data-agent="${want.agent}"]`;
+    consoleRef.current.querySelector(selector)?.focus({ preventScroll: true });
+  });
+
   // A step the visitor picks by hand counts as the start, so the first time the console scrolls into
   // view the run does not start over from step one.
   const goTo = useCallback((index) => {
@@ -226,8 +268,39 @@ export default function useWalkthrough(block) {
     startedRef.current = true;
     dispatch({ type: 'goTo', index: idx + 1, user: true });
   }, [idx]);
+  const previous = useCallback(() => {
+    startedRef.current = true;
+    dispatch({ type: 'goTo', index: idx - 1, user: true });
+  }, [idx]);
+  const openAgent = useCallback(
+    (index) => {
+      if (!steps[idx].agents?.[index]) return;
+      focusRef.current = { kind: 'back' };
+      dispatch({ type: 'openAgent', index });
+    },
+    [steps, idx],
+  );
+  const back = useCallback(() => {
+    if (agent === null) return;
+    focusRef.current = { kind: 'role', agent };
+    dispatch({ type: 'back' });
+  }, [agent]);
+  // Escape on the console closes an open agent card; with none open it does nothing.
+  const onConsoleKeyDown = useCallback(
+    (event) => {
+      if (event.key !== 'Escape' || agent === null) return;
+      event.preventDefault();
+      back();
+    },
+    [agent, back],
+  );
   const togglePlay = useCallback(() => dispatch({ type: 'togglePlay' }), []);
-  const replay = useCallback(() => dispatch({ type: 'reset' }), []);
+  // A click-driven console hides its Back to the start button once the first phase is open, and a
+  // browser drops focus from a button that hides, so focus is sent to the first phase tab first.
+  const replay = useCallback(() => {
+    if (clickDriven) tabRefs.current[0]?.focus({ preventScroll: true });
+    dispatch({ type: 'reset' });
+  }, [clickDriven]);
   const decide = useCallback((kind) => {
     dispatch({ type: 'decide', kind });
     stageRef.current?.focus({ preventScroll: true });
@@ -272,10 +345,21 @@ export default function useWalkthrough(block) {
     phase = 'done';
     stateText = states.done;
   }
+  if (clickDriven) {
+    // Nothing plays by itself, so the status says which step is open. The step the block names
+    // for the warm glow (where a person decides) shows the waiting mark.
+    phase = steps[idx].id === block.glowStep ? 'wait' : 'still';
+    stateText = say(states.still, idx, steps[idx], steps.length);
+  }
 
   return {
     idx,
     step: steps[idx],
+    agent,
+    clickDriven,
+    // Whether the figure may run its own motion: the console is on screen, the tab is showing and
+    // the visitor has not asked for less.
+    figureLive: onScreen && !tabHidden && !calm,
     decision,
     playing,
     calm,
@@ -286,6 +370,6 @@ export default function useWalkthrough(block) {
     phase,
     stateText,
     refs: { consoleRef, stageRef, railRef, readoutRef, againRef, tabRefs, trackRefs },
-    actions: { goTo, next, togglePlay, replay, decide, onRailKeyDown, onFocus, onBlur, onReadoutEnter, onReadoutLeave },
+    actions: { goTo, next, previous, openAgent, back, onConsoleKeyDown, togglePlay, replay, decide, onRailKeyDown, onFocus, onBlur, onReadoutEnter, onReadoutLeave },
   };
 }

@@ -2378,6 +2378,446 @@ export const portfolioData = {
       contactHeading: "Hiring for forward deployed engineering? Let's talk.",
     },
 
+    // Atelier (fifth, after Orion), added 2026-10-20 (TG-08) from the Atelier README, its studio skill
+    // and agent files, and the step data of the approved Look, sentence by sentence. A sentence that
+    // uses a word the copy scan bans, or that states a number, is left out whole, not reworded.
+    // The private build system's name is replaced with "my build pipeline", as on the Orion page.
+    // `status` stands where a code link would, because the repository is private; there is no codeLink.
+    {
+      id: "atelier",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · Design studio",
+        title: "Atelier",
+        summary: "A design studio made of agents.",
+        linkText: "Read the case study",
+        tags: ["Genome cards", "Motion map"],
+      },
+      status: "Ongoing project",
+      eyebrow: "Case study · Personal system · Design studio",
+      title: "Atelier",
+      intro:
+        "A design studio made of agents. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
+      atAGlance: [
+        { label: "My role", value: "My own project, built in stages" },
+        { label: "What it is", value: "A design studio made of agents" },
+        { label: "Where it stands", value: "An ongoing project" },
+        { label: "What it makes", value: "Websites and web apps" },
+      ],
+      stats: [],
+      sections: [
+        {
+          id: "what",
+          heading: "What Atelier is",
+          blocks: [
+            {
+              type: "paragraph",
+              text: "This repository is being built in stages.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "When you drop in a piece of inspiration, Atelier studies it the way a designer would and writes a genome card: the colours, type sizes, spacing and motion that make it work, plus a plain-language judgement of why it works and what not to copy.",
+            },
+            {
+              type: "bullets",
+              items: [
+                "For a link, it opens the page in a headless browser (a real browser with no window) and scrolls through it. It saves stills at desktop and phone size, a filmstrip (one frame per screen of scrolling, on one sheet), a scroll video, and a motion map: every element that moves as you scroll, what kind of motion it is, over which part of the page, and which easing curve it follows. It runs the page a second time with \"reduce motion\" switched on to see whether the site respects visitors who ask for less movement.",
+                "For a screenshot, it measures the size and the dominant colours. The Curator agent judges the rest by eye.",
+                "For a Figma frame, it turns the frame's variables (colours, sizes, type styles) into design tokens, and renders the frame's code to a screenshot.",
+                "From Notion, it picks up every new row in the \"Swipe file\" database and writes a summary back.",
+              ],
+            },
+            { type: "paragraph", text: "A few terms used on this page, in plain words:" },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Swipe file",
+                  note: "A designer's library of saved inspiration. Here, one folder per item.",
+                },
+                {
+                  title: "Genome",
+                  note:
+                    "What an item is made of, written as W3C Design Tokens (a standard JSON format for colours, sizes and timings) plus a judged part written by the Curator.",
+                },
+                {
+                  title: "Easing curve",
+                  note:
+                    "How a movement speeds up and slows down. \"Linear\" moves at a constant speed; \"ease-out\" starts fast and settles gently.",
+                },
+                {
+                  title: "Motion kinds",
+                  note:
+                    "Pinned (a section that holds still while you scroll), parallax (layers that move at different speeds), fade, scale, rotate, frames (an image, canvas or video that plays forward and back as you scroll, the effect Apple uses to turn a product), enter (an element that animates in on a timer once it appears), and video (a clip that plays on its own).",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "walkthrough",
+          heading: "Walkthrough",
+          blocks: [
+            {
+              type: "walkthrough",
+              figure: "atelier-floor",
+              name: "How a design moves through the studio",
+              regionLabel: "Atelier walkthrough",
+              note: "A brief in, three concepts out, one refined page, published for Muhammad to pick. Every phase and every agent is clickable.",
+              stepsLabel: "Phases of the studio",
+              stageLabel: "The studio floor",
+              caption: {
+                number: "Fig 1",
+                title: "The studio floor",
+              },
+              hint: "Pick a phase on the rail; with a pointer, the numbered stations on the bench work too. Arrow keys move between phases.",
+              listHeading: "Every phase, in order",
+              autoplay: false,
+              glowStep: "pick",
+              legend: [
+                {
+                  term: "built",
+                  meaning: "means it exists and works today.",
+                },
+                {
+                  term: "designed",
+                  meaning: "means it is planned and not built yet.",
+                },
+                {
+                  term: "a person decides",
+                  meaning: "means the step waits for Muhammad.",
+                },
+              ],
+              controls: {
+                prev: "Previous",
+                next: "Next phase",
+                replay: "Back to the start",
+                skip: "Skip to the phase list",
+                show: "Show on the floor",
+              },
+              states: {
+                still: "Phase {n} of {total}",
+              },
+              announce: {
+                step: "Phase {n} of {total}, {label}, {tag}.",
+                agent: "{name}, {kind}.",
+              },
+              labels: {
+                stepOf: "{n} of {total}",
+                person: "A person decides.",
+                personInList: "A person decides:",
+                who: "Who does it",
+                whoInOrder: "Who does it, in order",
+                noAgents: "No agent is named for this yet.",
+                backTo: "Back to {label}",
+                reads: "Reads",
+                writes: "Writes",
+                next: "Read next by",
+                designedSuffix: "· designed",
+                showAria: "Show phase {n}, {label}, on the floor",
+              },
+              steps: [
+                {
+                  id: "intake",
+                  label: "Intake",
+                  tag: "built",
+                  does: "When you drop in a piece of inspiration, Atelier studies it the way a designer would and writes a genome card: the colours, type sizes, spacing and motion that make it work, plus a plain-language judgement of why it works and what not to copy.",
+                  agents: [
+                    {
+                      name: "Curator",
+                      kind: "agent",
+                      role: "Your one job: look closely at one piece of inspiration and write down, in plain words, what makes it work, so later agents can borrow its principles without copying it.",
+                      reads: "item.json (what it is, his note and tags; his note matters most), the pictures, genome.json (the measured part) and, for a link, motion.svg and the motion section of capture.json.",
+                      writes: "judged.json, then node src/cli.mjs judge (it rejects incomplete judgements).",
+                      next: "The Creative Director reads each swipe folder's card.md, genome.json and its pictures.",
+                    },
+                    {
+                      name: "Capture",
+                      kind: "tool",
+                      role: "For a link, it opens the page in a headless browser (a real browser with no window) and scrolls through it. It saves stills at desktop and phone size, a filmstrip (one frame per screen of scrolling, on one sheet), a scroll video, and a motion map: every element that moves as you scroll, what kind of motion it is, over which part of the page, and which easing curve it follows.",
+                      reads: "A link, a screenshot, a Figma frame, or every new row in the Notion Swipe file database.",
+                      writes: "item.json, genome.json, card.md, capture.json, the stills, filmstrip.jpg, scroll.mp4 and motion.svg in one folder per item.",
+                      next: "The Curator judges the item; the Creative Director and the lanes read its card and genome.",
+                    },
+                  ],
+                },
+                {
+                  id: "brief",
+                  label: "Brief",
+                  tag: "built",
+                  person: "His words are quoted.",
+                  does: "Write brief.md: his words quoted, the audience, the page's one job, the content source, hard constraints, the swipe items that matter (by folder name) and what he said about them.",
+                  agents: [
+                    {
+                      name: "Studio lead",
+                      kind: "agent",
+                      role: "Write brief.md: his words quoted, the audience, the page's one job, the content source, hard constraints, the swipe items that matter (by folder name) and what he said about them.",
+                      reads: "His words.",
+                      writes: "brief.md",
+                      next: "Everyone.",
+                    },
+                  ],
+                },
+                {
+                  id: "strategy",
+                  label: "UX Strategist",
+                  tag: "built",
+                  does: "You decide what the page must do for the people who visit it, before anyone decides how it looks.",
+                  agents: [
+                    {
+                      name: "UX Strategist",
+                      kind: "agent",
+                      role: "You decide what the page must do for the people who visit it, before anyone decides how it looks.",
+                      reads: "brief.md in the job folder, the content source it names, and the studio rules. Do not read the swipe file: look is not your job.",
+                      writes: "strategy.md: visitors, the page's one job, page flow, what to leave out, visitor tasks, risks.",
+                      next: "Creative Director, every lane, UX critic.",
+                    },
+                  ],
+                },
+                {
+                  id: "ideas",
+                  label: "Creative Director",
+                  tag: "built",
+                  does: "Creative Director writes ideas.md: three big ideas that differ in structure, not colour.",
+                  agents: [
+                    {
+                      name: "Creative Director",
+                      kind: "agent",
+                      role: "You give each of three concepts a different big idea, so the studio shows real choices, not three colour variations.",
+                      reads: "brief.md, strategy.md, the studio rules, and the swipe items the brief names. Read his notes on items first; his words matter more than yours.",
+                      writes: "ideas.md: for each concept a name, the big idea in one sentence, the genome blend, the hero, how it serves the strategy, and three tone words.",
+                      next: "Each lane reads only its own idea.",
+                    },
+                  ],
+                },
+                {
+                  id: "lanes",
+                  label: "Three lanes",
+                  tag: "built",
+                  does: "Three lanes in parallel, one agent each, playing in order the Art Director, Motion Director and Engineer.",
+                  agents: [
+                    {
+                      name: "Art Director",
+                      kind: "agent",
+                      role: "You make the idea concrete enough that an engineer can build it without guessing.",
+                      reads: "brief.md, strategy.md, your concept's section of ideas.md (only yours), the swipe items it names, and the studio rules.",
+                      writes: "tokens.json (DTCG) and art.md: layout system, each section, visuals plan, contrast.",
+                      next: "Motion Director, Engineer.",
+                    },
+                    {
+                      name: "Motion Director",
+                      kind: "agent",
+                      role: "You write motion down before it is built, like a score before the orchestra plays.",
+                      reads: "Your concept's section of ideas.md, tokens.json, art.md, the motion parts of the swipe items it names, and the studio rules.",
+                      writes: "motion-score.json: every scene names the idea it explains and has a calm version.",
+                      next: "Engineer, Motion critic.",
+                    },
+                    {
+                      name: "Engineer",
+                      kind: "agent",
+                      role: "You compile the design; you do not redesign it. At most three attempts; if a gate still fails, write why in concepts/<n>/open-issues.md.",
+                      reads: "tokens.json, art.md, motion-score.json, strategy.md, the content source the brief names, and the studio rules.",
+                      next: "The render rig.",
+                    },
+                  ],
+                },
+                {
+                  id: "rig",
+                  label: "Render rig",
+                  tag: "built",
+                  does: "The lane ends when node src/cli.mjs review concepts/<n> passes every blocking gate, or after three attempts with the failures written down.",
+                  agents: [
+                    {
+                      name: "Render rig",
+                      kind: "tool",
+                      role: "Build a concept's review pack: stills at three widths in light and dark, motion, and the gates.",
+                      reads: "index.html and states.json.",
+                      writes: "concepts/<n>/review-pack/",
+                      next: "Critics.",
+                    },
+                  ],
+                },
+                {
+                  id: "critics",
+                  label: "Three critics",
+                  tag: "built",
+                  does: "Each writes its part of critique-<round>.md. A gate failure or a critic's must-fix goes back to the lane. At most three critic rounds per concept; after that it goes to him as it is, with the open notes attached.",
+                  rule: "Critics never read art.md, ideas.md or the author's notes: only the review pack, the strategy and the rubric.",
+                  agents: [
+                    {
+                      name: "Visual critic",
+                      kind: "agent",
+                      role: "You see only what a visitor sees: the review pack. You never read the author's notes (art.md, ideas.md, motion-score.json, the page source).",
+                      reads: "concepts/<n>/review-pack/",
+                      writes: "concepts/<n>/critique-<round>.md",
+                      next: "The lane, for the next round.",
+                    },
+                    {
+                      name: "Motion critic",
+                      kind: "agent",
+                      role: "You judge movement from evidence, not from code.",
+                      reads: "review-pack/review.md, the filmstrip, the motion plot, capture.json, the reduced-motion stills, and motion-score.json (the promise the page made). Not the page source.",
+                      writes: "concepts/<n>/critique-<round>.md",
+                      next: "The lane, for the next round.",
+                    },
+                    {
+                      name: "UX critic",
+                      kind: "agent",
+                      role: "You use the page the way its visitors would, and report where they get lost.",
+                      reads: "strategy.md (the visitors and their tasks), review-pack/review.md, and the stills. Not the author's notes.",
+                      writes: "Your section of critique-<round>.md, headed Visitors: a table of visitor, task, met or not, steps, and where they got lost; then must-fix items and at most three could-improve items.",
+                      next: "The lane, for the next round.",
+                    },
+                  ],
+                },
+                {
+                  id: "pick",
+                  label: "His pick",
+                  tag: "built",
+                  person: "",
+                  does: "His pick goes into verdict.md (his exact words) and the taste ledger.",
+                  agents: [
+                    {
+                      name: "Muhammad",
+                      kind: "person",
+                      role: "His pick goes into verdict.md (his exact words) and the taste ledger.",
+                      writes: "verdict.md (his pick, in his words) and one line in the taste ledger.",
+                      next: "The refine round, the taste ledger.",
+                    },
+                  ],
+                },
+                {
+                  id: "refine",
+                  label: "Refine",
+                  tag: "built",
+                  does: "Refine the picked concept through the same loop (lane, rig, critics) until every blocking gate passes and no critic has a must-fix left.",
+                  agents: [
+                    {
+                      name: "The same lane, rig and critics",
+                      kind: "agent",
+                      role: "Refine the picked concept through the same loop (lane, rig, critics) until every blocking gate passes and no critic has a must-fix left.",
+                      reads: "verdict.md and the last critique.",
+                      next: "The library, and my build pipeline when it will build.",
+                    },
+                  ],
+                },
+                {
+                  id: "library",
+                  label: "Library",
+                  tag: "built",
+                  does: "A design is kept with his words, so a later search finds it by what he said, not only by what it looks like.",
+                  agents: [
+                    {
+                      name: "Library",
+                      kind: "tool",
+                      role: "node src/cli.mjs library save concepts/<n> with a title, his words, look words and what it suits.",
+                      reads: "The picked concept folder and his words.",
+                      writes: "The design library.",
+                      next: "If a saved design fits, show it to him as a starting point and brief the lane from it instead of from nothing.",
+                    },
+                  ],
+                },
+                {
+                  id: "handoff",
+                  label: "Handoff to my build pipeline",
+                  tag: "built",
+                  person: "Its Look page (concepts and motion, for him to approve) comes before the design page.",
+                  does: "This writes handoff.json in the job folder; my build pipeline reads it, the concept's tokens, Motion Score and page, and builds from them.",
+                  rule: "The studio designs; it never edits a repository and never writes facts.",
+                  agents: [
+                    {
+                      name: "Handoff",
+                      kind: "tool",
+                      role: "node src/cli.mjs handoff with the job folder, the concept, his words and where the facts come from.",
+                      reads: "The job folder and the picked concept.",
+                      writes: "handoff.json in the job folder.",
+                      next: "My build pipeline reads it, the concept's tokens, Motion Score and page, and builds from them.",
+                    },
+                  ],
+                },
+                {
+                  id: "visitors",
+                  label: "Simulated visitors",
+                  tag: "designed",
+                  does: "See the design document for the full studio: concepts in three directions, a Motion Score that every animation must follow, critics and code-run quality gates, simulated visitors, and taste memory built from your picks.",
+                  agents: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "rules",
+          heading: "The rules every role follows",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A role reads only the files listed for it. Critics never read art.md, ideas.md or the author's notes: only the review pack, the strategy and the rubric.",
+            },
+            { type: "paragraph", text: "Three ways the studio is started:" },
+            {
+              type: "bullets",
+              items: [
+                "Design only. He asks for a design and nothing is built: \"design me a pricing page\". Never open a pull request, never touch a project repository.",
+                "Called by my build pipeline. A change needs a new look (\"add another case study\"). My build pipeline's gate starts the studio, and its Look page (concepts and motion, for him to approve) comes before the design page. If the studio does not run, my build pipeline asks for no Look approval at all.",
+                "From the library. If a saved design fits, show it to him as a starting point and brief the lane from it instead of from nothing.",
+              ],
+            },
+            {
+              type: "bullets",
+              items: [
+                "Principles, never assets. Nothing from a reference site reaches the page: no images, copy, code or paid fonts. MIT or Apache code may be used with its licence named in a comment.",
+                "Never invent a measured number. Every figure on a page comes from the content source.",
+                "Code-native art. Visuals are CSS, SVG, canvas or WebGL written for the page. No image model.",
+                "No scroll-jacking. Never override the wheel or force snap points on a long page.",
+                "The page is complete at rest.",
+                "Reduced motion. Every scene in the Motion Score has a calm version; the page honours prefers-reduced-motion: reduce.",
+                "Both themes unless the idea deliberately commits to one look, in which case set the background and every colour explicitly.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "built",
+          heading: "How it is built",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "What it runs on",
+                  note:
+                    "ffmpeg makes the filmstrip and the video. Colour clustering and Figma conversion are small, tested functions with no other libraries. No step calls a paid API.",
+                },
+                {
+                  title: "The motion map",
+                  note:
+                    "The motion map is the new part. Most design tools only ever look at a still picture; Atelier measures movement, so \"that smooth slow-in when the panel grows\" becomes a curve the studio can reuse and later test its own pages against.",
+                },
+                {
+                  title: "Measuring movement",
+                  note:
+                    "The motion measurement works by scrolling in quarter-screen steps and recording each element's position, size, opacity and transform twice per step: right after the scroll, and after the page settles. A change that tracks scroll position is scroll-linked; a change that keeps going after the scroll stopped is a timed \"enter\" animation. Canvases are fingerprinted from screenshots because their pixels often cannot be read directly; videos are checked for being paused while their playhead follows the scroll.",
+                },
+                {
+                  title: "Tests",
+                  note:
+                    "The tests capture a local fixture page holding one of each motion kind, and check the tool names every one with the right curve.",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "How it runs",
+        text: "Everything runs on the subscription in the cloud container. No API key is used anywhere.",
+      },
+      contactHeading: "Hiring for forward deployed engineering? Let's talk.",
+    },
+
     // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
     // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
     // copy's no-accuracy-figure rule for this page on 2026-10-14.

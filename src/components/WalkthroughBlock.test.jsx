@@ -300,3 +300,303 @@ describe('WalkthroughBlock', () => {
     });
   });
 });
+
+// The Atelier walkthrough (TG-08, D2, D3, D9): the same console, switched to click-driven mode and
+// given a second level of agent cards by the block's own fields. The Orion cases above are
+// unchanged and prove the new behaviours are optional.
+describe('the Atelier walkthrough', () => {
+  const atelier = portfolioData.caseStudies.find((study) => study.id === 'atelier');
+  const floor = atelier.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
+  const phases = floor.steps;
+  const phaseIndex = (id) => phases.findIndex((step) => step.id === id);
+  const setupFloor = () => render(<WalkthroughBlock block={floor} />);
+  const consoleOf = () => screen.getByRole('region', { name: floor.regionLabel });
+  const roleButton = (name) => within(consoleOf()).getByRole('button', { name: new RegExp(`^${name}`) });
+  const openCard = () => document.querySelector('.wt-ro-agent[data-current]');
+  const currentPanels = () => document.querySelectorAll('.wt-ro-step[data-current], .wt-ro-agent[data-current]');
+
+  it('rests on the first phase with its station ringed, the plates at rest and every phase listed in full', () => {
+    setupFloor();
+
+    expect(within(consoleOf()).getByText('Phase 1 of 12')).toBeInTheDocument();
+    expect(within(readout()).getByText('1 of 12')).toBeInTheDocument();
+    expect(within(readout()).getByText(phases[0].does)).toBeInTheDocument();
+    expect(consoleOf().querySelector('[data-part="intake"]')).not.toBeNull();
+    const list = document.getElementById('wt-steps');
+    expect(within(list).getAllByRole('listitem')).toHaveLength(12);
+    for (const phase of phases) expect(within(list).getAllByText(phase.does).length).toBeGreaterThan(0);
+  });
+
+  it('gives the rail twelve buttons, one of them current, and names the designed one', () => {
+    setupFloor();
+
+    const rail = screen.getByRole('list', { name: floor.stepsLabel });
+    const buttons = within(rail).getAllByRole('button');
+    expect(buttons).toHaveLength(12);
+    expect(buttons.filter((button) => button.getAttribute('aria-current') === 'step')).toHaveLength(1);
+    expect(buttons[11]).toHaveAccessibleName('Phase 12 of 12, Simulated visitors, designed.');
+    expect(buttons[0]).toHaveAttribute('data-tag', 'built');
+    expect(buttons[11]).toHaveAttribute('data-tag', 'designed');
+  });
+
+  it('holds every agent card in the markup at all times, with exactly one panel open', () => {
+    setupFloor();
+    const agentCount = phases.reduce((total, phase) => total + phase.agents.length, 0);
+
+    expect(document.querySelectorAll('.wt-ro > .wt-ro-step')).toHaveLength(12);
+    expect(document.querySelectorAll('.wt-ro > .wt-ro-agent')).toHaveLength(agentCount);
+    expect(currentPanels()).toHaveLength(1);
+
+    fireEvent.click(tab('critics'));
+    fireEvent.click(roleButton('Motion critic'));
+
+    expect(currentPanels()).toHaveLength(1);
+    expect(openCard()).not.toBeNull();
+  });
+
+  it('never plays by itself: no Play or Pause button, no clock, even with the console in view', () => {
+    const fire = installObserver();
+    const animations = installAnimate();
+    setupFloor();
+
+    fire(true);
+
+    expect(screen.queryByText('Play')).toBeNull();
+    expect(screen.queryByText('Pause')).toBeNull();
+    expect(animations.filter((a) => a.target.tagName === 'I')).toHaveLength(0);
+    expect(consoleOf()).not.toHaveTextContent(/Playing|Paused/);
+    expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+  });
+
+  it('still plays nothing after the visitor\'s motion setting changes', () => {
+    let listener = null;
+    let matches = true;
+    replaceWindow('matchMedia', (query) => ({
+      get matches() {
+        return matches;
+      },
+      media: query,
+      addEventListener: (type, fn) => {
+        listener = fn;
+      },
+      removeEventListener() {},
+    }));
+    const animations = installAnimate();
+    setupFloor();
+    fireEvent.click(tab('rig'));
+
+    matches = false;
+    act(() => listener?.());
+
+    expect(animations.filter((a) => a.target.tagName === 'I')).toHaveLength(0);
+    expect(tab('rig')).toHaveAttribute('aria-current', 'step');
+    expect(consoleOf()).toHaveTextContent('Phase 6 of 12');
+  });
+
+  it('moves one phase with Previous and Next, and stops at both ends', () => {
+    setupFloor();
+    const previous = screen.getByText(floor.controls.prev);
+    const next = screen.getByText(floor.controls.next);
+    expect(previous).toHaveAttribute('aria-disabled', 'true');
+
+    fireEvent.click(next);
+    expect(consoleOf()).toHaveTextContent('Phase 2 of 12');
+    fireEvent.click(previous);
+    expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+
+    fireEvent.click(tab('visitors'));
+    expect(next).toHaveAttribute('aria-disabled', 'true');
+    expect(previous).not.toHaveAttribute('aria-disabled');
+  });
+
+  it('keeps keyboard focus on the button when it reaches its end, and a press there changes nothing', () => {
+    setupFloor();
+    const previous = screen.getByText(floor.controls.prev);
+    const next = screen.getByText(floor.controls.next);
+    expect(previous).toHaveAttribute('aria-disabled', 'true');
+    act(() => previous.focus());
+    fireEvent.click(previous);
+    expect(document.activeElement).toBe(previous);
+    expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+
+    fireEvent.click(tab('visitors'));
+    act(() => next.focus());
+    fireEvent.click(next);
+    expect(document.activeElement).toBe(next);
+    expect(consoleOf()).toHaveTextContent('Phase 12 of 12');
+  });
+
+  // A browser drops focus from a control the moment it is hidden and cannot focus a hidden control;
+  // jsdom does neither, so this stand-in does both.
+  const hidingDropsFocus = () => {
+    const setAttribute = Element.prototype.setAttribute;
+    const focus = HTMLElement.prototype.focus;
+    Element.prototype.setAttribute = function hide(name, value) {
+      if (name === 'hidden' && document.activeElement === this) this.blur();
+      return setAttribute.call(this, name, value);
+    };
+    HTMLElement.prototype.focus = function tryFocus(...args) {
+      if (this.hidden) return undefined;
+      return focus.apply(this, args);
+    };
+    return () => {
+      Element.prototype.setAttribute = setAttribute;
+      HTMLElement.prototype.focus = focus;
+    };
+  };
+
+  for (const reduced of [false, true]) {
+    it(`sends focus to the first phase tab when Back to the start is pressed from the keyboard, with${reduced ? '' : 'out'} reduced motion`, () => {
+      if (reduced) replaceWindow('matchMedia', (query) => ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }));
+      const restore = hidingDropsFocus();
+      try {
+        setupFloor();
+        fireEvent.click(tab('critics'));
+        const again = screen.getByText(floor.controls.replay);
+        act(() => again.focus());
+        expect(document.activeElement).toBe(again);
+
+        fireEvent.click(again);
+
+        expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+        expect(document.activeElement).toBe(tab('intake'));
+      } finally {
+        restore();
+      }
+    });
+  }
+
+  it('leaves the autoplay block\'s Replay as it was: it goes back to the first step and does not move focus itself', () => {
+    const { container } = render(<WalkthroughBlock block={block} />);
+    fireEvent.click(tab(steps[3].id));
+    const again = container.querySelector('.wt-again');
+    const firstTab = tab(steps[0].id);
+    const focusSpy = vi.spyOn(firstTab, 'focus');
+    fireEvent.click(again);
+    expect(focusSpy).not.toHaveBeenCalled();
+    expect(firstTab).toHaveAttribute('aria-current', 'step');
+  });
+
+  it('never marks the autoplay block\'s controls as disabled', () => {
+    const { container } = render(<WalkthroughBlock block={block} />);
+    expect(container.querySelectorAll('.wt-controls [aria-disabled]')).toHaveLength(0);
+    expect(container.querySelectorAll('.wt-controls [disabled]')).toHaveLength(0);
+  });
+
+  it('opens a role card from a role button, moves focus to Back, and Back returns focus to the role button', () => {
+    setupFloor();
+    fireEvent.click(tab('critics'));
+
+    fireEvent.click(roleButton('Visual critic'));
+
+    const card = openCard();
+    expect(card).not.toBeNull();
+    expect(within(card).getByText(phases[phaseIndex('critics')].agents[0].role)).toBeInTheDocument();
+    const back = within(card).getByRole('button', { name: 'Back to Three critics' });
+    expect(document.activeElement).toBe(back);
+    expect(document.querySelector('.sr-only[aria-live]')).toHaveTextContent('Visual critic, agent.');
+
+    fireEvent.click(back);
+
+    expect(openCard()).toBeNull();
+    expect(document.querySelectorAll('.wt-ro-step[data-current]')).toHaveLength(1);
+    expect(document.activeElement).toBe(roleButton('Visual critic'));
+  });
+
+  it('closes the card with Escape pressed on the Back button, and returns focus to the role button', () => {
+    setupFloor();
+    fireEvent.click(tab('lanes'));
+    fireEvent.click(roleButton('Motion Director'));
+    expect(openCard()).not.toBeNull();
+
+    fireEvent.keyDown(document.activeElement, { key: 'Escape' });
+
+    expect(openCard()).toBeNull();
+    expect(document.activeElement).toBe(roleButton('Motion Director'));
+  });
+
+  it('does nothing on Escape when no card is open, and ignores Escape pressed outside the console', () => {
+    setupFloor();
+    fireEvent.click(tab('lanes'));
+    const before = consoleOf().innerHTML;
+
+    fireEvent.keyDown(consoleOf(), { key: 'Escape' });
+    expect(consoleOf().innerHTML).toBe(before);
+
+    fireEvent.click(roleButton('Engineer'));
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(openCard()).not.toBeNull();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(openCard()).not.toBeNull();
+  });
+
+  it('closes an open card when the visitor moves to another phase by the rail keys or a button', () => {
+    setupFloor();
+    const rail = screen.getByRole('list', { name: floor.stepsLabel });
+    fireEvent.click(tab('critics'));
+    fireEvent.click(roleButton('UX critic'));
+    expect(openCard()).not.toBeNull();
+
+    act(() => tab('critics').focus());
+    fireEvent.keyDown(rail, { key: 'ArrowRight' });
+
+    expect(openCard()).toBeNull();
+    expect(tab('pick')).toHaveAttribute('aria-current', 'step');
+
+    fireEvent.click(tab('library'));
+    fireEvent.click(roleButton('Library'));
+    expect(openCard()).not.toBeNull();
+    fireEvent.click(screen.getByText(floor.controls.next));
+    expect(openCard()).toBeNull();
+  });
+
+  it('opens a phase when its station on the drawing is tapped', () => {
+    setupFloor();
+
+    fireEvent.click(consoleOf().querySelector('[data-part="critics"] path'));
+
+    expect(tab('critics')).toHaveAttribute('aria-current', 'step');
+  });
+
+  it('lights the stage only where a person decides, and says so on the status mark', () => {
+    setupFloor();
+    const stage = () => document.querySelector('.wt-stage');
+    expect(stage()).toHaveAttribute('data-mood', 'work');
+
+    fireEvent.click(tab('pick'));
+    expect(stage()).toHaveAttribute('data-mood', 'wait');
+    expect(consoleOf()).toHaveAttribute('data-phase', 'wait');
+    expect(within(readout()).getAllByText(phases[phaseIndex('pick')].person).length).toBeGreaterThan(0);
+
+    fireEvent.click(tab('refine'));
+    expect(stage()).toHaveAttribute('data-mood', 'work');
+  });
+
+  it('says plainly that the last phase names no agent', () => {
+    setupFloor();
+
+    fireEvent.click(tab('visitors'));
+
+    expect(within(readout()).getAllByText(floor.labels.noAgents).length).toBeGreaterThan(0);
+    expect(document.querySelectorAll('.wt-role')).toHaveLength(phases.reduce((total, phase) => total + phase.agents.length, 0));
+  });
+
+  it('keeps the hint on every phase, not only at a stop', () => {
+    setupFloor();
+
+    for (const id of ['intake', 'pick', 'visitors']) {
+      fireEvent.click(tab(id));
+      expect(document.querySelector('.wt-controls > .wt-hint')).toHaveAttribute('data-show');
+    }
+  });
+
+  it('puts the rule line on the phases that carry one, on the console and in the list', () => {
+    setupFloor();
+    const critics = phases[phaseIndex('critics')];
+
+    fireEvent.click(tab('critics'));
+
+    expect(within(readout()).getAllByText(critics.rule).length).toBeGreaterThan(0);
+    expect(within(document.getElementById('wt-steps')).getAllByText(critics.rule)).toHaveLength(1);
+  });
+});

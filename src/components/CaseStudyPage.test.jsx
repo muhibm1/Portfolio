@@ -162,6 +162,39 @@ describe('CaseStudyPage', () => {
     });
   });
 
+  describe('the atelier case study only (TG-08, D8, D10)', () => {
+    const atelier = caseStudies.find((study) => study.id === 'atelier');
+
+    it('says Ongoing project in the header where a code link would sit, with no link to GitHub or anywhere private', () => {
+      const { container } = renderCaseStudyAt('/work/atelier');
+
+      expect(atelier.status).toBe('Ongoing project');
+      expect(atelier.codeLink).toBeUndefined();
+      expect(screen.getByText('Ongoing project').closest('header')).not.toBeNull();
+      expect(container.querySelectorAll('a[href*="github.com"]')).toHaveLength(0);
+      expect(screen.queryByRole('link', { name: /code:|view the code/i })).toBeNull();
+    });
+
+    it('shows the walkthrough, with all twelve phases listed in full, eleven built and one designed', () => {
+      renderCaseStudyAt('/work/atelier');
+
+      const region = screen.getByRole('region', { name: 'Atelier walkthrough' });
+      expect(region).toBeInTheDocument();
+      const list = document.getElementById('wt-steps');
+      const items = within(list).getAllByRole('listitem');
+      expect(items).toHaveLength(12);
+      const tags = items.map((item) => item.querySelector('[data-tag]').getAttribute('data-tag'));
+      expect(tags.filter((tag) => tag === 'built')).toHaveLength(11);
+      expect(tags.filter((tag) => tag === 'designed')).toHaveLength(1);
+    });
+
+    it('calls the private build system my build pipeline, in the visible words', () => {
+      renderCaseStudyAt('/work/atelier');
+
+      expect(screen.getAllByText(/my build pipeline/i).length).toBeGreaterThan(0);
+    });
+  });
+
   const disclaimerSlugs = ['apple-llm-triage', 'apple-integration', 'apple-data-health'];
 
   it.each(disclaimerSlugs)('shows a disclaimer on %s', (slug) => {
