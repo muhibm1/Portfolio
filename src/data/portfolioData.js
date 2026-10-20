@@ -2616,9 +2616,8 @@ export const portfolioData = {
                     {
                       name: "Engineer",
                       kind: "agent",
-                      role: "You compile the design; you do not redesign it.",
+                      role: "You compile the design; you do not redesign it. At most three attempts; if a gate still fails, write why in concepts/<n>/open-issues.md.",
                       reads: "tokens.json, art.md, motion-score.json, strategy.md, the content source the brief names, and the studio rules.",
-                      writes: "index.html (one self-contained Artifact fragment) and states.json (interactive states to photograph).",
                       next: "The render rig.",
                     },
                   ],
@@ -2677,13 +2676,12 @@ export const portfolioData = {
                   label: "His pick",
                   tag: "built",
                   person: "His pick goes into verdict.md (his exact words) and the taste ledger.",
-                  does: "Publish each concept as an Artifact page. Then post one ask_decision card: \"Pick the homepage concept to refine\", one option per concept plus \"Mix or redo\", recommended option marked, consequence one line each.",
+                  does: "After his pick, save it to the library (next section).",
                   agents: [
                     {
                       name: "Muhammad",
                       kind: "person",
                       role: "His pick goes into verdict.md (his exact words) and the taste ledger.",
-                      reads: "Each concept as an Artifact page, and one decision card: one option per concept plus \"Mix or redo\".",
                       writes: "verdict.md (his pick, in his words) and one line in the taste ledger.",
                       next: "The refine round, the taste ledger.",
                     },
@@ -2693,14 +2691,13 @@ export const portfolioData = {
                   id: "refine",
                   label: "Refine",
                   tag: "built",
-                  does: "Refine the picked concept through the same loop (lane, rig, critics) until every blocking gate passes and no critic has a must-fix left. Republish to the same Artifact link.",
+                  does: "Refine the picked concept through the same loop (lane, rig, critics) until every blocking gate passes and no critic has a must-fix left.",
                   agents: [
                     {
                       name: "The same lane, rig and critics",
                       kind: "agent",
                       role: "Refine the picked concept through the same loop (lane, rig, critics) until every blocking gate passes and no critic has a must-fix left.",
                       reads: "verdict.md and the last critique.",
-                      writes: "The refined index.html, republished to the same Artifact link.",
                       next: "The library, and my build pipeline when it will build.",
                     },
                   ],
