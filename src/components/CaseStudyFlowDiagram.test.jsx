@@ -85,7 +85,7 @@ describe('CaseStudyHubDiagram (link-diagram block)', () => {
     render(
       <CaseStudyHubDiagram
         left={{ title: 'Ticketing system', note: 'The request and its status' }}
-        edge="OAuth2 · REST"
+        edge="Secure sign-in · API"
         hub={{ title: 'The tool', note: 'Python' }}
         right={[{ title: 'Code repository' }, { title: 'Geo-data system' }]}
       />,
@@ -95,7 +95,7 @@ describe('CaseStudyHubDiagram (link-diagram block)', () => {
     expect(screen.getByText('The request and its status')).toBeInTheDocument();
     expect(screen.getByText('The tool')).toBeInTheDocument();
     expect(screen.getByText('Python')).toBeInTheDocument();
-    expect(screen.getAllByText('OAuth2 · REST')).toHaveLength(2);
+    expect(screen.getAllByText('Secure sign-in · API')).toHaveLength(2);
     expect(screen.getByText('Code repository')).toBeInTheDocument();
     expect(screen.getByText('Geo-data system')).toBeInTheDocument();
   });

@@ -151,7 +151,7 @@ describe('WalkthroughBlock', () => {
 
     expect(within(ro).getByText(block.labels.recorded.replace('{kind}', 'waive'))).toBeInTheDocument();
     for (const button of decisionButtons()) expect(button).toBeDisabled();
-    expect(document.querySelector('.wt-readout[data-current]')).toHaveTextContent('decision_recorded · waive');
+    expect(document.querySelector('.wt-readout[data-current]')).toHaveTextContent('Decision recorded: waive');
     expect(document.querySelector('.sr-only[aria-live]')).toHaveTextContent('Decision waive recorded to the ledger.');
     // The hint keeps its place (so the controls keep their height) and is hidden by look.css, which jsdom does not load.
     expect(screen.getByText(block.hint)).not.toHaveAttribute('data-show');
