@@ -42,6 +42,12 @@ describe('the committed Atelier studio floor figure (D4)', () => {
     expect([...idsInSvg].sort()).toEqual([...PART_IDS].sort());
   });
 
+  it('carries no style attribute, and no decimal number except the text-slant coefficients inside a matrix', () => {
+    expect(svg).not.toMatch(/\sstyle\s*=/i);
+    const withoutMatrices = svg.replace(/matrix\([^)]*\)/g, '');
+    expect(withoutMatrices.match(/\d+\.\d+/g) ?? []).toEqual([]);
+  });
+
   it('names its parts with data-part and never with the rail buttons\' data-go or the ring\'s data-on', () => {
     expect(svg).not.toContain('data-go');
     expect(svg).not.toContain('data-on');
