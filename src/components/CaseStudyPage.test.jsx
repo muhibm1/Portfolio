@@ -267,11 +267,11 @@ describe('CaseStudyPage', () => {
         expect(within(table).getAllByRole('columnheader').length).toBeGreaterThan(0);
       }
 
-      const outcomesTable = tables.find((table) => within(table).queryByText(/live web app with auth/i));
+      const outcomesTable = tables.find((table) => within(table).queryByText(/live web app with sign-in/i));
       expect(outcomesTable).toBeDefined();
       const outcomesBodyRows = within(outcomesTable).getAllByRole('row').slice(1);
       expect(outcomesBodyRows).toHaveLength(5);
-      expect(outcomesBodyRows[0]).toHaveTextContent(/^Live web app with auth/);
+      expect(outcomesBodyRows[0]).toHaveTextContent(/^Live web app with sign-in/);
       expect(outcomesBodyRows[3]).toHaveTextContent(/^Test service/);
       expect(outcomesBodyRows[4]).toHaveTextContent(/MCP server/);
       for (const row of outcomesBodyRows) {
