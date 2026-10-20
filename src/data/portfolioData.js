@@ -353,7 +353,7 @@ export const portfolioData = {
       ],
       p99Before: { from: 210, to: 425 },
       p99After: { from: 230, to: 212 },
-      poolUtilisation: { name: "db_pool_utilisation (share of database connections in use)", from: "0.40", to: "0.40" },
+      poolUtilisation: { name: "db_pool_utilisation (connections in use)", from: "0.40", to: "0.40" },
       errorRateName: "error_rate",
     },
     triage: {
@@ -1090,7 +1090,7 @@ export const portfolioData = {
               steps: [
                 { title: "Triage", note: "Model lists likely causes" },
                 { title: "Read", note: "Logs, metrics, deploys, in parallel" },
-                { title: "Merge", note: "Code combines the evidence, spends budget" },
+                { title: "Merge", note: "Code merges evidence, spends budget" },
                 { title: "Diagnose", note: "Model re-scores, proposes one action" },
                 { title: "Approve", note: "A person decides", gate: true },
                 { title: "Apply once", note: "Preview the change, check it has not run before, log it" },
@@ -2185,7 +2185,7 @@ export const portfolioData = {
                   id: "mcp",
                   label: "MCP",
                   tag: "built",
-                  readout: "nine tools · none change data",
+                  readout: "nine tools · none write to the platform",
                   does:
                     "The MCP server, a standard way for coding agents to call a tool. It offers nine tools: preflight, explain, history, record_decision (log a person's choice), propose_constraint (suggest a new rule), ask (ask a free-form question about the platform), review, and the record's search_record and read_record. None of them can change the data platform.",
                   person:
@@ -2195,7 +2195,7 @@ export const portfolioData = {
                   id: "record",
                   label: "Record",
                   tag: "built",
-                  readout: "search · read project notes",
+                  readout: "search · read stored facts",
                   does:
                     "Search and read what my projects have written down about themselves: design notes, decision records, plans, retrospectives (notes written after a change), and the lessons, run log and run folders of my build pipeline, the automated process that carries one request through to a shipped change. It covers every project listed in one settings file. It uses no outside software and makes no AI model call.",
                 },
@@ -3558,7 +3558,7 @@ export const portfolioData = {
         },
         {
           id: "harden",
-          heading: "Keeping it fixed",
+          heading: "Making it dependable",
           blocks: [
             {
               type: "paragraph",
