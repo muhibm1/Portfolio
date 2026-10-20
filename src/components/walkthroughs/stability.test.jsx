@@ -116,7 +116,7 @@ describe('the Atelier console keeps one height on every phase and every agent ca
     expect(css).toMatch(/\.wt\[data-agents\] \.wt-ro \{ contain: none; overflow: visible; \}/);
   });
 
-  it('keeps the controls row one height: Previous and Next are disabled at the ends, never removed', () => {
+  it('keeps the controls row one height: Previous and Next are marked aria-disabled at the ends, never removed', () => {
     const { container } = render(<WalkthroughBlock block={floor} />);
 
     for (const id of ['intake', 'visitors']) {
