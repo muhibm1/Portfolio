@@ -1370,8 +1370,14 @@ describe("the Atelier case study (TG-08)", () => {
       for (const agent of step.agents) {
         total += 1;
         expect(AGENT_KINDS).toContain(agent.kind);
-        for (const key of ["name", "role", "reads", "writes", "next"]) {
+        for (const key of ["name", "role", "next"]) {
           expect(agent[key]?.length, `${step.id} ${agent.name} ${key}`).toBeGreaterThan(0);
+        }
+        // Three lines name a tool of the host the studio runs on, so those sentences are left out whole and the card has no such row.
+        for (const key of ["reads", "writes"]) {
+          const left = ["Engineer writes", "The same lane, rig and critics writes", "Muhammad reads"].includes(`${agent.name} ${key}`);
+          if (left) expect(agent[key], `${agent.name} ${key}`).toBeUndefined();
+          else expect(agent[key]?.length, `${step.id} ${agent.name} ${key}`).toBeGreaterThan(0);
         }
       }
     }
