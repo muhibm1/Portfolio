@@ -145,8 +145,8 @@ describe('AtelierFloor', () => {
   });
 
   it('keeps the plate-two and plate-three opacity rule keyed on the lanes phase', () => {
-    expect(lookCss).toMatch(/\.wt-figbox \.fig \[data-part="plate-2"\], \.wt-figbox \.fig \[data-part="plate-3"\] \{ opacity: 0;/);
-    expect(lookCss).toMatch(/\.wt-figbox \.fig\[data-at="lanes"\] \[data-part="plate-2"\], \.wt-figbox \.fig\[data-at="lanes"\] \[data-part="plate-3"\] \{ opacity: 1;/);
+    expect(lookCss).toMatch(/\.wt\[data-agents\] \.wt-figbox \.fig \[data-part="plate-2"\], \.wt\[data-agents\] \.wt-figbox \.fig \[data-part="plate-3"\] \{ opacity: 0;/);
+    expect(lookCss).toMatch(/\.wt\[data-agents\] \.wt-figbox \.fig\[data-at="lanes"\] \[data-part="plate-2"\], \.wt\[data-agents\] \.wt-figbox \.fig\[data-at="lanes"\] \[data-part="plate-3"\] \{ opacity: 1;/);
   });
 
   it('runs the camera head along the gantry on the render rig phase: two passes, back and forth', () => {
@@ -268,6 +268,28 @@ describe('the Atelier page as served (D5)', () => {
     for (const route of ['/Portfolio', '/Portfolio/work', '/Portfolio/work/flywheel', '/Portfolio/work/workhorse']) {
       expect(renderPage(route), route).not.toContain('data-part=');
     }
+  });
+});
+
+// The Atelier rules share one stylesheet with the Orion bench, so each must start with the
+// attribute only a block with agents carries, or it would restyle Orion's figure and console.
+describe('the Atelier rules in look.css stay out of the Orion console (TG-08)', () => {
+  const start = lookCss.indexOf('/* The Atelier studio floor');
+  const end = lookCss.indexOf('/* Reduced motion');
+  const section = lookCss.slice(start, end).replace(/\/\*[\s\S]*?\*\//g, '');
+  const selectors = [...section.matchAll(/([^{}]+)\{/g)]
+    .map((match) => match[1].trim())
+    .filter((text) => !text.startsWith('@'))
+    .flatMap((text) => text.split(',').map((part) => part.trim()));
+
+  it('finds the section and a good number of rules in it', () => {
+    expect(start).toBeGreaterThan(0);
+    expect(end).toBeGreaterThan(start);
+    expect(selectors.length).toBeGreaterThan(30);
+  });
+
+  it('starts every selector in the section with .wt[data-agents]', () => {
+    expect(selectors.filter((selector) => !selector.startsWith('.wt[data-agents]'))).toEqual([]);
   });
 });
 
