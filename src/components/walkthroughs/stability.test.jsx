@@ -107,9 +107,9 @@ describe('the Atelier console keeps one height on every phase and every agent ca
   });
 
   it('stacks the agent cards in the readout\'s one grid cell and hides the ones not open with visibility, never display', () => {
-    expect(rule('.wt-ro-agent')).toMatch(/grid-area: 1 \/ 1/);
-    expect(rule('.wt-ro-agent:not([data-current])')).toMatch(/visibility: hidden/);
-    expect(rule('.wt-ro-agent:not([data-current])')).not.toMatch(/display:/);
+    expect(rule('.wt[data-agents] .wt-ro-agent')).toMatch(/grid-area: 1 \/ 1/);
+    expect(rule('.wt[data-agents] .wt-ro-agent:not([data-current])')).toMatch(/visibility: hidden/);
+    expect(rule('.wt[data-agents] .wt-ro-agent:not([data-current])')).not.toMatch(/display:/);
   });
 
   it('lets the readout\'s height set the console\'s on a wide column, so a long card is never clipped', () => {
