@@ -62,3 +62,68 @@ describe('the console keeps one height on every step', () => {
     expect(css).not.toMatch(/\.wt-(ro|ro-step|console|stage|controls)[^{]*\[data-(current|phase|mood)[^{]*\{[^}]*(?<!min-)(height|block-size)\s*:/);
   });
 });
+
+// The Atelier walkthrough holds its height the same way, and its agent cards join the same cell
+// (TG-08, D9). The real measurement, with every phase and every agent pressed at four widths, is the
+// browser script runs/TG-08/checks/no-jump.mjs run at review time.
+describe('the Atelier console keeps one height on every phase and every agent card', () => {
+  const atelier = portfolioData.caseStudies.find((study) => study.id === 'atelier');
+  const floor = atelier.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
+  const agentTotal = floor.steps.reduce((total, step) => total + step.agents.length, 0);
+  const panels = (container) => container.querySelectorAll('.wt-ro > .wt-ro-step, .wt-ro > .wt-ro-agent');
+
+  it('holds every phase readout and every agent card in the markup, with exactly one open', () => {
+    const { container } = render(<WalkthroughBlock block={floor} />);
+
+    expect(container.querySelectorAll('.wt-ro > .wt-ro-step')).toHaveLength(12);
+    expect(container.querySelectorAll('.wt-ro > .wt-ro-agent')).toHaveLength(agentTotal);
+    expect(container.querySelectorAll('.wt-ro > .wt-ro-step[data-current], .wt-ro > .wt-ro-agent[data-current]')).toHaveLength(1);
+  });
+
+  it('keeps exactly one panel open after a phase is chosen, after an agent is opened and after Back', () => {
+    const { container } = render(<WalkthroughBlock block={floor} />);
+    const open = () => container.querySelectorAll('.wt-ro > [data-current]').length;
+
+    fireEvent.click(container.querySelector('.wt-tab[data-go="critics"]'));
+    expect(open()).toBe(1);
+    fireEvent.click(container.querySelector('.wt-role[data-agent="2"]'));
+    expect(open()).toBe(1);
+    expect(container.querySelector('.wt-ro-agent[data-current] .wt-ro-k').textContent).toContain('UX critic');
+    fireEvent.click(container.querySelector('.wt-ro-agent[data-current] .wt-back'));
+    expect(open()).toBe(1);
+    expect(panels(container)).toHaveLength(12 + agentTotal);
+  });
+
+  it('hides a panel that is not open with a flag the stylesheet turns into visibility, and no panel is ever removed', () => {
+    const { container } = render(<WalkthroughBlock block={floor} />);
+
+    const before = panels(container).length;
+    fireEvent.click(container.querySelector('.wt-tab[data-go="lanes"]'));
+    fireEvent.click(container.querySelector('.wt-role[data-agent="1"]'));
+    expect(panels(container)).toHaveLength(before);
+    for (const panel of container.querySelectorAll('.wt-ro > :not([data-current])')) {
+      expect(panel).toHaveAttribute('aria-hidden', 'true');
+    }
+  });
+
+  it('stacks the agent cards in the readout\'s one grid cell and hides the ones not open with visibility, never display', () => {
+    expect(rule('.wt-ro-agent')).toMatch(/grid-area: 1 \/ 1/);
+    expect(rule('.wt-ro-agent:not([data-current])')).toMatch(/visibility: hidden/);
+    expect(rule('.wt-ro-agent:not([data-current])')).not.toMatch(/display:/);
+  });
+
+  it('lets the readout\'s height set the console\'s on a wide column, so a long card is never clipped', () => {
+    expect(css).toMatch(/\.wt\[data-agents\] \.wt-ro \{ contain: none; overflow: visible; \}/);
+  });
+
+  it('keeps the controls row one height: Previous and Next are disabled at the ends, never removed', () => {
+    const { container } = render(<WalkthroughBlock block={floor} />);
+
+    for (const id of ['intake', 'visitors']) {
+      fireEvent.click(container.querySelector(`.wt-tab[data-go="${id}"]`));
+      const buttons = [...container.querySelectorAll('.wt-controls > .wt-ctl:not(.wt-again)')];
+      expect(buttons).toHaveLength(2);
+      expect(container.querySelector('.wt-controls > .wt-hint')).not.toBeNull();
+    }
+  });
+});
