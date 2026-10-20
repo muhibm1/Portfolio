@@ -164,7 +164,7 @@ const pinnedCaseStudyNarratives = {
           "An incident-response program built on LangGraph (a toolkit for AI workflows that can pause and continue), with a human approval step, a fixed list of allowed actions and a test setup that scores it",
       },
       { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude" },
-      { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
+      { label: "Quality", value: "998 tests, automated checks (CI) on every push, no model or key needed to run them" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -211,7 +211,7 @@ const pinnedCaseStudyNarratives = {
       { label: "Stack", value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel" },
       {
         label: "Quality",
-        value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a gate (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute",
+        value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a blocking check (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute",
       },
     ],
     calloutEyebrow: "What I'd bring to a client",
@@ -249,7 +249,7 @@ const pinnedCaseStudyNarratives = {
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
+      "Integrations tend to break on sign-in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign-in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
     contactHeading: "Systems that don't talk to each other? Let's talk.",
   },
   "apple-data-health": {
@@ -259,7 +259,7 @@ const pinnedCaseStudyNarratives = {
       "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
     atAGlance: [
       { label: "My role", value: "Data Engineer, Data Health team" },
-      { label: "Partners", value: "DataOps and the data evaluation team" },
+      { label: "Partners", value: "DataOps (data operations) and the data evaluation team" },
       { label: "Stack", value: "Python, Jenkins (an automation tool), Spark (large-scale data processing), Iceberg on S3 and Snowflake (data storage), AWS EMR and EKS (cloud computing services)" },
       { label: "Incident tools", value: "SQL (database queries), QGIS (a mapping tool)" },
     ],
@@ -329,11 +329,11 @@ const pinnedCaseStudyNarratives = {
 // The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
 const pinnedMcpParagraphs = [
   "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
-  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
+  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs automatically on every code push (CI, continuous integration).",
   "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was reusing one connection for a whole session and removing a step that ran the model twice. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
   "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
-  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers on a faster runtime, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
-  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections accept only one trusted certificate issuer, and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
+  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers (an embedding) on faster software, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
+  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections trust only one named certificate authority (the body that vouches for a server's identity), and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
 ];
 
 // R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
@@ -352,15 +352,15 @@ const pinnedMeasuredStats = [
 
 // R154, D50: the first and fourth rows are the mockup's, unchanged; the fifth row is new.
 const pinnedMeasuredTableRow1 = [
-  "Live web app with auth: moderation API type fix",
-  "Merged; the build went green for the first time in 17 days; 9 findings fixed before sign-off.",
+  "Live web app with sign-in: moderation API type fix",
+  "Merged; the build passed for the first time in 17 days; 9 findings fixed before sign-off.",
 ];
 const pinnedMeasuredTableRow4 = [
-  "Test service: README endpoints section",
+  "Test service: added an endpoints section (the addresses other software calls) to its README",
   "Done; 11 tests; 3 findings fixed before sign-off.",
 ];
 const pinnedMeasuredTableRow5 = [
-  "Studbook: MCP server for agents",
+  "Studbook: MCP server (a way for other agents to query it)",
   "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
 ];
 
@@ -483,7 +483,7 @@ describe("portfolioData", () => {
     const measured = findSection(agentops, "measured");
     expect(measured).toBeDefined();
     const table = measured.blocks.find((block) => block.type === "table");
-    expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline"]);
+    expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline (plain agent)"]);
     expect(table.rows).toHaveLength(4);
     expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
   });
@@ -677,7 +677,7 @@ describe("portfolioData", () => {
     const incident = findSection(findCaseStudy("apple-data-health"), "incident");
 
     expect(incident.heading).toBe("When it breaks at scale");
-    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. An ML-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is working out how far the damage reaches: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands manageable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
+    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. A machine-learning-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is working out how far the damage reaches: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands manageable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
     expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
   });
 
@@ -955,7 +955,7 @@ describe("portfolioData", () => {
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
     expect(paragraphsOf("built")).toEqual(DECISION_BUILT_PARAGRAPHS);
     expect(paragraphsOf("who-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
-    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to be platform agnostic. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
+    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
     expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS (digital mapping data) life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
     expect(paragraphsOf("changed")).toEqual(DECISION_CHANGED_PARAGRAPHS);
     expect(decision.callout.text).toBe(DECISION_CALLOUT);

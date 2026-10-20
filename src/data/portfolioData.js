@@ -172,9 +172,9 @@ export const portfolioData = {
           subheading: "Data Health team · Austin, TX",
           highlights: [
             "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
-            "Built a Python tool linking ticketing, repository and geo-data systems through OAuth2 APIs, cutting permission turnaround by about 50%.",
+            "Built a Python tool linking ticketing, repository and geo-data systems through each system's secure sign-in (OAuth2) and API, cutting permission turnaround by about 50%.",
             "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across 50+ regions.",
-            "Worked with the DataOps and data evaluation teams to move data validation from AWS EMR to AWS EKS (two Amazon cloud computing services) and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings.",
+            "Worked with the DataOps (data operations) and data evaluation teams to move data validation from AWS EMR to AWS EKS (two Amazon cloud computing services) and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings.",
           ],
         },
         {
@@ -201,7 +201,7 @@ export const portfolioData = {
           title: "Software Consultant",
           period: "Dec 2022 to May 2024",
           highlights: [
-            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through to a beta-ready platform they could launch and demo. QA and reporting workflows kept delivery visible to the client.",
+            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through to a beta-ready platform they could launch and demo. QA (quality assurance) and reporting workflows kept delivery visible to the client.",
           ],
         },
         {
@@ -209,7 +209,7 @@ export const portfolioData = {
           title: "Software Engineering Intern",
           period: "May 2022 to Sep 2022",
           highlights: [
-            "Built frontend components and backend APIs for a decentralized platform redesign (Web3.js), and contributed to integration testing for secure, real-time features.",
+            "Built frontend components and backend APIs for a decentralized platform redesign (using Web3.js, a blockchain code library), and contributed to integration testing for secure, real-time features.",
           ],
         },
       ],
@@ -286,7 +286,7 @@ export const portfolioData = {
     logHeading: "agent log (its step-by-step record)",
     stageLabel: "Current step",
     previewTag: "Preview",
-    logPrefix: { next: "next", audit: "audit", note: "page note" },
+    logPrefix: { next: "moved to", audit: "audit", note: "page note" },
     states: {
       investigating: "Investigating",
       waiting: "Waiting for you",
@@ -329,7 +329,7 @@ export const portfolioData = {
       { id: "postmortem", label: "Write-up" },
     ],
     alert: {
-      stamp: "2026-03-10T10:30:00Z",
+      stamp: "10 Mar 2026, 10:30 UTC",
       serviceLabel: "service",
       service: "checkout",
       symptoms: ["checkout error rate 12% since 10:13", "p99 latency (how long the slowest 1% of requests take) doubled since 10:13"],
@@ -353,11 +353,11 @@ export const portfolioData = {
       ],
       p99Before: { from: 210, to: 425 },
       p99After: { from: 230, to: 212 },
-      poolUtilisation: { name: "db_pool_utilisation", from: "0.40", to: "0.40" },
+      poolUtilisation: { name: "db_pool_utilisation (share of database connections in use)", from: "0.40", to: "0.40" },
       errorRateName: "error_rate",
     },
     triage: {
-      note: "first guesses at the cause (a bad recent release or an overloaded database), before any evidence",
+      note: "first guesses at the cause, each with a score (higher means more suspect): a bad recent release or an overloaded database, before any evidence",
       hypotheses: [
         { name: "recent_deploy_regression", score: 0.7 },
         { name: "database_saturation", score: 0.2 },
@@ -394,7 +394,7 @@ export const portfolioData = {
       foot: "ranked guesses: recent_deploy_regression (0.70), database_saturation (0.20)",
     },
     rca: {
-      cause: "Version v2.15.0 (deploy-001) added code that reads the field shipping_option with no fallback. From 10:13, every request without that field crashes with a KeyError (log-003). The share of database connections in use stayed flat at 0.40.",
+      cause: "Version v2.15.0 (deploy-001) added code that reads the field shipping_option with no fallback. From 10:13, every request without that field crashes with a KeyError, a missing-field error (log-003). The share of database connections in use stayed flat at 0.40.",
       citedLabel: "Cited",
       cites: ["deploy-001", "log-003"],
       hypotheses: [
@@ -567,11 +567,11 @@ export const portfolioData = {
               columns: 8,
               steps: [
                 { title: "Design", note: "Person approves", gate: true },
-                { title: "Plan", note: "Tasks and eval cases" },
+                { title: "Plan", note: "Tasks and test cases" },
                 { title: "Build", note: "Run side by side, each in its own copy of the code" },
                 { title: "Verify", note: "Read-only checker" },
                 { title: "Fix", note: "Separate agent" },
-                { title: "Review ×4", note: "Bugs, security, spec, adoption" },
+                { title: "Review ×4", note: "Bugs, security, fit to design, upkeep" },
                 { title: "Ship", note: "Person approves", gate: true },
                 { title: "Deploy", note: "Person approves at tier 3", dashed: true },
               ],
@@ -617,7 +617,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "Design",
-                    "Agents reproduced both defects before proposing anything, so the design fixed real failures, not guessed ones. The audit also found the same kind of hole one level up: the publishing workflow stayed green even if the scanner's own tests never ran. A person approved the design.",
+                    "Agents reproduced both defects before proposing anything, so the design fixed real failures, not guessed ones. The audit also found the same kind of hole one level up: the publishing workflow still reported success even if the scanner's own tests never ran. A person approved the design.",
                   ],
                   emphasis: true,
                 },
@@ -651,10 +651,10 @@ export const portfolioData = {
               type: "cards",
               items: [
                 "Protected paths agents can't write to",
-                "Tests locked during fix loops, so a failing test can't be weakened",
-                "Builders fenced inside their own worktree",
+                "Tests locked while a fix is made, so a failing test can't be weakened",
+                "Builders fenced inside their own copy of the code",
                 "No merge or push while a required gate is open",
-                "Shell commands screened before they run",
+                "Terminal commands screened before they run",
                 "Formatting applied on every write",
                 "Required documents checked before a phase closes",
                 "No stopping until verification has run",
@@ -717,7 +717,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document, so a person only sees finished work. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook.",
+                "So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document, so a person only sees finished work. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook (the way other AI agents query it).",
             },
             {
               type: "stats",
@@ -734,13 +734,13 @@ export const portfolioData = {
               rows: [
                 {
                   cells: [
-                    "Live web app with auth: moderation API type fix",
-                    "Merged; the build went green for the first time in 17 days; 9 findings fixed before sign-off.",
+                    "Live web app with sign-in: moderation API type fix",
+                    "Merged; the build passed for the first time in 17 days; 9 findings fixed before sign-off.",
                   ],
                 },
                 {
                   cells: [
-                    "This site: pinning the Node version (22.12) and an automatic check that enforces it",
+                    "This site: locking the version of Node (the software that builds it) to 22.12, with an automatic check that enforces it",
                     "Merged and published; 36 new tests; 10 findings fixed; the shipping agent caught a real high-severity issue before release.",
                   ],
                 },
@@ -752,13 +752,13 @@ export const portfolioData = {
                 },
                 {
                   cells: [
-                    "Test service: README endpoints section",
+                    "Test service: added an endpoints section (the addresses other software calls) to its README",
                     "Done; 11 tests; 3 findings fixed before sign-off.",
                   ],
                 },
                 {
                   cells: [
-                    "Studbook: MCP server for agents",
+                    "Studbook: MCP server (a way for other agents to query it)",
                     "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
                   ],
                 },
@@ -784,7 +784,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request, and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not. Version 0.6 closes the rest of the gap: with its event log on, every approval is also written to one shared log, pinned to the exact text the person read, so a change continues on any machine without asking again, and the gates stay shut if the log can't be reached.",
+                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request (the page where a proposed code change is reviewed), and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not. Version 0.6 closes the rest of the gap: with its event log on, every approval is also written to one shared log, pinned to the exact text the person read, so a change continues on any machine without asking again, and the gates stay shut if the log can't be reached.",
             },
           ],
         },
@@ -813,7 +813,7 @@ export const portfolioData = {
                   items: [
                     { label: "First version, five approvals", value: 479, display: "8 h" },
                     { label: "Two approvals", value: 103, display: "1 h 43 m" },
-                    { label: "Speed release onward", value: 65, display: "1 h 05 m" },
+                    { label: "From 0.3.12, the speed release", value: 65, display: "1 h 05 m" },
                   ],
                 },
                 {
@@ -821,7 +821,7 @@ export const portfolioData = {
                   items: [
                     { label: "First version, five approvals", value: 2714, display: "45 h" },
                     { label: "Two approvals", value: 665, display: "11 h" },
-                    { label: "Speed release onward", value: 146, display: "2 h 26 m" },
+                    { label: "From 0.3.12, the speed release", value: 146, display: "2 h 26 m" },
                   ],
                 },
               ],
@@ -856,7 +856,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "0.5.2, a trace per run",
-                    "Every run becomes a LangSmith trace: the change at the top, then each phase and step, each step marked as agent work, waiting or a stopped run.",
+                    "Every run becomes a LangSmith trace (a step-by-step record of the run): the change at the top, then each phase and step, each step marked as agent work, waiting or a stopped run.",
                   ],
                   emphasis: true,
                 },
@@ -875,7 +875,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "0.6.0, an event log",
-                    "Every step of a run and every approval goes to one shared log on Redpanda, which speaks the Kafka protocol. An approval follows the change to any machine, and the gates close if the log is down. Run timings and replays are read from the same log, and match the ledger on all 18 recorded runs.",
+                    "Every step of a run and every approval goes to one shared log on Redpanda, a message-streaming service that speaks the Kafka protocol. An approval follows the change to any machine, and the gates close if the log is down. Run timings and replays are read from the same log, and match the ledger on all 18 recorded runs.",
                   ],
                 },
                 {
@@ -916,7 +916,7 @@ export const portfolioData = {
               steps: [
                 { title: "Question", note: "Follow-ups rewritten to stand alone" },
                 { title: "Vector + full text", note: "Top 10 from each" },
-                { title: "Fusion", note: "Merge the two lists by rank (setting k = 10)" },
+                { title: "Fusion", note: "Merge the two lists by rank (merge setting k = 10)" },
                 { title: "Rerank", note: "A slower model re-reads them, keeps 5" },
                 { title: "Answer", note: "Haiku 4.5 (a small language model), set to answer the same way each time" },
                 { title: "Receipts", note: "Citations or \"Not in the record\"", gate: true },
@@ -930,7 +930,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I built the test before tuning anything: 60 gold questions with known answers across five types, plus nine trap questions about things the record doesn't contain, where the only right answer is to refuse. They were split into a dev set for tuning and a sealed, hashed test set scored once, after tuning froze, so the final score is an exam the system never studied for. Every step in the pipeline above was chosen by measurement.",
+                "I built the test before tuning anything: 60 gold questions with known answers across five types, plus nine trap questions about things the record doesn't contain, where the only right answer is to refuse. They were split into a dev set for tuning and a sealed test set (locked with a fingerprint, called a hash, so any change shows) scored once, after tuning froze, so the final score is an exam the system never studied for. Every step in the pipeline above was chosen by measurement.",
             },
             {
               type: "paragraph",
@@ -944,7 +944,7 @@ export const portfolioData = {
                 rows: [
                   { cells: ["Vector search only", "0.56"] },
                   { cells: ["Full text only, after fixing a query bug", "0.62"] },
-                  { cells: ["Hybrid, standard merge setting (k = 60)", "0.65"] },
+                  { cells: ["Hybrid (both searches merged), standard merge setting (k = 60)", "0.65"] },
                   { cells: ["Hybrid, fusion tuned for a small corpus (k = 10)", "0.74"] },
                   { cells: ["Hybrid + reranker, pool of 20", "0.82"] },
                   {
@@ -998,7 +998,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
+                "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs automatically on every code push (CI, continuous integration).",
             },
             {
               type: "paragraph",
@@ -1013,12 +1013,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers on a faster runtime, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
+                "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers (an embedding) on faster software, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
             },
             {
               type: "paragraph",
               text:
-                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections accept only one trusted certificate issuer, and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
+                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections trust only one named certificate authority (the body that vouches for a server's identity), and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
             },
           ],
         },
@@ -1055,7 +1055,7 @@ export const portfolioData = {
             "An incident-response program built on LangGraph (a toolkit for AI workflows that can pause and continue), with a human approval step, a fixed list of allowed actions and a test setup that scores it",
         },
         { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude" },
-        { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
+        { label: "Quality", value: "998 tests, automated checks (CI) on every push, no model or key needed to run them" },
       ],
       stats: [
         { value: "24 of 24", label: "runs with the real AI model where nothing changed before a person approved" },
@@ -1076,7 +1076,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "It is also a worked answer to a question I hear about LangGraph: what does a graph give you that a loop of tool calls does not? Here it gives three things. A place to stop and wait for a person that survives a restart. A record of every step that can be replayed with one belief changed. And control flow that lives in code, where a model cannot talk its way around it.",
+                "It is also a worked answer to a question I hear about LangGraph: what does a graph (a workflow drawn as connected steps) give you that a plain loop of the AI calling tools does not? Here it gives three things. A place to stop and wait for a person that survives a restart. A record of every step that can be replayed with one belief changed. And control flow that lives in code, where a model cannot talk its way around it.",
             },
           ],
         },
@@ -1090,12 +1090,12 @@ export const portfolioData = {
               steps: [
                 { title: "Triage", note: "Model lists likely causes" },
                 { title: "Read", note: "Logs, metrics, deploys, in parallel" },
-                { title: "Merge", note: "Code spends the budget" },
+                { title: "Merge", note: "Code combines the evidence, spends budget" },
                 { title: "Diagnose", note: "Model re-scores, proposes one action" },
                 { title: "Approve", note: "A person decides", gate: true },
                 { title: "Apply once", note: "Preview the change, check it has not run before, log it" },
                 { title: "Verify", note: "Did the symptoms clear?" },
-                { title: "Close", note: "Postmortem, or hand-off", dashed: true },
+                { title: "Close", note: "Write-up of what happened, or hand-off", dashed: true },
               ],
             },
             {
@@ -1113,7 +1113,7 @@ export const portfolioData = {
               items: [
                 {
                   title: "Belief",
-                  note: "Written only from validated model output: the ranked causes, the root cause, the proposed fix, the postmortem.",
+                  note: "Written only from validated model output: the ranked causes, the root cause, the proposed fix, the postmortem (the write-up of what happened).",
                 },
                 {
                   title: "Evidence",
@@ -1129,7 +1129,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "No schema the model answers in contains a control field, so a model cannot approve its own action or refill its own budget, however the prompt is phrased.",
+                "No answer template the model fills in contains a control field, so a model cannot approve its own action or refill its own budget, however the prompt is phrased.",
             },
           ],
         },
@@ -1156,7 +1156,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict template (a Pydantic object, a Python checking tool) and may cite only evidence the run has actually collected. The evidence it reads is wrapped in a random marker and treated as data rather than instructions, and the action registry refuses anything outside the runbook however convincing the request. One scripted incident plants a log line telling the operator to drop a table; the agent reports the line and never acts on it.",
+                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict template (a Pydantic object, a Python checking tool) and may cite only evidence the run has actually collected. The evidence it reads is wrapped in a random marker and treated as data rather than instructions, and the action registry refuses anything not in the runbook (the fixed list of allowed actions), however convincing the request. One scripted incident plants a log line telling the operator to drop a table; the agent reports the line and never acts on it.",
             },
           ],
         },
@@ -1176,14 +1176,14 @@ export const portfolioData = {
                 {
                   cells: [
                     "Three sources read at once, within a budget",
-                    "Send fan-out with reducers on the state",
+                    "Parallel reads merged into shared state (Send, reducers)",
                     "The router sends one request per source worth asking. Results are added to a shared list, so reads that run at the same time never overwrite each other.",
                   ],
                 },
                 {
                   cells: [
                     "A pause that waits for a person",
-                    "interrupt() answered by a Command",
+                    "A pause for a person's answer (interrupt, Command)",
                     "The approval node stops the run with the proposal in hand. The approve command answers it, and the answer is validated in code before anything executes.",
                   ],
                   emphasis: true,
@@ -1191,7 +1191,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "A run that survives a crash",
-                    "SqliteSaver checkpointer",
+                    "Saved progress after every step (SqliteSaver checkpointer)",
                     "Every step is saved to disk as a checkpoint. A process killed right after applying a fix picks up at the next step and never applies the fix twice.",
                   ],
                 },
@@ -1205,29 +1205,29 @@ export const portfolioData = {
                 {
                   cells: [
                     "A way to replay a bad run",
-                    "update_state on a forked thread",
+                    "Edit one belief, replay from there (update_state, fork)",
                     "The fork command sets one belief at one step and runs the rest again under a new thread with its own ledger and its own approval.",
                   ],
                 },
                 {
                   cells: [
                     "Answers the code can trust",
-                    "Structured output as JSON schema",
+                    "Answers forced into a fixed format (structured output)",
                     "Every model answer is a Pydantic model. A cited evidence id that does not exist in state is refused and the call retried.",
                   ],
                 },
                 {
                   cells: [
                     "A fair comparison",
-                    "LangChain create_agent",
+                    "The standard agent loop (LangChain create_agent)",
                     "The baseline is the standard agent loop over the same six tools and the same allowed-action list, so the gap measures the gates and nothing else.",
                   ],
                 },
                 {
                   cells: [
                     "Every call on record",
-                    "LangSmith tracing and evaluators",
-                    "Tracing is opt-in and lands every model and tool call in a LangSmith project. The graders follow LangSmith's evaluator signature, so the same functions run offline in CI.",
+                    "Run recording and scoring (LangSmith tracing, evaluators)",
+                    "Tracing is opt-in and lands every model and tool call in a LangSmith project. The graders follow LangSmith's evaluator signature, so the same scoring functions run offline in automated checks (CI).",
                   ],
                 },
               ],
@@ -1251,7 +1251,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "After an approval the executor checks the action's preconditions against the live evidence, writes the dry run to an append-only audit log, checks a ledger for the idempotency key, applies the action once, and records the result. If the process dies right after the apply, the next run finds the key in the ledger and does not apply it again. The repository shows that in three commands: start an incident, approve it with a switch that ends the process right after the apply, then continue the thread and watch it verify instead of re-applying.",
+                "After an approval the executor checks the action's preconditions against the live evidence, writes the dry run to an append-only audit log (entries can be added, never changed), checks a ledger for the idempotency key, applies the action once, and records the result. If the process dies right after the apply, the next run finds the key in the ledger and does not apply it again. The repository shows that in three commands: start an incident, approve it with a switch that ends the process right after the apply, then continue the thread and watch it verify instead of re-applying.",
             },
           ],
         },
@@ -1262,7 +1262,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "In one scripted incident a deploy lands four minutes before the database connection pool saturates. The deploy only changed a log level, but it is the obvious suspect. With a scripted model, the history command shows the graph's belief changing as evidence arrives:",
+                "In one scripted incident a deploy lands four minutes before the database runs out of free connections (its connection pool saturates). The deploy only changed a log level, but it is the obvious suspect. With a scripted model, the history command shows the graph's belief changing as evidence arrives:",
             },
             {
               type: "table",
@@ -1305,7 +1305,7 @@ export const portfolioData = {
             },
             {
               type: "table",
-              columns: [{ label: "Measure" }, { label: "AgentOps" }, { label: "ReAct baseline" }],
+              columns: [{ label: "Measure" }, { label: "AgentOps" }, { label: "ReAct baseline (plain agent)" }],
               rows: [
                 { cells: ["Reached the right end state", "23 of 24", "21 of 24"] },
                 { cells: ["Read the evidence the diagnosis needs before acting", "24 of 24", "12 of 24"] },
@@ -1381,11 +1381,11 @@ export const portfolioData = {
                   note: "A label format, a name length, the list of allowed action names. Every one failed on the first live call.",
                 },
                 {
-                  title: "A schema the model never saw",
-                  note: "The provider's structured-output mode rewrote the parameters field to an empty object, so no action with parameters could ever be proposed.",
+                  title: "An answer format the model never saw",
+                  note: "The provider's strict-format mode rewrote the parameters field to an empty one, so no action with parameters could ever be proposed.",
                 },
                 {
-                  title: "A rule in a validator the model never sees",
+                  title: "A rule in a checker the model never sees",
                   note: "A cause with no fix was rejected three times in a row. The prompt now says the two come together.",
                 },
                 {
@@ -1407,7 +1407,7 @@ export const portfolioData = {
               // every pull request; live comparisons are run by hand (flywheel/README.md).
               type: "paragraph",
               text:
-                "The loop no longer depends on me remembering to run it. Flywheel, the next case study, now checks every AgentOps pull request against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
+                "The loop no longer depends on me remembering to run it. Flywheel, the next case study, now checks every AgentOps pull request (a proposed code change) against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
             },
           ],
         },
@@ -1420,7 +1420,7 @@ export const portfolioData = {
               items: [
                 {
                   title: "A real evidence source",
-                  note: "The runtime reads scripted incidents through one small interface. A real logs or metrics source plugs in at that seam, and every payload is already treated as untrusted.",
+                  note: "The runtime reads scripted incidents through one small connection point. A real logs or metrics source can plug in there, and every payload is already treated as untrusted.",
                 },
                 {
                   title: "Autonomous remediation",
@@ -1428,7 +1428,7 @@ export const portfolioData = {
                 },
                 {
                   title: "A console",
-                  note: "The operator works from the command line or LangGraph Studio. A web console on the LangGraph JS SDK is designed but not built.",
+                  note: "The operator works from the command line or LangGraph Studio (LangGraph's visual debugging tool). A web console on the LangGraph JS SDK is designed but not built.",
                 },
                 {
                   title: "Many incidents",
@@ -1450,16 +1450,16 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I built WorkHorse first: a delivery pipeline that gates software changes at two human approvals using hooks that run before every tool call. AgentOps gates an incident response the same way with a different mechanism, and the contrast is the useful part.",
+                "I built WorkHorse first: a delivery pipeline that gates software changes at two human approvals using hooks, small pieces of code that run before every action the AI takes and can block it. AgentOps gates an incident response the same way with a different mechanism, and the contrast is the useful part.",
             },
             {
               type: "table",
-              columns: [{ label: "Question" }, { label: "WorkHorse, tool-call hooks" }, { label: "AgentOps, LangGraph" }],
+              columns: [{ label: "Question" }, { label: "WorkHorse, hooks that block actions" }, { label: "AgentOps, LangGraph" }],
               rows: [
                 { cells: ["Where is the state?", "Files and gate documents on disk", "A structured record saved to a small database file after every step"] },
-                { cells: ["How is a gate enforced?", "A hook blocks the tool call", "interrupt() pauses the graph"] },
-                { cells: ["How do you continue after a stop?", "Re-run from the gate document", "Continue the thread from its checkpoint"] },
-                { cells: ["How do you debug a bad run?", "Read the record", "Fork from any checkpoint with one belief changed"] },
+                { cells: ["How is a gate enforced?", "A hook blocks the action", "The workflow pauses itself (interrupt)"] },
+                { cells: ["How do you continue after a stop?", "Re-run from the gate document", "Continue the run from its last saved step"] },
+                { cells: ["How do you debug a bad run?", "Read the record", "Replay from any saved step with one belief changed"] },
                 {
                   cells: [
                     "Where did it break?",
@@ -1750,7 +1750,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 that never closed. Each one waits for a person to write down what the right outcome was before it becomes a test case. The grouping already did its job: it showed where WorkHorse's next releases should spend their effort.",
+                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 whose records stopped before the final step. Each one waits for a person to write down what the right outcome was before it becomes a test case. The grouping already did its job: it showed where WorkHorse's next releases should spend their effort.",
             },
           ],
         },
@@ -2133,7 +2133,7 @@ export const portfolioData = {
                   id: "sync",
                   label: "Sync",
                   tag: "built",
-                  readout: "dbt · Airflow · Git · postmortems",
+                  readout: "dbt · Airflow · Git · incident reports",
                   does:
                     "Gathers tables, jobs, owners and past incidents from dbt, Airflow, Git and incident reports kept as files. It builds a map of what depends on what, plus a log that is only ever added to, all in one database file.",
                   evidence:
@@ -2143,7 +2143,7 @@ export const portfolioData = {
                   id: "store",
                   label: "One store",
                   tag: "built",
-                  readout: "provenance on every fact",
+                  readout: "every fact says where it came from",
                   does:
                     "Every fact it stores says where it came from, and the store refuses any fact that does not.",
                 },
@@ -2151,7 +2151,7 @@ export const portfolioData = {
                   id: "explain",
                   label: "Explain",
                   tag: "built",
-                  readout: "owner · tier · blast radius · incidents",
+                  readout: "owner · tier · what it reaches · incidents",
                   does:
                     "For any table: who owns it, how important it is (its tier), what feeds it and what it feeds, and which tier-1 consumers (its most important users) sit anywhere downstream, the full blast radius of a change. It also shows which scheduled job builds it, which columns feed which, the rules that cover it and recent incidents. Every item carries an id.",
                 },
@@ -2168,7 +2168,7 @@ export const portfolioData = {
                   id: "review",
                   label: "Review",
                   tag: "built",
-                  readout: "gather · generate · validate · format",
+                  readout: "find · suggest · check · format",
                   does:
                     "Four stages. First, plain code finds what it can using fixed rules. Next, the AI model suggests more possible problems. Then code checks each suggestion against the change and the stored facts. Last, the output is formatted. A finding with no valid evidence is marked uncertain, and one outside the change is rejected.",
                 },
@@ -2176,7 +2176,7 @@ export const portfolioData = {
                   id: "gate",
                   label: "Gate",
                   tag: "built",
-                  readout: "fail-on warn|block",
+                  readout: "fails on warn or block",
                   does:
                     "A check a team can run automatically on every proposed change (this is called CI). It runs the pre-flight on the change and fails the build when the verdict reaches warn or block, as the team chooses. The verdict is advice only until a team switches this on.",
                   person: "Orion never blocks on its own. The gate is how a team's automatic checks make its verdict binding.",
@@ -2185,7 +2185,7 @@ export const portfolioData = {
                   id: "mcp",
                   label: "MCP",
                   tag: "built",
-                  readout: "nine tools · no write path",
+                  readout: "nine tools · none change data",
                   does:
                     "The MCP server, a standard way for coding agents to call a tool. It offers nine tools: preflight, explain, history, record_decision (log a person's choice), propose_constraint (suggest a new rule), ask (ask a free-form question about the platform), review, and the record's search_record and read_record. None of them can change the data platform.",
                   person:
@@ -2195,7 +2195,7 @@ export const portfolioData = {
                   id: "record",
                   label: "Record",
                   tag: "built",
-                  readout: "search_record · read_record",
+                  readout: "search · read project notes",
                   does:
                     "Search and read what my projects have written down about themselves: design notes, decision records, plans, retrospectives (notes written after a change), and the lessons, run log and run folders of my build pipeline, the automated process that carries one request through to a shipped change. It covers every project listed in one settings file. It uses no outside software and makes no AI model call.",
                 },
@@ -2211,7 +2211,7 @@ export const portfolioData = {
                   id: "postflight",
                   label: "Postflight",
                   tag: "built",
-                  readout: "next three runs · outcome_observed",
+                  readout: "next three runs · outcome recorded",
                   does:
                     "Closes the loop after a change ships. For each verdict, it finds the change that was merged. It then watches the tables that change touched, and the ones downstream, for their next three scheduled runs. It records one outcome linked to the verdict: clean, failed, missed its promised delivery time (an SLA), or caused an incident.",
                 },
@@ -2219,7 +2219,7 @@ export const portfolioData = {
                   id: "propose",
                   label: "Propose",
                   tag: "built",
-                  readout: "constraints drafted from ledger patterns",
+                  readout: "rules drafted from ledger patterns",
                   does:
                     "Drafts new rules (constraints) from patterns in the ledger: repeated missed delivery times, failures after changes, incident reports with no matching rule, and verdicts that were too mild. A nightly job proposes them as a pull request, a request for a person to review and merge the files. Merging is the approval.",
                   person:
@@ -2229,7 +2229,7 @@ export const portfolioData = {
                   id: "bench",
                   label: "PipelineBench",
                   tag: "built",
-                  readout: "sixty scenarios · four conditions",
+                  readout: "sixty scenarios · four setups",
                   does:
                     "The benchmark: sixty scenarios with answers written by hand, tried in four setups for what the agent is given (nothing, the whole repository, plain document search, or Orion), all graded by code.",
                   evidence:
@@ -2353,7 +2353,7 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Step 1. Make the score trustworthy first. Run every build three times and report the average and the spread. Grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls to confirm it grades fairly. Pass mark: three runs of today's build agree within a few points.",
+                "Step 1. Make the score trustworthy first. Run every build three times and report the average and the spread. Grow the held-out set from 45 to about 150 real bugs, including SQL (database query) and dbt bugs from data teams. Hand-check 30 of the model judge's calls to confirm it grades fairly. Pass mark: three runs of today's build agree within a few points.",
                 "Step 2. Measure the stronger models. Every recall number today comes from the cheapest model. Run the four-pass design with Claude Sonnet 5.5 and Opus 5.5 on both bug sets. This costs about $3 to $5 per Sonnet run and double for Opus, roughly $30 to $60 for the full round. Pass mark: held-out recall of 80% or more, the minimum I set for this round.",
                 "Step 3. Turn near-misses into catches. Review each changed region in its own pass, so a long change can't use up the model's attention on its first file. Stop the model's second check of its own warnings from downgrading correct ones, which it did about six times per run on Sonnet. Pass mark: the 12 near-misses drop to 3 or fewer.",
                 "Step 4. Bring in what the model doesn't know. Pull the definitions and documentation of the outside code libraries a change uses into the review, the same way Orion already pulls in the functions it calls.",
@@ -2439,7 +2439,7 @@ export const portfolioData = {
                 {
                   title: "Genome",
                   note:
-                    "What an item is made of, written as W3C Design Tokens (a standard JSON format for colours, sizes and timings) plus a judged part written by the Curator.",
+                    "What an item is made of, written as W3C Design Tokens (a standard file format for colours, sizes and timings) plus a judged part written by the Curator.",
                 },
                 {
                   title: "Easing curve",
@@ -2529,7 +2529,7 @@ export const portfolioData = {
                       kind: "agent",
                       role: "Looks closely at one piece of inspiration and writes down, in plain words, what makes it work, so later agents can borrow its principles without copying it.",
                       reads: "A summary of the item (what it is, Muhammad's note and tags; his note matters most), the pictures, the genome (the measured part) and, for a link, the motion map and the motion measurements.",
-                      writes: "Its written judgement, which it submits with the studio's judge command. The command rejects incomplete judgements.",
+                      writes: "Its written judgement, which it submits through a studio command that rejects incomplete judgements.",
                       next: "The Creative Director reads each saved item's genome card, genome and pictures.",
                     },
                     {
@@ -2547,7 +2547,7 @@ export const portfolioData = {
                   label: "Brief",
                   tag: "built",
                   person: "Muhammad's own words are quoted.",
-                  does: "Writes the brief: Muhammad's words quoted, the audience, the page's one job, the content source, hard constraints, the swipe items that matter (by folder name) and what he said about them.",
+                  does: "Writes the brief: Muhammad's words quoted, the audience, the page's one job, the content source, hard constraints, the saved inspiration items that matter (by folder name) and what he said about them.",
                   agents: [
                     {
                       name: "Studio lead",
@@ -2601,7 +2601,7 @@ export const portfolioData = {
                       name: "Art Director",
                       kind: "agent",
                       role: "Makes the idea concrete enough that an engineer can build it without guessing.",
-                      reads: "brief.md, strategy.md, your concept's section of ideas.md (only yours), the swipe items it names, and the studio rules.",
+                      reads: "The brief, the strategy, only your concept's section of the ideas document, the saved inspiration items it names, and the studio rules.",
                       writes: "Design tokens (named colours, sizes and type) and an art plan: layout system, each section, visuals plan and colour contrast.",
                       next: "Motion Director, Engineer.",
                     },
@@ -2609,8 +2609,8 @@ export const portfolioData = {
                       name: "Motion Director",
                       kind: "agent",
                       role: "Writes the motion down before it is built, like a musical score written before the orchestra plays.",
-                      reads: "Your concept's section of ideas.md, tokens.json, art.md, the motion parts of the swipe items it names, and the studio rules.",
-                      writes: "The Motion Score, a list of every animated scene. Each scene names the idea it explains and has a calm version for visitors who ask for less movement.",
+                      reads: "Only your concept's section of the ideas document, the design tokens, the art plan, the motion parts of the saved inspiration items it names, and the studio rules.",
+                      writes: "The Motion Score, a list of every animated scene. Each scene names the idea it explains and has a version with little movement for visitors who ask for less movement.",
                       next: "Engineer, Motion critic.",
                     },
                     {
@@ -2626,7 +2626,7 @@ export const portfolioData = {
                   id: "rig",
                   label: "Render rig",
                   tag: "built",
-                  does: "A lane ends when the studio's review command passes every blocking gate (an automatic quality check that must pass), or after three attempts with the failures written down.",
+                  does: "A lane ends when the studio's automatic review passes every blocking gate (an automatic quality check that must pass), or after three attempts with the failures written down.",
                   agents: [
                     {
                       name: "Render rig",
@@ -2723,15 +2723,15 @@ export const portfolioData = {
                   label: "Handoff to my build pipeline",
                   tag: "built",
                   person: "Muhammad approves a Look page first (the concepts and motion), and only then the design page (the plan for the change).",
-                  does: "This writes a handoff file in the job folder. My build pipeline reads it, along with the concept's design tokens, Motion Score and page, and builds from them.",
+                  does: "This writes a handoff file in the job folder (the folder holding every file for one request). My build pipeline reads it, along with the concept's design tokens, Motion Score and page, and builds from them.",
                   rule: "The studio designs. It never edits a project's code and never writes the facts (such as figures) that go on a page.",
                   agents: [
                     {
                       name: "Handoff",
                       kind: "tool",
-                      role: "Runs the studio's handoff command with the job folder, the concept, Muhammad's words and where the facts come from.",
+                      role: "Runs the studio's handoff step on the job folder, the concept, Muhammad's words and where the facts come from.",
                       reads: "The job folder and the picked concept.",
-                      writes: "handoff.json in the job folder.",
+                      writes: "The handoff file, saved in the job folder.",
                       next: "My build pipeline reads it, along with the concept's design tokens, Motion Score and page, and builds from them.",
                     },
                   ],
@@ -2773,7 +2773,7 @@ export const portfolioData = {
                 "Code-native art. Visuals are drawn in code (CSS, SVG, canvas or WebGL, the web's own drawing tools), written for the page. No AI image generator is used.",
                 "No scroll-jacking. The page never takes over the mouse wheel and never forces the scroll to jump to set points on a long page.",
                 "The page is complete at rest: it reads fully before any animation runs, and nothing stays hidden waiting for a scroll.",
-                "Reduced motion. Some visitors set their device to ask for less movement. For them, every animated scene in the Motion Score (the studio's written plan for the page's animation) has a calm version, and the page switches to it automatically.",
+                "Reduced motion. Some visitors set their device to ask for less movement. For them, every animated scene in the Motion Score (the studio's written plan for the page's animation) has a version with little movement, and the page switches to it automatically.",
                 "Both themes (light and dark) are supported, unless the idea deliberately commits to one look. In that case the background and every colour are set explicitly.",
               ],
             },
@@ -2804,7 +2804,7 @@ export const portfolioData = {
                 {
                   title: "Tests",
                   note:
-                    "The tests capture a local fixture page holding one of each motion kind, and check the tool names every one with the right curve.",
+                    "The tests capture a small test page on my own computer holding one of each motion kind, and check the tool names every one with the right curve.",
                 },
               ],
             },
@@ -2846,7 +2846,7 @@ export const portfolioData = {
         { label: "Stack", value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel" },
         {
           label: "Quality",
-          value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a gate (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute",
+          value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a blocking check (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute",
         },
       ],
       stats: [
@@ -2952,7 +2952,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The whole evaluation spent no API credit (pay-per-use money). Every model call, web search, baseline answer and grading call ran through Claude Code on a subscription, started by a program rather than typed in by hand. That includes Open Deep Research, whose own model and search connections I replaced with thin adapters over the same calls and the same saved pages. Dollar figures in this study are API spend only; subscription use is counted in tokens.",
+                "The whole evaluation spent no API credit (pay-per-use money). Every model call, web search, baseline answer and grading call ran through Claude Code on a subscription, started by a program rather than typed in by hand. That includes Open Deep Research, whose own model and search connections I swapped for small stand-ins that use the same calls and the same saved pages. Dollar figures in this study are API spend only; subscription use is counted in tokens.",
             },
             {
               type: "paragraph",
@@ -3100,7 +3100,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to be platform agnostic. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
             },
             {
               type: "paragraph",
@@ -3283,7 +3283,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was deprecated. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors cascaded from one to the next.",
+                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was being phased out. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors passed from one system to the next.",
             },
             {
               type: "paragraph",
@@ -3312,7 +3312,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
+          "Integrations tend to break on sign-in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign-in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Systems that don't talk to each other? Let's talk.",
@@ -3325,7 +3325,7 @@ export const portfolioData = {
         eyebrow: "Apple Maps · Data reliability",
         title: "Keeping a 50+ region data pipeline shippable",
         summary:
-          "Remediation jobs that fix validation failures on live data, gates that decide when a repository can be promoted, a move from EMR to EKS, done with DataOps, that pushed validation upstream, and incident response when something breaks at scale.",
+          "Automated jobs that fix data-check failures on live data, checks that decide when a repository can be promoted to production, a move from AWS EMR to AWS EKS (two Amazon cloud services) with the DataOps team that pushed checks earlier in the pipeline, and incident response when something breaks at scale.",
         linkText: "Read the case study",
         tags: ["~40% fewer release-blocking failures", "Hundreds of thousands of failures resolved"],
       },
@@ -3335,7 +3335,7 @@ export const portfolioData = {
         "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
       atAGlance: [
         { label: "My role", value: "Data Engineer, Data Health team" },
-        { label: "Partners", value: "DataOps and the data evaluation team" },
+        { label: "Partners", value: "DataOps (data operations) and the data evaluation team" },
         { label: "Stack", value: "Python, Jenkins (an automation tool), Spark (large-scale data processing), Iceberg on S3 and Snowflake (data storage), AWS EMR and EKS (cloud computing services)" },
         { label: "Incident tools", value: "SQL (database queries), QGIS (a mapping tool)" },
       ],
@@ -3382,7 +3382,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A remediation job is an automated repair: it finds data that fails a rule and corrects it. I run and continuously tune ML-driven remediation jobs, orchestrated in Jenkins, that clean up and modernize production data. Those jobs have resolved hundreds of thousands of validation failures.",
+                "A remediation job is an automated repair: it finds data that fails a rule and corrects it. I run and continuously tune remediation jobs driven by machine learning (ML), orchestrated in Jenkins, that clean up and modernize production data. Those jobs have resolved hundreds of thousands of validation failures.",
             },
             {
               type: "paragraph",
@@ -3414,7 +3414,7 @@ export const portfolioData = {
         },
         {
           id: "upstream",
-          heading: "Moving checks upstream",
+          heading: "Moving checks earlier",
           blocks: [
             {
               type: "paragraph",
@@ -3440,7 +3440,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A mass building-generation incident put tens of thousands of buildings into the data. An ML-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale.",
+                "A mass building-generation incident put tens of thousands of buildings into the data. A machine-learning-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale.",
             },
             {
               type: "paragraph",
@@ -3486,7 +3486,7 @@ export const portfolioData = {
         { label: "Scale", value: "Thousands of articles across recurring runs" },
       ],
       stats: [
-        { value: "~40%", label: "fewer production incidents (failures hitting live readers) after CI/CD gates and automated tests" },
+        { value: "~40%", label: "fewer production incidents (failures hitting live readers) after adding automated release checks (CI/CD) and tests" },
         { value: "15 to 20%", label: "lower generation latency (waiting time) from changes to the database structure and its queries" },
         { value: "Live", label: "generation status streamed to readers over WebSockets" },
       ],
@@ -3499,7 +3499,7 @@ export const portfolioData = {
               type: "flow",
               columns: 5,
               steps: [
-                { title: "Ingest", note: "Mixed sources, made consistent" },
+                { title: "Articles in", note: "Mixed sources, made consistent" },
                 { title: "Postgres", note: "Rebuilt database structure" },
                 { title: "LLM", note: "Personalization prompts" },
                 { title: "REST API", note: "Elixir Phoenix" },
@@ -3558,7 +3558,7 @@ export const portfolioData = {
         },
         {
           id: "harden",
-          heading: "Hardening it",
+          heading: "Keeping it fixed",
           blocks: [
             {
               type: "paragraph",

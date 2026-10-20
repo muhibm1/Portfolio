@@ -205,7 +205,7 @@ describe('every step is readable as plain text (nothing depends on animation)', 
   it('takes its values from the clean_bad_deploy sample run, not from placeholder text', () => {
     expect(replay.scenario).toBe('clean_bad_deploy');
     expect(replay.alert.service).toBe('checkout');
-    expect(replay.alert.stamp).toBe('2026-03-10T10:30:00Z');
+    expect(replay.alert.stamp).toBe('10 Mar 2026, 10:30 UTC');
     expect(replay.approval.action).toBe('rollback_deploy on deploy-001 (risk high)');
     expect(replay.rca.cites).toEqual(['deploy-001', 'log-003']);
   });
