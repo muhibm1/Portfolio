@@ -3283,7 +3283,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was being phased out. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors passed from one system to the next.",
+                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was deprecated. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors passed from one system to the next.",
             },
             {
               type: "paragraph",
