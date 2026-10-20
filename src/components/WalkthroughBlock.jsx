@@ -228,14 +228,18 @@ export default function WalkthroughBlock({ block }) {
                         {who.role}
                       </p>
                       <dl className="wt-rw">
-                        <div className="wt-in" style={{ '--i': 3 }}>
-                          <dt>{labels.reads}</dt>
-                          <dd>{who.reads}</dd>
-                        </div>
-                        <div className="wt-in" style={{ '--i': 4 }}>
-                          <dt>{labels.writes}</dt>
-                          <dd className="wt-rw-files">{who.writes}</dd>
-                        </div>
+                        {who.reads && (
+                          <div className="wt-in" style={{ '--i': 3 }}>
+                            <dt>{labels.reads}</dt>
+                            <dd>{who.reads}</dd>
+                          </div>
+                        )}
+                        {who.writes && (
+                          <div className="wt-in" style={{ '--i': 4 }}>
+                            <dt>{labels.writes}</dt>
+                            <dd className="wt-rw-files">{who.writes}</dd>
+                          </div>
+                        )}
                         <div className="wt-in" style={{ '--i': 5 }}>
                           <dt>{labels.next}</dt>
                           <dd>{who.next}</dd>
@@ -253,10 +257,10 @@ export default function WalkthroughBlock({ block }) {
         <div className="wt-controls">
           {clickDriven ? (
             <>
-              <button type="button" className="wt-ctl" disabled={idx === 0} onClick={actions.previous}>
+              <button type="button" className="wt-ctl" aria-disabled={idx === 0 ? 'true' : undefined} onClick={idx === 0 ? undefined : actions.previous}>
                 {controls.prev}
               </button>
-              <button type="button" className="wt-ctl" disabled={ended} onClick={actions.next}>
+              <button type="button" className="wt-ctl" aria-disabled={ended ? 'true' : undefined} onClick={ended ? undefined : actions.next}>
                 {controls.next}
               </button>
             </>

@@ -397,7 +397,7 @@ describe('the Atelier walkthrough', () => {
     setupFloor();
     const previous = screen.getByText(floor.controls.prev);
     const next = screen.getByText(floor.controls.next);
-    expect(previous).toBeDisabled();
+    expect(previous).toHaveAttribute('aria-disabled', 'true');
 
     fireEvent.click(next);
     expect(consoleOf()).toHaveTextContent('Phase 2 of 12');
@@ -405,8 +405,31 @@ describe('the Atelier walkthrough', () => {
     expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
 
     fireEvent.click(tab('visitors'));
-    expect(next).toBeDisabled();
-    expect(previous).not.toBeDisabled();
+    expect(next).toHaveAttribute('aria-disabled', 'true');
+    expect(previous).not.toHaveAttribute('aria-disabled');
+  });
+
+  it('keeps keyboard focus on the button when it reaches its end, and a press there changes nothing', () => {
+    setupFloor();
+    const previous = screen.getByText(floor.controls.prev);
+    const next = screen.getByText(floor.controls.next);
+    expect(previous).toHaveAttribute('aria-disabled', 'true');
+    act(() => previous.focus());
+    fireEvent.click(previous);
+    expect(document.activeElement).toBe(previous);
+    expect(consoleOf()).toHaveTextContent('Phase 1 of 12');
+
+    fireEvent.click(tab('visitors'));
+    act(() => next.focus());
+    fireEvent.click(next);
+    expect(document.activeElement).toBe(next);
+    expect(consoleOf()).toHaveTextContent('Phase 12 of 12');
+  });
+
+  it('never marks the autoplay block\'s controls as disabled', () => {
+    const { container } = render(<WalkthroughBlock block={block} />);
+    expect(container.querySelectorAll('.wt-controls [aria-disabled]')).toHaveLength(0);
+    expect(container.querySelectorAll('.wt-controls [disabled]')).toHaveLength(0);
   });
 
   it('opens a role card from a role button, moves focus to Back, and Back returns focus to the role button', () => {
