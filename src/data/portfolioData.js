@@ -2610,7 +2610,7 @@ export const portfolioData = {
                       kind: "agent",
                       role: "Writes the motion down before it is built, like a musical score written before the orchestra plays.",
                       reads: "Your concept's section of ideas.md, tokens.json, art.md, the motion parts of the swipe items it names, and the studio rules.",
-                      writes: "The Motion Score, a list of every animated scene. Each scene names the idea it explains and has a calm version, a still or a gentle fade for visitors who ask for less movement.",
+                      writes: "The Motion Score, a list of every animated scene. Each scene names the idea it explains and has a calm version for visitors who ask for less movement.",
                       next: "Engineer, Motion critic.",
                     },
                     {
