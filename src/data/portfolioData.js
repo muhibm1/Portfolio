@@ -1750,7 +1750,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 whose records stopped before the final step. Each one waits for a person to write down what the right outcome was before it becomes a test case. The grouping already did its job: it showed where WorkHorse's next releases should spend their effort.",
+                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 that never closed. Each one waits for a person to write down what the right outcome was before it becomes a test case. The grouping already did its job: it showed where WorkHorse's next releases should spend their effort.",
             },
           ],
         },
