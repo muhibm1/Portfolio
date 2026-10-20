@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { Link, MemoryRouter, Route, Routes, useNavigate } from 'react-router';
+import { describe, expect, it, vi } from 'vitest';
 import { pageMetaFor } from '../pageMeta';
 import SiteLayout from './SiteLayout';
 
@@ -20,6 +20,46 @@ describe('SiteLayout', () => {
 
     expect(document.title).toBe(pageMetaFor('/work').title);
   });
+
+  // Clicking a link to a new page starts that page at the top; going back keeps the browser's place.
+  it('scrolls to the top when a link leads to a new page', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo');
+    renderLayoutAt('/');
+    scrollTo.mockClear();
+
+    fireEvent.click(screen.getByRole('link', { name: 'Go to work' }));
+
+    expect(screen.getByText('Work page')).toBeInTheDocument();
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  it('does not scroll to the top on the first render', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo');
+    renderLayoutAt('/work');
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('leaves a link with a hash to the page that owns the hash', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo');
+    renderLayoutAt('/work');
+    scrollTo.mockClear();
+
+    fireEvent.click(screen.getByRole('link', { name: 'Go to section' }));
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('keeps the place when the visitor goes back', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo');
+    renderLayoutAt('/');
+    fireEvent.click(screen.getByRole('link', { name: 'Go to work' }));
+    scrollTo.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Go back' }));
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
 });
 
 function renderLayoutAt(path) {
@@ -27,10 +67,34 @@ function renderLayoutAt(path) {
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route element={<SiteLayout />}>
-          <Route index element={<div>Stub outlet</div>} />
-          <Route path="work" element={<div>Stub outlet</div>} />
+          <Route
+            index
+            element={
+              <div>
+                Stub outlet
+                <Link to="/work">Go to work</Link>
+              </div>
+            }
+          />
+          <Route
+            path="work"
+            element={
+              <div>
+                Stub outlet
+                <p>Work page</p>
+                <BackButton />
+                <Link to="/work#section">Go to section</Link>
+              </div>
+            }
+          />
         </Route>
       </Routes>
     </MemoryRouter>,
   );
+}
+
+// A stand-in for the browser's Back button, which MemoryRouter has no UI for.
+function BackButton() {
+  const navigate = useNavigate();
+  return <button onClick={() => navigate(-1)}>Go back</button>;
 }
