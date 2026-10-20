@@ -106,8 +106,8 @@ export const portfolioData = {
         {
           value: "~40%",
           label: "Fewer release-blocking failures",
-          context: "After validation moved from EMR to EKS, with DataOps",
-          mobileText: "fewer release-blocking failures after EMR to EKS",
+          context: "After validations moved upstream, with DataOps",
+          mobileText: "fewer release-blocking failures after validations moved upstream",
         },
         {
           value: "100%",
