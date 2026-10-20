@@ -288,6 +288,12 @@ describe('the Atelier rules in look.css stay out of the Orion console (TG-08)', 
     expect(selectors.length).toBeGreaterThan(30);
   });
 
+  it('lets the long Atelier header wrap and stack on a narrow console, so the note and the skip link stay inside', () => {
+    expect(section).toMatch(/\.wt\[data-agents\] \.wt-ttl \{ white-space: normal; min-width: 0; \}/);
+    expect(section).toMatch(/\.wt\[data-agents\] \.wt-chrome \{ grid-template-columns: auto minmax\(0, 1fr\); \}/);
+    expect(section).toMatch(/\.wt\[data-agents\] \.wt-skip \{ grid-column: 1 \/ -1; grid-row: 3; justify-self: start; \}/);
+  });
+
   it('starts every selector in the section with .wt[data-agents]', () => {
     expect(selectors.filter((selector) => !selector.startsWith('.wt[data-agents]'))).toEqual([]);
   });

@@ -538,9 +538,16 @@ html { background: var(--page); scroll-padding-top: 76px; }
 .wt[data-agents] .wt-rw { display: grid; gap: 12px; }
 .wt[data-agents] .wt-rw div { display: grid; gap: 2px; }
 .wt[data-agents] .wt-rw dd { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); overflow-wrap: anywhere; }
-.wt[data-agents] .wt-ctl:disabled { opacity: .5; cursor: default; }
+.wt[data-agents] .wt-ctl[aria-disabled="true"] { opacity: .5; cursor: default; }
 .wt[data-agents] .wt-who { grid-column: 2; font-size: 13.5px; color: var(--muted); }
 .wt[data-agents] .wt-d.wt-rule { color: var(--muted); font-size: 14px; }
+/* The Atelier title is long, so on a narrow console the header stacks and wraps instead of pushing the note and the skip link out of the window. */
+@container wt (max-width: 899px) {
+  .wt[data-agents] .wt-chrome { grid-template-columns: auto minmax(0, 1fr); }
+  .wt[data-agents] .wt-ttl { white-space: normal; min-width: 0; }
+  .wt[data-agents] .wt-note { grid-row: 2; min-width: 0; }
+  .wt[data-agents] .wt-skip { grid-column: 1 / -1; grid-row: 3; justify-self: start; }
+}
 @container wt (min-width: 900px) {
   .wt[data-agents] .wt-body { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
   .wt[data-agents] .wt-ro { contain: none; overflow: visible; }
