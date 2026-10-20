@@ -86,7 +86,7 @@ const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer c
 const DECISION_INTRO =
   "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
 const DECISION_LEAD =
-  "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.";
+  "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent (a program that works through each request on its own) that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.";
 const DECISION_SITUATION =
   "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.";
 const DECISION_SITUATION_PARAGRAPHS = ["Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.", "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.", "Building a fix was not part of my assigned role. I took it on anyway."];
@@ -98,12 +98,12 @@ const HERO_HEADING = "I find the step everyone is waiting on.";
 const HERO_LEAD =
   "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.";
 const RESUME_BULLET =
-  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that evaluates each unlock request against the surrounding geospatial data and internal spec, flags cascading effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
+  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
   "Unlock request",
-  "Geospatial snapshot, the target feature and its neighbors",
+  "Map snapshot of the target feature and its neighbors",
   "Check against internal specification",
-  "Impact and cascade analysis",
+  "Impact analysis: what else the change would touch",
   "Documented recommendation",
   "Reviewer decides",
 ];
@@ -137,13 +137,13 @@ const pinnedCaseStudyNarratives = {
       {
         label: "What it is",
         value:
-          "An agentic software delivery pipeline and a retrieval system (Studbook), with an MCP server its agents search on every run",
+          "A pipeline of AI agents that delivers software changes, plus a search tool (Studbook) over its own records that the agents query on every run",
       },
       {
         label: "Stack",
         value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
       },
-      { label: "Quality", value: "507 pipeline tests, CI on every push" },
+      { label: "Quality", value: "507 pipeline tests, run automatically on every code push" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -161,10 +161,10 @@ const pinnedCaseStudyNarratives = {
       {
         label: "What it is",
         value:
-          "A LangGraph incident-response runtime with a human approval step, an action allowlist and an evaluation harness",
+          "An incident-response program built on LangGraph (a toolkit for AI workflows that can pause and continue), with a human approval step, a fixed list of allowed actions and a test setup that scores it",
       },
       { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude" },
-      { label: "Quality", value: "998 tests, CI on every push, no model or key needed to run them" },
+      { label: "Quality", value: "998 tests, automated checks (CI) on every push, no model or key needed to run them" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -176,23 +176,23 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Personal system · LLM evaluation · LangSmith",
     title: "Flywheel: an agent's real failures, turned into its tests",
     lead:
-      "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases, and checks every pull request against them case by case. On two different agents it blocked a change that looked fine: one passed every behavioural unit test, the other looked like noise on the averages.",
+      "An AI agent can pass every unit test (a small automatic check of the code) and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith (a service that logs what an agent did), into test cases. It checks every pull request (a proposed code change) against them case by case. On two different agents it blocked a change that looked fine: one passed every unit test of its behaviour, the other looked like random noise in the average scores.",
     atAGlance: [
       { label: "My role", value: "Designed and built it end to end" },
       {
         label: "What it is",
         value:
-          "A regression gate for LLM agents: it mines failing LangSmith traces into test cases and gates each pull request case by case",
+          "A safety check for AI agents: it turns recorded failed runs into test cases and blocks any proposed code change that breaks one",
       },
       { label: "Stack", value: "Python, LangSmith, LangGraph, GitHub Actions, Claude" },
       {
         label: "Quality",
-        value: "33 tests, CI on Python 3.11 and 3.13, and its own action gating its example agent",
+        value: "33 tests, automatic checks on every change (run on Python 3.11 and 3.13), and Flywheel's own check guarding its example agent",
       },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "A way to take a customer's agent from demos well to provably works: its real failures in LangSmith become reviewed test cases, every change is compared with main case by case, and a red check means a real regression, not model noise.",
+      "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a failing check means a real regression, not model noise.",
     contactHeading: "Have an agent that works in the demo? Let's talk.",
   },
   // Added 2026-10-18 with the Esper case study, from the esper README's stage 5 and 6 sections.
@@ -200,18 +200,18 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Personal system · Research agent · LangGraph",
     title: "Esper: a research agent that proves every sentence",
     lead:
-      "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind: a LangGraph pipeline where the writer may only use claims a separate checker has verified, code confirms every quote exists on the saved page, and a reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, against 29% for LangChain's Open Deep Research and 35% for a single model call.",
+      "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph (a toolkit for building multi-step AI agents). The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team (a second reviewer who hunts for evidence against the draft) attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call.",
     atAGlance: [
       { label: "My role", value: "Designed and built it end to end, with an agent doing the typing" },
       {
         label: "What it is",
         value:
-          "A deep research agent whose every sentence cites a quote found on a saved page, with a library that remembers what it verified",
+          "An AI research agent whose every sentence cites a quote found on a saved copy of the web page, with a library that remembers the facts it has checked",
       },
       { label: "Stack", value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel" },
       {
         label: "Quality",
-        value: "93 tests on a scripted model, CI, and a Flywheel gate that replays 22 recorded runs in under a minute",
+        value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a blocking check (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute",
       },
     ],
     calloutEyebrow: "What I'd bring to a client",
@@ -226,8 +226,8 @@ const pinnedCaseStudyNarratives = {
     atAGlance: [
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
-      { label: "Stack", value: "Python, open-source LLM, REST APIs" },
-      { label: "Status", value: "In production, human in the loop by design" },
+      { label: "Stack", value: "Python, an open-source LLM (large language model, the kind of AI behind chatbots), REST APIs (the standard way programs ask each other for data)" },
+      { label: "Status", value: "In production (live), with a person making every decision by design" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText: DECISION_CALLOUT,
@@ -237,11 +237,11 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
     lead:
-      "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long command-line scripts and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own authenticated API, and records why each change was made. Turnaround dropped by about half.",
+      "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line (a text screen where commands are typed) and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API (the interface programs use to talk to it), and records why each change was made. Turnaround dropped by about half.",
     atAGlance: [
       { label: "My role", value: "Built it end to end" },
       { label: "Systems", value: "Ticketing, code repository, geo-data" },
-      { label: "Stack", value: "Python, REST APIs, OAuth2" },
+      { label: "Stack", value: "Python, REST APIs (how programs ask other systems for data), OAuth2 (secure sign-in)" },
       {
         label: "Result",
         value: "A script-driven process replaced by access on demand, with the reason recorded",
@@ -249,7 +249,7 @@ const pinnedCaseStudyNarratives = {
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
-      "Integrations tend to break on auth and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when authentication changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
+      "Integrations tend to break on sign-in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign-in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
     contactHeading: "Systems that don't talk to each other? Let's talk.",
   },
   "apple-data-health": {
@@ -259,9 +259,9 @@ const pinnedCaseStudyNarratives = {
       "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
     atAGlance: [
       { label: "My role", value: "Data Engineer, Data Health team" },
-      { label: "Partners", value: "DataOps and the data evaluation team" },
-      { label: "Stack", value: "Python, Jenkins, Spark, Iceberg on S3, Snowflake, AWS EMR and EKS" },
-      { label: "Incident tools", value: "SQL, QGIS" },
+      { label: "Partners", value: "DataOps (data operations) and the data evaluation team" },
+      { label: "Stack", value: "Python, Jenkins (an automation tool), Spark (large-scale data processing), Iceberg on S3 and Snowflake (data storage), AWS EMR and EKS (cloud computing services)" },
+      { label: "Incident tools", value: "SQL (database queries), QGIS (a mapping tool)" },
     ],
     calloutEyebrow: "What I'd bring to a client",
     calloutText:
@@ -272,11 +272,11 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Neural Newsletters · Software Engineer · May 2024 to Feb 2025",
     title: "Rebuilding an LLM content pipeline that shipped broken output",
     lead:
-      "Neural Newsletters used an LLM to write a personalized version of each article for each reader. The pipeline behind that feature was producing broken output that couldn't ship. The prompt looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
+      "Neural Newsletters used an LLM (large language model, the kind of AI behind chatbots) to write a personalized version of each article for each reader. The pipeline behind that feature, the chain of steps from incoming article to finished page, was producing broken output that couldn't ship. The prompt, the written instructions given to the model, looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
     atAGlance: [
       { label: "My role", value: "Owned the LLM integration end to end" },
-      { label: "Worked with", value: "The CTO, on turning business goals into requirements" },
-      { label: "Stack", value: "Elixir and Phoenix, Postgres, TypeScript and React, WebSockets" },
+      { label: "Worked with", value: "The CTO (chief technology officer), on turning business goals into requirements" },
+      { label: "Stack", value: "Elixir and Phoenix (the server code), Postgres (the database), TypeScript and React (the reader's web page), WebSockets (a live connection to the page)" },
       { label: "Scale", value: "Thousands of articles across recurring runs" },
     ],
     calloutEyebrow: "What I'd bring to a client",
@@ -300,7 +300,7 @@ const pinnedCaseStudyNarratives = {
       {
         label: "Tested on",
         value:
-          "PipelineBench, 45 real historical bugs from 8 open-source projects, and a 625-model warehouse",
+          "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, and a data warehouse of 625 dbt models (saved recipes for building data tables)",
       },
     ],
     calloutEyebrow: "Where Orion stands",
@@ -313,7 +313,7 @@ const pinnedCaseStudyNarratives = {
     eyebrow: "Case study · Personal system · Design studio",
     title: "Atelier",
     lead:
-      "A design studio made of agents. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
+      "A design studio made of AI agents, programs that each do one job on their own. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
     atAGlance: [
       { label: "My role", value: "My own project, built in stages" },
       { label: "What it is", value: "A design studio made of agents" },
@@ -321,7 +321,7 @@ const pinnedCaseStudyNarratives = {
       { label: "What it makes", value: "Websites and web apps" },
     ],
     calloutEyebrow: "How it runs",
-    calloutText: "Everything runs on the subscription in the cloud container. No API key is used anywhere.",
+    calloutText: "Everything runs on the AI subscription I already pay for, on a cloud computer. No pay-per-use key is used anywhere.",
     contactHeading: "Hiring for forward deployed engineering? Let's talk.",
   },
 };
@@ -329,11 +329,11 @@ const pinnedCaseStudyNarratives = {
 // The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
 const pinnedMcpParagraphs = [
   "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
-  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs in CI.",
-  "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was per-session connection reuse and removing a duplicated model pass. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
+  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs automatically on every code push (CI, continuous integration).",
+  "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was reusing one connection for a whole session and removing a step that ran the model twice. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
   "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
-  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, encodes the question on a faster engine with the same model and the same vectors, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
-  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On Postgres every query runs as a read-only role under row-level security, connections are pinned to one certificate authority, credentials are never written to a log, and retrieved text reaches the model as data rather than instructions, so a document cannot hijack the agent reading it.",
+  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers (an embedding) on faster software, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
+  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections trust only one named certificate authority (the body that vouches for a server's identity), and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
 ];
 
 // R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
@@ -352,15 +352,15 @@ const pinnedMeasuredStats = [
 
 // R154, D50: the first and fourth rows are the mockup's, unchanged; the fifth row is new.
 const pinnedMeasuredTableRow1 = [
-  "Live web app with auth: moderation API type fix",
-  "Merged; the build went green for the first time in 17 days; 9 findings fixed before sign-off.",
+  "Live web app with sign-in: moderation API type fix",
+  "Merged; the build passed for the first time in 17 days; 9 findings fixed before sign-off.",
 ];
 const pinnedMeasuredTableRow4 = [
-  "Test service: README endpoints section",
+  "Test service: added an endpoints section (the addresses other software calls) to its README",
   "Done; 11 tests; 3 findings fixed before sign-off.",
 ];
 const pinnedMeasuredTableRow5 = [
-  "Studbook: MCP server for agents",
+  "Studbook: MCP server (a way for other agents to query it)",
   "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
 ];
 
@@ -483,7 +483,7 @@ describe("portfolioData", () => {
     const measured = findSection(agentops, "measured");
     expect(measured).toBeDefined();
     const table = measured.blocks.find((block) => block.type === "table");
-    expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline"]);
+    expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline (plain agent)"]);
     expect(table.rows).toHaveLength(4);
     expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
   });
@@ -588,10 +588,10 @@ describe("portfolioData", () => {
       "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the geo-data system that holds the feature itself.",
     );
     expect(builtParagraph.text).toBe(
-      "In plain terms: the tool reads an approved request from the ticketing system, signs in to the other two systems with the right permissions, changes the lock on the feature, and writes a comment on it saying why. Nobody has to change the tools they already use, because it talks to each system through the official interface each one already offers, its REST API.",
+      "In plain terms: the tool reads an approved request from the ticketing system, signs in to the other two systems with the right permissions, changes the lock on the feature, and writes a comment on it saying why. Nobody has to change the tools they already use, because it talks to each system through the official interface each one already offers, its REST API (a documented way for programs to read and change its data).",
     );
     expect(findSection(integration, "changed").blocks[0].text).toBe(
-      "A script-driven process became access control on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
+      "A script-driven process became permission changes on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
     );
     expect(integration.stats[2]).toEqual({
       value: "On demand",
@@ -611,16 +611,16 @@ describe("portfolioData", () => {
     expect(integration.atAGlance.slice(0, 3)).toEqual([
       { label: "My role", value: "Built it end to end" },
       { label: "Systems", value: "Ticketing, code repository, geo-data" },
-      { label: "Stack", value: "Python, REST APIs, OAuth2" },
+      { label: "Stack", value: "Python, REST APIs (how programs ask other systems for data), OAuth2 (secure sign-in)" },
     ]);
     expect(integration.stats.slice(0, 2)).toEqual([
       { value: "~50%", label: "faster turnaround on lock and unlock requests" },
-      { value: "3 systems", label: "connected through their own authenticated APIs" },
+      { value: "3 systems", label: "connected through each one's own official, signed-in interface (API)" },
     ]);
     expect(findSection(integration, "built").blocks[0]).toEqual({
       type: "link-diagram",
       left: { title: "Ticketing system", note: "The request and its status" },
-      edge: "OAuth2 · REST",
+      edge: "Secure sign-in · API",
       hub: { title: "The tool", note: "Python" },
       right: [{ title: "Code repository" }, { title: "Geo-data system" }],
     });
@@ -658,7 +658,7 @@ describe("portfolioData", () => {
     const incidentText = findSection(dataHealth, "incident").blocks[0].text;
 
     expect(appleRole.highlights.join(" ")).toContain(
-      "led response to a building-generation incident affecting tens of thousands of buildings.",
+      "led the response to a building-generation incident affecting tens of thousands of buildings.",
     );
     expect(dataHealth.stats[2]).toEqual({
       value: "Tens of thousands",
@@ -677,7 +677,7 @@ describe("portfolioData", () => {
     const incident = findSection(findCaseStudy("apple-data-health"), "incident");
 
     expect(incident.heading).toBe("When it breaks at scale");
-    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. An ML-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is scoping the blast radius: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands tractable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
+    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. A machine-learning-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is working out how far the damage reaches: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands manageable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
     expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
   });
 
@@ -942,8 +942,8 @@ describe("portfolioData", () => {
     expect(decision.atAGlance).toEqual([
       { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
-      { label: "Stack", value: "Python, open-source LLM, REST APIs" },
-      { label: "Status", value: "In production, human in the loop by design" },
+      { label: "Stack", value: "Python, an open-source LLM (large language model, the kind of AI behind chatbots), REST APIs (the standard way programs ask each other for data)" },
+      { label: "Status", value: "In production (live), with a person making every decision by design" },
     ]);
     expect(decision.stats).toEqual([
       { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
@@ -955,8 +955,8 @@ describe("portfolioData", () => {
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
     expect(paragraphsOf("built")).toEqual(DECISION_BUILT_PARAGRAPHS);
     expect(paragraphsOf("who-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
-    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to be platform agnostic. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
-    expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
+    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
+    expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS (digital mapping data) life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
     expect(paragraphsOf("changed")).toEqual(DECISION_CHANGED_PARAGRAPHS);
     expect(decision.callout.text).toBe(DECISION_CALLOUT);
     expect(decision.disclaimer).toBe(
