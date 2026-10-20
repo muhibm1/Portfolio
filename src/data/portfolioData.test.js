@@ -75,6 +75,8 @@ const pinnedCaseStudyStats = {
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
   // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
   orion: ["0 of 50", "0.82 and 0.83", "27 of 45", "625"],
+  // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
+  atelier: [],
 };
 
 const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
@@ -305,6 +307,23 @@ const pinnedCaseStudyNarratives = {
     calloutText: "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
     contactHeading: "Hiring for forward deployed engineering? Let's talk.",
   },
+  // Added 2026-10-20 (TG-08): the Atelier study's frame, copied from the Atelier README and studio
+  // skill; the at-a-glance rows are short labels written for the site.
+  atelier: {
+    eyebrow: "Case study · Personal system · Design studio",
+    title: "Atelier",
+    lead:
+      "A design studio made of agents. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
+    atAGlance: [
+      { label: "My role", value: "My own project, built in stages" },
+      { label: "What it is", value: "A design studio made of agents" },
+      { label: "Where it stands", value: "An ongoing project" },
+      { label: "What it makes", value: "Websites and web apps" },
+    ],
+    calloutEyebrow: "How it runs",
+    calloutText: "Everything runs on the subscription in the cloud container. No API key is used anywhere.",
+    contactHeading: "Hiring for forward deployed engineering? Let's talk.",
+  },
 };
 
 // The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
@@ -422,7 +441,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the nine case studies in plan order, Orion fourth (R127, G1, TG-07)", () => {
+  it("names / then /work then /work/<id> for the ten case studies in plan order, Orion fourth and Atelier fifth (R127, G1, TG-08)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -430,6 +449,7 @@ describe("portfolioData", () => {
       "/work/agentops",
       "/work/flywheel",
       "/work/orion",
+      "/work/atelier",
       "/work/esper",
       "/work/apple-llm-triage",
       "/work/apple-integration",
@@ -441,6 +461,7 @@ describe("portfolioData", () => {
       "agentops",
       "flywheel",
       "orion",
+      "atelier",
       "esper",
       "apple-llm-triage",
       "apple-integration",
@@ -739,12 +760,12 @@ describe("portfolioData", () => {
     expect(allMcpText).toContain("my own ship gate");
   });
 
-  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-07)", () => {
+  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
   });
 
   it("carries the Studbook split stats in order (D32, G14)", () => {
@@ -1232,5 +1253,139 @@ describe("the Orion case study (TG-07)", () => {
   it("holds no repository address or link in the Orion text", () => {
     const text = collectStrings(orion).join("\n");
     expect(text).not.toMatch(/github\.com|https?:\/\//i);
+  });
+});
+
+// TG-08: the Atelier case study. Every sentence on its page is copied from the Atelier README, its
+// studio skill, its agent files or the step data of the approved Look; a sentence that uses a
+// banned word or states a number is left out whole; the private build system's name is replaced.
+describe("the Atelier case study (TG-08)", () => {
+  const atelier = portfolioData.caseStudies.find((study) => study.id === "atelier");
+  const walkthrough = collectBlocks(atelier).find((block) => block.type === "walkthrough");
+  const AGENT_KINDS = ["agent", "tool", "person"];
+
+  // The page states no number. Names with a digit stuck to a letter (W3C, mp4) are not figures, as
+  // on the Orion page. Numbers the page makes up from its own structure are stripped first: each
+  // phase's place among the twelve, the list numbering, the spoken phase names, the figure caption
+  // and the station numerals inside the drawing.
+  const DERIVED_NUMBERS = [
+    /\b(?:[1-9]|1[0-2]) of 12(?!\d)/g, // "Phase 3 of 12" and the readout's "3 of 12"
+    /\b[Ss]how phase (?:[1-9]|1[0-2]),/g, // the "show phase" buttons
+    /Fig 1/g, // the figure caption
+  ];
+
+  function numbersIn(text) {
+    let rest = text;
+    for (const pattern of DERIVED_NUMBERS) rest = rest.replace(pattern, " ");
+    return rest.match(/(?<![A-Za-z])\d+(?:\.\d+)?/g) ?? [];
+  }
+
+  // All the words a visitor reads or hears from the walkthrough once rendered: text, labels and titles.
+  function renderedWords() {
+    const { container, unmount } = render(createElement(WalkthroughBlock, { block: walkthrough }));
+    const numbering = [...container.querySelectorAll(".wt-n")].map((node) => node.textContent);
+    container.querySelectorAll(".wt-n, .iso-face-text").forEach((node) => node.remove());
+    const attributes = [...container.querySelectorAll("[aria-label], [title], [alt]")].flatMap((node) => [
+      node.getAttribute("aria-label"),
+      node.getAttribute("title"),
+      node.getAttribute("alt"),
+    ]);
+    const words = [container.textContent, ...attributes.filter(Boolean)].join("\n");
+    unmount();
+    return { words, numbering };
+  }
+
+  it("is fifth, right after Orion, with the words Ongoing project and no code link (D7, D8)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(4);
+    expect(portfolioData.caseStudies[3].id).toBe("orion");
+    expect(portfolioData.caseStudies[5].id).toBe("esper");
+    expect(atelier.status).toBe("Ongoing project");
+    expect(atelier).not.toHaveProperty("codeLink");
+    expect(atelier.stats).toEqual([]);
+  });
+
+  it("states no number anywhere in its data (D6)", () => {
+    expect(collectStrings(atelier).flatMap(numbersIn)).toEqual([]);
+  });
+
+  it("states no number in what the walkthrough renders, and counts its twelve phases (D6)", () => {
+    const { words, numbering } = renderedWords();
+    expect(words).toContain("Phase 1 of 12");
+    expect(numbersIn(words)).toEqual([]);
+    expect(numbering).toEqual(Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, "0")));
+  });
+
+  it("notices a figure that comes in from the sources, and lets a name with a digit in it pass (D6)", () => {
+    expect(numbersIn("It takes stills at phone 390, tablet 834, desktop 1440.")).toEqual(["390", "834", "1440"]);
+    expect(numbersIn("A score 1 to 10 for each rubric line.")).toEqual(["1", "10"]);
+    expect(numbersIn("Exits 1 when a blocking gate fails.")).toEqual(["1"]);
+    expect(numbersIn("Node 22.12 or newer, 16 finer steps and a grid of 120 pulsing dots.")).toEqual(["22.12", "16", "120"]);
+    expect(numbersIn("Playwright (Apache-2.0) and a scroll.mp4 in W3C Design Tokens.")).toEqual(["2.0"]);
+    expect(numbersIn("Phase 3 of 12, Show phase 4, and Fig 1.")).toEqual([]);
+  });
+
+  it("leaves out the sentences that use a banned word or state a number, and never reworded them (D6)", () => {
+    const text = collectStrings(atelier).join("\n");
+    expect(text).not.toMatch(/plugin|atelier:/i);
+    expect(text).not.toMatch(/Stage 0|built now/i);
+    expect(text).not.toMatch(/Exits|finer steps|pulsing dots|Node 22|Apache-2|Linear's homepage|about three seconds/);
+    expect(text).not.toMatch(/phone 390|tablet 834|desktop 1440|score 1 to 10|1 to 7|Before step 2/);
+  });
+
+  it("says my build pipeline where the sources name the build system (D6)", () => {
+    const text = collectStrings(atelier).join("\n");
+    expect(text).toMatch(/my build pipeline/i);
+  });
+
+  it("holds no repository address or link in the Atelier text (D8)", () => {
+    const text = collectStrings(atelier).join("\n");
+    expect(text).not.toMatch(/github\.com|https?:\/\//i);
+  });
+
+  it("holds a walkthrough block of twelve uniquely named phases in the studio's order (D10)", () => {
+    expect(walkthrough.figure).toBe("atelier-floor");
+    expect(walkthrough.autoplay).toBe(false);
+    expect(walkthrough.steps.map((step) => step.id)).toEqual([
+      "intake", "brief", "strategy", "ideas", "lanes", "rig", "critics", "pick", "refine", "library", "handoff", "visitors",
+    ]);
+    expect(walkthrough.glowStep).toBe("pick");
+    expect(walkthrough.steps.some((step) => step.id === walkthrough.glowStep)).toBe(true);
+  });
+
+  it("tags eleven phases built and the last one alone designed, and names where a person decides on three (D10)", () => {
+    const designed = walkthrough.steps.filter((step) => step.tag === "designed").map((step) => step.id);
+    expect(designed).toEqual(["visitors"]);
+    expect(walkthrough.steps.at(-1).id).toBe("visitors");
+    expect(walkthrough.steps.filter((step) => step.tag === "built")).toHaveLength(11);
+    expect(walkthrough.steps.filter((step) => step.person).map((step) => step.id)).toEqual(["brief", "pick", "handoff"]);
+    expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed", "a person decides"]);
+  });
+
+  it("gives every agent a name, a kind, a role and the next reader, and every phase a list of agents (D10)", () => {
+    let total = 0;
+    for (const step of walkthrough.steps) {
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(step.does.length).toBeGreaterThan(0);
+      expect(Array.isArray(step.agents), step.id).toBe(true);
+      for (const agent of step.agents) {
+        total += 1;
+        expect(AGENT_KINDS).toContain(agent.kind);
+        for (const key of ["name", "role", "reads", "writes", "next"]) {
+          expect(agent[key]?.length, `${step.id} ${agent.name} ${key}`).toBeGreaterThan(0);
+        }
+      }
+    }
+    expect(total).toBe(16);
+    expect(walkthrough.steps.find((step) => step.id === "visitors").agents).toEqual([]);
+  });
+
+  it("carries every control, chrome and announcement string in the block, so no component holds words", () => {
+    for (const key of ["prev", "next", "replay", "skip", "show"]) expect(walkthrough.controls[key]).toBeTruthy();
+    expect(walkthrough.states.still).toBeTruthy();
+    for (const key of ["step", "agent"]) expect(walkthrough.announce[key]).toBeTruthy();
+    for (const key of ["stepOf", "person", "personInList", "who", "whoInOrder", "noAgents", "backTo", "reads", "writes", "next", "designedSuffix", "showAria"]) {
+      expect(walkthrough.labels[key], key).toBeTruthy();
+    }
+    expect(walkthrough.readout).toBeUndefined();
   });
 });
