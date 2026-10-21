@@ -72,7 +72,7 @@ const pinnedCaseStudyStats = {
   esper: ["79%", "0%", "11 of 11", "$0"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
   // Added 2026-10-21 from the owner's redesign brief.
-  "tannhauser-gate": ["28 to 1", "179", "8", "4"],
+  "tannhauser-gate": ["28 to 1", "180", "8", "4"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
@@ -120,6 +120,9 @@ const DECISION_WHY_PARAGRAPHS = [
 ];
 const DECISION_CHANGED_PARAGRAPHS = [
   "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+  // Added 2026-10-21 from the owner's own account of monthly volume around launch.
+  "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+  "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
   "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
   "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
@@ -281,7 +284,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "Quality",
-        value: "179 hook tests passing"
+        value: "180 hook tests passing"
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
@@ -1173,7 +1176,7 @@ describe("portfolioData", () => {
     const text = collectStrings(findCaseStudy("apple-decision-support-agent")).join("\n");
     const numerals = new Set(text.match(/\d+/g));
 
-    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "98"].includes(numeral))).toBe(true);
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "98", "500", "000", "4"].includes(numeral))).toBe(true);
   });
 
   it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
@@ -1504,5 +1507,22 @@ describe("the Atelier case study (TG-08)", () => {
       expect(walkthrough.labels[key], key).toBeTruthy();
     }
     expect(walkthrough.readout).toBeUndefined();
+  });
+});
+
+// Owner, 2026-10-21: the Orion walkthrough opens the page in place of the terms grid, and plays
+// 15% faster than the Atelier one.
+describe("Orion page order and pace", () => {
+  const orion = findCaseStudy("orion");
+
+  it("puts the walkthrough straight after the opening section, with no terms grid", () => {
+    expect(orion.sections.slice(0, 3).map((section) => section.id)).toEqual(["what", "walkthrough", "results"]);
+    expect(findSection(orion, "what").blocks.some((block) => block.type === "cards")).toBe(false);
+  });
+
+  it("plays the Orion walkthrough at 0.85 pace and leaves Atelier's at the default", () => {
+    const paceOf = (study) => collectBlocks(study).find((block) => block.type === "walkthrough").pace;
+    expect(paceOf(orion)).toBe(0.85);
+    expect(paceOf(findCaseStudy("atelier"))).toBeUndefined();
   });
 });

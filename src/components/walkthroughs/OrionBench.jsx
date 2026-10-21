@@ -10,9 +10,10 @@ const FIGURE_HTML = { __html: figure };
 /**
  * The Orion bench: the committed drawing, with the current step's parts ringed and a scene played
  * on them (or their resting version when the visitor asked for less motion). All of that happens
- * in an effect after the step changes; nothing touches the drawing while rendering.
+ * in an effect after the step changes; nothing touches the drawing while rendering. `pace` scales
+ * every motion and delay, so the scenes keep in step with the block's own holds.
  */
-export default function OrionBench({ stepId, calm, decision, runId }) {
+export default function OrionBench({ stepId, calm, decision, runId, pace = 1 }) {
   const boxRef = useRef(null);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function OrionBench({ stepId, calm, decision, runId }) {
       slide(name, path, { dur, easing, iterations = 1 }) {
         const element = part(name);
         if (!element || typeof element.animate !== 'function') return;
-        const options = { duration: dur, easing, iterations, fill: 'forwards' };
+        const options = { duration: dur * pace, easing, iterations, fill: 'forwards' };
         animations.push(element.animate(path.map((by) => ({ transform: translate(vec(by)) })), options));
         element.querySelectorAll('[data-hold]').forEach((held) => {
           animations.push(
@@ -75,7 +76,7 @@ export default function OrionBench({ stepId, calm, decision, runId }) {
       needle(value, dur) {
         const element = part('needle');
         if (!element || typeof element.animate !== 'function') return;
-        animations.push(element.animate(needleFrames(value), { duration: dur, easing: 'cubic-bezier(0.32, 0.72, 0, 1)', fill: 'forwards' }));
+        animations.push(element.animate(needleFrames(value), { duration: dur * pace, easing: 'cubic-bezier(0.32, 0.72, 0, 1)', fill: 'forwards' }));
       },
       needleStill(value) {
         const element = part('needle');
@@ -88,7 +89,7 @@ export default function OrionBench({ stepId, calm, decision, runId }) {
         else element.removeAttribute('data-on');
       },
       later(ms, fn) {
-        timers.push(setTimeout(fn, ms));
+        timers.push(setTimeout(fn, ms * pace));
       },
     };
 
@@ -100,7 +101,7 @@ export default function OrionBench({ stepId, calm, decision, runId }) {
     else scene.play(api);
 
     return rest;
-  }, [stepId, calm, decision, runId]);
+  }, [stepId, calm, decision, runId, pace]);
 
   return <div ref={boxRef} className="wt-figbox" dangerouslySetInnerHTML={FIGURE_HTML} />;
 }
