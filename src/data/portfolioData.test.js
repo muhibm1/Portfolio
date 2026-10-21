@@ -58,9 +58,9 @@ const pinnedRoleTitles = [
 
 const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
-  "Distributed batch processing, lakehouse and warehouse tables, Kafka, Airflow, dbt, Postgres, pgvector",
+  "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
   "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
-  "Cloud compute and storage, Docker, CI/CD, OAuth2, REST, WebSockets",
+  "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
 
