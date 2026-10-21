@@ -131,7 +131,9 @@ export default function useWalkthrough(block) {
   const { idx, agent, decision, playing, calm, runId, onScreen } = state;
   const waiting = idx === decisionIndex && decision === null;
   const ended = idx === last;
-  const dwells = useMemo(() => steps.map(dwellMilliseconds), [steps]);
+  // `pace` is an optional block field that scales every hold (0.85 plays 15% faster).
+  const pace = block.pace ?? 1;
+  const dwells = useMemo(() => steps.map((step) => Math.round(dwellMilliseconds(step) * pace)), [steps, pace]);
 
   const consoleRef = useRef(null);
   const stageRef = useRef(null);
