@@ -8,7 +8,7 @@ import SiteLayout from './SiteLayout';
 
 // G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet.
 describe('SiteHeader', () => {
-  it('shows the home section links, the email address and the theme button on /, with no GitHub link (the Look moves it to the footer)', () => {
+  it('shows the home section links, the GitHub profile link and the theme button on /, with no email link (owner, 2026-10-21)', () => {
     renderSiteLayoutAt('/');
 
     expect(headerLinkHref('Work')).toBe('#work');
@@ -28,22 +28,25 @@ describe('SiteHeader', () => {
       'Contact',
     ]);
     const banner = within(screen.getByRole('banner'));
-    expect(banner.getByRole('link', { name: portfolioData.personal.email })).toHaveAttribute(
-      'href',
-      `mailto:${portfolioData.personal.email}`,
-    );
-    expect(banner.queryByRole('link', { name: /github/i })).toBeNull();
+    const github = banner.getByRole('link', { name: 'github.com/muhibm1' });
+    expect(github).toHaveAttribute('href', portfolioData.home.hero.codeLine.href);
+    expect(github).toHaveAttribute('target', '_blank');
+    expect(github).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(banner.queryByRole('link', { name: portfolioData.personal.email })).toBeNull();
     expect(screen.queryByRole('link', { name: /resume/i })).toBeNull();
   });
 
-  it('shows Home, All case studies and Contact on a case-study page, with no GitHub link', () => {
+  it('shows Home, All case studies and Contact on a case-study page, with the GitHub link', () => {
     renderSiteLayoutAt('/work/workhorse');
 
     expect(headerLinkHref('Home')).toBe('/');
     expect(headerLinkHref('All case studies')).toBe('/work');
     expect(headerLinkHref('Contact')).toBe('#contact');
     expect(screen.queryByRole('link', { name: 'Work' })).toBeNull();
-    expect(within(screen.getByRole('banner')).queryByRole('link', { name: /github/i })).toBeNull();
+    expect(within(screen.getByRole('banner')).getByRole('link', { name: /github/i })).toHaveAttribute(
+      'href',
+      portfolioData.personal.github,
+    );
   });
 
   it('has no copy-email control', () => {

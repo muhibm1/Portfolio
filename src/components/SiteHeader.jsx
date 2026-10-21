@@ -24,8 +24,9 @@ const OTHER_ROUTE_LINKS = [
 const navLink = 'inline-flex min-h-11 shrink-0 items-center whitespace-nowrap text-[13.5px] text-ink-2 no-underline transition-colors hover:text-ink tab:text-sm';
 
 /**
- * The sticky header of the Look: name and role, the section links, the email address and the
- * light and dark switch. On a phone it is two rows (name and email, then links and switch).
+ * The sticky header of the Look: name and role, the section links, the GitHub profile link and the
+ * light and dark switch. On a phone it is two rows (name and GitHub, then links and switch). The
+ * owner moved GitHub here in place of the email on 2026-10-21, since Contact is already a nav link.
  */
 export default function SiteHeader() {
   const { personal } = portfolioData;
@@ -55,10 +56,12 @@ export default function SiteHeader() {
         </nav>
 
         <a
-          href={`mailto:${personal.email}`}
+          href={personal.github}
+          target="_blank"
+          rel="noopener noreferrer"
           className="col-[2/4] row-start-1 justify-self-end font-mono text-[12.5px] text-ink no-underline hover:text-ink tab:col-[3] tab:text-sm"
         >
-          {personal.email}
+          {personal.github.replace('https://', '')}
         </a>
 
         <div className="col-[3] row-start-2 mt-2 justify-self-end tab:col-[4] tab:row-start-1 tab:mt-0">
