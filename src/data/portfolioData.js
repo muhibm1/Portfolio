@@ -291,7 +291,7 @@ export const portfolioData = {
         },
         {
           title: "Data",
-          items: "Distributed batch processing, lakehouse and warehouse tables, Kafka, Airflow, dbt, Postgres, pgvector",
+          items: "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
         },
         {
           title: "AI",
@@ -300,7 +300,7 @@ export const portfolioData = {
         },
         {
           title: "Ship",
-          items: "Cloud compute and storage, Docker, CI/CD, OAuth2, REST, WebSockets",
+          items: "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
         },
         {
           title: "People",
@@ -2183,7 +2183,7 @@ export const portfolioData = {
                   tag: "designed",
                   readout: "designed · not built",
                   does:
-                    "Next: more platform adapters (Dagster, warehouse query history), Postgres as a shared team store, an LLM intent extractor behind ops_from_intent, and more seeds and a larger fixture for PipelineBench.",
+                    "Next: more platform adapters (Dagster, Snowflake query history), Postgres as a shared team store, an LLM intent extractor behind ops_from_intent, and more seeds and a larger fixture for PipelineBench.",
                 },
               ],
             },
@@ -2212,6 +2212,74 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "The benchmark itself is built to be hard to game. Answers are written by hand from the platform's rules. An automatic check stops the build if Orion and the answers drift apart. And a held-out bug set keeps my tuning from leaking into the score.",
+            },
+          ],
+        },
+        {
+          id: "studbook",
+          heading: "From Studbook to Orion",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Studbook answers questions about past decisions. Orion uses that kind of record to judge the next change before it ships. Orion is the next step of the same idea. In October 2026 it replaced Studbook as the engineering record in my own build pipeline.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Compared" },
+                { label: "Studbook (public)" },
+                { label: "Orion (private, in progress)" },
+              ],
+              rows: [
+                {
+                  cells: [
+                    "The question it answers",
+                    "\"Why was this decided?\"",
+                    "\"Is this change safe, and who needs to know?\"",
+                  ],
+                },
+                {
+                  cells: [
+                    "When it helps",
+                    "After the fact, when someone asks",
+                    "Before merge, on every change",
+                  ],
+                },
+                {
+                  cells: [
+                    "What it reads",
+                    "An engineering record: specs, decision records, retros, commits",
+                    "The diff, plus a graph of the system: lineage, rules, owners, past incidents",
+                  ],
+                },
+                {
+                  cells: [
+                    "How it decides",
+                    "Cited retrieval: it searches by meaning and by keyword, re-sorts the best matches, then gives an answer with citations or refuses",
+                    "Code works out what a change reaches and which rules apply. The model reviews the diff and summarises inside those facts, never overriding them.",
+                  ],
+                },
+                {
+                  cells: [
+                    "What comes out",
+                    "A cited answer, or \"that's not in the record\"",
+                    "A verdict an agent or a CI gate can act on, where every claim cites its evidence",
+                  ],
+                },
+                {
+                  cells: [
+                    "How it is measured",
+                    "Held-out questions: faithfulness 1.00, citation validity 0.95",
+                    "A safety benchmark for agents and recall on real historical bugs (above)",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The through-line is the same rule: never state what the record doesn't support. Studbook applied it to answers. Orion applies it to decisions, where a wrong answer costs a broken pipeline instead of a bad paragraph. Looking things up in the record is still at its core. But the lookup is narrowed by the map of the system, so a review pulls up the incidents and rules for what the change actually touches.",
             },
           ],
         },
