@@ -16,7 +16,8 @@ const SHELL_HTML =
 
 function distinctiveTextFor(path) {
   if (path === '/') return portfolioData.home.hero.heading;
-  if (path === '/work') return portfolioData.caseStudies[0].title;
+  // The first card's eyebrow, not its title: React escapes the title's apostrophe in markup.
+  if (path === '/work') return portfolioData.caseStudies[0].card.eyebrow;
   const caseStudy = portfolioData.caseStudies.find((study) => `/work/${study.id}` === path);
   return caseStudy.title;
 }

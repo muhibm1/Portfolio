@@ -6,6 +6,7 @@ import CaseStudyBarChart from './CaseStudyBarChart';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
 import ContactBand from './ContactBand';
+import DeploymentSummary from './DeploymentSummary';
 
 // Literal Tailwind class names, one per supported column count, so Tailwind's scanner sees them
 // at build time. A `style={{ gridTemplateColumns }}` here would override the mobile `grid-cols-*`
@@ -35,11 +36,19 @@ export default function CaseStudyPage() {
   if (position === -1) return <NotFoundPage />;
 
   const caseStudy = caseStudies[position];
-  const { previous, next } = neighboursOf(caseStudies, position);
+  const { previous, next } = neighboursOf(caseStudies, caseStudy);
 
   return (
     <main>
+      {caseStudy.banner && <RetiredBanner text={caseStudy.banner} link={caseStudy.bannerLink} />}
       <CaseStudyHeader caseStudy={caseStudy} />
+      {caseStudy.deploymentSummary && (
+        <section aria-label="Deployment summary" className="px-4 pb-10 sm:px-8 md:px-16">
+          <div className="max-w-4xl rounded-[10px] border border-line bg-surface p-5 sm:p-7">
+            <DeploymentSummary summary={caseStudy.deploymentSummary} />
+          </div>
+        </section>
+      )}
       <AtAGlanceAndStats caseStudy={caseStudy} />
 
       <section className="grid grid-cols-1 gap-8 px-4 sm:px-8 md:grid-cols-[220px_1fr] md:gap-12 md:px-16">
@@ -60,18 +69,47 @@ export default function CaseStudyPage() {
   );
 }
 
-// The case studies before and after the one at `position`, wrapping at both ends (R127).
-function neighboursOf(caseStudies, position) {
-  const count = caseStudies.length;
+// The listed case studies before and after this one, wrapping at both ends (R127). A study with
+// `listed: false` is never offered as a neighbour; its own page points at the last and first
+// listed studies, so nothing links to an unlisted page.
+function neighboursOf(caseStudies, caseStudy) {
+  const listed = caseStudies.filter((study) => study.listed !== false);
+  const count = listed.length;
+  const position = listed.indexOf(caseStudy);
+  if (position === -1) return { previous: listed[count - 1], next: listed[0] };
   return {
-    previous: caseStudies[(position - 1 + count) % count],
-    next: caseStudies[(position + 1) % count],
+    previous: listed[(position - 1 + count) % count],
+    next: listed[(position + 1) % count],
   };
+}
+
+// The notice above a retired study's header. `link.text` must occur once in `text`; it becomes a
+// route link to `link.to`.
+function RetiredBanner({ text, link }) {
+  const parts = link ? text.split(link.text) : [text];
+  if (link && parts.length !== 2) {
+    throw new Error(`Banner link text "${link.text}" must occur exactly once in the banner.`);
+  }
+  return (
+    <div role="note" className="border-b border-line bg-surface-2 px-4 pt-24 pb-4 sm:px-8 md:px-16">
+      <p className="max-w-4xl text-base text-ink">
+        {parts[0]}
+        {link && (
+          <>
+            <Link to={link.to} className="text-ink underline decoration-[var(--underline)] underline-offset-4">
+              {link.text}
+            </Link>
+            {parts[1]}
+          </>
+        )}
+      </p>
+    </div>
+  );
 }
 
 function CaseStudyHeader({ caseStudy }) {
   return (
-    <header className="flex flex-col gap-6 px-4 pt-24 pb-8 sm:px-8 md:px-16">
+    <header className={`flex flex-col gap-6 px-4 pb-8 sm:px-8 md:px-16 ${caseStudy.banner ? 'pt-10' : 'pt-24'}`}>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="font-mono text-xs uppercase tracking-widest text-muted">{caseStudy.eyebrow}</p>
         {caseStudy.codeLink && (

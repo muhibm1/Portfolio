@@ -9,7 +9,7 @@ import { render, pageMetaFor, headTags } from './entry-server.jsx';
 import { portfolioData } from './data/portfolioData';
 
 const BASE = '/Portfolio';
-const DECISION_PATH = '/work/apple-llm-triage';
+const DECISION_PATH = '/work/apple-decision-support-agent';
 const INTEGRATION_PATH = '/work/apple-integration';
 const WORKHORSE_PATH = '/work/workhorse';
 
@@ -19,9 +19,9 @@ const SHELL_HTML =
   '</head><body><div id="root"></div></body></html>';
 
 const DECISION_SENTENCE =
-  'The decision this produces is carried out by a separate tool I built, covered in the next case study.';
+  'The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.';
 const INTEGRATION_SENTENCE =
-  'The judgment behind these requests is covered in the previous case study. This one is about what happens after the decision is made.';
+  'The judgment behind these requests is covered in the decision support agent case study. This one is about what happens after the decision is made.';
 const THROUGHPUT_SENTENCE = 'It came from removing the investigation in front of it.';
 const STUDBOOK_SUBTITLE = "Cited retrieval (RAG) over WorkHorse's engineering record";
 const HERO_HEADING = 'I find the step everyone is waiting on.';
@@ -100,8 +100,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all twelve routes, the home page, the work list and ten case studies (TG-08)', () => {
-    expect(sitePagePaths()).toHaveLength(12);
+  it('serves all thirteen routes, the home page, the work list and eleven case studies (owner brief 2026-10-21)', () => {
+    expect(sitePagePaths()).toHaveLength(13);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {

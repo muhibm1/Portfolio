@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { sitePagePaths } from '../scripts/route-pages.mjs';
+import { redirectPage, sitePagePaths, siteRedirects } from '../scripts/route-pages.mjs';
 
 const scriptPath = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -68,11 +68,37 @@ describe('check-route-pages (G19)', () => {
       writeFile(relativePathFor(pagePath), pageHtml({ canonical: canonicalFor(pagePath) }));
     }
     writeFile('404.html', pageHtml({ notFound: true }));
+    for (const redirect of siteRedirects()) {
+      writeFile(relativePathFor(redirect.from), redirectPage(pageHtml(), redirect));
+    }
   }
 
   function runCheckOn(directory) {
     return spawnSync(process.execPath, [scriptPath, directory], { encoding: 'utf8' });
   }
+
+  it('exits 1 naming a moved address whose redirect page is missing (owner brief 2026-10-21)', () => {
+    buildCleanFixture();
+    const [redirect] = siteRedirects();
+    fs.rmSync(path.join(fixtureDirectory, relativePathFor(redirect.from)));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(`${FAILED_PREFIX} ${relativePathFor(redirect.from)} is missing`);
+  });
+
+  it('exits 1 naming a redirect page that refreshes somewhere other than its target', () => {
+    buildCleanFixture();
+    const [redirect] = siteRedirects();
+    writeFile(relativePathFor(redirect.from), redirectPage(pageHtml(), { targetUrl: `${SITE_URL}work/elsewhere/` }));
+
+    const result = runCheckOn(fixtureDirectory);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(`${relativePathFor(redirect.from)} does not refresh to ${redirect.targetUrl}`);
+    expect(result.stdout).toContain(`${relativePathFor(redirect.from)} is missing the canonical link to ${redirect.targetUrl}`);
+  });
 
   it('exits 0 and prints the passed line when every page carries its markers', () => {
     buildCleanFixture();
