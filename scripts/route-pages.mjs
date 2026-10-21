@@ -10,12 +10,65 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { staticRoutePaths } from '../src/routePaths.js'
+import { REDIRECTS, staticRoutePaths } from '../src/routePaths.js'
 import { portfolioData } from '../src/data/portfolioData.js'
 
 /** staticRoutePaths applied to the real case-study data. */
 export function sitePagePaths() {
   return staticRoutePaths(portfolioData.caseStudies)
+}
+
+const SITE_URL = 'https://muhibm1.github.io/Portfolio/'
+
+/**
+ * The moved addresses (REDIRECTS in src/routePaths.js), each with the full URL it now points at.
+ * Throws when a target is not a page the site serves, or a source still is, so a redirect can
+ * neither point at nothing nor hide a live page.
+ */
+export function siteRedirects() {
+  const pages = new Set(sitePagePaths())
+  return REDIRECTS.map(({ from, to }) => {
+    if (!pages.has(to)) throw new Error(`Redirect target ${to} is not a page the site serves`)
+    if (pages.has(from)) throw new Error(`Redirect source ${from} is still a page the site serves`)
+    return { from, to, targetUrl: `${SITE_URL}${to.slice(1)}/` }
+  })
+}
+
+/**
+ * A small page that sends the browser on to `targetUrl` (GitHub Pages has no server-side
+ * redirects). It keeps the shell's Content-Security-Policy and referrer meta tags, carries no
+ * script, points its canonical link at the new address, asks not to be indexed, and holds a
+ * plain link for a browser that ignores the refresh. Throws when the shell lacks either meta tag.
+ */
+export function redirectPage(shellHtml, { targetUrl }) {
+  const csp = shellHtml.match(/<meta[^>]*http-equiv="Content-Security-Policy"[^>]*>/i)
+  const referrer = shellHtml.match(/<meta[^>]*name="referrer"[^>]*>/i)
+  if (!csp) throw new Error('Shell is missing its Content-Security-Policy meta tag')
+  if (!referrer) throw new Error('Shell is missing its referrer meta tag')
+  const url = escapeAttribute(targetUrl)
+
+  return [
+    '<!doctype html>',
+    '<html lang="en">',
+    '<head>',
+    '<meta charset="UTF-8" />',
+    csp[0],
+    referrer[0],
+    `<meta http-equiv="refresh" content="0; url=${url}" />`,
+    '<meta name="robots" content="noindex" />',
+    `<link rel="canonical" href="${url}" />`,
+    '<title>This page has moved</title>',
+    '</head>',
+    '<body>',
+    `<p>This page has moved to <a href="${url}">${url}</a>.</p>`,
+    '</body>',
+    '</html>',
+    '',
+  ].join('\n')
+}
+
+function escapeAttribute(value) {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
 /**

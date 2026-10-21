@@ -17,7 +17,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { sitePagePaths, assemblePage, writePage } from './route-pages.mjs'
+import { sitePagePaths, siteRedirects, redirectPage, assemblePage, writePage } from './route-pages.mjs'
 
 const EXIT_OK = 0
 const EXIT_FAILED = 1
@@ -56,6 +56,9 @@ async function main() {
       const html = assemblePage(shellHtml, { headHtml: headTags(meta), appHtml: render(url) })
       return { pagePath, html }
     })
+    for (const redirect of siteRedirects()) {
+      assembled.push({ pagePath: redirect.from, html: redirectPage(shellHtml, redirect) })
+    }
 
     const written = assembled.map(({ pagePath, html }) => writePage(DIST_DIR, pagePath, html))
 

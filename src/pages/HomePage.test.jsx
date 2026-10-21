@@ -46,16 +46,47 @@ describe('HomePage', () => {
     expect(replay.steps).toHaveLength(9);
   });
 
-  it('shows the AgentOps proof band with the case study results and a link to the case study', () => {
+  it('drops the AgentOps proof band, since AgentOps is now the first featured card, and skips the replay to the stats (owner brief 2026-10-21)', () => {
     renderHomePage();
 
-    const agentOps = portfolioData.caseStudies.find((study) => study.id === 'agentops');
-    const band = document.getElementById('agentops');
-    expect(band).not.toBeNull();
-    for (const stat of agentOps.stats) {
-      expect(within(band).getByText(stat.value)).toBeInTheDocument();
-    }
-    expect(within(band).getByRole('link', { name: agentOps.card.linkText })).toHaveAttribute('href', '/work/agentops');
+    expect(document.getElementById('agentops')).toBeNull();
+    expect(document.getElementById('stats')).not.toBeNull();
+    expect(portfolioData.homeReplay.skip.href).toBe('#stats');
+  });
+
+  it('orders the sections hero, stats, About, work, build log, How I work, Experience, Contact (owner brief 2026-10-21)', () => {
+    renderHomePage();
+
+    const ids = ['stats', 'about', 'work', 'build-log', 'approach', 'experience', 'contact'];
+    const elements = ids.map((id) => document.getElementById(id));
+    elements.forEach((element, index) => {
+      expect(element, ids[index]).not.toBeNull();
+      if (index > 0) {
+        expect(elements[index - 1].compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      }
+    });
+  });
+
+  it('renders About with its heading and text', () => {
+    renderHomePage();
+
+    const about = document.getElementById('about');
+    expect(within(about).getByRole('heading', { name: home.about.heading })).toBeInTheDocument();
+    expect(within(about).getByText(home.about.text)).toBeInTheDocument();
+  });
+
+  it('renders the build log heading, its direction statement and every dated entry, newest first', () => {
+    renderHomePage();
+
+    const log = document.getElementById('build-log');
+    expect(within(log).getByRole('heading', { name: 'Build log: what changed and why' })).toBeInTheDocument();
+    expect(within(log).getByText(home.buildLog.direction)).toBeInTheDocument();
+    const items = within(log).getAllByRole('listitem');
+    expect(items).toHaveLength(home.buildLog.entries.length);
+    items.forEach((item, index) => {
+      expect(within(item).getByText(home.buildLog.entries[index].text)).toBeInTheDocument();
+    });
+    expect(home.buildLog.entries[0].date).toBe('Oct 21, 2026');
   });
 
   it('renders the five production stat values', () => {
@@ -72,13 +103,12 @@ describe('HomePage', () => {
     expect(screen.getByText(home.stats.caption)).toBeInTheDocument();
   });
 
-  it('renders the four section eyebrows in order', () => {
+  it('renders the six numbered section eyebrows', () => {
     renderHomePage();
 
-    expect(screen.getByText('01 · Case studies')).toBeInTheDocument();
-    expect(screen.getByText('02 · How I work')).toBeInTheDocument();
-    expect(screen.getByText('03 · Experience')).toBeInTheDocument();
-    expect(screen.getByText('04 · Contact')).toBeInTheDocument();
+    for (const eyebrow of ['01 · About', '02 · Work', '03 · Build log', '04 · How I work', '05 · Experience', '06 · Contact']) {
+      expect(screen.getByText(eyebrow)).toBeInTheDocument();
+    }
   });
 
   it('renders the four "How I work" principle headings', () => {
@@ -116,14 +146,17 @@ describe('HomePage', () => {
     expect(mobileNodes.length).toBeGreaterThan(0);
   });
 
-  it('renders every case-study card linking into /work', () => {
+  it('renders a card linking into /work for every listed case study, and none for the unlisted ones', () => {
     renderHomePage();
 
     for (const study of portfolioData.caseStudies) {
-      expect(screen.getByRole('link', { name: new RegExp(escapeRegExp(study.card.title)) })).toHaveAttribute(
-        'href',
-        `/work/${study.id}`,
-      );
+      const cardLinks = document.querySelectorAll(`#work a[href="/work/${study.id}"]`);
+      if (study.listed === false) {
+        expect(cardLinks, study.id).toHaveLength(0);
+      } else {
+        expect(cardLinks.length, study.id).toBeGreaterThan(0);
+        expect(screen.getAllByText(study.card.title).length).toBeGreaterThan(0);
+      }
     }
   });
 
@@ -159,10 +192,6 @@ describe('HomePage', () => {
     expect(screen.queryByRole('link', { name: 'Download resume' })).toBeNull();
   });
 });
-
-function escapeRegExp(text) {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 function renderHomePage() {
   return render(

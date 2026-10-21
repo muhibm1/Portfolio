@@ -1,19 +1,27 @@
 import { Link } from 'react-router';
-import { h3Classes } from './lookClasses';
+import DeploymentSummary from './DeploymentSummary';
+import { eyebrowClasses, h3Classes } from './lookClasses';
 
-// Renders the case-study list (R132, R134) in the Look: the first study as a wide featured card
-// with its four stats beside it, then every other study as a card in a three-column grid (two
-// on a tablet, one on a phone). Shared by the home page and /work, so the study list comes in as
-// a prop rather than being read from the data module here.
+// Renders the case-study list (R132, R134) in the Look: every study whose card is featured as a
+// wide card with its deployment summary and four stats, then, under the "More work" heading,
+// every other listed study as a card in a three-column grid (two on a tablet, one on a phone).
+// A study with `listed: false` keeps its page but gets no card (owner's brief, 2026-10-21).
+// Shared by the home page and /work, so the study list comes in as a prop rather than being read
+// from the data module here.
 const cardBase =
   'rounded-[var(--r-lg)] border border-line bg-surface text-ink transition-[transform,box-shadow,border-color] duration-300 ease-[var(--glide)] hover:-translate-y-[3px] hover:border-line-mid hover:shadow-[var(--shadow-window)]';
 
-export default function CaseStudyCards({ caseStudies }) {
-  const [featured, ...rest] = caseStudies;
+export default function CaseStudyCards({ caseStudies, moreHeading }) {
+  const listed = caseStudies.filter((study) => study.listed !== false);
+  const featured = listed.filter((study) => study.card.featured);
+  const rest = listed.filter((study) => !study.card.featured);
 
   return (
     <div className="flex flex-col gap-6">
-      <FeaturedCard study={featured} />
+      {featured.map((study) => (
+        <FeaturedCard key={study.id} study={study} />
+      ))}
+      {moreHeading && <h3 className={`${eyebrowClasses} mt-6 tab:mt-10`}>{moreHeading}</h3>}
       <ul className="grid grid-cols-1 gap-3.5 tab:grid-cols-2 tab:gap-6 wide:grid-cols-3">
         {rest.map((study) => (
           <li key={study.id} className="flex">
@@ -26,24 +34,26 @@ export default function CaseStudyCards({ caseStudies }) {
 }
 
 function FeaturedCard({ study }) {
-  const { card, codeLink, status } = study;
+  const { card, codeLink, status, deploymentSummary } = study;
+  const stats = card.stats ?? study.stats;
 
   return (
     <article className={`${cardBase} grid grid-cols-1 gap-[26px] px-5 py-6 tab:p-8 wide:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] wide:gap-10 wide:p-11`}>
       <div className="grid content-start gap-4">
         <p className="text-[13px] font-medium text-muted">
           <span className="hidden tab:inline">{card.eyebrow}</span>
-          <span className="tab:hidden">{card.mobileEyebrow}</span>
+          <span className="tab:hidden">{card.mobileEyebrow ?? card.eyebrow}</span>
         </p>
-        <Link to={`/work/${study.id}`} className="grid gap-4 text-ink no-underline">
-          <h3 className="font-display text-[clamp(28px,3vw,40px)] font-semibold leading-[1.1] tracking-[-0.03em]">
-            {card.title}
-          </h3>
-          <p className="hidden text-base leading-[1.55] text-ink-2 tab:block">{card.summary}</p>
-          <p className="text-base leading-[1.55] text-ink-2 tab:hidden">{card.mobileSummary}</p>
-          <span className="text-[15px] font-medium">
-            {card.linkText} <span aria-hidden="true">→</span>
-          </span>
+        <h3 className="font-display text-[clamp(28px,3vw,40px)] font-semibold leading-[1.1] tracking-[-0.03em] text-ink">
+          {card.title}
+        </h3>
+        {deploymentSummary ? (
+          <DeploymentSummary summary={deploymentSummary} compact />
+        ) : (
+          <p className="text-base leading-[1.55] text-ink-2">{card.summary}</p>
+        )}
+        <Link to={`/work/${study.id}`} className="justify-self-start text-[15px] font-medium text-ink no-underline">
+          {card.linkText} <span aria-hidden="true">→</span>
         </Link>
         {codeLink && (
           <a
@@ -59,7 +69,7 @@ function FeaturedCard({ study }) {
         {!codeLink && status && <p className="text-[15px] text-ink-2">{status}</p>}
       </div>
       <ul className="grid grid-cols-2 content-center gap-x-6 gap-y-7">
-        {card.stats.map((stat) => (
+        {stats.map((stat) => (
           <li key={stat.label} className="grid content-start gap-1.5">
             <span className="font-display text-[clamp(34px,3.4vw,46px)] leading-none font-semibold tracking-[-0.035em]">
               {stat.value}

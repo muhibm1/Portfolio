@@ -18,7 +18,7 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { sitePagePaths } from './route-pages.mjs'
+import { sitePagePaths, siteRedirects } from './route-pages.mjs'
 
 const EXIT_CLEAN = 0
 const EXIT_VIOLATION = 1
@@ -40,9 +40,11 @@ function main([directoryArgument]) {
     const shellAssetTags = assetTags(shellHtml)
     const pages = expectedPages()
 
+    const redirects = expectedRedirects()
     const offenders = [
       ...pages.flatMap((page) => pageOffenders(directory, page, shellAssetTags)),
-      ...unexpectedOffenders(directory, pages),
+      ...redirects.flatMap((redirect) => redirectOffenders(directory, redirect)),
+      ...unexpectedOffenders(directory, [...pages, ...redirects]),
     ]
 
     if (offenders.length > 0) {
@@ -68,6 +70,36 @@ function expectedPages() {
   }))
 
   return [...routePages, { relativePath: '404.html', canonical: null, notFound: true }]
+}
+
+/** The moved addresses, each with its relative file and the full URL it must send the browser to. */
+function expectedRedirects() {
+  return siteRedirects().map(({ from, targetUrl }) => ({ relativePath: `${from.slice(1)}/index.html`, targetUrl }))
+}
+
+/** A redirect page must exist, refresh to its target, point its canonical there, and keep the policy tags. */
+function redirectOffenders(directory, redirect) {
+  const fullPath = path.join(directory, redirect.relativePath)
+  if (!fs.existsSync(fullPath)) return [offenderLine(redirect.relativePath, 'is missing')]
+
+  const html = fs.readFileSync(fullPath, 'utf8')
+  const offenders = []
+  if (!html.includes(`http-equiv="refresh" content="0; url=${redirect.targetUrl}"`)) {
+    offenders.push(offenderLine(redirect.relativePath, `does not refresh to ${redirect.targetUrl}`))
+  }
+  if (!html.includes(`rel="canonical" href="${redirect.targetUrl}"`)) {
+    offenders.push(offenderLine(redirect.relativePath, `is missing the canonical link to ${redirect.targetUrl}`))
+  }
+  if (countMatches(html, /http-equiv="Content-Security-Policy"/gi) !== 1) {
+    offenders.push(offenderLine(redirect.relativePath, 'does not have exactly one Content-Security-Policy meta tag'))
+  }
+  if (countMatches(html, /name="referrer"/gi) !== 1) {
+    offenders.push(offenderLine(redirect.relativePath, 'does not have exactly one name="referrer" meta tag'))
+  }
+  if (/<script\b/i.test(html)) {
+    offenders.push(offenderLine(redirect.relativePath, 'has a <script>'))
+  }
+  return offenders
 }
 
 function readShell(directory) {

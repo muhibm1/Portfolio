@@ -15,6 +15,18 @@ describe('SiteHeader', () => {
     expect(headerLinkHref('How I work')).toBe('#approach');
     expect(headerLinkHref('Experience')).toBe('#experience');
     expect(headerLinkHref('Contact')).toBe('#contact');
+    expect(headerLinkHref('About')).toBe('#about');
+    expect(headerLinkHref('Build log')).toBe('#build-log');
+    // The owner's 2026-10-21 nav order.
+    const sections = within(screen.getByRole('navigation', { name: 'Sections' }));
+    expect(sections.getAllByRole('link').map((link) => link.textContent)).toEqual([
+      'Work',
+      'About',
+      'Build log',
+      'How I work',
+      'Experience',
+      'Contact',
+    ]);
     const banner = within(screen.getByRole('banner'));
     expect(banner.getByRole('link', { name: portfolioData.personal.email })).toHaveAttribute(
       'href',
