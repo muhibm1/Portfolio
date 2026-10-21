@@ -109,7 +109,7 @@ export const portfolioData = {
         {
           value: "~40%",
           label: "Fewer release-blocking failures",
-          context: "After data checks moved earlier in the pipeline, with DataOps",
+          context: "After data checks moved earlier in the pipeline",
           mobileText: "fewer release-blocking failures after data checks moved earlier in the pipeline",
         },
       ],
@@ -141,7 +141,7 @@ export const portfolioData = {
       entries: [
         {
           date: "Oct 21, 2026",
-          text: "Rebuilt Tannhauser Gate, my agent build harness: one builder, independent reviewers, a risk tier picked by code, ten on-demand commands and four hard lines that are always on. 179 hook tests passing.",
+          text: "Rebuilt Tannhauser Gate, my agent build harness: one builder, independent reviewers, a risk tier picked by code, ten on-demand commands and four hard lines that are always on. 180 hook tests passing.",
         },
         {
           date: "Oct 21, 2026",
@@ -1499,7 +1499,7 @@ export const portfolioData = {
         decision:
           "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
         result:
-          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks, and the queue has stayed at zero since November 2025.",
+          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
       },
       card: {
         featured: true,
@@ -1662,6 +1662,16 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
             },
             {
               type: "paragraph",
@@ -1916,104 +1926,6 @@ export const portfolioData = {
               text:
                 "The idea behind it is simple. A general reviewer reads the diff. Orion also reads the system the diff lands in. Language models are good at reading code but bad at knowing what a change will break two systems away. Orion answers that part with code, and the model only interprets the answer.",
             },
-            { type: "paragraph", text: "A few terms used on this page, in plain words:" },
-            {
-              type: "cards",
-              items: [
-                { title: "AI agent", note: "A program that acts on its own, such as one that writes code." },
-                { title: "Diff", note: "The list of lines a change adds, removes and edits." },
-                {
-                  title: "PipelineBench",
-                  note: "Orion's own benchmark: a fixed set of test cases with answers written by hand.",
-                },
-                { title: "dbt model", note: "A saved recipe for building one data table." },
-                { title: "Airflow pipeline", note: "A scheduled job that moves or prepares data." },
-                { title: "Data warehouse", note: "The large store where a company keeps its business data." },
-                { title: "Column-level lineage", note: "A map of which columns feed which other columns." },
-                { title: "Recall", note: "The share of real bugs that were caught." },
-                {
-                  title: "Held-out bugs",
-                  note:
-                    "Bugs kept aside and never used for tuning, so they test code Orion has not seen.",
-                },
-                { title: "MCP server", note: "A standard way for coding agents to call a tool." },
-              ],
-            },
-          ],
-        },
-        {
-          id: "results",
-          heading: "Early results",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the repository's files or plain search.",
-            },
-            {
-              type: "table",
-              columns: [
-                { label: "Result" },
-                { label: "Number" },
-                { label: "What it rests on" },
-              ],
-              rows: [
-                {
-                  cells: [
-                    "Unsafe decisions by AI agents",
-                    "0 of 50 with Orion, against 8 of 50 with no context",
-                    "PipelineBench, Claude Sonnet 5.5 and Haiku 5.5, one run each. Both models scored zero with Orion.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Benchmark score",
-                    "0.82 and 0.83 with Orion, against 0.39 with no context and 0.72 to 0.76 with the whole repo",
-                    "Same runs. The score weighs the decision, cited evidence, named downstream tables and required approvers.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Evidence the agents cited",
-                    "100% of relevant rules and past incidents, every affected table, every required approver",
-                    "Same runs, with Orion. Grading is done by code, not by another AI model.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Real bugs caught on unseen code",
-                    "27 of 45 (60%), and 80% got a warning in the right file",
-                    "45 real historical bugs from 8 open-source projects (starlette, werkzeug, gin, chi, echo, ky, h3, express), never used for tuning. Cheapest model, one run.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Gain from reviewing in four focused passes",
-                    "18% to 42% recall on the same model",
-                    "50-bug tuning set (bugs used to adjust the method, taken from httpx, hono and cobra). One redesign, one day.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Real-world scale",
-                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s",
-                    "cal-itp/data-infra, California's public transit data warehouse. The first attempt was killed after 20 minutes.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Benchmark built for this",
-                    "60 scenarios with hand-written answers, plus 95 hand-labelled real bugs",
-                    "Answers are written from the platform's rules, never derived from Orion.",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug accuracy test and the real-warehouse test.",
-            },
           ],
         },
         {
@@ -2024,6 +1936,7 @@ export const portfolioData = {
               type: "walkthrough",
               figure: "orion-bench",
               name: "Orion",
+              pace: 0.85,
               regionLabel: "Orion walkthrough",
               note: "The whole design on one bench. Each step says built or designed.",
               stepsLabel: "Steps of the walkthrough",
@@ -2190,6 +2103,81 @@ export const portfolioData = {
           ],
         },
         {
+          id: "results",
+          heading: "Early results",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the repository's files or plain search.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Result" },
+                { label: "Number" },
+                { label: "What it rests on" },
+              ],
+              rows: [
+                {
+                  cells: [
+                    "Unsafe decisions by AI agents",
+                    "0 of 50 with Orion, against 8 of 50 with no context",
+                    "PipelineBench, Claude Sonnet 5.5 and Haiku 5.5, one run each. Both models scored zero with Orion.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Benchmark score",
+                    "0.82 and 0.83 with Orion, against 0.39 with no context and 0.72 to 0.76 with the whole repo",
+                    "Same runs. The score weighs the decision, cited evidence, named downstream tables and required approvers.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Evidence the agents cited",
+                    "100% of relevant rules and past incidents, every affected table, every required approver",
+                    "Same runs, with Orion. Grading is done by code, not by another AI model.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Real bugs caught on unseen code",
+                    "27 of 45 (60%), and 80% got a warning in the right file",
+                    "45 real historical bugs from 8 open-source projects (starlette, werkzeug, gin, chi, echo, ky, h3, express), never used for tuning. Cheapest model, one run.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Gain from reviewing in four focused passes",
+                    "18% to 42% recall on the same model",
+                    "50-bug tuning set (bugs used to adjust the method, taken from httpx, hono and cobra). One redesign, one day.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Real-world scale",
+                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s",
+                    "cal-itp/data-infra, California's public transit data warehouse. The first attempt was killed after 20 minutes.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Benchmark built for this",
+                    "60 scenarios with hand-written answers, plus 95 hand-labelled real bugs",
+                    "Answers are written from the platform's rules, never derived from Orion.",
+                  ],
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug accuracy test and the real-warehouse test.",
+            },
+          ],
+        },
+        {
           id: "numbers",
           heading: "What the numbers do and don't say yet",
           blocks: [
@@ -2332,7 +2320,7 @@ export const portfolioData = {
         summary:
           "My first delivery pipeline used 28 specialist agents. Its run records showed most handoffs cost more than they caught, so I retired it and rebuilt around one frontier coding agent, rules enforced in code, and reviewers that never see the builder's reasoning. Nothing was cut without a replay test behind it.",
         linkText: "Read the case study",
-        tags: ["28 agents to one builder and independent reviewers", "179 hook tests"],
+        tags: ["28 agents to one builder and independent reviewers", "180 hook tests"],
       },
       status: "Ongoing project",
       eyebrow: "Case study · Personal system · Agent harness",
@@ -2346,11 +2334,11 @@ export const portfolioData = {
           value: "The harness I build agents with: one builder, independent reviewers and hard lines enforced by hooks",
         },
         { label: "Where it stands", value: "Rebuilt October 2026, in daily use; the repository is private" },
-        { label: "Quality", value: "179 hook tests passing" },
+        { label: "Quality", value: "180 hook tests passing" },
       ],
       stats: [
         { value: "28 to 1", label: "specialist agents replaced by one builder, with independent reviewers" },
-        { value: "179", label: "hook tests passing" },
+        { value: "180", label: "hook tests passing" },
         { value: "8", label: "past changes replayed to test the reviewer" },
         { value: "4", label: "hard lines no agent can cross, always on" },
       ],
@@ -2376,19 +2364,121 @@ export const portfolioData = {
           heading: "How it works now",
           blocks: [
             {
+              type: "paragraph",
+              text:
+                "One ask goes in and one shipped change comes out. I approve two things along the way, both written so a non-engineer can follow them: a design page before any code exists, and a deployment page before anything ships. Everything between those two approvals runs on its own.",
+            },
+            {
               type: "bullets",
               items: [
-                "One builder: a single frontier coding agent does the work, instead of a chain of specialists.",
-                "Independent reviewers check the result without ever seeing the builder's reasoning, so they judge the change, not the argument for it.",
+                "One builder: a single frontier coding agent plans, writes and fixes the change, test first, instead of a chain of specialists.",
+                "Independent reviewers check the result without ever seeing the builder's reasoning, so they judge the change, not the argument for it. Each returns findings in one fixed shape, and a finding that points at a file or line that does not exist is set aside by code.",
                 "Code, not the model, picks the risk tier of each change, and the tier decides how much review it gets.",
+                "Review rounds are counted in code: a first review and at most two fix rounds. Anything still open after that goes on my deployment page instead of a fourth round.",
+                "Each approval is pinned to a fingerprint of the exact page I read, so a page changed after I approved it is no longer approved.",
                 "Ten commands I call on demand, rather than a fixed pipeline every change must walk through.",
-                "Four hard lines that are always on and that no agent can cross, enforced by hooks and covered by 179 tests.",
+                "Four hard lines that are always on and that no agent can cross: no outside money, no public repositories, no live trading, no reading secrets. Two more switch on during a run: no deleting data or shared history, and no turning off a test, check or guard. Hooks enforce all six on every tool call, covered by 180 tests.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "tiers",
+          heading: "How much process a change gets",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A one-line fix and a change to stored data should not get the same process. The tier is picked by code from what the change touches, and I can override it; the run records when I do.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Small",
+                  note: "At most 3 files and 60 changed lines, nothing in a risky area. Build, verify, review. No pages to approve, and the pull request still merges only on my word.",
+                },
+                {
+                  title: "Standard",
+                  note: "Anything bigger. Adds a preflight and one approval, of the deployment page.",
+                },
+                {
+                  title: "Deep",
+                  note: "A risky area, stored data, a contract other code depends on, or a change a revert cannot undo. The full gate: design page and approval, every relevant checker, deployment page and approval.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "runs",
+          heading: "What it has shipped",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Nine runs between 16 and 20 October 2026, all merged, with no outside API spend. Four of them built parts of this site: its current look, the Orion case study and its animated figure, the Atelier case study, and a reworded production stat.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The code reviewer sent the build back with a blocking problem in 6 of the 8 runs it reviewed. These are the kind of problems it caught:",
+            },
+            {
+              type: "bullets",
+              items: [
+                "An offline notice that was missing from four screens of a mobile app. It was reproduced in a browser and fixed by mounting the notice once for the whole app.",
+                "A broken link in any one project that stopped every record lookup across all of them, plus a cache path with no test. Both were fixed with tests.",
+                "An animated case-study figure whose box changed height on every step, so the page below it jumped by 150 to 264 pixels on phones and laptops. The fix held the box at one height and added a layout test that fails when the rule is removed.",
+                "Tests that read private files, which would have crashed on the public build server. The security reviewer caught that one, and it is now a scan in code.",
               ],
             },
             {
               type: "paragraph",
               text:
-                "Nothing was cut without a replay test behind it. The reviewer itself was tested the same way: I replayed eight past changes through it and through Orion, my change reviewer for data platforms. Orion caught 3 of the 11 problems the reviewer blocked on, so the reviewer stays.",
+                "Every run writes one row to a ledger: when each page was approved, how many review rounds it took, what the checks found, how long the build took and what it cost.",
+            },
+          ],
+        },
+        {
+          id: "measured",
+          heading: "Each part has to earn its place",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "I test the parts of the harness the way I test agents: replay real past work and count what each part catches. Three results so far, and what each one changed.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Does the planning agent beat a plain planner?",
+                  note: "Replayed on 7 real past changes, run twice each, it beat a plain planner on 6 of 7, catching 0.47 of the known problems on average against 0.42. It stays, for deep changes only. It caught at least half the known problems on just 3 of 7, so the bar I set is not met yet.",
+                },
+                {
+                  title: "Can Orion's review replace the code reviewer?",
+                  note: "Replayed on 8 past runs, Orion found 3 of the 11 problems the code reviewer blocked on, and one real problem it had missed. The code reviewer stays. Orion runs beside it as a trial, recorded and never blocking.",
+                },
+                {
+                  title: "Is the plain-language reviewer worth its rounds?",
+                  note: "It ran 150 rounds over 8 runs and failed 132 of them; one deployment page went back 35 times. Its mechanical rules, such as a term used before it is explained, move into a code check with a glossary, so the reviewer keeps only what needs a reader.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "limits",
+          heading: "What these numbers don't show yet",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Small samples: 7 replayed changes for the planner, 8 for the reviewer, and one Orion run per case.",
+                "The Orion replay was judged by matching findings by file and meaning, and the judge knew which finding came from which checker.",
+                "The full comparison, the same past changes run through a bare coding agent, the agent with the harness, and the old 28-agent pipeline, is designed and not run.",
+              ],
             },
           ],
         },
