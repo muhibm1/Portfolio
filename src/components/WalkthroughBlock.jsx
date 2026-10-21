@@ -110,7 +110,7 @@ export default function WalkthroughBlock({ block }) {
               <span className="wt-corner wt-fig-n">{block.caption.number}</span>
               <span className="wt-corner wt-fig-t">{block.caption.title}</span>
             </div>
-            <Figure stepId={step.id} calm={calm} decision={decision} runId={runId} live={walk.figureLive} onPick={pickStep} />
+            <Figure stepId={step.id} calm={calm} decision={decision} runId={runId} pace={block.pace ?? 1} live={walk.figureLive} onPick={pickStep} />
             {hasFootnotes && (
               <div className="wt-figfoots">
                 {steps.map((item, i) => (
