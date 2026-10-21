@@ -1,18 +1,18 @@
 import { wrapClasses } from './lookClasses';
 
 /**
- * "Measured in production" on the always-dark band (the Look). The five stat cells sit in a
- * three-column grid with the caption as a sixth cell. Four of the stats carry a shorter wording
- * for a phone (mobileText); the fifth has one wording for every width.
+ * "Measured in production" on the always-dark band (the Look). The four Apple stats sit in a
+ * two-by-two grid (one column on a phone) with the caption under them. A stat may carry a shorter
+ * wording for a phone (mobileText).
  */
 export default function ProductionStats({ stats }) {
   return (
-    <section aria-labelledby="stats-heading" className="on-dark-band bg-dark py-20 text-dark-ink tab:py-[136px]">
+    <section id="stats" aria-labelledby="stats-heading" className="on-dark-band bg-dark py-20 text-dark-ink tab:py-[136px]">
       <div className={wrapClasses}>
         <h2 id="stats-heading" className="text-sm font-medium tracking-[0.01em] text-dark-muted">
           {stats.eyebrow}
         </h2>
-        <ul className="mt-9 mb-11 grid grid-cols-1 gap-9 tab:mt-14 tab:mb-16 tab:grid-cols-2 tab:gap-x-8 tab:gap-y-[72px] mid:grid-cols-3">
+        <ul className="mt-9 mb-11 grid grid-cols-1 gap-9 tab:mt-14 tab:mb-16 tab:grid-cols-2 tab:gap-x-8 tab:gap-y-[72px]">
           {stats.items.map((item) => (
             <li key={item.label} className="grid content-start gap-2.5 border-t border-dark-edge pt-[22px]">
               <p className="font-display text-[clamp(48px,5.2vw,72px)] leading-none font-semibold tracking-[-0.045em]">
@@ -32,10 +32,8 @@ export default function ProductionStats({ stats }) {
               )}
             </li>
           ))}
-          <li className="grid content-end gap-2.5 border-t border-dark-edge pt-[22px]">
-            <p className="text-sm text-dark-muted">{stats.caption}</p>
-          </li>
         </ul>
+        <p className="text-sm text-dark-muted">{stats.caption}</p>
       </div>
     </section>
   );

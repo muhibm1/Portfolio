@@ -1,11 +1,14 @@
-// The "/" route (R132): the hero with the replay, the AgentOps proof, the measured stats, the work, the approach, the experience and the contact footer, composed from the data module.
+// The "/" route (R132), in the order of the owner's 2026-10-21 brief: the hero with the replay, the
+// measured stats, About, the work (featured, then more), the build log, the approach, the
+// experience and the contact footer, composed from the data module.
 // useScrollToHashTarget makes a header link such as #work, #approach or #experience land on the
 // right section; React Router does not scroll to hashes on its own.
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { portfolioData } from '../data/portfolioData';
 import { prefersReducedMotion } from '../prefersReducedMotion';
-import AgentOpsProof from '../components/AgentOpsProof';
+import AboutSection from '../components/AboutSection';
+import BuildLog from '../components/BuildLog';
 import CaseStudyCards from '../components/CaseStudyCards';
 import ContactFooter from '../components/ContactFooter';
 import ExperienceSection from '../components/ExperienceSection';
@@ -17,13 +20,12 @@ import { bodyLargeClasses, eyebrowClasses, h2Classes, wrapClasses } from '../com
 export default function HomePage() {
   useScrollToHashTarget();
   const { personal, home, caseStudies } = portfolioData;
-  const agentOps = caseStudies.find((study) => study.id === 'agentops');
 
   return (
     <main>
       <HomeHero hero={home.hero} email={personal.email} replay={portfolioData.homeReplay} />
-      <AgentOpsProof study={agentOps} />
       <ProductionStats stats={home.stats} />
+      <AboutSection about={home.about} />
 
       <section id="work" className="border-t border-line py-[72px] tab:py-[120px]">
         <div className={`${wrapClasses} grid gap-10 tab:gap-12`}>
@@ -34,9 +36,11 @@ export default function HomePage() {
             </div>
             <p className={`${bodyLargeClasses} md:col-span-5`}>{home.caseStudiesIntro.lead}</p>
           </div>
-          <CaseStudyCards caseStudies={caseStudies} />
+          <CaseStudyCards caseStudies={caseStudies} moreHeading={home.caseStudiesIntro.moreHeading} />
         </div>
       </section>
+
+      <BuildLog buildLog={home.buildLog} />
 
       <HowIWork principles={home.principles} workingWithPeople={home.workingWithPeople} />
       <ExperienceSection experience={home.experience} />

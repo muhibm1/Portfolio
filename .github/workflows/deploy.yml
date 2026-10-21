@@ -380,16 +380,16 @@ jobs:
           # to still be on $ROOT_URL, not printed only. Prerendering gives each page its own head
           # tags (R139, R143), so the pages are no longer byte-identical; this step greps for the
           # deep link's own canonical marker instead of comparing digests against the root (D15).
-          result=$(curl -sS -L --proto '=https' --proto-redir '=https' --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-llm-triage") || {
-            echo "::error::R121 failed: could not fetch ${ROOT_URL}work/apple-llm-triage."
+          result=$(curl -sS -L --proto '=https' --proto-redir '=https' --max-redirs 2 -o smoke/deep-link.html -w "%{http_code} %{num_redirects} %{url_effective}" "${ROOT_URL}work/apple-decision-support-agent") || {
+            echo "::error::R121 failed: could not fetch ${ROOT_URL}work/apple-decision-support-agent."
             exit 1
           }
           deep_link_status=$(printf '%s' "$result" | cut -d ' ' -f 1)
           deep_link_redirects=$(printf '%s' "$result" | cut -d ' ' -f 2)
           deep_link_effective_url=$(printf '%s' "$result" | cut -d ' ' -f 3-)
-          echo "GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status after $deep_link_redirects redirect(s), effective URL $deep_link_effective_url"
+          echo "GET ${ROOT_URL}work/apple-decision-support-agent returned $deep_link_status after $deep_link_redirects redirect(s), effective URL $deep_link_effective_url"
           if [ "$deep_link_status" != "200" ]; then
-            echo "::error::R121 failed: GET ${ROOT_URL}work/apple-llm-triage returned $deep_link_status, expected 200 (redirects $deep_link_redirects, effective URL $deep_link_effective_url)."
+            echo "::error::R121 failed: GET ${ROOT_URL}work/apple-decision-support-agent returned $deep_link_status, expected 200 (redirects $deep_link_redirects, effective URL $deep_link_effective_url)."
             exit 1
           fi
           case "$deep_link_effective_url" in
@@ -403,11 +403,11 @@ jobs:
             echo "::error::R121 failed: smoke/deep-link.html is empty; nothing to check for its own page markers."
             exit 1
           fi
-          if ! grep -qE 'rel="canonical"[^>]*work/apple-llm-triage/"' smoke/deep-link.html; then
-            echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-llm-triage carries no canonical link to work/apple-llm-triage/."
+          if ! grep -qE 'rel="canonical"[^>]*work/apple-decision-support-agent/"' smoke/deep-link.html; then
+            echo "::error::R121 failed: the body of ${ROOT_URL}work/apple-decision-support-agent carries no canonical link to work/apple-decision-support-agent/."
             exit 1
           fi
-          echo "PASS R121 ${ROOT_URL}work/apple-llm-triage answers 200 with its own canonical link"
+          echo "PASS R121 ${ROOT_URL}work/apple-decision-support-agent answers 200 with its own canonical link"
 
           # No -L here: an unknown path must answer 404 directly, not by redirecting somewhere
           # that then answers 200.
@@ -469,7 +469,7 @@ jobs:
           # D15: prerendering gives every page its own head and body, so the five counts above
           # are no longer proved for the whole site by the root alone. This repeats them against
           # the deep-link body and the 404 body already fetched by the previous step.
-          for smoke_target in "deep link:smoke/deep-link.html:${ROOT_URL}work/apple-llm-triage" "404:smoke/unknown.html:${ROOT_URL}no-such-page"; do
+          for smoke_target in "deep link:smoke/deep-link.html:${ROOT_URL}work/apple-decision-support-agent" "404:smoke/unknown.html:${ROOT_URL}no-such-page"; do
             target_label=${smoke_target%%:*}
             rest=${smoke_target#*:}
             target_file=${rest%%:*}

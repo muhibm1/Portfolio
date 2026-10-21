@@ -68,14 +68,14 @@ describe('GC10: the deep-link fetch follows redirects and asserts 200 against it
     expect(body).toBeDefined();
     const text = body.join('\n');
 
-    expect(text).toContain('work/apple-llm-triage');
+    expect(text).toContain('work/apple-decision-support-agent');
     expect(text).toContain('-L');
     expect(text).toContain('--max-redirs 2');
     expect(text).toContain('%{num_redirects}');
     expect(text).toContain('%{url_effective}');
     expect(text).toMatch(/=\s*"200"|==\s*"200"/);
     expect(text).toContain('rel="canonical"');
-    expect(text).toContain('work/apple-llm-triage/');
+    expect(text).toContain('work/apple-decision-support-agent/');
     expect(text).not.toContain('root_digest');
 
     expect(readWorkflowLines().some((line) => line.includes('Smoke R81'))).toBe(false);
@@ -245,7 +245,7 @@ describe('G20: the deploy workflow pins the redesign packages, scans copy and as
     expect(text).toMatch(/D14/);
   });
 
-  it('the deep-link step asserts 200 and greps the canonical link for work/apple-llm-triage/, no longer comparing digests', () => {
+  it('the deep-link step asserts 200 and greps the canonical link for work/apple-decision-support-agent/, no longer comparing digests', () => {
     const lines = readWorkflowLines();
     const body = stepBody(lines, 'Smoke R121 and R122: a deep link answers 200 with the root body; an unknown path answers 404');
     expect(body).toBeDefined();
@@ -253,7 +253,7 @@ describe('G20: the deploy workflow pins the redesign packages, scans copy and as
 
     expect(text).toMatch(/=\s*"200"|==\s*"200"/);
     expect(text).toContain('rel="canonical"');
-    expect(text).toContain('work/apple-llm-triage/');
+    expect(text).toContain('work/apple-decision-support-agent/');
     expect(text).not.toContain('root_digest');
     expect(text).not.toContain('deep_link_digest');
   });
@@ -284,7 +284,7 @@ describe('G20: the deploy workflow pins the redesign packages, scans copy and as
     // by a loop that names both smoke files and both URLs so each check runs against each file.
     expect(text).toContain('smoke/deep-link.html');
     expect(text).toContain('smoke/unknown.html');
-    expect(text).toContain('${ROOT_URL}work/apple-llm-triage');
+    expect(text).toContain('${ROOT_URL}work/apple-decision-support-agent');
     expect(text).toContain('${ROOT_URL}no-such-page');
     const cspMatches = text.match(/Content-Security-Policy meta tag/g) || [];
     const referrerMatches = text.match(/name=\\?"referrer\\?" meta tag/g) || [];

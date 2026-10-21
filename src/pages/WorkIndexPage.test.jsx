@@ -15,15 +15,14 @@ describe('WorkIndexPage', () => {
     expect(heading).toHaveClass('sr-only');
   });
 
-  it('lists the ten case studies in R127 order, the first the featured variant (TG-08)', () => {
+  it('lists the eight listed case studies in data order, AgentOps first as a featured card (owner brief 2026-10-21)', () => {
     renderWorkIndexAt('/work');
 
     const links = caseStudyLinks();
-    expect(links).toHaveLength(10);
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(
-      portfolioData.caseStudies.map((study) => `/work/${study.id}`),
-    );
-    expect(links[0]).toHaveAttribute('href', '/work/workhorse');
+    expect(links).toHaveLength(8);
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(listedPaths());
+    expect(links[0]).toHaveAttribute('href', '/work/agentops');
+    expect(screen.getByRole('heading', { name: 'More work' })).toBeInTheDocument();
   });
 
   it('has no type-filter controls and no Projects or Live demo heading', () => {
@@ -37,15 +36,17 @@ describe('WorkIndexPage', () => {
     expect(screen.queryByRole('heading', { name: 'Live demo' })).toBeNull();
   });
 
-  it('renders the same five case studies regardless of a ?type= address', () => {
+  it('renders the same listed case studies regardless of a ?type= address', () => {
     renderWorkIndexAt('/work?type=project');
 
     const links = caseStudyLinks();
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(
-      portfolioData.caseStudies.map((study) => `/work/${study.id}`),
-    );
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(listedPaths());
   });
 });
+
+function listedPaths() {
+  return portfolioData.caseStudies.filter((study) => study.listed !== false).map((study) => `/work/${study.id}`);
+}
 
 function caseStudyLinks() {
   return screen
