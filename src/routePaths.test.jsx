@@ -10,28 +10,38 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { portfolioData } from './data/portfolioData';
-import { staticRoutePaths } from './routePaths';
+import { REDIRECTS, staticRoutePaths } from './routePaths';
 
 const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'App.jsx');
 
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the ten case studies in plan order, Orion fourth and Atelier fifth (G1, TG-08)', () => {
+  it('returns / then /work then /work/<id> for each of the eleven case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
-      '/work/workhorse',
       '/work/agentops',
       '/work/flywheel',
-      '/work/orion',
-      '/work/atelier',
+      '/work/apple-decision-support-agent',
       '/work/esper',
-      '/work/apple-llm-triage',
+      '/work/orion',
+      '/work/tannhauser-gate',
       '/work/apple-integration',
       '/work/apple-data-health',
+      '/work/workhorse',
+      '/work/atelier',
       '/work/neural-newsletters-llm',
     ]);
+  });
+
+  it('redirects the old decision-support address to its new page, which the site serves (owner brief 2026-10-21)', () => {
+    expect(REDIRECTS).toEqual([{ from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' }]);
+    const served = staticRoutePaths(portfolioData.caseStudies);
+    for (const { from, to } of REDIRECTS) {
+      expect(served).toContain(to);
+      expect(served).not.toContain(from);
+    }
   });
 
   it('covers exactly the route patterns App.jsx defines, index, work, work/:slug and * (GC3)', () => {

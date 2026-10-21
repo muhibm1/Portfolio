@@ -15,3 +15,10 @@ function validatedSlug(id) {
       'hyphens); it cannot become a page directory.',
   );
 }
+
+// Old addresses that moved, each served as a small page that sends the browser to its new one
+// (GitHub Pages has no server-side redirects). Written by scripts/prerender.mjs and checked by
+// scripts/check-route-pages.mjs. The decision-support case study was renamed on 2026-10-21.
+export const REDIRECTS = [
+  { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
+];

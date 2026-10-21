@@ -9,7 +9,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { portfolioData } from './data/portfolioData';
 import { staticRoutePaths } from './routePaths';
-import { assemblePage, sitePagePaths, writePage } from '../scripts/route-pages.mjs';
+import { assemblePage, redirectPage, sitePagePaths, siteRedirects, writePage } from '../scripts/route-pages.mjs';
 
 const SHELL_HTML =
   '<!doctype html><html><head><title>Old title</title>\n' +
@@ -143,5 +143,42 @@ describe('writePage', () => {
 describe('staticRoutePaths with an unsafe case-study id (A2)', () => {
   it('throws naming the id instead of writing a page for it', () => {
     expect(() => staticRoutePaths([{ id: '../x' }])).toThrowError(/\.\.\/x/);
+  });
+});
+
+describe('siteRedirects and redirectPage (owner brief 2026-10-21)', () => {
+  const SHELL =
+    '<html><head><meta http-equiv="Content-Security-Policy" content="default-src \'self\'">' +
+    '<meta name="referrer" content="strict-origin-when-cross-origin"><title>t</title></head><body><div id="root"></div></body></html>';
+
+  it('points the old decision-support address at the full URL of its new page', () => {
+    expect(siteRedirects()).toEqual([
+      {
+        from: '/work/apple-llm-triage',
+        to: '/work/apple-decision-support-agent',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/apple-decision-support-agent/',
+      },
+    ]);
+  });
+
+  it('builds a script-free page that refreshes to the target, links it as canonical and keeps the policy tags', () => {
+    const html = redirectPage(SHELL, { targetUrl: 'https://muhibm1.github.io/Portfolio/work/x/' });
+
+    expect(html).toContain('<meta http-equiv="refresh" content="0; url=https://muhibm1.github.io/Portfolio/work/x/" />');
+    expect(html).toContain('<link rel="canonical" href="https://muhibm1.github.io/Portfolio/work/x/" />');
+    expect(html).toContain('<meta name="robots" content="noindex" />');
+    expect(html).toContain('http-equiv="Content-Security-Policy"');
+    expect(html).toContain('name="referrer"');
+    expect(html).not.toMatch(/<script/i);
+  });
+
+  it('escapes the target so it cannot break out of an attribute', () => {
+    const html = redirectPage(SHELL, { targetUrl: 'https://example.com/"><script>' });
+    expect(html).not.toContain('"><script>');
+    expect(html).toContain('&quot;&gt;&lt;script&gt;');
+  });
+
+  it('throws when the shell has no Content-Security-Policy meta tag', () => {
+    expect(() => redirectPage('<html><head></head></html>', { targetUrl: 'https://x/' })).toThrowError(/Content-Security-Policy/);
   });
 });

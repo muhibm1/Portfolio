@@ -120,10 +120,17 @@ describe('CaseStudyPage', () => {
       expect(screen.queryAllByText(/electron/i)).toHaveLength(0);
     });
 
-    it('never shows a retired, retirement, deprecated or dropped status word', () => {
-      const { container } = renderCaseStudyAt('/work/workhorse');
+    // The owner retired WorkHorse in October 2026 and asked for this banner (brief, 2026-10-21),
+    // which replaces the earlier rule that the page show no retirement word.
+    it('shows the retired banner above the header, with its build log link, and keeps the code link', () => {
+      renderCaseStudyAt('/work/workhorse');
 
-      expect(container.textContent).not.toMatch(/\b(retired|retirement|deprecated|dropped)\b/i);
+      const note = screen.getByRole('note');
+      expect(note).toHaveTextContent(workhorse.banner);
+      expect(workhorse.banner).toMatch(/^Retired October 2026\./);
+      expect(within(note).getByRole('link', { name: 'build log' })).toHaveAttribute('href', '/#build-log');
+      expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(screen.getByRole('link', { name: /code: workhorse-snapshot/i })).toBeInTheDocument();
     });
 
     it('shows the revised contact heading', () => {
@@ -195,7 +202,7 @@ describe('CaseStudyPage', () => {
     });
   });
 
-  const disclaimerSlugs = ['apple-llm-triage', 'apple-integration', 'apple-data-health'];
+  const disclaimerSlugs = ['apple-decision-support-agent', 'apple-integration', 'apple-data-health'];
 
   it.each(disclaimerSlugs)('shows a disclaimer on %s', (slug) => {
     const study = caseStudies.find((candidate) => candidate.id === slug);
@@ -215,32 +222,56 @@ describe('CaseStudyPage', () => {
     },
   );
 
-  it('links from the first case study back to the last and on to the second', () => {
-    const first = caseStudies[0];
-    const last = caseStudies[caseStudies.length - 1];
+  const listed = caseStudies.filter((study) => study.listed !== false);
 
-    renderCaseStudyAt(`/work/${first.id}`);
+  it('links from the first listed case study back to the last listed one and on to the second', () => {
+    renderCaseStudyAt(`/work/${listed[0].id}`);
 
-    expect(prevLink()).toHaveAttribute('href', `/work/${last.id}`);
-    expect(nextLink()).toHaveAttribute('href', `/work/${caseStudies[1].id}`);
+    expect(prevLink()).toHaveAttribute('href', `/work/${listed[listed.length - 1].id}`);
+    expect(nextLink()).toHaveAttribute('href', `/work/${listed[1].id}`);
   });
 
-  it('links from the last case study on to the first', () => {
-    const first = caseStudies[0];
-    const last = caseStudies[caseStudies.length - 1];
+  it('links from the last listed case study on to the first', () => {
+    renderCaseStudyAt(`/work/${listed[listed.length - 1].id}`);
 
-    renderCaseStudyAt(`/work/${last.id}`);
-
-    expect(nextLink()).toHaveAttribute('href', `/work/${first.id}`);
+    expect(nextLink()).toHaveAttribute('href', `/work/${listed[0].id}`);
   });
 
-  it('points a middle case study at its immediate neighbours', () => {
-    const middle = caseStudies[1];
+  it('points a middle case study at its immediate listed neighbours', () => {
+    renderCaseStudyAt(`/work/${listed[1].id}`);
 
-    renderCaseStudyAt(`/work/${middle.id}`);
+    expect(prevLink()).toHaveAttribute('href', `/work/${listed[0].id}`);
+    expect(nextLink()).toHaveAttribute('href', `/work/${listed[2].id}`);
+  });
 
-    expect(prevLink()).toHaveAttribute('href', `/work/${caseStudies[0].id}`);
-    expect(nextLink()).toHaveAttribute('href', `/work/${caseStudies[2].id}`);
+  it.each(caseStudies.filter((study) => study.listed === false).map((study) => study.id))(
+    'never links to the unlisted %s page from another page, and points its own neighbours at listed pages',
+    (slug) => {
+      for (const study of listed) {
+        const { unmount } = renderCaseStudyAt(`/work/${study.id}`);
+        expect(document.querySelectorAll(`a[href="/work/${slug}"]`)).toHaveLength(0);
+        unmount();
+      }
+
+      renderCaseStudyAt(`/work/${slug}`);
+      expect(prevLink()).toHaveAttribute('href', `/work/${listed[listed.length - 1].id}`);
+      expect(nextLink()).toHaveAttribute('href', `/work/${listed[0].id}`);
+    },
+  );
+
+  it.each(caseStudies.map((study) => study.id))('shows the deployment summary only on a featured page (%s)', (slug) => {
+    const study = caseStudies.find((candidate) => candidate.id === slug);
+    renderCaseStudyAt(`/work/${slug}`);
+
+    const summary = screen.queryByRole('region', { name: 'Deployment summary' });
+    if (!study.card.featured) {
+      expect(summary).toBeNull();
+      return;
+    }
+    expect(study.deploymentSummary).toBeDefined();
+    for (const key of ['problem', 'decision', 'result']) {
+      expect(within(summary).getByText(study.deploymentSummary[key])).toBeInTheDocument();
+    }
   });
 
   it('mails the contact band to personal.email', () => {

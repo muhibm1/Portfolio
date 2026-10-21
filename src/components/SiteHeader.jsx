@@ -3,10 +3,13 @@ import { portfolioData } from '../data/portfolioData';
 import { wrapClasses } from './lookClasses';
 import ThemeButton from './ThemeButton';
 
-// R133. On the home page the links jump to sections on the page; everywhere else they point back
+// R133. On the home page the links jump to sections on the page (six since 2026-10-21, so on a
+// phone the row scrolls sideways instead of wrapping a label onto two lines); everywhere else they point back
 // at home, the work index, and the current page's own contact anchor.
 const HOME_LINKS = [
   { label: 'Work', href: '#work' },
+  { label: 'About', href: '#about' },
+  { label: 'Build log', href: '#build-log' },
   { label: 'How I work', href: '#approach' },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
@@ -18,11 +21,12 @@ const OTHER_ROUTE_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
-const navLink = 'inline-flex min-h-11 items-center text-[13.5px] text-ink-2 no-underline transition-colors hover:text-ink tab:text-sm';
+const navLink = 'inline-flex min-h-11 shrink-0 items-center whitespace-nowrap text-[13.5px] text-ink-2 no-underline transition-colors hover:text-ink tab:text-sm';
 
 /**
- * The sticky header of the Look: name and role, the section links, the email address and the
- * light and dark switch. On a phone it is two rows (name and email, then links and switch).
+ * The sticky header of the Look: name and role, the section links, the GitHub profile link and the
+ * light and dark switch. On a phone it is two rows (name and GitHub, then links and switch). The
+ * owner moved GitHub here in place of the email on 2026-10-21, since Contact is already a nav link.
  */
 export default function SiteHeader() {
   const { personal } = portfolioData;
@@ -44,7 +48,7 @@ export default function SiteHeader() {
 
         <nav
           aria-label="Sections"
-          className="col-[1/3] row-start-2 mt-2 flex justify-between gap-2 border-t border-hairline py-0.5 tab:col-[2] tab:row-start-1 tab:mt-0 tab:justify-center tab:gap-7 tab:border-t-0 tab:py-0"
+          className="col-[1/3] row-start-2 mt-2 flex min-w-0 justify-between gap-4 overflow-x-auto border-t border-hairline py-0.5 tab:col-[2] tab:row-start-1 tab:mt-0 tab:justify-center tab:gap-7 tab:overflow-visible tab:border-t-0 tab:py-0"
         >
           {links.map((link) => (
             <HeaderLink key={link.label} link={link} />
@@ -52,10 +56,12 @@ export default function SiteHeader() {
         </nav>
 
         <a
-          href={`mailto:${personal.email}`}
+          href={personal.github}
+          target="_blank"
+          rel="noopener noreferrer"
           className="col-[2/4] row-start-1 justify-self-end font-mono text-[12.5px] text-ink no-underline hover:text-ink tab:col-[3] tab:text-sm"
         >
-          {personal.email}
+          {personal.github.replace('https://', '')}
         </a>
 
         <div className="col-[3] row-start-2 mt-2 justify-self-end tab:col-[4] tab:row-start-1 tab:mt-0">
