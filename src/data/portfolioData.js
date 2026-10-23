@@ -642,6 +642,12 @@ export const portfolioData = {
           ],
         },
         {
+          // The home page's replay, shown here too (owner, 2026-10-23). Its values are homeReplay.
+          id: "watch-a-run",
+          heading: "Watch a run",
+          blocks: [{ type: "replay", skipHref: "#rules" }],
+        },
+        {
           id: "rules",
           heading: "What the model decides, and what code decides",
           blocks: [
