@@ -21,6 +21,7 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // ADR 0006's fixed block-type set. A block outside this set is a data bug the template would
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
+  "replay",
   "paragraph",
   "bullets",
   "flow",
