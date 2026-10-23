@@ -1332,7 +1332,7 @@ describe("the Orion case study (TG-07)", () => {
   });
 
   it("holds a walkthrough block of thirteen uniquely named steps, each tagged built or designed (D6)", () => {
-    expect(walkthrough.figure).toBe("orion-bench");
+    expect(walkthrough.figure).toBe("orion-chip"); // the chip replaced the bench (owner, 2026-10-23)
     expect(walkthrough.steps).toHaveLength(13);
     const ids = walkthrough.steps.map((step) => step.id);
     expect(new Set(ids).size).toBe(13);
