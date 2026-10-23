@@ -8,7 +8,12 @@ import { portfolioData } from '../data/portfolioData';
 import WalkthroughBlock from './WalkthroughBlock';
 
 const orion = portfolioData.caseStudies.find((study) => study.id === 'orion');
-const block = orion.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
+// The Orion page now draws its walkthrough as a chip (owner, 2026-10-23). The console these tests
+// cover still serves the other walkthroughs, so they keep running it on the Orion words, with the
+// bench figure it was written against.
+const block = { ...orion.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough'), figure: 'orion-bench' };
+// The bench wording these tests were written against.
+block.labels = { ...block.labels, showAria: 'Show step {n}, {label}, on the bench' };
 const steps = block.steps;
 const indexOf = (id) => steps.findIndex((step) => step.id === id);
 

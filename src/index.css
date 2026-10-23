@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./look.css";
+@import "./chip.css";
 
 /* Bundled families (loaded in src/main.jsx), each with a system fallback. */
 @theme {
