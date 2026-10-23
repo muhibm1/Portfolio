@@ -1934,15 +1934,15 @@ export const portfolioData = {
           blocks: [
             {
               type: "walkthrough",
-              figure: "orion-bench",
+              figure: "orion-chip",
               name: "Orion",
               pace: 0.85,
               regionLabel: "Orion walkthrough",
-              note: "The whole design on one bench. Each step says built or designed.",
+              note: "The whole design on one chip. Each part says built or designed.",
               stepsLabel: "Steps of the walkthrough",
-              stageLabel: "The bench",
-              caption: { number: "Fig 1", title: "The pre-flight bench, where a change is checked before it ships" },
-              hint: "Record a decision (approve, waive or reject) to continue, or press Next step to skip it.",
+              caption: { number: "Fig 1", title: "Orion as one chip, every part of the design" },
+              hint: "Point at a part of the chip to open it. Move away and it runs on its own.",
+              hintTouch: "Tap a part of the chip to open it.",
               listHeading: "The thirteen steps",
               legend: [
                 { term: "built", meaning: "means it exists and works today." },
@@ -1951,10 +1951,11 @@ export const portfolioData = {
               controls: {
                 play: "Play",
                 pause: "Pause",
+                prev: "Previous step",
                 next: "Next step",
                 replay: "Replay",
                 skip: "Skip to the list",
-                show: "Show on the bench",
+                show: "Show on the chip",
                 approve: "Approve",
                 waive: "Waive",
                 reject: "Reject",
@@ -1969,7 +1970,7 @@ export const portfolioData = {
               },
               announce: {
                 step: "Step {n}, {label}, {tag}.",
-                waiting: "The bench stopped. It is waiting for your decision.",
+                waiting: "The chip stopped. It is waiting for your decision.",
                 decision: "Decision {kind} recorded to the ledger.",
               },
               labels: {
@@ -1977,11 +1978,11 @@ export const portfolioData = {
                 person: "A person decides.",
                 personInList: "A person decides:",
                 evidence: "Evidence",
-                waiting: "The bench stopped. It is waiting for you.",
-                recorded: "You recorded {kind}. The bench carries on.",
+                waiting: "The chip stopped. It is waiting for you.",
+                recorded: "You recorded {kind}. The chip carries on.",
                 decisionReadout: "Decision recorded: {kind}",
                 designedSuffix: "· designed",
-                showAria: "Show step {n}, {label}, on the bench",
+                showAria: "Show step {n}, {label}, on the chip",
               },
               steps: [
                 {

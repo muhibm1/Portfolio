@@ -8,7 +8,6 @@ import { fileURLToPath } from 'node:url';
 import { render } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it } from 'vitest';
-import { render as renderPage } from '../../entry-server.jsx';
 import OrionBench from './OrionBench';
 import { STEP_PARTS } from './orion-bench.rig.js';
 
@@ -135,21 +134,8 @@ describe('OrionBench', () => {
   });
 });
 
-describe('the Orion page as served (D4, D8)', () => {
-  it('carries the bench in the prerendered markup of /work/orion', () => {
-    const html = renderPage('/Portfolio/work/orion');
-
-    expect(html).toContain('data-part="sync"');
-    expect(html).toContain('viewBox="0 0 6400 4000"');
-    expect(html).not.toContain('data-on');
-  });
-
-  it('keeps the bench out of every other page, so the cost lands on one page only', () => {
-    for (const route of ['/Portfolio', '/Portfolio/work', '/Portfolio/work/flywheel', '/Portfolio/work/workhorse']) {
-      expect(renderPage(route), route).not.toContain('data-part=');
-    }
-  });
-});
+// The page-level checks moved to ChipWalkthrough.test.jsx when the chip replaced the bench on the
+// Orion page (owner, 2026-10-23); the bench stays a working figure the console can draw.
 
 describe('the figure tones in look.css (D7)', () => {
   const blockAfter = (pattern) => {
