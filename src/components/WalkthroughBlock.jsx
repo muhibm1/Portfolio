@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import AtelierFloor from './walkthroughs/AtelierFloor';
+import ChipWalkthrough from './walkthroughs/ChipWalkthrough';
 import OrionBench from './walkthroughs/OrionBench';
 import useWalkthrough from './walkthroughs/useWalkthrough';
 
@@ -22,6 +23,14 @@ const DECISION_KINDS = ['approve', 'waive', 'reject'];
  * step where a person decides.
  */
 export default function WalkthroughBlock({ block }) {
+  // The Orion walkthrough is drawn as a chip with its own layout (owner, 2026-10-23); every other
+  // walkthrough is the console below.
+  if (block.figure === 'orion-chip') return <ChipWalkthrough block={block} />;
+  return <ConsoleWalkthrough block={block} />;
+}
+
+// The console layout, as described above.
+function ConsoleWalkthrough({ block }) {
   const Figure = FIGURES[block.figure];
   if (!Figure) throw new Error(`Unknown walkthrough figure "${block.figure}".`);
 
