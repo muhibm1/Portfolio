@@ -250,7 +250,7 @@ export default function ChipWalkthrough({ block }) {
     setLive(fill(block.announce.step, { n: 1, label: steps[0].label, tag: steps[0].tag }));
   }
 
-  // The mouse: over the chip, it turns face up and keeps playing. Pointing at a part opens that
+  // The mouse: anywhere over the framed plate, the chip turns face up and keeps playing. Pointing at a part opens that
   // part and holds the run there; moving off the part (still over the chip, or away from it)
   // lets the run carry on from that step (owner, 2026-10-23).
   const onEnter = (event) => {
@@ -266,19 +266,24 @@ export default function ChipWalkthrough({ block }) {
       setHovering(false);
     }
   };
+  // A part opens once the cursor has settled on it, and the run carries on only once the cursor
+  // has stayed off every part a moment, so crossing a gap between two parts never flickers.
   const onOver = (event) => {
     if (!fine || isTouch(event)) return;
     const part = event.target.closest('[data-go]');
     clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => {
-      if (part) {
-        setHovering(true);
-        go(steps.findIndex((item) => item.id === part.dataset.go), false);
-      } else if (hovering) {
-        nextWait.current = 1200;
-        setHovering(false);
-      }
-    }, 90);
+    hoverTimer.current = setTimeout(
+      () => {
+        if (part) {
+          setHovering(true);
+          go(steps.findIndex((item) => item.id === part.dataset.go), false);
+        } else if (hovering) {
+          nextWait.current = 1200;
+          setHovering(false);
+        }
+      },
+      part ? 120 : 350,
+    );
   };
   useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
@@ -311,7 +316,7 @@ export default function ChipWalkthrough({ block }) {
   return (
     <div className="wt cw">
       <div className="cw-card" role="region" aria-label={block.regionLabel}>
-        <div className="cw-plate">
+        <div className="cw-plate" onPointerEnter={onEnter} onPointerLeave={onLeave} onPointerOver={onOver}>
           <div className="cw-frame" aria-hidden="true" />
           <p className="cw-corner cw-c-tl" aria-hidden="true">
             <b>{block.caption.number}</b>
@@ -329,9 +334,6 @@ export default function ChipWalkthrough({ block }) {
           <div
             ref={stageRef}
             className={`cw-stage${open ? ' cw-open' : ''}`}
-            onPointerEnter={onEnter}
-            onPointerLeave={onLeave}
-            onPointerOver={onOver}
           >
             <div className="cw-tilt">
               <div className="cw-shadow" aria-hidden="true" />
