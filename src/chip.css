@@ -16,7 +16,7 @@
 /* The framed plate and the readout beside it. */
 .cw { container: cw / inline-size; }
 .cw-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-window); display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); overflow: hidden; }
-.cw-plate { position: relative; padding: 44px 28px; background: radial-gradient(120% 90% at 50% 40%, var(--glow-base), var(--surface) 70%); border-right: 1px solid var(--line); min-height: 560px; display: grid; place-items: center; }
+.cw-plate { position: relative; padding: 44px 28px; background: radial-gradient(120% 90% at 50% 40%, var(--glow-base), var(--surface) 70%); border-right: 1px solid var(--line); min-height: 620px; display: grid; place-items: center; }
 .cw-frame { position: absolute; inset: 14px; border: 1px solid var(--line-mid); border-radius: 4px; pointer-events: none; }
 .cw-corner { position: absolute; margin: 0; font: 500 10.5px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); max-width: 46%; z-index: 1; pointer-events: none; }
 .cw-corner b { font-weight: 500; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); padding: 2px 6px; border-radius: 3px; }
@@ -48,9 +48,11 @@
 @keyframes cw-flow { to { stroke-dashoffset: -28; } }
 
 /* One part of the die per step. */
-.cw-blk { position: absolute; left: calc(var(--x) / 480 * 100%); top: calc(var(--y) / 480 * 100%); width: calc(var(--w) / 480 * 100%); height: calc(var(--h) / 480 * 100%); padding: 0; margin: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; transform-style: preserve-3d; transform: translateZ(2px); -webkit-tap-highlight-color: transparent; }
+/* Each part's hit area stops short of its neighbours, so the gaps between parts trigger nothing.
+   The face inside never takes the pointer: lifted, it would slide under the next part's cursor. */
+.cw-blk { position: absolute; left: calc((var(--x) + 4) / 480 * 100%); top: calc((var(--y) + 4) / 480 * 100%); width: calc((var(--w) - 8) / 480 * 100%); height: calc((var(--h) - 8) / 480 * 100%); padding: 0; margin: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; transform-style: preserve-3d; transform: translateZ(2px); -webkit-tap-highlight-color: transparent; }
 .cw-blk:focus { outline: none; }
-.cw-face { position: absolute; inset: 3px; border-radius: 3px; background-color: var(--cw-blk); background-image: radial-gradient(var(--cw-cell) 1px, transparent 1.4px); background-size: 7px 7px; box-shadow: inset 0 0 0 1px var(--cw-blk-edge); transition: transform .6s var(--glide), background-color .4s, box-shadow .4s, opacity .4s; overflow: hidden; }
+.cw-face { position: absolute; inset: 0; pointer-events: none; border-radius: 3px; background-color: var(--cw-blk); background-image: radial-gradient(var(--cw-cell) 1px, transparent 1.4px); background-size: 7px 7px; box-shadow: inset 0 0 0 1px var(--cw-blk-edge); transition: transform .6s var(--glide), background-color .4s, box-shadow .4s, opacity .4s; overflow: hidden; }
 .cw-face::after { content: ""; position: absolute; inset: 0; opacity: 0; background: linear-gradient(115deg, transparent 20%, rgba(247,190,169,.55) 45%, rgba(216,195,243,.55) 55%, transparent 80%); background-size: 260% 100%; mix-blend-mode: screen; transition: opacity .4s; }
 .cw-lbl { position: absolute; left: 7px; top: 6px; font: 500 9.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--cw-blk-ink); white-space: nowrap; transition: color .4s; }
 .cw-lbl::before { content: attr(data-n); opacity: .6; margin-right: 5px; }

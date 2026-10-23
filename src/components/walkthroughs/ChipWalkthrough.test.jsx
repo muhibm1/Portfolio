@@ -110,7 +110,8 @@ describe('ChipWalkthrough', () => {
     setup({ mouse: true });
     const stage = document.querySelector('.cw-stage');
     expect(screen.getByText(block.hint)).toBeInTheDocument();
-    fireEvent.pointerEnter(stage, { pointerType: 'mouse' });
+    // The whole framed plate keeps it face up, not just the chip (owner, 2026-10-23).
+    fireEvent.pointerEnter(document.querySelector('.cw-plate'), { pointerType: 'mouse' });
     expect(stage).toHaveClass('cw-open');
     act(() => vi.advanceTimersByTime(5000));
     expect(open()).toBe('store');
@@ -119,22 +120,38 @@ describe('ChipWalkthrough', () => {
   it('holds on a part the cursor points at, and plays on from it once the cursor moves off', () => {
     setup({ mouse: true });
     const stage = document.querySelector('.cw-stage');
-    fireEvent.pointerEnter(stage, { pointerType: 'mouse' });
-    fireEvent.pointerOver(part('bench').querySelector('.cw-face'), { pointerType: 'mouse' });
-    act(() => vi.advanceTimersByTime(100));
+    const plate = document.querySelector('.cw-plate');
+    fireEvent.pointerEnter(plate, { pointerType: 'mouse' });
+    fireEvent.pointerOver(part('bench'), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(150));
     expect(open()).toBe('bench');
     act(() => vi.advanceTimersByTime(20000));
     expect(open()).toBe('bench');
 
     // Off the part but still over the chip: it stays face up and carries on.
     fireEvent.pointerOver(document.querySelector('.cw-l0'), { pointerType: 'mouse' });
-    act(() => vi.advanceTimersByTime(100));
+    act(() => vi.advanceTimersByTime(400));
     act(() => vi.advanceTimersByTime(1300));
     expect(stage).toHaveClass('cw-open');
     expect(open()).toBe(steps[indexOf('bench') + 1].id);
 
-    fireEvent.pointerLeave(stage, { pointerType: 'mouse' });
+    fireEvent.pointerLeave(plate, { pointerType: 'mouse' });
     expect(stage).not.toHaveClass('cw-open');
+  });
+
+  it('stays on a part while the cursor crosses a gap into the next one', () => {
+    setup({ mouse: true });
+    fireEvent.pointerEnter(document.querySelector('.cw-plate'), { pointerType: 'mouse' });
+    fireEvent.pointerOver(part('review'), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(150));
+    expect(open()).toBe('review');
+    // Over the gap for a moment: nothing changes and the run does not restart.
+    fireEvent.pointerOver(document.querySelector('.cw-die'), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(200));
+    fireEvent.pointerOver(part('gate'), { pointerType: 'mouse' });
+    act(() => vi.advanceTimersByTime(150));
+    expect(open()).toBe('gate');
+    expect(screen.getByText(block.states.reading)).toBeInTheDocument();
   });
 });
 
