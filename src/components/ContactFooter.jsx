@@ -1,5 +1,6 @@
 import { portfolioData } from '../data/portfolioData';
 import { onDarkButtonClasses, onDarkSolidButtonClasses } from './buttonClasses';
+import FooterField from './FooterField';
 import { h2Classes, wrapClasses } from './lookClasses';
 
 /**
@@ -14,8 +15,9 @@ export default function ContactFooter() {
   const emailHref = `mailto:${personal.email}`;
 
   return (
-    <footer id="contact" className="on-dark-band bg-dark py-[72px] text-dark-ink tab:py-[120px]">
-      <div className={wrapClasses}>
+    <footer id="contact" className="on-dark-band relative isolate overflow-hidden bg-dark py-[72px] text-dark-ink tab:py-[120px]">
+      <FooterField />
+      <div className={`${wrapClasses} relative`}>
         <p className="font-mono text-xs tracking-widest text-dark-muted">{contact.eyebrow}</p>
         <h2 className={`${h2Classes} mt-4 max-w-3xl !text-dark-ink`}>{contact.heading}</h2>
 
