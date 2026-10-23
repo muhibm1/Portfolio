@@ -5,6 +5,7 @@ import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagra
 import CaseStudyBarChart from './CaseStudyBarChart';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
+import AgentOpsReplay from './AgentOpsReplay';
 import ContactBand from './ContactBand';
 import DeploymentSummary from './DeploymentSummary';
 
@@ -169,7 +170,7 @@ function OnThisPageNav({ sections }) {
 // sits between the heading and the first block. A section that holds a walkthrough runs the full
 // width of the column, because its console needs the room the prose measure does not.
 function CaseStudySection({ section }) {
-  const hasWalkthrough = section.blocks.some((block) => block.type === 'walkthrough');
+  const hasWalkthrough = section.blocks.some((block) => block.type === 'walkthrough' || block.type === 'replay');
   return (
     <div id={section.id} className={`flex flex-col gap-5 ${hasWalkthrough ? 'min-w-0' : 'max-w-3xl'}`}>
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
@@ -208,6 +209,9 @@ function Block({ block }) {
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     case 'walkthrough':
       return <WalkthroughBlock block={block} />;
+    case 'replay':
+      // The home page's AgentOps replay, with its skip link pointed at the next section here.
+      return <AgentOpsReplay replay={{ ...portfolioData.homeReplay, skip: { text: 'Skip to the next section', href: block.skipHref } }} />;
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }
