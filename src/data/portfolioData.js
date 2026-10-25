@@ -2148,59 +2148,16 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Three kinds of source feed three stores. Search, pre-flight and review work on those stores, and agents reach all of it through one MCP server and two hooks. Everything an agent is told carries an id that reads back to its source.",
+                "Orion is a local process with local files. A one-time ingest reads my checkouts, GitHub history and agent sessions into one record, and an always-on daemon keeps it current. Agents reach everything through one MCP server and two hooks, and every passage they get carries an id that reads back to its source. Only review calls a model.",
             },
             {
-              type: "architecture",
-              columns: ["Sources", "Stores", "Engines", "How agents reach it"],
-              engine: 2,
-              lanes: [
-                {
-                  label: "The engineering record",
-                  cells: [
-                    [
-                      { title: "Code", note: "every checkout on my machines" },
-                      { title: "Pull requests, reviews, issues" },
-                      { title: "Past agent sessions" },
-                      { title: "Notes and design documents" },
-                    ],
-                    [
-                      { title: "Document store", note: "SQLite, stable ids, credentials scrubbed before anything is kept" },
-                      { title: "Code graph", note: "functions, calls, routes and settings across repositories" },
-                    ],
-                    [
-                      { title: "Search index", note: "matching words, matching meaning and the dependency graph, fused into one ranking" },
-                    ],
-                    [
-                      { title: "MCP server", note: "context, impact, search, read, file history" },
-                      { title: "Session and prompt hooks", note: "the right passages arrive before the agent asks" },
-                    ],
-                  ],
-                },
-                {
-                  label: "The data platform",
-                  cells: [
-                    [
-                      { title: "dbt models and catalog" },
-                      { title: "Airflow pipelines and runs" },
-                      { title: "Postmortems and rules" },
-                    ],
-                    [{ title: "Asset graph and ledger", note: "DuckDB, column-level lineage, every fact with its source" }],
-                    [{ title: "Pre-flight and gate", note: "fixed rules and a transparent risk score, one cited verdict" }],
-                    [{ title: "CI gate", note: "and a comment on the pull request" }],
-                  ],
-                },
-                {
-                  label: "Review",
-                  cells: [
-                    [{ title: "The change", note: "any diff" }],
-                    [{ title: "Both graphs", note: "what the change touches and what it reaches", dashed: true }],
-                    [{ title: "Review", note: "code checks first, then four focused model passes, a second reading, and severity tied to evidence" }],
-                    [{ title: "Command line and pull request review" }],
-                  ],
-                },
-              ],
-              note: "Only review calls a model, through a provider interface that any model can sit behind. Ingest, search, the graphs and pre-flight are plain code, and every call lands in a usage log.",
+              type: "image",
+              src: "orion-architecture.png",
+              width: 1924,
+              height: 1344,
+              alt: "Orion's architecture. Sources (sixteen git checkouts, GitHub, Claude Code session transcripts) feed ingesters that redact secrets first. Ingest writes three stores: the DocStore, the retrieval index and the code graph with its ledger. A retrieval core fuses lexical, dense and graph rankings. The MCP server orion serve exposes agent, record, review and data-platform tools to Claude Code, whose session and prompt hooks call it. An always-on daemon keeps the stores current and answers the prompt hook; only review and ask call a model.",
+              caption: "Fig 2 · How Orion runs on my Mac, and how agents use it",
+              openText: "Open the diagram full size",
             },
           ],
         },

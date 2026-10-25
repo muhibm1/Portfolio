@@ -22,8 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
-  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (CaseStudyArchitecture).
-  "architecture",
+  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (his own sheet, updated).
+  "image",
   "paragraph",
   "bullets",
   "flow",
@@ -1056,7 +1056,7 @@ describe("the Orion case study (TG-07)", () => {
     /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
     /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
     /Step [1-7]\./g, // the plan's own numbering
-    /Fig 1/g, // the figure caption
+    /Fig [12]/g, // the figure captions (Fig 2, the architecture diagram, added 2026-10-25)
     /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
   ];
 

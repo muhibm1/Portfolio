@@ -3,7 +3,6 @@ import { portfolioData } from '../data/portfolioData';
 import NotFoundPage from '../pages/NotFoundPage';
 import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagram';
 import CaseStudyBarChart from './CaseStudyBarChart';
-import CaseStudyArchitecture from './CaseStudyArchitecture';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
 import AgentOpsReplay from './AgentOpsReplay';
@@ -206,8 +205,8 @@ function Block({ block }) {
       return <CaseStudyHubDiagram left={block.left} edge={block.edge} hub={block.hub} right={block.right} />;
     case 'split':
       return <SplitBlock table={block.table} stats={block.stats} />;
-    case 'architecture':
-      return <CaseStudyArchitecture columns={block.columns} lanes={block.lanes} engine={block.engine} note={block.note} caption={block.caption} />;
+    case 'image':
+      return <ImageBlock block={block} />;
     case 'bars':
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     case 'walkthrough':
@@ -277,6 +276,25 @@ function CardsBlock({ items }) {
         );
       })}
     </div>
+  );
+}
+
+// A diagram or picture served from public/, shown on a light card so it reads in either theme, with
+// a link to the full-size file for a phone screen.
+function ImageBlock({ block }) {
+  const src = `${import.meta.env.BASE_URL}${block.src}`;
+  return (
+    <figure className="flex flex-col gap-2">
+      <a href={src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[10px] border border-line bg-white">
+        <img src={src} alt={block.alt} width={block.width} height={block.height} loading="lazy" className="block h-auto w-full" />
+      </a>
+      <figcaption className="flex flex-wrap justify-between gap-2 font-mono text-xs text-muted">
+        <span>{block.caption}</span>
+        <a href={src} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-ink">
+          {block.openText}
+        </a>
+      </figcaption>
+    </figure>
   );
 }
 
