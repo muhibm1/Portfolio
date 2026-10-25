@@ -22,6 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
+  // Added 2026-10-25 for the Fathom replay, which took the place of its chip walkthrough (owner).
+  "fathom-replay",
   // Added 2026-10-25 for the Orion architecture diagram, drawn in the site's own boxes (owner).
   "architecture",
   "paragraph",
@@ -1058,7 +1060,6 @@ describe("homeReplay (TG-06)", () => {
 describe("the Orion and Fathom case studies (TG-07)", () => {
   const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
   const fathom = portfolioData.caseStudies.find((study) => study.id === "fathom");
-  const walkthrough = collectBlocks(fathom).find((block) => block.type === "walkthrough");
 
   // Every figure the owner's document states, as the exact phrase it appears in, so a number cannot
   // be swapped for another one that happens to appear somewhere else (27 of 45 cannot become
@@ -1137,21 +1138,6 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return numbersIn(rest);
   }
 
-  // All the words a visitor reads or hears from the walkthrough once rendered: text, labels and titles.
-  function renderedWords() {
-    const { container, unmount } = render(createElement(WalkthroughBlock, { block: walkthrough }));
-    const numbering = [...container.querySelectorAll(".wt-n")].map((node) => node.textContent);
-    container.querySelectorAll(".wt-n").forEach((node) => node.remove());
-    const attributes = [...container.querySelectorAll("[aria-label], [title], [alt]")].flatMap((node) => [
-      node.getAttribute("aria-label"),
-      node.getAttribute("title"),
-      node.getAttribute("alt"),
-    ]);
-    const words = [container.textContent, ...attributes.filter(Boolean)].join("\n");
-    unmount();
-    return { words, numbering };
-  }
-
   it("puts Fathom fourth, the last featured study, then Esper, then Orion, each with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
     const ids = portfolioData.caseStudies.map((study) => study.id);
     expect(ids.indexOf("fathom")).toBe(3);
@@ -1176,13 +1162,6 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(text).not.toMatch(/preflight|orion gate|orion review|PipelineBench|dbt/i);
   });
 
-  it("states only those figures in what the walkthrough renders, including its step counts and the drawing's description (D3)", () => {
-    const { words, numbering } = renderedWords();
-    expect(words).toContain("Step 1 of 13");
-    expect(unknownNumbersIn(words)).toEqual([]);
-    expect(numbering).toEqual(Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, "0")));
-  });
-
   it("notices a figure that was changed to another one the document also states (D3)", () => {
     expect(unknownNumbersIn("It caught 27 of 45 real historical bugs.")).toEqual([]);
     expect(unknownNumbersIn("It caught 21 of 45 real historical bugs.")).toEqual(["21"]);
@@ -1197,38 +1176,10 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(text).not.toMatch(/Today's misses need facts|byteLength|Unwrap/);
   });
 
-  it("holds a walkthrough block of thirteen uniquely named steps, each tagged built or designed (D6)", () => {
-    expect(walkthrough.figure).toBe("orion-chip"); // the chip replaced the bench (owner, 2026-10-23)
-    expect(walkthrough.steps).toHaveLength(13);
-    const ids = walkthrough.steps.map((step) => step.id);
-    expect(new Set(ids).size).toBe(13);
-    for (const step of walkthrough.steps) {
-      expect(["built", "designed"]).toContain(step.tag);
-      expect(step.label.length).toBeGreaterThan(0);
-      expect(step.does.length).toBeGreaterThan(0);
-      expect(step.readout.length).toBeGreaterThan(0);
-    }
-  });
-
-  it("tags exactly one step designed, the last, and names where a person decides on five steps (D6)", () => {
-    const designed = walkthrough.steps.filter((step) => step.tag === "designed");
-    expect(designed.map((step) => step.id)).toEqual(["next"]);
-    expect(walkthrough.steps.at(-1).id).toBe("next");
-    const withPerson = walkthrough.steps.filter((step) => step.person).map((step) => step.id);
-    expect(withPerson).toEqual(["preflight", "gate", "mcp", "decision", "propose"]);
-  });
-
-  it("carries every control, chrome and announcement string in the block, so no component holds words", () => {
-    for (const key of ["play", "pause", "next", "replay", "skip", "show", "approve", "waive", "reject"]) {
-      expect(walkthrough.controls[key]).toBeTruthy();
-    }
-    for (const key of ["paused", "playing", "offscreen", "reading", "waiting", "done"]) {
-      expect(walkthrough.states[key]).toBeTruthy();
-    }
-    for (const key of ["step", "waiting", "decision"]) {
-      expect(walkthrough.announce[key]).toBeTruthy();
-    }
-    expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed"]);
+  it("shows the replay of one recorded check in place of the chip walkthrough (owner, 2026-10-25)", () => {
+    expect(collectBlocks(fathom).some((block) => block.type === "walkthrough")).toBe(false);
+    expect(collectBlocks(fathom).filter((block) => block.type === "fathom-replay")).toEqual([{ type: "fathom-replay", skipHref: "#verdict" }]);
+    expect(fathom.sections.map((section) => section.id)).toContain("verdict");
   });
 
   it("holds no repository address or link in the Orion or Fathom text", () => {
@@ -1389,9 +1340,7 @@ describe("Fathom and Orion page order and pace", () => {
     expect(orion.sections.map((section) => section.id)).toEqual(["loop", "record", "tools", "retrieval", "always-on", "architecture", "auspex", "lessons", "weight", "plan"]);
   });
 
-  it("plays the Fathom walkthrough at 0.85 pace and leaves Atelier's at the default", () => {
-    const paceOf = (study) => collectBlocks(study).find((block) => block.type === "walkthrough").pace;
-    expect(paceOf(fathom)).toBe(0.85);
-    expect(paceOf(findCaseStudy("atelier"))).toBeUndefined();
+  it("leaves Atelier's walkthrough at the default pace", () => {
+    expect(collectBlocks(findCaseStudy("atelier")).find((block) => block.type === "walkthrough").pace).toBeUndefined();
   });
 });
