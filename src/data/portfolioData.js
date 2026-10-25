@@ -1935,28 +1935,7 @@ export const portfolioData = {
               text:
                 "Fathom reads a data platform into one graph, then answers one question for any change: what does this reach, and is it safe to ship? It gives an agent that answer before it writes code, checks the change again before it merges, and records what happened after.",
             },
-            { type: "fathom-replay", skipHref: "#verdict" },
-          ],
-        },
-        {
-          id: "verdict",
-          heading: "A verdict, in plain words",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Here is one verdict from the sample platform Fathom ships with, the kind of answer an agent gets before it writes a line.",
-            },
-            {
-              type: "flow",
-              columns: 4,
-              steps: [
-                { title: "The change", note: "Drop the discount column from the orders table" },
-                { title: "What it reaches", note: "Through column lineage, the weekly revenue dashboard the finance team reads, and the job that tests the table" },
-                { title: "What applies", note: "A rule locks those columns, because the same kind of change broke that dashboard in August" },
-                { title: "The verdict", note: "Block. Before merging: run the table's tests, get sign-off from the finance data team, and tell them" },
-              ],
-            },
+            { type: "fathom-replay", skipHref: "#trust" },
             {
               type: "paragraph",
               text:

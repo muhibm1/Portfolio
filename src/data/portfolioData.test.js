@@ -1178,8 +1178,8 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
 
   it("shows the replay of one recorded check in place of the chip walkthrough (owner, 2026-10-25)", () => {
     expect(collectBlocks(fathom).some((block) => block.type === "walkthrough")).toBe(false);
-    expect(collectBlocks(fathom).filter((block) => block.type === "fathom-replay")).toEqual([{ type: "fathom-replay", skipHref: "#verdict" }]);
-    expect(fathom.sections.map((section) => section.id)).toContain("verdict");
+    expect(collectBlocks(fathom).filter((block) => block.type === "fathom-replay")).toEqual([{ type: "fathom-replay", skipHref: "#trust" }]);
+    expect(fathom.sections.map((section) => section.id)).toContain("trust");
   });
 
   it("holds no repository address or link in the Orion or Fathom text", () => {
@@ -1336,7 +1336,7 @@ describe("Fathom and Orion page order and pace", () => {
   const orion = findCaseStudy("orion");
 
   it("follows the brief's order on both pages", () => {
-    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "verdict", "trust", "review", "loop", "architecture", "evidence", "weight", "plan"]);
+    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "trust", "review", "loop", "architecture", "evidence", "weight", "plan"]);
     expect(orion.sections.map((section) => section.id)).toEqual(["loop", "record", "tools", "retrieval", "always-on", "architecture", "auspex", "lessons", "weight", "plan"]);
   });
 
