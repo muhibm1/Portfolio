@@ -27,13 +27,15 @@
 // The three public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
 // desktop app was removed from the site on 2026-10-19 at his word.
-// Flywheel and the Studbook agent (added 2026-10-13) are public repositories, not snapshots.
+// Flywheel and the Studbook agent (added 2026-10-13) and Fathom (public 2026-10-25) are public
+// repositories, not snapshots.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
+  fathom: "https://github.com/muhibm1/fathom",
 };
 
 // The Flywheel study of two LangChain open-source agents, in the public flywheel repository.
@@ -1854,7 +1856,7 @@ export const portfolioData = {
     // partner-httpx and partner-hono-cobra, calitp-history-deterministic and -model-consumers,
     // heldout-sonnet-5-5-baseline-x3) and its README at main d993d56 (about 14,100 lines of
     // Python, 264 tests). The owner's follow-up the same day: position Fathom as open source now,
-    // and he makes the repository public himself, so `status` stands where a code link will go.
+    // and he made the repository public himself after a history scrub, so the card and page link to it.
     {
       id: "fathom",
       deploymentSummary: {
@@ -1874,7 +1876,7 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
       },
-      status: "Open source · in development",
+      codeLink: { label: "Code: fathom", href: REPOSITORIES.fathom },
       eyebrow: "Case study · Open source · Data platforms",
       title: "Fathom: what a data change reaches, before it ships",
       intro:
@@ -1885,7 +1887,7 @@ export const portfolioData = {
           label: "What it is",
           value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
         },
-        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, working toward its first public release" },
+        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, with its code on GitHub" },
         {
           label: "Tested on",
           value:

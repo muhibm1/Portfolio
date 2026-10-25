@@ -134,11 +134,10 @@ describe('CaseStudyPage', () => {
     });
   });
 
-  // Both repositories are private, so each page names its status where a code link would sit
-  // (owner's split brief, 2026-10-25).
+  // Orion's repository is private, so its page names its status where a code link would sit
+  // (owner's split brief, 2026-10-25). Fathom went public the same day and links its repository.
   describe.each([
     ['orion', 'Private · in daily use'],
-    ['fathom', 'Open source · in development'],
   ])('the %s case study (TG-07, D2)', (slug, status) => {
     const study = caseStudies.find((candidate) => candidate.id === slug);
 
@@ -154,6 +153,18 @@ describe('CaseStudyPage', () => {
   });
 
   describe('the fathom case study only (owner, 2026-10-25)', () => {
+    // The owner made the repository public after its history scrub and asked for the link.
+    it('links its public repository from the header and shows no in-development status', () => {
+      const { container } = renderCaseStudyAt('/work/fathom');
+
+      expect(screen.queryByText('Open source · in development')).toBeNull();
+      const repoLinks = [...container.querySelectorAll('a[href="https://github.com/muhibm1/fathom"]')];
+      expect(repoLinks.length).toBeGreaterThanOrEqual(1);
+      expect(repoLinks[0].closest('header')).not.toBeNull();
+      expect(repoLinks[0]).toHaveAttribute('target', '_blank');
+      expect(repoLinks[0]).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
     // The chip walkthrough gave way to a replay of one recorded check (owner, 2026-10-25).
     it('shows the replay of one recorded check, at rest on the decision, with its seven steps', () => {
       renderCaseStudyAt('/work/fathom');
