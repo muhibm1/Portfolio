@@ -78,7 +78,6 @@ const pinnedCaseStudyStats = {
   // Added 2026-10-21 from the owner's redesign brief.
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
-  "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
   // Added 2026-10-19 (TG-07); since the split on 2026-10-25 the agent stack's four figures, and
   // Fathom's four headline results (owner's split brief).
   orion: ["16", "4,599", "0.889", "158"],
@@ -373,32 +372,6 @@ const pinnedCaseStudyNarratives = {
     calloutText: "Everything runs on the AI subscription I already pay for, on a cloud computer. No pay-per-use key is used anywhere.",
     contactHeading: "Have a system that needs deploying? Let's talk."
   },
-  "neural-newsletters-llm": {
-    eyebrow: "Case study · Neural Newsletters · Software Engineer · May 2024 to Feb 2025",
-    title: "Rebuilding an LLM content pipeline that shipped broken output",
-    lead: "Neural Newsletters used an LLM (large language model, the kind of AI behind chatbots) to write a personalized version of each article for each reader. The pipeline behind that feature, the chain of steps from incoming article to finished page, was producing broken output that couldn't ship. The prompt, the written instructions given to the model, looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Owned the LLM integration end to end"
-      },
-      {
-        label: "Worked with",
-        value: "The CTO (chief technology officer), on turning business goals into requirements"
-      },
-      {
-        label: "Stack",
-        value: "Elixir and Phoenix (the server code), Postgres (the database), TypeScript and React (the reader's web page), WebSockets (a live connection to the page)"
-      },
-      {
-        label: "Scale",
-        value: "Thousands of articles across recurring runs"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "When an LLM feature misbehaves, the fix is often underneath it: the data going in and the schema holding it. I look there before blaming the prompt, and I own the path all the way to the user's screen.",
-    contactHeading: "An LLM feature that won't behave? Let's talk."
-  }
 };
 
 const pinnedRepositories = {
@@ -457,7 +430,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the ten case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25)", () => {
+  it("names / then /work then /work/<id> for the nine case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -470,7 +443,6 @@ describe("portfolioData", () => {
       "/work/apple-integration",
       "/work/apple-data-health",
       "/work/atelier",
-      "/work/neural-newsletters-llm",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.card.featured).map((study) => study.id)).toEqual([
       "apple-decision-support-agent",
@@ -480,7 +452,6 @@ describe("portfolioData", () => {
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.listed === false).map((study) => study.id)).toEqual([
       "atelier",
-      "neural-newsletters-llm",
     ]);
   });
 
@@ -710,12 +681,12 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added 2026-10-25)", () => {
+  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
   it("names personal.repositories with the three snapshot URLs and the three public repositories, held once (R153)", () => {
@@ -992,19 +963,6 @@ describe("portfolioData", () => {
     expect(svg).not.toMatch(/Tickets decided|decided a day/);
   });
 
-  it("words the Neural step 5 note as Live status over WebSockets (R11)", () => {
-    const neural = findCaseStudy("neural-newsletters-llm");
-    const neuralFlows = collectBlocks(neural).filter((block) => block.type === "flow");
-    const allNotes = portfolioData.caseStudies
-      .flatMap(collectBlocks)
-      .filter((block) => block.type === "flow")
-      .flatMap((block) => block.steps.map((step) => step.note ?? ""));
-
-    expect(neuralFlows.some((flow) => flow.steps[4]?.note === "Live status over WebSockets")).toBe(true);
-    for (const note of allNotes) {
-      expect(note).not.toMatch(/\bvia\b/i);
-    }
-  });
 });
 
 // TG-06: the home page's AgentOps replay reads every word from the homeReplay record.
