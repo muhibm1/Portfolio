@@ -1531,7 +1531,7 @@ export const portfolioData = {
         { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
         { value: "2 weeks", label: "to clear two months of accumulated tickets" },
         { value: "Zero", label: "backlog since launch" },
-        { value: "~98%", label: "of recommendations match the reviewer's decision" },
+        { value: "~94%", label: "of recommendations match the reviewer's decision" },
       ],
       sections: [
         {
@@ -1687,7 +1687,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+                "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
             },
             {
               type: "paragraph",
@@ -1707,6 +1707,10 @@ export const portfolioData = {
       contactHeading: "Have a queue like this? I reply within a day.",
     },
 
+    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
+    // The reviewer-agreement figure is the owner's: ~98% in his draft, corrected by him to ~94% on
+    // 2026-10-25 to match his CV. He lifted the master
+    // copy's no-accuracy-figure rule for this page on 2026-10-14.
     // Orion (fourth, after Flywheel), added 2026-10-19 (TG-07) from the owner's own Orion document,
     // sentence by sentence. A sentence that uses a word the copy scan bans is left out, not reworded.
     // The thirteen walkthrough steps come from the approved Look. `status` stands where a code link
@@ -2278,9 +2282,6 @@ export const portfolioData = {
       contactHeading: "Have a system that needs deploying? Let's talk.",
     },
 
-    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
-    // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
-    // copy's no-accuracy-figure rule for this page on 2026-10-14.
     {
       id: "esper",
       card: {

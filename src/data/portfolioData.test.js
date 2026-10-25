@@ -72,7 +72,7 @@ const pinnedCaseStudyStats = {
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
   esper: ["79%", "0%", "11 of 11", "$0"],
-  "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
+  "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~94%"],
   // Added 2026-10-21 from the owner's redesign brief.
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
@@ -123,7 +123,7 @@ const DECISION_CHANGED_PARAGRAPHS = [
   "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
   "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
-  "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+  "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
   "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
 ];
 const INTEGRATION_CROSS_REFERENCE =
@@ -851,7 +851,7 @@ describe("portfolioData", () => {
       { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
       { value: "2 weeks", label: "to clear two months of accumulated tickets" },
       { value: "Zero", label: "backlog since launch" },
-      { value: "~98%", label: "of recommendations match the reviewer's decision" },
+      { value: "~94%", label: "of recommendations match the reviewer's decision" },
     ]);
     expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([["situation", "The situation"], ["built", "What I built"], ["who-decides", "Who decides what"], ["model", "Choosing and tuning the model"], ["people", "Working with the teams"], ["changed", "What changed"]]);
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
@@ -953,12 +953,12 @@ describe("portfolioData", () => {
     expect(findCaseStudy("apple-decision-support-agent").intro).toMatch(/cross-team/i);
   });
 
-  // 5 and 15 (minutes per manual review), 3 (3D edits) and 98 (reviewer agreement) come from the owner's draft.
+  // 5 and 15 (minutes per manual review), 3 (3D edits) and 94 (reviewer agreement; 98 in his draft, corrected by him 2026-10-25) come from the owner's draft.
   it("uses only the approved numerals on the decision study (R4, item 12)", () => {
     const text = collectStrings(findCaseStudy("apple-decision-support-agent")).join("\n");
     const numerals = new Set(text.match(/\d+/g));
 
-    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "98", "500", "000", "4"].includes(numeral))).toBe(true);
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "94", "500", "000", "4"].includes(numeral))).toBe(true);
   });
 
   it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
