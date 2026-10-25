@@ -107,7 +107,6 @@ describe("CaseStudyCards", () => {
     expect(more.map((study) => study.id)).toEqual([
       "esper",
       "orion",
-      "auspex",
       "tannhauser-gate",
       "apple-integration",
       "apple-data-health",
@@ -121,19 +120,18 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("shows Ongoing project on the Orion, Auspex and Tannhauser Gate cards and links to none of their private repositories (TG-07, D2; Auspex added 2026-10-25)", () => {
+  it("shows Ongoing project on the Orion and Tannhauser Gate cards and links to none of their private repositories (TG-07, D2)", () => {
     renderCards();
 
-    for (const id of ["orion", "auspex", "tannhauser-gate"]) {
+    for (const id of ["orion", "tannhauser-gate"]) {
       const study = caseStudies.find((candidate) => candidate.id === id);
       expect(study.status).toBe("Ongoing project");
       expect(study.codeLink).toBeUndefined();
       const card = document.querySelector(`a[href="/work/${id}"]`);
       expect(within(card).getByText("Ongoing project")).toBeInTheDocument();
     }
-    expect(screen.getAllByText("Ongoing project")).toHaveLength(3);
+    expect(screen.getAllByText("Ongoing project")).toHaveLength(2);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/orion"]')).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/tannhauser"]')).toHaveLength(0);
-    expect(document.querySelectorAll('a[href*="github.com/muhibm1/auspex"]')).toHaveLength(0);
   });
 });

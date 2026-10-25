@@ -98,8 +98,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all thirteen routes, the home page, the work list and eleven case studies (owner brief 2026-10-21)', () => {
-    expect(sitePagePaths()).toHaveLength(13);
+  it('serves all twelve routes, the home page, the work list and ten case studies (owner brief 2026-10-21)', () => {
+    expect(sitePagePaths()).toHaveLength(12);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {

@@ -148,10 +148,6 @@ export const portfolioData = {
           text: "Retired Tannhauser Gate as a pipeline. From my design approval to my deployment approval took a median of 4 h 18 m; one agent per task in its own thread finished a change of the same size in about 30 minutes. Its guard stayed: hard rules checked on every action, 194 tests.",
         },
         {
-          date: "Oct 24, 2026",
-          text: "Built Auspex, a live trace view of my coding agents: every step on a time axis, what fills each agent's context window, and a grade for each finished turn. A failure that repeats becomes a lesson Orion serves to the next agent.",
-        },
-        {
           date: "Oct 23 to 24, 2026",
           text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions. On Claude Sonnet 5.5 it flagged 64% of unseen real bugs, mean of 3 runs.",
         },
@@ -1917,7 +1913,7 @@ export const portfolioData = {
           label: "What it is",
           value: "A context layer and change reviewer for coding agents and the people who work with them",
         },
-        { label: "Where it stands", value: "In daily use by my own agents; still an early project" },
+        { label: "Where it stands", value: "In daily use by my own agents, and growing" },
         {
           label: "Tested on",
           value:
@@ -1941,7 +1937,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "This is an early, ongoing project. Everything below comes from about ten days of building and testing in October 2026. The newest results are repeated three times; older ones come from one run. Read them as a first measurement, not a final score.",
+                "Orion is a work in progress. I built it in about ten days in October 2026, and my agents have used it every day since. The results below are first measurements that the next runs will build on.",
             },
             {
               type: "paragraph",
@@ -1965,7 +1961,8 @@ export const portfolioData = {
               caption: { number: "Fig 1", title: "Orion as one chip, every part of the design" },
               hint: "Point at a part of the chip to open it. Move away and it runs on its own.",
               hintTouch: "Tap a part of the chip to open it.",
-              listHeading: "The thirteen steps",
+              listHeading: "All thirteen steps as a list",
+              listCollapsed: true,
               legend: [
                 { term: "built", meaning: "means it exists and works today." },
                 { term: "designed", meaning: "means it is planned and not built yet." },
@@ -2152,143 +2149,52 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "It also learns. Auspex, my trace viewer for agents, grades every finished agent turn by fixed rules. When the same failure repeats in one file or repository, Orion drafts a lesson. I approve it by merging it, and from then on Orion hands it to any agent working in that scope. A lesson that keeps failing moves up a ladder: explain, then a checklist, then a check, then a rule enforced in code.",
+                "It also learns. My trace viewer for agents grades every finished agent turn by fixed rules. When the same failure repeats in one file or repository, Orion drafts a lesson. I approve it by merging it, and from then on Orion hands it to any agent working in that scope. A lesson that keeps failing moves up a ladder: explain, then a checklist, then a check, then a rule enforced in code.",
             },
           ],
         },
         {
           id: "results",
-          heading: "Early results",
+          heading: "Results so far",
           blocks: [
             {
               type: "paragraph",
               text:
-                "The clearest result so far: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 16% with no context and 8 to 18% with the repository's files or plain search.",
+                "The headline: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 8 of 50 with no context.",
             },
             {
-              type: "table",
-              columns: [
-                { label: "Result" },
-                { label: "Number" },
-                { label: "What it rests on" },
-              ],
-              rows: [
-                {
-                  cells: [
-                    "Unsafe decisions by AI agents",
-                    "0 of 50 with Orion, against 8 of 50 with no context",
-                    "PipelineBench, Claude Sonnet 5.5 and Haiku 5.5, one run each. Both models scored zero with Orion.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Benchmark score",
-                    "0.82 and 0.83 with Orion, against 0.39 with no context and 0.72 to 0.76 with the whole repo",
-                    "Same runs. The score weighs the decision, cited evidence, named downstream tables and required approvers.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Evidence the agents cited",
-                    "100% of relevant rules and past incidents, every affected table, every required approver",
-                    "Same runs, with Orion. Grading is done by code, not by another AI model.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Real bugs caught on unseen code",
-                    "27 of 45 (60%), and 80% got a warning in the right file",
-                    "45 real historical bugs from 8 open-source projects (starlette, werkzeug, gin, chi, echo, ky, h3, express), never used for tuning. Cheapest model, one run.",
-                  ],
-                },
-                {
-                  cells: [
-                    "The same unseen bugs, stronger model, repeated",
-                    "64% flagged as warnings (62% to 64% across 3 runs), 76% raised at any level",
-                    "Claude Sonnet 5.5, three runs of the same build. One investigating agent that settles suspects with read-only tools matched four separate review passes, for fewer tokens.",
-                  ],
-                  emphasis: true,
-                },
-                {
-                  cells: [
-                    "Noise on a real warehouse's history",
-                    "3 of 6 known bugs flagged over 26 weeks of merged changes, about one false alarm a week",
-                    "116 merged changes from cal-itp/data-infra, each warning labelled by hand. Keeping only warnings backed by evidence cuts false alarms to about one every eight weeks, but flags 2 of the 6.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Search over the record and the code",
-                    "Recall 0.889 in the top ten, ranking score 0.656",
-                    "42 hand-labelled questions, three runs each. Every citation is checked to read back to its source.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Gain from reviewing in four focused passes",
-                    "18% to 42% recall on the same model",
-                    "50-bug tuning set (bugs used to adjust the method, taken from httpx, hono and cobra). One redesign, one day.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Real-world scale",
-                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s",
-                    "cal-itp/data-infra, California's public transit data warehouse. The first attempt was killed after 20 minutes.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Benchmark built for this",
-                    "60 scenarios with hand-written answers, plus 95 hand-labelled real bugs",
-                    "Answers are written from the platform's rules, never derived from Orion.",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug tests, the search test, the warehouse history replay and the real-warehouse test.",
-            },
-          ],
-        },
-        {
-          id: "numbers",
-          heading: "What the numbers do and don't say yet",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The safety result is strong, and real-bug recall is the open problem. Today it sits at 64% on the stronger model, against the 80% I set as the bar.",
-            },
-            {
-              type: "bullets",
+              type: "cards",
               items: [
-                "Early and small. The newest real-bug results are three runs each; the rest are single runs. Runs of the same build differ by a few cases.",
-                "Two models so far. The 60% figure comes from Claude Haiku 5.5 on one run; the 64% from Claude Sonnet 5.5 over three. Opus has not been measured.",
-                "A test platform plus one real warehouse. The benchmark runs on a purpose-built sample platform. The 625-model warehouse shows Orion works at real scale, but Orion read it; no team used it there.",
-                "More passes, more noise. The four-pass review raised 6 false alarms on 19 correct changes, where a single pass raised 1. Cutting that noise is part of the plan below.",
-                "Agents still hedge. Plain decision accuracy is only 0.56 to 0.58, because the models never answer a plain \"go ahead\", even with Orion. That costs every condition equally.",
-              ],
-            },
-            {
-              type: "paragraph",
-              text: "Some ideas did not earn their place, and I took them out:",
-            },
-            {
-              type: "bullets",
-              items: [
-                "A second ranking model on top of search. It lost exact names, so recall in the top ten fell from 0.889 to 0.813, and every search got far slower. Off.",
-                "Showing a warning only when its evidence passed a strict check, on every file. Held-out warnings fell from 0.615 to 0.148. Now the check applies only to files that feed the data platform.",
-                "The investigating agent as the default review. It was cheaper and quieter, but on the warehouse replay it flagged 2 of the 6 known bugs where four passes flagged 3. It stays an option.",
-                "Matching the prompt by meaning before every agent turn. It made the hook many times slower for a check that matches words anyway. Removed.",
+                {
+                  title: "Safer decisions",
+                  note: "0 of 50 unsafe decisions with Orion on Claude Sonnet 5.5 and Haiku 5.5. The benchmark score rose from 0.39 with no context to 0.82 and 0.83 with Orion, ahead of 0.72 to 0.76 with the whole repository.",
+                },
+                {
+                  title: "Every claim cited",
+                  note: "Agents using Orion cited 100% of relevant rules and past incidents, every affected table and every required approver. Code does the grading, not another AI model.",
+                },
+                {
+                  title: "Real bugs caught",
+                  note: "On 45 held-out bugs from 8 open-source projects, never used for tuning, Orion flagged 64% as warnings on Claude Sonnet 5.5 and raised 76% at some level.",
+                },
+                {
+                  title: "Quiet on real history",
+                  note: "Replayed over 26 weeks of 116 merged changes on a real dbt warehouse, it flagged 3 of 6 known bugs at about one false alarm a week.",
+                },
+                {
+                  title: "Search that reads back",
+                  note: "Recall 0.889 in the top ten on 42 hand-labelled questions, ranking score 0.656, and every citation checked against its source.",
+                },
+                {
+                  title: "Real scale",
+                  note: "625 dbt models, 21 Airflow pipelines and column-level lineage for 621 of them, synced in 2 min 9 s on California's public transit data warehouse.",
+                },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The benchmark itself is built to be hard to game. Answers are written by hand from the platform's rules. An automatic check stops the build if Orion and the answers drift apart. And a held-out bug set keeps my tuning from leaking into the score.",
+                "Measurement decides what stays. A second ranking model on top of search lowered recall in the top ten from 0.889 to 0.813, so it is off. A strict evidence check on every file cut held-out warnings from 0.615 to 0.148, so it now applies only to files that feed the data platform. And the benchmark is built to be hard to game: answers are written by hand from the platform's rules, and a held-out bug set keeps my tuning out of the score.",
             },
           ],
         },
@@ -2299,7 +2205,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Studbook answers questions about past decisions. Orion uses that kind of record to judge the next change before it ships. Orion is the next step of the same idea. In October 2026 it replaced Studbook as the engineering record in my own build pipeline.",
+                "Studbook answers questions about past decisions. Orion uses that kind of record to judge the next change before it ships. Orion is the next step of the same idea. In October 2026 it replaced Studbook as the engineering record my agents read.",
             },
             {
               type: "table",
@@ -2362,29 +2268,26 @@ export const portfolioData = {
         },
         {
           id: "plan",
-          heading: "The plan",
+          heading: "What's next",
           blocks: [
             {
               type: "paragraph",
               text:
-                "The gap is smaller than 64% suggests. Across the three runs, 76% of the held-out bugs were raised at some level, and several right findings ended one notch too low, as information rather than a warning. Lifting those is the next lever. Two of the seven steps below have moved since this page was first written.",
+                "Orion is a work in progress. The results so far come from early runs, and the next round is more runs, more models and harder tests:",
             },
             {
               type: "bullets",
               items: [
-                "Step 1. Make the score trustworthy first. Done in part: every real-bug build now runs three times and reports its spread, and the three runs agree within a few points. Still to do: grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls.",
-                "Step 2. Measure the stronger models. Done for Claude Sonnet 5.5, on my subscription with no API spend: 64% on held-out bugs, short of the 80% pass mark. Opus 5.5 is next.",
-                "Step 3. Turn near-misses into catches. Review each changed region in its own pass, so a long change can't use up the model's attention on its first file. Stop the model's second check of its own warnings from downgrading correct ones, which it did about six times per run on Sonnet. Pass mark: the 12 near-misses drop to 3 or fewer.",
-                "Step 4. Bring in what the model doesn't know. Pull the definitions and documentation of the outside code libraries a change uses into the review, the same way Orion already pulls in the functions it calls.",
-                "Step 5. Prove bugs by running them. A test that fails is hard evidence, so the warning ships with proof. A test that passes is a reason to drop the warning, which cuts false alarms too. Pass mark: 90% or more on held-out bugs.",
-                "Step 6. Hold the line on noise. Every gain has to pass a ceiling of at most one false alarm per 20 correct changes on both the planted-bug set and the replay of real merged changes. Recall bought with noise doesn't count.",
-                "Step 7. Confirm on fresh bugs. That's the number that goes on this page.",
+                "A bigger test set. Grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls.",
+                "Stronger models. Opus 5.5 is next, run on my subscription with no API spend.",
+                "Turn near-misses into warnings. Several right findings end one notch too low, as information rather than a warning. Lifting them is the clearest path to the 80% pass mark.",
+                "Prove bugs by running them. A failing test ships with the warning as proof, and a passing one is a reason to drop it.",
+                "Hold the line on noise. Every gain has to stay within one false alarm per 20 correct changes.",
               ],
             },
             {
               type: "paragraph",
-              text:
-                "Each step is small and measured before and after, and the result goes back on this page whether it moves the number or not.",
+              text: "Each step is measured before and after, and the result goes on this page.",
             },
           ],
         },
@@ -2392,195 +2295,11 @@ export const portfolioData = {
       callout: {
         eyebrow: "Where Orion stands",
         text:
-          "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
+          "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
       },
       contactHeading: "Have a system that needs deploying? Let's talk.",
     },
 
-    // Auspex, added 2026-10-25 at the owner's request, from muhibm1/auspex's README and merged pull
-    // requests (#1 to #20, 2026-10-24 and 25; `npm test` 168 of 168) and the first harvest over his
-    // own sessions (auspex #20 and the harvest thread's notes). The repository is private, so
-    // `status` stands where a code link would.
-    {
-      id: "auspex",
-      card: {
-        featured: false,
-        eyebrow: "Personal system · Agent observability",
-        title: "Auspex: seeing what coding agents actually do",
-        summary:
-          "When several coding agents work at once, it is hard to tell which one is stuck, which is waiting for me, and which said it was done without testing its work. Auspex shows every session live as a trace, grades each finished turn by fixed rules, and hands repeat failures to Orion as lessons.",
-        linkText: "Read the case study",
-        tags: ["Every finished turn graded, no model needed", "168 tests"],
-      },
-      status: "Ongoing project",
-      eyebrow: "Case study · Personal system · Agent observability",
-      title: "Auspex: seeing what coding agents actually do",
-      intro:
-        "I run several coding agents at once, on my own machine and in the cloud. A terminal shows one at a time and hides the rest. Auspex shows them all: every step each agent takes, on a time axis, as it happens. When a turn finishes, it grades the work by a few fixed rules, such as whether the agent ran a test after its last edit. Failures that repeat become lessons Orion hands to the next agent.",
-      atAGlance: [
-        { label: "My role", value: "Designed and built it end to end" },
-        {
-          label: "What it is",
-          value: "A live trace view and grader for coding-agent sessions, running on my own machine",
-        },
-        { label: "Where it stands", value: "In daily use since October 2026; the repository is private" },
-        { label: "Quality", value: "168 tests passing" },
-      ],
-      stats: [
-        { value: "3", label: "feeds merged into one trace per session: transcripts, hooks and traces" },
-        { value: "5", label: "fixed rules that grade every finished turn, with no model call" },
-        { value: "158", label: "finished turns of my own work graded in the first pass" },
-        { value: "0", label: "data sent anywhere: no account, no telemetry" },
-      ],
-      sections: [
-        {
-          id: "why",
-          heading: "The questions I couldn't answer",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "With four or five agents working at once, the useful questions are simple. Which one is stuck? Which is waiting for me to allow a command? What is that subagent doing, and how long has it been at it? Did the agent that just said it was done actually test its work?",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Each agent already records everything it does. Nothing put those records side by side, live, in a form a person can read at a glance. Auspex only watches. It never answers a prompt, approves a command or starts an agent.",
-            },
-          ],
-        },
-        {
-          id: "see",
-          heading: "What you see",
-          blocks: [
-            {
-              type: "cards",
-              items: [
-                {
-                  title: "Sessions",
-                  note: "One card per session: its project, whether it is running, waiting on me, idle or ended, the step happening now, and how long it has waited on me.",
-                },
-                {
-                  title: "Trace",
-                  note: "The selected turn as a waterfall: one row per step, bars on a time axis, each subagent in its own colour. It is a run tree, the same shape LangSmith uses: one root per turn, with model calls, tools and subagents beneath it.",
-                  emphasis: true,
-                },
-                {
-                  title: "Context",
-                  note: "What fills each agent's context window, its working memory, as a map of blocks: instructions, files read, command output, chat, and what Orion added. Each Orion passage is marked used or not.",
-                },
-                {
-                  title: "Metrics",
-                  note: "Where the time went (model, tools, waiting on me, waiting on subagents), tokens and cache hits, failed calls, and steps repeated with the same input.",
-                },
-                {
-                  title: "Usage gauge",
-                  note: "How much of my plan's usage limits is spent, and, at the current pace, when a limit will run out.",
-                },
-                {
-                  title: "Ledger",
-                  note: "Week by week: sessions, turn times, tokens, and the share of turns that edited code and then checked it.",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: "how",
-          heading: "How it works",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Auspex merges three records each agent already writes. Transcripts give the full story of every message and tool call. Hooks give instant events, such as a permission prompt opening. Traces give exact timings. A hook that cannot reach Auspex gives up within a second, so a stopped Auspex never slows an agent down.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Cloud sessions run on remote machines, so each one pushes its transcripts to a repository only I can read, after every turn. Credentials are scrubbed line by line first, and nothing is pushed unless the repository confirms it is private. Auspex reads that repository once a minute, and cloud sessions appear next to local ones.",
-            },
-            {
-              type: "bullets",
-              items: [
-                "It listens only on the local machine and refuses requests addressed to any other host, so a web page cannot read sessions through it.",
-                "No account and no telemetry. The only network call is the fetch of my own private sessions repository.",
-                "Tokens, not dollars. A subscription session has no price per call, so any dollar figure would be invented.",
-              ],
-            },
-          ],
-        },
-        {
-          id: "grading",
-          heading: "Grading every finished turn",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "About half a minute after a turn ends, five fixed rules read what the session recorded. No model is asked anything, so the same session always gets the same grade.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "Case" }, { label: "Raised when" }],
-              rows: [
-                {
-                  cells: [
-                    "Finished without a check",
-                    "The agent edited code, then stopped without a test, build, type check or lint after its last edit, or the last one failed",
-                  ],
-                  emphasis: true,
-                },
-                { cells: ["Retry loop", "The same command failed three or more times in one turn"] },
-                { cells: ["Edit churn", "The same file was edited eight or more times in one turn"] },
-                { cells: ["Long wait", "A permission prompt waited ten minutes or more for me"] },
-                { cells: ["Context high", "A model call used 80% or more of its context window"] },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Every graded turn becomes one row in a history file, and every finding one line in a cases file. Orion reads the cases. When the same kind of failure repeats in the same file or repository, Orion drafts a lesson, and I approve it by merging it. From then on, Orion gives that lesson to any agent whose task touches that scope.",
-            },
-          ],
-        },
-        {
-          id: "first",
-          heading: "The first pass over my own work",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The first harvest over my own sessions raised 29 cases, and 27 of them were wrong: Auspex judged sessions with a larger context window against the standard one, so ordinary turns looked nearly full. The fix was to read the window each session actually asked for. After a regrade, 158 turns produced 5 cases. One of those is still a false alarm: a chained command read as a failing check.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Five cases are too few for a lesson yet, which is the point of the rule: one failure is an anecdote, a repeated one is a lesson.",
-            },
-          ],
-        },
-        {
-          id: "limits",
-          heading: "What it doesn't do yet",
-          blocks: [
-            {
-              type: "bullets",
-              items: [
-                "Cloud sessions arrive after each turn, not live, so a stall in the middle of a long cloud turn is not caught as it happens.",
-                "The split of the context window between blocks is estimated from text length and scaled to the model's own measured total.",
-                "The check rules know the common test, build and lint commands. A project that checks its work some other way reads as unchecked until the rules learn it.",
-                "Agent transcript formats are not a published contract, so an update to the agent can rename fields Auspex reads.",
-              ],
-            },
-          ],
-        },
-      ],
-      callout: {
-        eyebrow: "What I'd bring to a client",
-        text:
-          "Before a team trusts agents with more work, make what they do visible and grade it by rules a person can read. Then fix what repeats, not what happened once.",
-      },
-      contactHeading: "Running agents you can't see into? Let's talk.",
-    },
 
     // The agent harness story, rewritten 2026-10-25 at the owner's request (decision 4 of the
     // 2026-10-24 harness analysis): both pipelines told as measured results. Sources: WorkHorse
@@ -2726,7 +2445,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The pipelines' real argument was quality: gates and reviewers are meant to stop bad changes. So I checked what skipping them cost. Of the first 17 pull requests merged on Auspex, my trace viewer for agents, 4 fixed something merged earlier the same day. Each fix was small, and the quickest took 3 minutes. Mistakes still happen; the fast loop makes them cheap. That points to checking the work after it is done, not slowing every change before it starts.",
+                "The pipelines' real argument was quality: gates and reviewers are meant to stop bad changes. So I checked what skipping them cost. Of the first 17 pull requests merged on my trace viewer for agents, 4 fixed something merged earlier the same day. Each fix was small, and the quickest took 3 minutes. Mistakes still happen; the fast loop makes them cheap. That points to checking the work after it is done, not slowing every change before it starts.",
             },
           ],
         },
@@ -2753,7 +2472,7 @@ export const portfolioData = {
                 },
                 {
                   title: "After: grading",
-                  note: "Auspex grades each finished turn and flags work that ended without a check. A failure that repeats becomes a lesson Orion serves to the next agent.",
+                  note: "My trace viewer grades each finished turn and flags work that ended without a check. A failure that repeats becomes a lesson Orion serves to the next agent.",
                 },
                 {
                   title: "Gates: only what can't be undone",

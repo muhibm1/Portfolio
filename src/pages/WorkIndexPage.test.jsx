@@ -15,11 +15,11 @@ describe('WorkIndexPage', () => {
     expect(heading).toHaveClass('sr-only');
   });
 
-  it('lists the nine listed case studies in data order, AgentOps first as a featured card (owner brief 2026-10-21; Auspex added 2026-10-25)', () => {
+  it('lists the eight listed case studies in data order, AgentOps first as a featured card (owner brief 2026-10-21)', () => {
     renderWorkIndexAt('/work');
 
     const links = caseStudyLinks();
-    expect(links).toHaveLength(9);
+    expect(links).toHaveLength(8);
     expect(links.map((link) => link.getAttribute('href'))).toEqual(listedPaths());
     expect(links[0]).toHaveAttribute('href', '/work/agentops');
     expect(screen.getByRole('heading', { name: 'More work' })).toBeInTheDocument();
