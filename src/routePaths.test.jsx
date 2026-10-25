@@ -17,13 +17,14 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the nine case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21)', () => {
+  it('returns / then /work then /work/<id> for each of the ten case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21; split brief 2026-10-25)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
+      '/work/apple-decision-support-agent',
       '/work/agentops',
       '/work/flywheel',
-      '/work/apple-decision-support-agent',
+      '/work/fathom',
       '/work/esper',
       '/work/orion',
       '/work/apple-integration',

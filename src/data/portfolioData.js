@@ -73,8 +73,8 @@ export const portfolioData = {
               "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
           },
           {
-            title: "Building Orion",
-            text: "The context layer my coding agents use every day: the rules, owners, past incidents and lessons for the files they are about to touch",
+            title: "Building Fathom",
+            text: "A context layer for AI agents on data platforms: what a change reaches, which rules apply and who owns it, checked before it ships",
           },
           {
             title: "Looking for",
@@ -141,15 +141,23 @@ export const portfolioData = {
       entries: [
         {
           date: "Oct 25, 2026",
+          text: "Split Orion in two. Orion stays my private context layer over my own engineering record. Its data-platform half became Fathom, the part a data team could deploy, tested on cal-itp's public warehouse.",
+        },
+        {
+          date: "Oct 25, 2026",
           text: "Put every paid model call in Flywheel, Orion and AgentOps behind a dollar cap, a spend ledger and free replay of recorded answers. Flywheel now also holds any change to its own grading for approval, and reruns only the close calls: 34% fewer runs, with the same decision in 12 of 12 replayed comparisons.",
         },
         {
+          date: "Oct 24 to 25, 2026",
+          text: "Measured Esper against what most people would use, a coding agent with web search, told to cite. 82% of Esper's sentences were backed by the page they cite, against 58% for the agent.",
+        },
+        {
           date: "Oct 23 to 24, 2026",
-          text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions. On Claude Sonnet 5.5 it flagged 64% of unseen real bugs, mean of 3 runs.",
+          text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions.",
         },
         {
           date: "Oct 21, 2026",
-          text: "Benchmarked Orion's review against my own code-review agent on 8 past changes. Orion caught 3 of the 11 problems the reviewer blocked on, so the reviewer stays, and Orion is narrowing to data platforms, where its system context exists.",
+          text: "Benchmarked Orion's review against my own code-review agent on 8 past changes. Orion caught 3 of the 11 problems the reviewer blocked on, so the reviewer stays, and Orion's review moved to data platforms, where its system context exists.",
         },
         {
           date: "Oct 20, 2026",
@@ -165,7 +173,7 @@ export const portfolioData = {
         },
         {
           date: "Oct 16 to 20, 2026",
-          text: "Built Orion: 38 pull requests merged and about 200 tests. Agents using it made 0 of 50 unsafe decisions on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
+          text: "Built Orion: 38 pull requests merged and about 200 tests. Agents using it made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
         },
         {
           date: "Oct 13, 2026",
@@ -528,6 +536,223 @@ export const portfolioData = {
   },
 
   caseStudies: [
+    // First of the featured studies since 2026-10-25 (owner's split brief).
+    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
+    // The reviewer-agreement figure is the owner's: ~98% in his draft, corrected by him to ~94% on
+    // 2026-10-25 to match his CV. He lifted the master copy's no-accuracy-figure rule for this
+    // page on 2026-10-14.
+    {
+      // Renamed from apple-llm-triage on 2026-10-21 (owner's brief); the old address serves a
+      // redirect page (REDIRECTS in src/routePaths.js).
+      id: "apple-decision-support-agent",
+      deploymentSummary: {
+        problem:
+          "Cross-team data changes waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
+        decision:
+          "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
+        result:
+          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
+      },
+      card: {
+        featured: true,
+        eyebrow: "Apple Maps · Decision support agent",
+        title: "A review backlog, turned into an analysis the reviewer can trust",
+        summary:
+          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
+        linkText: "Read the case study",
+        tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
+        mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
+      },
+      eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
+      title: "A review backlog, turned into an analysis the reviewer can trust",
+      intro:
+        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+      atAGlance: [
+        { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
+        { label: "Live since", value: "November 2025" },
+        { label: "Stack", value: "Python, an open-source language model, REST APIs" },
+        { label: "Status", value: "In production, with a person making every decision by design" },
+      ],
+      stats: [
+        { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
+        { value: "2 weeks", label: "to clear two months of accumulated tickets" },
+        { value: "Zero", label: "backlog since launch" },
+        { value: "~94%", label: "of recommendations match the reviewer's decision" },
+      ],
+      sections: [
+        {
+          id: "situation",
+          heading: "The situation",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
+            },
+            { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
+          ],
+        },
+        {
+          id: "built",
+          heading: "What I built",
+          blocks: [
+            {
+              type: "flow",
+              columns: 6,
+              steps: [
+                { title: "Unlock request" },
+                { title: "Map snapshot of the target feature and its neighbors" },
+                { title: "Check against internal specification" },
+                { title: "Impact analysis: what else the change would touch" },
+                { title: "Documented recommendation" },
+                { title: "Reviewer decides", gate: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
+            },
+          ],
+        },
+        {
+          id: "who-decides",
+          heading: "Who decides what",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "The agent",
+                  note: "Works out what the edit is meant to do and what it could affect, checks it against the spec, and writes a recommendation it must justify.",
+                },
+                {
+                  title: "Code",
+                  note: "Sets hard limits on what the agent can reach: no write access to anything, and only the data and repositories the review needs.",
+                },
+                {
+                  title: "The reviewer",
+                  note: "Makes every unlock decision. The agent has no authority to change anything.",
+                  emphasis: true,
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
+            },
+          ],
+        },
+        {
+          id: "model",
+          heading: "Choosing and tuning the model",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right.",
+            },
+          ],
+        },
+        {
+          id: "people",
+          heading: "Working with the teams",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards.",
+            },
+          ],
+        },
+        {
+          id: "changed",
+          heading: "What changed",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
+      },
+      disclaimer:
+        "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
+      contactHeading: "Have a queue like this? I reply within a day.",
+    },
+
     {
       id: "agentops",
       // Problem, decision, result: the owner's 2026-10-21 brief asks for this summary before any
@@ -1495,204 +1720,633 @@ export const portfolioData = {
       contactHeading: "Have an agent that works in the demo? Let's talk.",
     },
 
+    // Fathom (fourth, the last featured study), added 2026-10-25 from the owner's Orion / Fathom
+    // split brief: Orion's data-platform half, moved here from /work/orion. Every number traces to
+    // Fathom's pipelinebench results (llm-agents, accuracy, partner-calitp-dbt, partner-balboa,
+    // partner-httpx and partner-hono-cobra, calitp-history-deterministic and -model-consumers,
+    // heldout-sonnet-5-5-baseline-x3) and its README at main d993d56 (about 14,100 lines of
+    // Python, 264 tests). The owner's follow-up the same day: position Fathom as open source now,
+    // and he makes the repository public himself, so `status` stands where a code link will go.
     {
-      // Renamed from apple-llm-triage on 2026-10-21 (owner's brief); the old address serves a
-      // redirect page (REDIRECTS in src/routePaths.js).
-      id: "apple-decision-support-agent",
+      id: "fathom",
       deploymentSummary: {
         problem:
-          "Cross-team data changes waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
+          "Coding agents and engineers change data models without seeing what depends on them. Review catches the damage late, if at all: a renamed column breaks a dashboard two teams away.",
         decision:
-          "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
+          "Give the agent the system's context before it changes anything, and check the change against it in code: what it reaches, which rules apply, who owns it and what has broken there before. I chose to keep the model out of those checks. It may explain the result, never overrule it.",
         result:
-          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
+          "On my benchmark, agents with Fathom made 0 of 50 forbidden calls, against 8 of 50 with no context. On California's public transit warehouse, 625 dbt models, false alarms on 12 real commits went from 7 to 0.",
       },
       card: {
         featured: true,
-        eyebrow: "Apple Maps · Decision support agent",
-        title: "A review backlog, turned into an analysis the reviewer can trust",
+        eyebrow: "Open source · Data platforms · AI agents",
+        title: "Fathom: what a data change reaches, before it ships",
         summary:
-          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
+          "An open-source context layer for AI agents on data platforms. Before an agent changes a model, Fathom tells it what depends on the change, column by column, which rules apply, who owns it and what has broken there before. Then it checks the change in code, reviews it, and cites the evidence for every finding.",
         linkText: "Read the case study",
-        tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
-        mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
+        tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
       },
-      eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
-      title: "A review backlog, turned into an analysis the reviewer can trust",
+      status: "Open source · in development",
+      eyebrow: "Case study · Open source · Data platforms",
+      title: "Fathom: what a data change reaches, before it ships",
       intro:
-        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+        "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
       atAGlance: [
-        { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
-        { label: "Live since", value: "November 2025" },
-        { label: "Stack", value: "Python, an open-source language model, REST APIs" },
-        { label: "Status", value: "In production, with a person making every decision by design" },
+        { label: "My role", value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project" },
+        {
+          label: "What it is",
+          value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
+        },
+        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, working toward its first public release" },
+        {
+          label: "Tested on",
+          value:
+            "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake",
+        },
       ],
       stats: [
-        { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
-        { value: "2 weeks", label: "to clear two months of accumulated tickets" },
-        { value: "Zero", label: "backlog since launch" },
-        { value: "~98%", label: "of recommendations match the reviewer's decision" },
+        { value: "0 of 50", label: "forbidden calls by AI agents with Fathom, against 8 of 50 with no context" },
+        { value: "100%", label: "of required citations given with Fathom, against 46% with no context" },
+        { value: "621 of 625", label: "dbt models with column lineage on a real warehouse, up from 4" },
+        { value: "7 to 0", label: "false alarms on 12 real merged commits, after fixing what caused them" },
       ],
       sections: [
         {
-          id: "situation",
-          heading: "The situation",
+          id: "problem",
+          heading: "The problem",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.",
+                "Coding agents are starting to write data pipeline changes, and they read code well. What they cannot see is the system the code lands in: which dashboards read this column, which rule says this table needs an approver, which team owns it, and that the same change caused an incident in March. An engineer new to the team cannot see it either.",
             },
             {
               type: "paragraph",
               text:
-                "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
+                "Code-context tools index what the repository says. Fathom indexes what production says: which tables feed which dashboards, which pipeline missed its deadline, which change caused the last outage. So the knowledge a senior engineer carries in their head sits in front of every change, instead of turning up in review after a scheduled run has already failed.",
             },
-            { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
           ],
         },
         {
-          id: "built",
-          heading: "What I built",
+          id: "walkthrough",
+          heading: "What it does",
           blocks: [
             {
-              type: "flow",
-              columns: 6,
+              type: "paragraph",
+              text:
+                "Fathom reads a data platform into one graph, then answers one question for any change: what does this reach, and is it safe to ship? It gives an agent that answer before it writes code, checks the change again before it merges, and records what happened after.",
+            },
+            {
+              type: "walkthrough",
+              figure: "orion-chip",
+              name: "Fathom",
+              pace: 0.85,
+              regionLabel: "Fathom walkthrough",
+              note: "The whole design on one chip. Each part says built or designed.",
+              stepsLabel: "Steps of the walkthrough",
+              caption: { number: "Fig 1", title: "Fathom as one chip, every part of the design" },
+              hint: "Point at a part of the chip to open it. Move away and it runs on its own.",
+              hintTouch: "Tap a part of the chip to open it.",
+              listHeading: "All thirteen steps as a list",
+              listCollapsed: true,
+              legend: [
+                { term: "built", meaning: "means it exists and works today." },
+                { term: "designed", meaning: "means it is planned and not built yet." },
+              ],
+              controls: {
+                play: "Play",
+                pause: "Pause",
+                prev: "Previous step",
+                next: "Next step",
+                replay: "Replay",
+                skip: "Skip to the list",
+                show: "Show on the chip",
+                approve: "Approve",
+                waive: "Waive",
+                reject: "Reject",
+              },
+              states: {
+                paused: "Paused",
+                playing: "Playing",
+                offscreen: "Plays when in view",
+                reading: "Paused while you read",
+                waiting: "Waiting for you",
+                done: "All thirteen steps shown",
+              },
+              announce: {
+                step: "Step {n}, {label}, {tag}.",
+                waiting: "The chip stopped. It is waiting for your decision.",
+                decision: "Decision {kind} recorded to the ledger.",
+              },
+              labels: {
+                stepOf: "Step {n} of {total}",
+                person: "A person decides.",
+                personInList: "A person decides:",
+                evidence: "Evidence",
+                waiting: "The chip stopped. It is waiting for you.",
+                recorded: "You recorded {kind}. The chip carries on.",
+                decisionReadout: "Decision recorded: {kind}",
+                designedSuffix: "· designed",
+                showAria: "Show step {n}, {label}, on the chip",
+              },
               steps: [
-                { title: "Unlock request" },
-                { title: "Map snapshot of the target feature and its neighbors" },
-                { title: "Check against internal specification" },
-                { title: "Impact analysis: what else the change would touch" },
-                { title: "Documented recommendation" },
-                { title: "Reviewer decides", gate: true },
+                {
+                  id: "sync",
+                  label: "Sync",
+                  tag: "built",
+                  readout: "dbt · Airflow · Git · incident reports",
+                  does:
+                    "Gathers tables, jobs, owners and past incidents from dbt, Airflow, Git and incident reports kept as files. It builds a map of what depends on what, plus a log that is only ever added to, all in one database file.",
+                  evidence:
+                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s, on cal-itp/data-infra, California's public transit data warehouse.",
+                },
+                {
+                  id: "store",
+                  label: "One store",
+                  tag: "built",
+                  readout: "every fact says where it came from",
+                  does:
+                    "Every fact it stores says where it came from, and the store refuses any fact that does not.",
+                },
+                {
+                  id: "explain",
+                  label: "Explain",
+                  tag: "built",
+                  readout: "owner · tier · what it reaches · incidents",
+                  does:
+                    "For any table: who owns it, how important it is (its tier), what feeds it and what it feeds, and which tier-1 consumers (its most important users) sit anywhere downstream, the full blast radius of a change. It also shows which scheduled job builds it, which columns feed which, the rules that cover it and recent incidents. Every item carries an id.",
+                },
+                {
+                  id: "preflight",
+                  label: "Preflight",
+                  tag: "built",
+                  readout: "inform · warn · block",
+                  does:
+                    "The verdict, given before a change ships. It returns what the change does, which downstream columns and tables it reaches, which rules it triggers, past incidents on the same path, a risk score you can inspect, recommended checks and a summary. Every claim cites its evidence.",
+                  person: "block means a person decides, and the three levels are inform (for information), warn and block.",
+                },
+                {
+                  id: "review",
+                  label: "Review",
+                  tag: "built",
+                  readout: "find · suggest · check · format",
+                  does:
+                    "Four stages. First, plain code finds what it can using fixed rules. Next, the AI model suggests more possible problems. Then code checks each suggestion against the change and the stored facts. Last, the output is formatted. A finding with no valid evidence is marked uncertain, and one outside the change is rejected.",
+                },
+                {
+                  id: "gate",
+                  label: "Gate",
+                  tag: "built",
+                  readout: "fails on warn or block",
+                  does:
+                    "A check a team can run automatically on every proposed change (this is called CI). It runs the pre-flight on the change and fails the build when the verdict reaches warn or block, as the team chooses. The verdict is advice only until a team switches this on.",
+                  person: "Fathom never blocks on its own. The gate is how a team's automatic checks make its verdict binding.",
+                },
+                {
+                  id: "mcp",
+                  label: "MCP",
+                  tag: "built",
+                  readout: "seven tools · none write to the platform",
+                  does:
+                    "The MCP server, a standard way for coding agents to call a tool. It offers seven: preflight, explain, history, ask, review, record_decision (log a person's choice) and propose_constraint (suggest a new rule). None of them can change the data platform.",
+                  person:
+                    "The server's instructions tell the agent to call preflight before writing code and again before opening a pull request, to cite evidence ids rather than paraphrase, and that block means a person decides.",
+                },
+                {
+                  id: "record",
+                  label: "History",
+                  tag: "built",
+                  readout: "incidents · past fixes · runs",
+                  does:
+                    "What has broken before. Incident reports kept as files, past fixes in Git and the scheduler's run history, tied to the tables and columns they touched, so a check can say this path failed before and how. It makes no AI model call.",
+                },
+                {
+                  id: "decision",
+                  label: "Decision",
+                  tag: "built",
+                  readout: "approve / waive / reject",
+                  does: "Records a person's choice to approve, waive (set aside) or reject a verdict, in a permanent log called the ledger.",
+                  person: "This is the step. Nothing lands until a person records a decision.",
+                },
+                {
+                  id: "postflight",
+                  label: "Postflight",
+                  tag: "built",
+                  readout: "next three runs · outcome recorded",
+                  does:
+                    "Closes the loop after a change ships. For each verdict, it finds the change that was merged. It then watches the tables that change touched, and the ones downstream, for their next three scheduled runs. It records one outcome linked to the verdict: clean, failed, missed its promised delivery time (an SLA), or caused an incident.",
+                },
+                {
+                  id: "propose",
+                  label: "Propose",
+                  tag: "built",
+                  readout: "rules drafted from ledger patterns",
+                  does:
+                    "Drafts new rules (constraints) from patterns in the ledger: repeated missed delivery times, failures after changes, incident reports with no matching rule, and verdicts that were too mild. A nightly job proposes them as a pull request, a request for a person to review and merge the files. Merging is the approval.",
+                  person:
+                    "Git, the tool that keeps every version of a project's files, stores the decisions. Rules and incident reports are files, merging is approval, and the history is the audit trail.",
+                },
+                {
+                  id: "bench",
+                  label: "PipelineBench",
+                  tag: "built",
+                  readout: "sixty scenarios · four setups",
+                  does:
+                    "The benchmark: sixty scenarios with answers written by hand, tried in four setups for what the agent is given (nothing, the repository's files, plain document search, or Fathom), all graded by code.",
+                  evidence:
+                    "Forbidden calls by AI agents: 0 of 50 with Fathom, against 8 of 50 with no context.",
+                },
+                {
+                  id: "next",
+                  label: "Next",
+                  tag: "designed",
+                  readout: "designed · not built",
+                  does:
+                    "Next: a first release for dbt, a second public warehouse, more platform adapters (Dagster, Snowflake query history) and a design partner.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "verdict",
+          heading: "A verdict, in plain words",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Here is one verdict from the sample platform Fathom ships with, the kind of answer an agent gets before it writes a line.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "The change", note: "Drop the discount column from the orders table" },
+                { title: "What it reaches", note: "Through column lineage, the weekly revenue dashboard the finance team reads, and the job that tests the table" },
+                { title: "What applies", note: "A rule locks those columns, because the same kind of change broke that dashboard in August" },
+                { title: "The verdict", note: "Block. Before merging: run the table's tests, get sign-off from the finance data team, and tell them" },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
+                "Adding a column to the same table comes back inform and reaches nothing. That difference is what column-level lineage buys: a check an agent learns to trust, instead of one it learns to ignore. The risk score is a sum of named parts, such as readers on the most important dashboards, a blocking rule, a destructive change and how recent the incident was, so anyone can see exactly why it came out where it did.",
             },
           ],
         },
         {
-          id: "who-decides",
-          heading: "Who decides what",
+          id: "trust",
+          heading: "How it stays trustworthy",
           blocks: [
             {
               type: "cards",
               items: [
                 {
-                  title: "The agent",
-                  note: "Works out what the edit is meant to do and what it could affect, checks it against the spec, and writes a recommendation it must justify.",
+                  title: "Code decides, the model explains",
+                  note: "What a change reaches, which rules apply and the risk score are worked out in code. A model may interpret and rank inside those results, never override them.",
                 },
                 {
-                  title: "Code",
-                  note: "Sets hard limits on what the agent can reach: no write access to anything, and only the data and repositories the review needs.",
+                  title: "Every finding cites evidence",
+                  note: "Each finding points at a stored fact, a file and line, or a hunk of the diff. One without valid evidence is marked uncertain, never shown as fact.",
                 },
                 {
-                  title: "The reviewer",
-                  note: "Makes every unlock decision. The agent has no authority to change anything.",
-                  emphasis: true,
+                  title: "Nothing is invented",
+                  note: "If the graph does not know an owner, a dependency or a past incident, Fathom says \"not recorded\". Paths it cannot map are listed, not dropped.",
+                },
+                {
+                  title: "It advises, the gate blocks",
+                  note: "Fathom never writes to the platform. A team's CI gate is the only place a verdict blocks a merge, and a person records every decision.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "review",
+          heading: "A review that reads the whole change",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Fathom also reviews any diff, platform or not, in four stages: gather the facts in code, ask the model for candidate findings, validate every finding in code, then format. Code findings always come first and never depend on a model. What sets the review apart is what it hands the model and what it refuses to let through.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "The code around the change",
+                  note: "A short file goes to the model whole, a long one as the function each hunk sits in. Every function the change calls is looked up in the repository and shown with a line the model can cite.",
+                },
+                {
+                  title: "Four focused passes",
+                  note: "The model reads each change four times, once per kind of failure: unusual inputs, what called functions really do, control flow and state, and contracts with callers. On Claude Haiku 5.5 this lifted recall on real bugs from 0.18 to 0.42, and to 0.60 on 45 held-out bugs.",
+                },
+                {
+                  title: "A second reading",
+                  note: "Every warning must name the concrete case that fails, or it is lowered to a note. A second pass then re-checks each warning against the whole change, and a stronger model can check a cheaper one.",
+                },
+                {
+                  title: "Who else uses what you changed",
+                  note: "For a removed or re-signed definition in any of six languages, from Python to TypeScript, every use in the repository is listed by file and line, parsed so a comment, a string or a same-named method elsewhere is told apart.",
+                },
+                {
+                  title: "It knows what you meant",
+                  note: "The pull request's title and body are passed as the stated intent, so an announced change is not reported as a bug, while a change the intent does not cover still is.",
+                },
+                {
+                  title: "Nothing slips through",
+                  note: "A key, token or password in an added line blocks, and is redacted before the diff leaves the machine. A diff too big for one call is reviewed in several, and anything not shown is named.",
                 },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
+                "Any model can sit behind it: offline, Anthropic, any OpenAI-compatible endpoint including local models, a local command, or Claude Code on a subscription with no API key. Every paid call counts against a dollar cap. On a pull request it posts one inline comment per new finding and one summary updated in place, and it never posts a blocking review.",
             },
           ],
         },
         {
-          id: "model",
-          heading: "Choosing and tuning the model",
+          id: "loop",
+          heading: "Closing the loop",
           blocks: [
             {
               type: "paragraph",
               text:
-                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+                "Most review tools forget a change once it merges. Fathom keeps an append-only ledger of every verdict, the decision a person made on it and what actually happened next, so its rules grow out of the platform's own history.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "Record the decision", note: "A person approves, waives or rejects, and it is written to the ledger" },
+                { title: "Watch what happened", note: "Postflight finds the commit that landed it and watches the next three runs: clean, failed, late or an incident" },
+                { title: "Compare", note: "Predicted severity against the observed outcome, for every verdict" },
+                { title: "Propose a rule", note: "Repeated missed deadlines, failures after changes or an incident with no rule become a drafted constraint" },
+              ],
             },
             {
               type: "paragraph",
               text:
-                "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right.",
+                "A drafted constraint lands as a pull request, and merging it is the approval. Rules are written in a closed set of seven types, such as locked columns, a locked schedule or a required approver, so every rule is something code can check and a person can read.",
             },
           ],
         },
         {
-          id: "people",
-          heading: "Working with the teams",
+          id: "architecture",
+          heading: "Architecture",
           blocks: [
             {
               type: "paragraph",
               text:
-                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
+                "Fathom is a local process with one database file. A sync reads the platform into a graph and a ledger. Code checks every change against them, and review adds the model inside those results. Agents reach it through one MCP server, a team's CI through the gate, and after a merge postflight and propose close the loop.",
             },
             {
-              type: "paragraph",
-              text:
-                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards.",
+              type: "architecture",
+              // Drawn in the same style as Orion's, to Fathom at main d993d56 (owner's follow-up,
+              // 2026-10-25: "make sure the architecture ... reflects its current state"): the five
+              // adapters, the graph and the append-only ledger, preflight and review, the MCP
+              // server's seven tools, the gate and pull request comments, and postflight and
+              // propose feeding decisions back to the ledger.
+              label: "Fathom's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 482],
+              legend: [
+                { kind: "data", label: "The platform's own data" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "plain", label: "Model, checked by code" },
+                { kind: "agent", label: "Agent interface" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Sources" },
+                { x: 196, y: 60, text: "Sync · fathom sync" },
+                { x: 380, y: 60, text: "Store · one DuckDB file" },
+                { x: 590, y: 60, text: "Checks · code first" },
+                { x: 775, y: 60, text: "Access" },
+              ],
+              boxes: [
+                { x: 32, y: 74, w: 138, h: 46, kind: "data", parts: [{ title: "dbt project" }, { text: "manifest, catalog, SQL" }] },
+                { x: 32, y: 126, w: 138, h: 46, kind: "data", parts: [{ title: "Airflow" }, { text: "DAGs and their tasks" }] },
+                { x: 32, y: 178, w: 138, h: 46, kind: "data", parts: [{ title: "Git" }, { text: "commits and past fixes" }] },
+                { x: 32, y: 230, w: 138, h: 58, kind: "data", parts: [{ title: "Run history" }, { text: "task runs, dbt results, table snapshots" }] },
+                { x: 32, y: 294, w: 138, h: 46, kind: "data", parts: [{ title: "Incident reports" }, { text: "kept as files in the repo" }] },
+                { x: 32, y: 346, w: 138, h: 46, kind: "data", parts: [{ title: "Constraints" }, { text: "rules as code, reviewed" }] },
+                {
+                  x: 196, y: 74, w: 155, h: 318, kind: "code",
+                  parts: [
+                    { title: "Adapters" },
+                    { pairs: [["dbt.py", "models"], ["airflow.py", "DAGs"], ["git.py", "commits"], ["runs.py", "runs"], ["incidents.py", "incidents"]] },
+                    { rule: true },
+                    { mono: "lineage.py" },
+                    { text: "column lineage from each model's compiled SQL, parsed by sqlglot" },
+                    { text: "an adapter reads one source and never reasons", gap: true },
+                    { text: "every fact carries where it came from", gap: true },
+                    { text: "a real warehouse of 625 models synced in about two minutes", gap: true },
+                  ],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 170, kind: "code",
+                  parts: [
+                    { title: "System graph" },
+                    { mono: ".fathom/graph.duckdb" },
+                    { text: "tables, columns and jobs, and what feeds what", gap: true },
+                    { text: "owners and tiers" },
+                    { text: "the rules that cover each table" },
+                    { text: "a fact with no source is refused", gap: true },
+                  ],
+                },
+                {
+                  x: 380, y: 256, w: 178, h: 136, kind: "code",
+                  parts: [
+                    { title: "Ledger" },
+                    { text: "append-only events" },
+                    { text: "incidents, verdicts, decisions and outcomes after merge", gap: true },
+                    { text: "only ever added to", gap: true },
+                  ],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 170, kind: "code",
+                  parts: [
+                    { title: "Preflight" },
+                    { mono: "fathom preflight" },
+                    { text: "typed change ops from the diff, the SQL or the intent", gap: true },
+                    { text: "column-level blast radius" },
+                    { text: "7 rule types, checked in code" },
+                    { text: "risk as a sum of named parts" },
+                    { text: "inform, warn or block", gap: true },
+                  ],
+                },
+                {
+                  x: 590, y: 256, w: 155, h: 136, kind: "plain",
+                  parts: [
+                    { title: "Review" },
+                    { mono: "fathom review" },
+                    { text: "gather, generate, validate, format", gap: true },
+                    { text: "four focused passes and a second reading" },
+                    { text: "no evidence, no finding", gap: true },
+                  ],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 170, kind: "agent",
+                  parts: [
+                    { title: "MCP server" },
+                    { text: "seven tools for any coding agent" },
+                    { mono: "preflight · explain", gap: true },
+                    { mono: "history · ask · review" },
+                    { mono: "record_decision" },
+                    { mono: "propose_constraint" },
+                    { text: "none can write to the platform", gap: true },
+                  ],
+                },
+                {
+                  x: 773, y: 256, w: 165, h: 62, kind: "code",
+                  parts: [{ title: "CI gate" }, { mono: "fathom gate" }, { text: "the only place a verdict blocks" }],
+                },
+                {
+                  x: 773, y: 326, w: 165, h: 66, kind: "plain",
+                  parts: [{ title: "Pull request comments" }, { text: "one per new finding, never a blocking review" }],
+                },
+                {
+                  x: 380, y: 416, w: 178, h: 78, kind: "code",
+                  parts: [{ title: "Postflight" }, { mono: "fathom postflight" }, { text: "watches the next three runs after a merge and records the outcome" }],
+                },
+                {
+                  x: 590, y: 416, w: 155, h: 78, kind: "code",
+                  parts: [{ title: "Propose" }, { mono: "fathom propose" }, { text: "drafts rules from patterns in the ledger" }],
+                },
+                {
+                  x: 773, y: 416, w: 165, h: 78, kind: "plain",
+                  parts: [{ title: "A person decides" }, { text: "approves, waives or rejects; merging a drafted rule approves it" }],
+                },
+              ],
+              edges: [
+                { d: "M170 97 H194" }, { d: "M170 149 H194" }, { d: "M170 201 H194" },
+                { d: "M170 259 H194" }, { d: "M170 317 H194" }, { d: "M170 369 H194" },
+                { d: "M351 160 H378" }, { d: "M351 324 H378" },
+                { d: "M558 160 H588" }, { d: "M558 210 H572 V324 H588" },
+                { d: "M667 244 V254" },
+                { d: "M773 160 H747", kind: "agent" },
+                { d: "M745 230 H760 V287 H771", kind: "code" },
+                { d: "M745 359 H771" },
+                { d: "M469 392 V414", both: true },
+                { d: "M558 370 H574 V455 H588" },
+                { d: "M745 455 H771" },
+                { d: "M855 494 V510 H366 V370 H378" },
+              ],
+              edgeLabels: [
+                { x: 749, y: 155, text: "calls" },
+                { x: 610, y: 506, text: "decision" },
+              ],
+              note: "Only review calls a model, and each of its findings is checked against the diff and the graph before anyone sees it. Everything else on this drawing is code, and the model never overrules it.",
             },
           ],
         },
         {
-          id: "changed",
-          heading: "What changed",
+          id: "evidence",
+          heading: "Evidence",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+                "PipelineBench is my own benchmark, so I built it to be hard to game. It has sixty scenarios on a small sample data platform, with answers written by hand from the platform's rules and grading done by code. Each AI agent is tried with nothing, with the repository's files, with plain document search, and with Fathom.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "No forbidden calls",
+                  note: "A forbidden call is going ahead with a change the rules say must stop for a person. With Fathom: 0 of 50 on Claude Sonnet 5.5 and Haiku 5.5. With no context: 8 of 50.",
+                },
+                {
+                  title: "Every required citation",
+                  note: "With Fathom, agents cited 100% of the relevant rules, past incidents, affected tables and required approvers, against 46% with no context.",
+                },
+                {
+                  title: "A higher score than the whole repo",
+                  note: "The benchmark score rose from 0.39 with no context to 0.82 and 0.83 with Fathom, ahead of 0.72 to 0.76 with the whole repository in hand.",
+                },
+                {
+                  title: "Real bugs found",
+                  note: "On 45 real bugs from 8 open-source projects, held out from all tuning, review found 74%, a range of 73% to 76% across 3 runs on Claude Sonnet 5.5.",
+                },
+              ],
             },
             {
               type: "paragraph",
               text:
-                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+                "The stronger test is outside my own benchmark. cal-itp/data-infra is California's public transit data warehouse: 625 dbt models and 21 Airflow pipelines, run by a real team. Fathom read the manifest the project publishes and was run on its real history.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "On cal-itp's warehouse" }, { label: "Before" }, { label: "After" }],
+              rows: [
+                { cells: ["First full sync", "Over 20 minutes, stopped", "2 min 9 s"] },
+                { cells: ["Models with column lineage", "4 of 625", "621 of 625"] },
+                { cells: ["Warnings on 12 merged commits", "7 warnings, all false", "2 warnings, both correct"] },
+              ],
             },
             {
               type: "paragraph",
               text:
-                "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
+                "Every first-pass false alarm came from files Fathom could not map yet, such as shared schema files and hand-written tests. Once they mapped, the two warnings left were both correct. One model finding is confirmed by the project itself: Fathom warned that a change had swapped dbt references for hardcoded production table names, and the project's next commit put the references back.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "116 merged changes over 26 weeks" }, { label: "Warnings" }, { label: "False alarms" }],
+              rows: [
+                { cells: ["Code checks only", "4 warnings in 26 weeks", "0 false alarms a week"] },
+                { cells: ["Code checks plus model review", "2.23 warnings a week", "0.81 false alarms a week, with 3 of 6 known bugs flagged (policy tuned on this history)"], emphasis: true },
+              ],
             },
             {
               type: "paragraph",
               text:
-                "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+                "A second public platform took the adapters further. Datacoves' balboa runs dbt on Snowflake, with Airflow written in the newer TaskFlow style and no published manifest. Models whose columns could not be read went from 7 of 43 to 1, a semantic view that is not SQL, and Airflow went from nothing read to 32 DAGs and 53 tasks.",
             },
             {
               type: "paragraph",
               text:
-                "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+                "Fathom reviews ordinary code too. On 26 merged changes from three open-source projects in three languages, httpx, Hono and Cobra, its code checks raised no false warning: parsing told 49 unrelated .read() calls apart from the method a change had removed.",
             },
+          ],
+        },
+        {
+          id: "weight",
+          heading: "The weight of the work",
+          blocks: [
             {
               type: "paragraph",
               text:
-                "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
+                "Fathom is a full system, built and tested like one, with its own benchmark to keep it honest.",
+            },
+            {
+              type: "stats",
+              items: [
+                { value: "~14,000 lines", label: "of Python, with no model SDK as a dependency" },
+                { value: "264 tests", label: "with the benchmark's ground truth checked against Fathom on every run" },
+                { value: "60 scenarios", label: "in PipelineBench, with answers written by hand" },
+                { value: "5 adapters", label: "dbt, Airflow, Git, run history and incidents" },
+                { value: "7 rule types", label: "a team writes its constraints in, each checked in code" },
+                { value: "7 MCP tools", label: "none of which can write to the platform" },
+                { value: "5 providers", label: "behind one model interface, from offline to a subscription" },
+                { value: "6 languages", label: "its reference check parses" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "plan",
+          heading: "What's next",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "The public release for dbt teams: preflight, review and the CI gate, with a guide for two weeks in shadow mode, where Fathom only comments while a team counts its warnings.",
+                "More platforms. After cal-itp on BigQuery and balboa on Snowflake, a third public warehouse such as GitLab's data-team dbt project.",
+                "Severity that earns its warnings. Evidence-gated escalation, and confirming the failing case with a read-only query on the warehouse, are built; next is tuning them on more teams' history.",
+                "A design partner. Replay Fathom on a team's last six months of changes and incidents, then two weeks in CI that only comment.",
+              ],
             },
           ],
         },
@@ -1700,16 +2354,11 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
+          "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
       },
-      disclaimer:
-        "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
-      contactHeading: "Have a queue like this? I reply within a day.",
+      contactHeading: "Want agents to change your data platform safely? Let's talk.",
     },
 
-    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
-    // The reviewer-agreement figure (~98%) is the owner's, from his draft; he lifted the master
-    // copy's no-accuracy-figure rule for this page on 2026-10-14.
     {
       id: "esper",
       card: {
@@ -1724,7 +2373,7 @@ export const portfolioData = {
       eyebrow: "Case study · Personal system · Research agent · LangGraph",
       title: "Esper: a research agent that proves every sentence",
       intro:
-        "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call.",
+        "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call. Against a coding agent with web search, told to cite, Esper backed 82% of its sentences to the agent's 58%.",
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end, with an agent doing the typing" },
         {
@@ -1830,6 +2479,20 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
+                "A single model call is an easy yardstick, so I added a harder one: what most people would actually use. A coding agent on Claude Opus, with web search and page reading, no limit on either, and told to cite, answered 12 questions with the same graders. It covered the checklists as well as Esper and was far cheaper, but it did not stay inside its sources.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Twelve questions" }, { label: "Esper", numeric: true }, { label: "Opus agent with web search", numeric: true }],
+              rows: [
+                { cells: ["Sentences backed by the page they cite", "82%", "58%"] },
+                { cells: ["Sentences the judge found unsupported", "2%", "9%"] },
+                { cells: ["Expert checklist covered", "90%", "94%"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
                 "The gate is Flywheel, my testing tool for agents: eleven test cases, six checks done by plain code on the outputs, each case run twice. A cache records every page, search and model reply, so the gate can replay the whole run in under a minute with no model and no web access. To prove it works, I replayed the recording against a copy of the code with a deliberate bug: a tidy-up that silently stopped citing claims under sentences marked unverified. The gate blocked it on all eleven cases.",
             },
           ],
@@ -1875,402 +2538,435 @@ export const portfolioData = {
       contactHeading: "Need an agent whose answers can be checked? Let's talk.",
     },
 
-    // Orion (fourth, after Flywheel), added 2026-10-19 (TG-07) from the owner's own Orion document,
-    // sentence by sentence. A sentence that uses a word the copy scan bans is left out, not reworded.
-    // The thirteen walkthrough steps come from the approved Look. `status` stands where a code link
-    // would, because the repository is private; there is no codeLink.
+    // Orion, rewritten 2026-10-25 from the owner's Orion / Fathom split brief and his follow-up
+    // ("the Orion case study should still be called Orion ... show the bulk and the weight of the
+    // work"): the personal context layer over his own engineering record. Orion's data-platform
+    // half became Fathom (/work/fathom). The ingest counts are the owner's "How Orion runs on your
+    // Mac" sheet; tools, daemon jobs, lessons and retrieval follow Orion's README and
+    // docs/hands-free.md at main 20a11d8 (about 14,350 lines of Python, 357 tests); the Auspex
+    // figures are its first full regrade on his Mac (158 turns, 5 cases). The repository stays
+    // private, so `status` stands where a code link would; there is no codeLink.
     {
       id: "orion",
+      banner: "Orion's data-platform work became Fathom.",
+      bannerLink: { text: "Fathom", to: "/work/fathom" },
       card: {
         featured: false,
-        eyebrow: "Personal system · Code review",
-        title: "Orion: what an agent should know before it changes anything",
+        eyebrow: "Personal system · Coding agents · Context",
+        title: "Orion: what my agents know before they start",
         summary:
-          "The context layer my coding agents use every day. Before an agent edits, Orion hands it the rules, owners, past incidents and lessons for the files it is about to touch, every passage cited. It started as a change reviewer for data platforms, and that is still where it knows the most.",
+          "Every coding agent starts a session knowing nothing about my work. Orion reads 16 repositories of commits, pull requests, design notes and past agent sessions into one cited record, keeps it current on its own, and hands each agent the rules, past fixes and lessons for the files it is about to touch.",
         linkText: "Read the case study",
-        tags: ["0 of 50 unsafe decisions by AI agents using Orion", "64% of unseen real bugs flagged, mean of 3 runs"],
+        tags: ["16 repositories in one cited record", "7 tools, no model call"],
       },
-      status: "Ongoing project",
-      eyebrow: "Case study · Personal system · Code review",
-      title: "Orion: what an agent should know before it changes anything",
+      status: "Private · in daily use",
+      eyebrow: "Case study · Personal system · Coding agents",
+      title: "Orion: what my agents know before they start",
       intro:
-        "Orion gives coding agents the context a new engineer would spend weeks picking up. Before an agent edits, it gets the rules, owners, past incidents and lessons that cover the files in front of it. Before it commits, it learns what its change reaches. Every passage carries an id that reads back to its source, so nothing is taken on trust. It runs on my own machine and every agent session I start uses it.",
+        "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
       atAGlance: [
-        { label: "My role", value: "My own project, built and tested in October 2026" },
+        { label: "My role", value: "My own system, designed and built in October 2026 and used every day since" },
         {
           label: "What it is",
-          value: "A context layer and change reviewer for coding agents and the people who work with them",
+          value: "A personal context layer over my engineering record, served to any coding agent through MCP",
         },
-        { label: "Where it stands", value: "In daily use by my own agents, and growing" },
+        { label: "Where it stands", value: "In daily use on my own machine and growing; private for now" },
         {
-          label: "Tested on",
-          value:
-            "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, 42 hand-labelled search questions, and 116 merged changes from a 625-model dbt warehouse",
+          label: "Covers",
+          value: "16 repositories: 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and past agent sessions",
         },
       ],
       stats: [
-        {
-          value: "0 of 50",
-          label: "unsafe decisions by AI agents with Orion, against 8 of 50 with no context",
-        },
-        { value: "64%", label: "of real bugs on unseen code flagged as warnings, mean of 3 runs on Claude Sonnet 5.5" },
+        { value: "16", label: "repositories in one cited record, kept current by an always-on service" },
+        { value: "4,599", label: "pull requests and issues an agent can search and read back by id" },
         { value: "0.889", label: "search recall in the top ten results, on 42 hand-labelled questions" },
-        { value: "625", label: "dbt models read at real scale, with a map of which columns feed which for 621 of them" },
+        { value: "158", label: "finished agent turns graded by fixed rules in the first full pass" },
       ],
       sections: [
         {
-          id: "what",
-          heading: "What Orion is, and where it stands",
+          id: "loop",
+          heading: "Where it sits",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Orion is a work in progress. I built it in about ten days in October 2026, and my agents have used it every day since. The results below are first measurements that the next runs will build on.",
+                "A coding agent is only as good as what it knows when it starts, and only as trustworthy as what you can see it did. Orion covers the first moment of every turn, and it works with two other pieces I run alongside it.",
             },
             {
-              type: "paragraph",
-              text:
-                "The idea behind it is simple. A general reviewer reads the diff. Orion also reads the system the diff lands in. Language models are good at reading code but bad at knowing what a change will break two systems away. Orion answers that part with code, and the model only interprets the answer.",
-            },
-          ],
-        },
-        {
-          id: "walkthrough",
-          heading: "Walkthrough",
-          blocks: [
-            {
-              type: "walkthrough",
-              figure: "orion-chip",
-              name: "Orion",
-              pace: 0.85,
-              regionLabel: "Orion walkthrough",
-              note: "The whole design on one chip. Each part says built or designed.",
-              stepsLabel: "Steps of the walkthrough",
-              caption: { number: "Fig 1", title: "Orion as one chip, every part of the design" },
-              hint: "Point at a part of the chip to open it. Move away and it runs on its own.",
-              hintTouch: "Tap a part of the chip to open it.",
-              listHeading: "All thirteen steps as a list",
-              listCollapsed: true,
-              legend: [
-                { term: "built", meaning: "means it exists and works today." },
-                { term: "designed", meaning: "means it is planned and not built yet." },
-              ],
-              controls: {
-                play: "Play",
-                pause: "Pause",
-                prev: "Previous step",
-                next: "Next step",
-                replay: "Replay",
-                skip: "Skip to the list",
-                show: "Show on the chip",
-                approve: "Approve",
-                waive: "Waive",
-                reject: "Reject",
-              },
-              states: {
-                paused: "Paused",
-                playing: "Playing",
-                offscreen: "Plays when in view",
-                reading: "Paused while you read",
-                waiting: "Waiting for you",
-                done: "All thirteen steps shown",
-              },
-              announce: {
-                step: "Step {n}, {label}, {tag}.",
-                waiting: "The chip stopped. It is waiting for your decision.",
-                decision: "Decision {kind} recorded to the ledger.",
-              },
-              labels: {
-                stepOf: "Step {n} of {total}",
-                person: "A person decides.",
-                personInList: "A person decides:",
-                evidence: "Evidence",
-                waiting: "The chip stopped. It is waiting for you.",
-                recorded: "You recorded {kind}. The chip carries on.",
-                decisionReadout: "Decision recorded: {kind}",
-                designedSuffix: "· designed",
-                showAria: "Show step {n}, {label}, on the chip",
-              },
+              type: "flow",
+              columns: 3,
               steps: [
+                { title: "Before: Orion", note: "The rules, past fixes and lessons for the files the agent is about to touch, every passage cited" },
+                { title: "During: a guard", note: "A hook in every session that refuses a short list of hard lines, whatever the agent was asked" },
+                { title: "After: Auspex", note: "Grades each finished turn; a mistake that repeats becomes a lesson Orion hands to the next agent" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "record",
+          heading: "One cited record of my work",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Orion runs as a local process on my own machine. Its ingest reads five sources into one document store: every commit of every checkout, the pull requests, reviews, issues and comments behind them on GitHub, my Claude Code session transcripts, the cases Auspex raises, and the Markdown where my projects write down their designs, decisions and retros. On 25 October 2026 that came to 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions.",
+            },
+            {
+              type: "cards",
+              items: [
                 {
-                  id: "sync",
-                  label: "Sync",
-                  tag: "built",
-                  readout: "dbt · Airflow · Git · incident reports",
-                  does:
-                    "Gathers tables, jobs, owners and past incidents from dbt, Airflow, Git and incident reports kept as files. It builds a map of what depends on what, plus a log that is only ever added to, all in one database file.",
-                  evidence:
-                    "625 dbt models, 21 Airflow pipelines, column-level lineage for 621 of them, full sync in 2 min 9 s, on cal-itp/data-infra, California's public transit data warehouse.",
+                  title: "Every item has an id",
+                  note: "A commit is git:, a pull request or issue gh:, a session session:, a note md:, a case case:. Any id an agent cites reads back to its full text, and one that does not is reported as not recorded.",
                 },
                 {
-                  id: "store",
-                  label: "One store",
-                  tag: "built",
-                  readout: "every fact says where it came from",
-                  does:
-                    "Every fact it stores says where it came from, and the store refuses any fact that does not.",
+                  title: "Secrets never reach it",
+                  note: "Tokens, keys, bearer headers, .env assignments and passwords in URLs are scrubbed before anything is stored. When the rules change, the next full run cleans what is already there.",
                 },
                 {
-                  id: "explain",
-                  label: "Explain",
-                  tag: "built",
-                  readout: "owner · tier · what it reaches · incidents",
-                  does:
-                    "For any table: who owns it, how important it is (its tier), what feeds it and what it feeds, and which tier-1 consumers (its most important users) sit anywhere downstream, the full blast radius of a change. It also shows which scheduled job builds it, which columns feed which, the rules that cover it and recent incidents. Every item carries an id.",
+                  title: "Incremental by design",
+                  note: "A stored commit is never read again, GitHub is asked only for what changed since the last run, and a run with nothing new takes half a second.",
                 },
                 {
-                  id: "preflight",
-                  label: "Preflight",
-                  tag: "built",
-                  readout: "inform · warn · block",
-                  does:
-                    "The verdict, given before a change ships. It returns what the change does, which downstream columns and tables it reaches, which rules it triggers, past incidents on the same path, a risk score you can inspect, recommended checks and a summary. Every claim cites its evidence.",
-                  person: "block means a person decides, and the three levels are inform (for information), warn and block.",
-                },
-                {
-                  id: "review",
-                  label: "Review",
-                  tag: "built",
-                  readout: "find · suggest · check · format",
-                  does:
-                    "Four stages. First, plain code finds what it can using fixed rules. Next, the AI model suggests more possible problems. Then code checks each suggestion against the change and the stored facts. Last, the output is formatted. A finding with no valid evidence is marked uncertain, and one outside the change is rejected.",
-                },
-                {
-                  id: "gate",
-                  label: "Gate",
-                  tag: "built",
-                  readout: "fails on warn or block",
-                  does:
-                    "A check a team can run automatically on every proposed change (this is called CI). It runs the pre-flight on the change and fails the build when the verdict reaches warn or block, as the team chooses. The verdict is advice only until a team switches this on.",
-                  person: "Orion never blocks on its own. The gate is how a team's automatic checks make its verdict binding.",
-                },
-                {
-                  id: "mcp",
-                  label: "MCP",
-                  tag: "built",
-                  readout: "fourteen tools · none write to the platform",
-                  does:
-                    "The MCP server, a standard way for coding agents to call a tool. It offers fourteen. Five give any agent context: context (what to know before starting), impact (what a change reaches), search, read (the full text behind any id) and file_history (owners and past fixes for one file). Then review, the record's search_record and read_record, and six for data platforms: preflight, explain, history, ask, record_decision (log a person's choice) and propose_constraint (suggest a new rule). None of them can change the data platform.",
-                  person:
-                    "The server's instructions tell the agent to call preflight before writing code and again before opening a pull request, to cite evidence ids rather than paraphrase, and that block means a person decides.",
-                },
-                {
-                  id: "record",
-                  label: "Record",
-                  tag: "built",
-                  readout: "search · read stored facts",
-                  does:
-                    "Search and read what my projects have written down about themselves: design notes, decision records, plans, retrospectives, and the lessons, run log and run folders of my build pipeline, the automated process that carries one request through to a shipped change. It covers every project listed in one settings file. It uses no outside software and makes no AI model call.",
-                },
-                {
-                  id: "decision",
-                  label: "Decision",
-                  tag: "built",
-                  readout: "approve / waive / reject",
-                  does: "Records a person's choice to approve, waive (set aside) or reject a verdict, in a permanent log called the ledger.",
-                  person: "This is the step. Nothing lands until a person records a decision.",
-                },
-                {
-                  id: "postflight",
-                  label: "Postflight",
-                  tag: "built",
-                  readout: "next three runs · outcome recorded",
-                  does:
-                    "Closes the loop after a change ships. For each verdict, it finds the change that was merged. It then watches the tables that change touched, and the ones downstream, for their next three scheduled runs. It records one outcome linked to the verdict: clean, failed, missed its promised delivery time (an SLA), or caused an incident.",
-                },
-                {
-                  id: "propose",
-                  label: "Propose",
-                  tag: "built",
-                  readout: "rules drafted from ledger patterns",
-                  does:
-                    "Drafts new rules (constraints) from patterns in the ledger: repeated missed delivery times, failures after changes, incident reports with no matching rule, and verdicts that were too mild. A nightly job proposes them as a pull request, a request for a person to review and merge the files. Merging is the approval.",
-                  person:
-                    "Git, the tool that keeps every version of a project's files, stores the decisions. Rules and incident reports are files, merging is approval, and the history is the audit trail.",
-                },
-                {
-                  id: "bench",
-                  label: "PipelineBench",
-                  tag: "built",
-                  readout: "sixty scenarios · four setups",
-                  does:
-                    "The benchmark: sixty scenarios with answers written by hand, tried in four setups for what the agent is given (nothing, the repository's files, plain document search, or Orion), all graded by code.",
-                  evidence:
-                    "Unsafe decisions by AI agents: 0 of 50 with Orion, against 8 of 50 with no context.",
-                },
-                {
-                  id: "next",
-                  label: "Next",
-                  tag: "designed",
-                  readout: "designed · not built",
-                  does:
-                    "Next: more platform adapters (Dagster, Snowflake query history), Postgres as a shared team store, an LLM intent extractor behind ops_from_intent, and more seeds and a larger fixture for PipelineBench.",
+                  title: "Stored once",
+                  note: "The same file in two clones, or the same commit in a fork, is stored once and the copy marked. Cloud sessions are exported, scrubbed, to a shared folder, so they join the same record.",
                 },
               ],
             },
           ],
         },
         {
-          id: "daily",
-          heading: "How my agents use it every day",
+          id: "tools",
+          heading: "Seven tools, no model call",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Orion runs as a local process on my own machine. A one-time ingest reads my work into one record: 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions, with credentials scrubbed before anything is stored. The first ingest took about three and a half minutes. Each refresh after that reads only what is new and takes about ten seconds. No model is called.",
+                "Agents reach Orion through one MCP server, so any session in any repository gets the same tools. All seven are deterministic: no model call, an id on every item, the answer packed to a token budget, and anything that did not fit listed by id rather than dropped.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Tool" }, { label: "When an agent calls it" }, { label: "What comes back" }],
+              rows: [
+                { cells: ["context", "Starting a task", "Lessons and sensitive areas in scope, owners, related notes and recent fixes"] },
+                { cells: ["impact", "Before committing", "Callers of the changed functions in every repository, importers, owners, past fixes and reverts"] },
+                { cells: ["search", "Any time", "One ranked list over the record and the code"] },
+                { cells: ["read", "Following a citation", "The full text behind any id Orion returned, or not recorded"] },
+                { cells: ["file_history", "Before rewriting a file", "Its owners, and the fixes and reverts that touched it, first"] },
+                { cells: ["search_record and read_record", "Asking why something is the way it is", "Design notes, decisions, plans and retros across every repository"] },
+              ],
             },
             {
               type: "flow",
               columns: 4,
               steps: [
                 { title: "Session opens", note: "A hook tells the agent Orion is here and when to call it" },
-                { title: "Before editing", note: "context: rules, owners, past fixes and lessons for those files" },
+                { title: "Before editing", note: "context: the rules, owners, past fixes and lessons for those files" },
                 { title: "While working", note: "search and read: one ranked, cited list over the record and the code" },
                 { title: "Before committing", note: "impact: callers, importers and past reverts the change reaches" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "retrieval",
+          heading: "Search that knows what depends on what",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Every file is cut by its syntax: one chunk per function or class, Markdown at its headings, commit patches per file. A search then ranks three ways at once. Matching words, through BM25. Matching meaning, through bge-small embeddings computed on my machine, so nothing leaves it. And the code graph, seeded with the files the agent is touching, so their importers, their imports and the records that touched them rank first. Reciprocal rank fusion merges the three into one list, and a local cross-encoder can rerank the top few dozen.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The code graph spans every repository at once: definitions, imports, calls, HTTP routes and environment variables, parsed with tree-sitter rather than matched as text. That is how impact can tell an agent that a function it is changing in one repository is called from another.",
+            },
+            {
+              type: "cards",
+              items: [
+                { title: "0.889 recall in the top ten", note: "On 42 hand-labelled questions about my own work, with a mean reciprocal rank of 0.656." },
+                { title: "Tens of milliseconds", note: "A typical search, served from an in-process cache until the index changes." },
+                { title: "Every answer reads back", note: "Each hit cites a chunk id and a line span, and a citation can be scored against the index." },
+              ],
+            },
+          ],
+        },
+        {
+          id: "always-on",
+          heading: "Always on, hands free",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Nobody runs Orion by hand. One setup command installs it as a service on my Mac, registers it with Claude Code, and starts a daemon that keeps everything current with no model calls.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Daemon job" }, { label: "How often" }, { label: "What it does" }],
+              rows: [
+                { cells: ["local", "Every 30 s", "For each checkout that moved, ingests its history and notes and refreshes its index and code graph"] },
+                { cells: ["pull", "Every 15 min", "Fetches, and fast-forwards a checkout only when it is clean; it never merges, rebases or resets"] },
+                { cells: ["sessions", "Every 10 min", "Brings new agent session transcripts into the record and the index"] },
+                { cells: ["github", "Every 30 min", "Pull requests, reviews, comments and issues; the token is never written to disk"] },
+                { cells: ["outcomes", "Every 10 min", "Judges whether context Orion added to a prompt was actually used"] },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Search combines three signals: matching words, matching meaning, and the graph of what depends on what, seeded with the files the agent is touching. On 42 hand-labelled questions it puts a right answer in the top ten with recall 0.889, and a search takes tens of milliseconds. The graph is what answers questions about a change: on questions about a data change, the ranking score went from 0.113 without it to 0.562 with it.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "It also learns. My trace viewer for agents grades every finished agent turn by fixed rules. When the same failure repeats in one file or repository, Orion drafts a lesson. I approve it by merging it, and from then on Orion hands it to any agent working in that scope. A lesson that keeps failing moves up a ladder: explain, then a checklist, then a check, then a rule enforced in code.",
+                "A prompt hook adds the record's most relevant passages to each prompt in well under a second, or adds nothing when nothing is relevant. It fails open: no daemon, a timeout or no match, and the agent simply carries on. Every hook call, tool call and daemon job is one line in a usage log, which is how Auspex sees whether an agent used what Orion gave it.",
             },
           ],
         },
         {
           id: "architecture",
-          heading: "How it's built",
+          heading: "Architecture",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Orion is a local process with local files. A one-time ingest reads my checkouts, GitHub history and agent sessions into one record, and an always-on daemon keeps it current. Agents reach everything through one MCP server and two hooks, and every passage they get carries an id that reads back to its source. Only review calls a model.",
+                "Orion is a local process with local files. The ingest reads my checkouts, GitHub history, agent sessions and Auspex cases into one record, and an always-on daemon keeps it current. Agents reach everything through one MCP server and two hooks, and Auspex reads what they did.",
             },
             {
-              type: "image",
-              src: "orion-architecture.png",
-              width: 1924,
-              height: 1344,
-              alt: "Orion's architecture. Sources (sixteen git checkouts, GitHub, Claude Code session transcripts) feed ingesters that redact secrets first. Ingest writes three stores: the DocStore, the retrieval index and the code graph with its ledger. A retrieval core fuses lexical, dense and graph rankings. The MCP server orion serve exposes agent, record, review and data-platform tools to Claude Code, whose session and prompt hooks call it. An always-on daemon keeps the stores current and answers the prompt hook; only review and ask call a model.",
-              caption: "Fig 2 · How Orion runs on my Mac, and how agents use it",
-              openText: "Open the diagram full size",
+              type: "architecture",
+              // The owner's "How Orion runs on your Mac" diagram, laid out as he drew it, redrawn to
+              // Orion at main 20a11d8: the Auspex cases source and the lessons store added, the
+              // model provider and the ask tool gone (Orion makes no model call), the outcomes job
+              // on the daemon. The data-platform parts moved to Fathom on 2026-10-25.
+              label: "Orion's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 608],
+              legend: [
+                { kind: "data", label: "Your data" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "Retrieval (RAG)" },
+                { kind: "agent", label: "Agent interface" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Sources" },
+                { x: 196, y: 60, text: "Ingest · orion record" },
+                { x: 380, y: 60, text: "Stores · ~/.cache/orion" },
+                { x: 590, y: 60, text: "MCP server · python3.12" },
+                { x: 775, y: 60, text: "Agent" },
+              ],
+              boxes: [
+                { x: 32, y: 74, w: 138, h: 58, kind: "data", parts: [{ title: "~/C.Projects" }, { text: "16 git checkouts" }, { text: "code + Markdown" }] },
+                { x: 32, y: 139, w: 138, h: 58, kind: "data", parts: [{ title: "GitHub" }, { text: "PRs, issues, reviews" }, { text: "+ upstream of forks" }] },
+                { x: 32, y: 204, w: 138, h: 56, kind: "data", parts: [{ title: "~/.claude/projects" }, { text: "Claude Code session transcripts" }] },
+                { x: 32, y: 267, w: 138, h: 46, kind: "data", parts: [{ title: "~/.auspex" }, { text: "cases.jsonl, graded turns" }] },
+                { x: 32, y: 320, w: 138, h: 50, kind: "plain", parts: [{ mono: "record.toml" }, { text: "which roots, repos and sessions" }] },
+                {
+                  x: 196, y: 74, w: 155, h: 226, kind: "code",
+                  parts: [
+                    { title: "Ingesters" },
+                    { pairs: [["git.py", "commits"], ["github.py", "PRs, issues"], ["sessions.py", "turns"], ["cases.py", "cases"], ["markdown.py", "sections"]] },
+                    { rule: true },
+                    { mono: "scrub.py" },
+                    { text: "redacts secrets first" },
+                    { text: "incremental: only new items since last run", gap: true },
+                    { text: "a copy in a fork or clone is stored once" },
+                  ],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 82, kind: "code",
+                  parts: [{ title: "DocStore" }, { mono: "record/docs.sqlite" }, { text: "ids: git: · gh: · md: · session: · case:" }, { text: "full text behind every citation" }],
+                },
+                {
+                  x: 380, y: 166, w: 178, h: 100, kind: "retrieval",
+                  parts: [
+                    { title: "Retrieval index" },
+                    { mono: "rag.duckdb" },
+                    { text: "syntax-aware chunks (tree-sitter)" },
+                    { text: "BM25 postings · bge-small vectors" },
+                    { text: "import edges · chunk views" },
+                    { text: "from the record + each checkout" },
+                  ],
+                },
+                {
+                  x: 380, y: 276, w: 178, h: 76, kind: "code",
+                  parts: [{ title: "Code graph" }, { mono: ".orion/graph.duckdb" }, { text: "definitions, imports, calls, HTTP routes, env, across every repo" }],
+                },
+                {
+                  x: 32, y: 376, w: 526, h: 118, kind: "retrieval",
+                  parts: [
+                    { title: "Retrieval core ·", titleMono: "orion.rag", accent: true },
+                    { text: "one query in, one ranked and cited list out (p50 tens of ms)" },
+                    {
+                      chips: [
+                        { top: "BM25", bottom: "lexical" },
+                        { top: "dense", bottom: "bge-small" },
+                        { top: "graph", bottom: "blast radius" },
+                        { top: "RRF fuse", bottom: "→ top k", strong: true },
+                      ],
+                    },
+                    { text: "Scope.from_change: seeds = the paths you touch, filters = repo, kind, date.", gap: true },
+                    { text: "R@10 0.889, MRR 0.656 on 42 hand-labelled queries." },
+                  ],
+                },
+                {
+                  x: 32, y: 515, w: 308, h: 114, kind: "plain",
+                  parts: [
+                    { title: "Auspex" },
+                    { text: "my trace viewer: reads every session transcript and Orion's usage log" },
+                    { text: "grades every finished turn by fixed rules and writes each failure as a case", gap: true },
+                    { text: "shows whether agents used Orion's context", gap: true },
+                  ],
+                },
+                {
+                  x: 366, y: 503, w: 200, h: 44, kind: "bare",
+                  parts: [{ text: "dashed bus: the daemon and auto-refresh run rag index_checkout, record sync and code graph sync into the stores" }],
+                },
+                {
+                  x: 366, y: 555, w: 192, h: 70, kind: "plain",
+                  parts: [{ title: "Usage log" }, { mono: "~/.orion/usage.jsonl" }, { text: ["every hook, tool and daemon call; read by ", { mono: "orion usage stats" }] }],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 420, kind: "agent",
+                  parts: [
+                    { title: "orion serve" },
+                    { text: "stdio, one per session" },
+                    { section: "Agent tools" },
+                    { mono: "context" }, { mono: "impact" }, { mono: "search" }, { mono: "read" }, { mono: "file_history" },
+                    { section: "Record" },
+                    { mono: "search_record" }, { mono: "read_record" },
+                    { text: "deterministic, cited, packed to a token budget", gap: true },
+                    { rule: true },
+                    { sub: "Answer cache" },
+                    { text: "keyed by HEAD + working tree + index stamp, 120 s" },
+                    { sub: "Auto-refresh" },
+                    { text: "checkout changed? re-index in the background (~0.6 s for a one-file edit)" },
+                  ],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 232, kind: "agent",
+                  parts: [
+                    { title: "Claude Code" },
+                    { text: "any session, any repo" },
+                    { inner: { kind: "plain", parts: [{ mono: "SessionStart" }, { text: "hook says Orion is here, when to call" }] } },
+                    { inner: { kind: "code", parts: [{ mono: "UserPromptSubmit" }, { text: "adds the most relevant passages to a prompt, or nothing; fast, and fails open" }] } },
+                    { text: ["registered once by ", { mono: "orion setup mac" }] },
+                    { mono: "→ ~/.claude.json" },
+                    { mono: "→ ~/.claude/settings" },
+                  ],
+                },
+                {
+                  x: 773, y: 322, w: 165, h: 120, kind: "code",
+                  parts: [
+                    { title: "Lessons" },
+                    { mono: "lessons/" },
+                    { text: "drafted from two cases of one kind in one place" },
+                    { text: "a merge is the approval", gap: true },
+                    { text: "served only in scope, cited as lesson:id", gap: true },
+                  ],
+                },
+                {
+                  x: 590, y: 515, w: 348, h: 130, kind: "code",
+                  parts: [
+                    { title: "orion daemon ·", titleMono: "launchd" },
+                    { text: "always on, no model calls. Keeps the record, retrieval index and code graph current for every checkout in record.toml:" },
+                    { text: "changed checkouts every 30 s · sessions every 10 min · GitHub every 30 min", gap: true },
+                    { text: "git fetch + fast-forward of clean checkouts every 15 min" },
+                    { text: "outcomes every 10 min: was the added context used?" },
+                    { text: "answers the prompt hook over a Unix socket, fails open", gap: true },
+                  ],
+                },
+              ],
+              edges: [
+                { d: "M170 103 H194" }, { d: "M170 168 H194" }, { d: "M170 232 H194" }, { d: "M170 290 H194" },
+                { d: "M351 120 H378" },
+                { d: "M590 128 H560" }, { d: "M590 298 H560" }, { d: "M590 328 H560" },
+                { d: "M469 266 V276", end: false }, { d: "M469 352 V374" },
+                { d: "M366 590 H342" },
+                { d: "M170 345 C 205 345, 225 330, 245 302", dashed: true },
+                { d: "M130 74 V68 H365 V210 H378", dashed: true },
+                { d: "M588 470 H574 V96 H560", dashed: true }, { d: "M574 210 H560", dashed: true }, { d: "M574 312 H560", dashed: true },
+                { d: "M590 560 H574 V470", kind: "code", dashed: true, end: false },
+                { d: "M760 515 V222 H781", kind: "code" },
+                { d: "M773 410 H747", kind: "code" },
+                { d: "M469 156 V164", kind: "retrieval" },
+                { d: "M378 250 H361 V374", kind: "retrieval" },
+                { d: "M561 435 H587", kind: "retrieval", both: true },
+                { d: "M773 150 H748", kind: "agent" }, { d: "M745 190 H770", kind: "agent" },
+              ],
+              edgeLabels: [
+                { x: 749, y: 145, text: "calls" },
+                { x: 750, y: 185, text: "ids" },
+                { x: 764, y: 505, text: "socket", kind: "code" },
+              ],
+              note: "Orange is the retrieval path. Every tool that returns text goes through it, and every passage it returns carries an id that read can expand. An id that does not read back is reported as not recorded. Nothing on this drawing calls a model.",
             },
           ],
         },
         {
-          id: "results",
-          heading: "Results so far",
+          id: "auspex",
+          heading: "Auspex: grading after the work",
           blocks: [
             {
               type: "paragraph",
               text:
-                "The headline: with Orion's verdict in hand, AI agents made zero unsafe decisions on a 50-change benchmark, against 8 of 50 with no context.",
+                "Auspex shows what my agents are doing, live. Every session gets a card, and the current turn draws as a trace: one row per step, each subagent in its own colour. A context tab shows what filled each agent's context window, including what Orion added, and marks each of Orion's answers as used or not. A gauge shows how much of my plan's usage limits is gone and when the current pace would run out, and a weekly ledger reads every graded turn back week by week.",
             },
             {
-              type: "cards",
+              type: "paragraph",
+              text:
+                "Every finished turn is graded once by fixed rules, with no model call: code edited and no test or build after it, the same command failing three times, the same file edited eight times, a long wait for permission, or a context window over 80% full.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first full pass graded 158 turns and raised 5 cases. Three were sessions that ran their context window past 80%, and one edited code and finished without a test or build. The fifth was a chained command read as a failing check, and it became a sharper rule.",
+            },
+          ],
+        },
+        {
+          id: "lessons",
+          heading: "From repeated mistakes to lessons",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "This is where the loop closes. A mistake an agent makes twice in the same place should not be made a third time, so Orion turns Auspex's cases into lessons the next agent reads before it starts. Everything on this path is code: no model writes or judges a lesson.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "A case", note: "Auspex writes each failure as a case, and the ingest stores it with its session and files" },
+                { title: "Two in one place", note: "Two cases of one kind in one file or repository draft a lesson, scoped to the narrowest place they share" },
+                { title: "A merge approves it", note: "Drafts are never served. Merging the pull request that accepts one is the approval" },
+                { title: "Served in scope", note: "context lists the lesson first whenever an agent works there, cited by its id" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Each lesson sits on a rung of a ladder: explain what went wrong, then a checklist to tick before finishing, then a check to build, then the same check enforced. If the same case happens again after Orion served the lesson, the next draft moves it a rung. Because the usage log records every id Orion returned, \"it happened after the lesson was served\" is a fact, not a guess. Orion says what to build, and I decide.",
+            },
+          ],
+        },
+        {
+          id: "weight",
+          heading: "The weight of the work",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Orion is a full system, built and tested like one, not a script around a model.",
+            },
+            {
+              type: "stats",
               items: [
-                {
-                  title: "Safer decisions",
-                  note: "0 of 50 unsafe decisions with Orion on Claude Sonnet 5.5 and Haiku 5.5. The benchmark score rose from 0.39 with no context to 0.82 and 0.83 with Orion, ahead of 0.72 to 0.76 with the whole repository.",
-                },
-                {
-                  title: "Every claim cited",
-                  note: "Agents using Orion cited 100% of relevant rules and past incidents, every affected table and every required approver. Code does the grading, not another AI model.",
-                },
-                {
-                  title: "Real bugs caught",
-                  note: "On 45 held-out bugs from 8 open-source projects, never used for tuning, Orion flagged 64% as warnings on Claude Sonnet 5.5 and raised 76% at some level.",
-                },
-                {
-                  title: "Quiet on real history",
-                  note: "Replayed over 26 weeks of 116 merged changes on a real dbt warehouse, it flagged 3 of 6 known bugs at about one false alarm a week.",
-                },
-                {
-                  title: "Search that reads back",
-                  note: "Recall 0.889 in the top ten on 42 hand-labelled questions, ranking score 0.656, and every citation checked against its source.",
-                },
-                {
-                  title: "Real scale",
-                  note: "625 dbt models, 21 Airflow pipelines and column-level lineage for 621 of them, synced in 2 min 9 s on California's public transit data warehouse.",
-                },
+                { value: "~14,000 lines", label: "of Python, in one local package" },
+                { value: "357 tests", label: "including one that runs the whole path end to end over MCP" },
+                { value: "7 tools", label: "on the MCP server, each one deterministic and cited" },
+                { value: "5 jobs", label: "on the always-on daemon, keeping the record current" },
+                { value: "5 sources", label: "ingested into one scrubbed record" },
+                { value: "3 rankings", label: "fused in every search: words, meaning and the code graph" },
+                { value: "4 rungs", label: "on the lesson ladder, from explain to enforce" },
+                { value: "0 model calls", label: "between the record and the agent" },
               ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Measurement decides what stays. A second ranking model on top of search lowered recall in the top ten from 0.889 to 0.813, so it is off. A strict evidence check on every file cut held-out warnings from 0.615 to 0.148, so it now applies only to files that feed the data platform. And the benchmark is built to be hard to game: answers are written by hand from the platform's rules, and a held-out bug set keeps my tuning out of the score.",
-            },
-          ],
-        },
-        {
-          id: "studbook",
-          heading: "From Studbook to Orion",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Studbook answers questions about past decisions. Orion uses that kind of record to judge the next change before it ships. Orion is the next step of the same idea. In October 2026 it replaced Studbook as the engineering record my agents read.",
-            },
-            {
-              type: "table",
-              columns: [
-                { label: "Compared" },
-                { label: "Studbook (public)" },
-                { label: "Orion (private, in progress)" },
-              ],
-              rows: [
-                {
-                  cells: [
-                    "The question it answers",
-                    "\"Why was this decided?\"",
-                    "\"Is this change safe, and who needs to know?\"",
-                  ],
-                },
-                {
-                  cells: [
-                    "When it helps",
-                    "After the fact, when someone asks",
-                    "Before merge, on every change",
-                  ],
-                },
-                {
-                  cells: [
-                    "What it reads",
-                    "An engineering record: specs, decision records, retros, commits",
-                    "The diff, plus a graph of the system: lineage, rules, owners, past incidents",
-                  ],
-                },
-                {
-                  cells: [
-                    "How it decides",
-                    "Cited retrieval: it searches by meaning and by keyword, re-sorts the best matches, then gives an answer with citations or refuses",
-                    "Code works out what a change reaches and which rules apply. The model reviews the diff and summarises inside those facts, never overriding them.",
-                  ],
-                },
-                {
-                  cells: [
-                    "What comes out",
-                    "A cited answer, or \"that's not in the record\"",
-                    "A verdict an agent or a CI gate can act on, where every claim cites its evidence",
-                  ],
-                },
-                {
-                  cells: [
-                    "How it is measured",
-                    "Held-out questions: faithfulness 1.00, citation validity 0.95",
-                    "A safety benchmark for agents and recall on real historical bugs (above)",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The through-line is the same rule: never state what the record doesn't support. Studbook applied it to answers. Orion applies it to decisions, where a wrong answer costs a broken pipeline instead of a bad paragraph. Looking things up in the record is still at its core. But the lookup is narrowed by the map of the system, so a review pulls up the incidents and rules for what the change actually touches.",
             },
           ],
         },
@@ -2279,33 +2975,22 @@ export const portfolioData = {
           heading: "What's next",
           blocks: [
             {
-              type: "paragraph",
-              text:
-                "Orion is a work in progress. The results so far come from early runs, and the next round is more runs, more models and harder tests:",
-            },
-            {
               type: "bullets",
               items: [
-                "A bigger test set. Grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls.",
-                "Stronger models. Opus 5.5 is next, run on my subscription with no API spend.",
-                "Turn near-misses into warnings. Several right findings end one notch too low, as information rather than a warning. Lifting them is the clearest path to the 80% pass mark.",
-                "Prove bugs by running them. A failing test ships with the warning as proof, and a passing one is a reason to drop it.",
-                "Hold the line on noise. Every gain has to stay within one false alarm per 20 correct changes.",
+                "Proof that the context helps. Auspex already marks which of Orion's answers each agent used, and the outcomes job judges it every ten minutes. Next is comparing turns with and without them.",
+                "The first lessons from real sessions. As Auspex's cases repeat in one place, Orion drafts the lessons, and each one I merge is served to every agent that works there.",
+                "Every agent in one record. Cloud sessions already export their transcripts, scrubbed, to a shared folder, so local and cloud agents feed the same record and learn from the same lessons.",
               ],
-            },
-            {
-              type: "paragraph",
-              text: "Each step is measured before and after, and the result goes on this page.",
             },
           ],
         },
       ],
       callout: {
-        eyebrow: "Where Orion stands",
+        eyebrow: "What I'd bring to a client",
         text:
-          "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
+          "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
       },
-      contactHeading: "Have a system that needs deploying? Let's talk.",
+      contactHeading: "Running coding agents every day? Let's talk.",
     },
 
 
