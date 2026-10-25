@@ -1746,7 +1746,7 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
       },
-      status: "Open source · version 0.1",
+      status: "Open source · in development",
       eyebrow: "Case study · Open source · Data platforms",
       title: "Fathom: what a data change reaches, before it ships",
       intro:
@@ -1757,7 +1757,7 @@ export const portfolioData = {
           label: "What it is",
           value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
         },
-        { label: "Where it stands", value: "Version 0.1 under the Apache-2.0 licence, in active development" },
+        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, working toward its first public release" },
         {
           label: "Tested on",
           value:
@@ -2296,7 +2296,7 @@ export const portfolioData = {
               columns: [{ label: "116 merged changes over 26 weeks" }, { label: "Warnings" }, { label: "False alarms" }],
               rows: [
                 { cells: ["Code checks only", "4 warnings in 26 weeks", "0 false alarms a week"] },
-                { cells: ["Code checks plus model review", "2.23 warnings a week", "0.81 false alarms a week, with 3 of 6 known bugs flagged"], emphasis: true },
+                { cells: ["Code checks plus model review", "2.23 warnings a week", "0.81 false alarms a week, with 3 of 6 known bugs flagged (policy tuned on this history)"], emphasis: true },
               ],
             },
             {

@@ -282,7 +282,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "Where it stands",
-        value: "Version 0.1 under the Apache-2.0 licence, in active development"
+        value: "Open source under the Apache-2.0 licence, working toward its first public release"
       },
       {
         label: "Tested on",
@@ -1159,7 +1159,7 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(ids.indexOf("orion")).toBe(5);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
-    expect(fathom.status).toBe("Open source · version 0.1");
+    expect(fathom.status).toBe("Open source · in development");
     expect(orion.status).toBe("Private · in daily use");
     expect(fathom).not.toHaveProperty("codeLink");
     expect(orion).not.toHaveProperty("codeLink");

@@ -138,7 +138,7 @@ describe('CaseStudyPage', () => {
   // (owner's split brief, 2026-10-25).
   describe.each([
     ['orion', 'Private · in daily use'],
-    ['fathom', 'Open source · version 0.1'],
+    ['fathom', 'Open source · in development'],
   ])('the %s case study (TG-07, D2)', (slug, status) => {
     const study = caseStudies.find((candidate) => candidate.id === slug);
 
