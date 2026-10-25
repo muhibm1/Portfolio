@@ -897,10 +897,11 @@ describe("portfolioData", () => {
       title: "At Apple Maps",
       text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
     });
-    // 2026-10-21: WorkHorse retired; the line names Orion, in the owner's own card wording.
+    // 2026-10-21: WorkHorse retired; the line names Orion. 2026-10-25: reworded to Orion's new
+    // card summary, now that it is the context layer for every agent session.
     expect(home.hero.rightNow.items[1]).toEqual({
       title: "Building Orion",
-      text: "A change reviewer for data platforms that knows the system around the code: lineage, constraints, ownership and incident history",
+      text: "The context layer my coding agents use every day: the rules, owners, past incidents and lessons for the files they are about to touch",
     });
     expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
     expect(home.experience.roles[0].company).toBe("Apple Maps");
