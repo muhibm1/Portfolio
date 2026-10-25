@@ -105,8 +105,8 @@ describe("CaseStudyCards", () => {
 
     expect(screen.getByRole("heading", { name: "More work" })).toBeInTheDocument();
     expect(more.map((study) => study.id)).toEqual([
-      "esper",
       "orion",
+      "esper",
       "apple-integration",
       "apple-data-health",
     ]);

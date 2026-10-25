@@ -22,8 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
-  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (his own sheet, updated).
-  "image",
+  // Added 2026-10-25 for the Orion architecture diagram, drawn in the site's own boxes (owner).
+  "architecture",
   "paragraph",
   "bullets",
   "flow",
@@ -433,8 +433,8 @@ describe("portfolioData", () => {
       "/work/agentops",
       "/work/flywheel",
       "/work/apple-decision-support-agent",
-      "/work/esper",
       "/work/orion",
+      "/work/esper",
       "/work/apple-integration",
       "/work/apple-data-health",
       "/work/atelier",
@@ -1056,7 +1056,7 @@ describe("the Orion case study (TG-07)", () => {
     /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
     /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
     /Step [1-7]\./g, // the plan's own numbering
-    /Fig [12]/g, // the figure captions (Fig 2, the architecture diagram, added 2026-10-25)
+    /Fig 1/g, // the figure caption
     /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
   ];
 
@@ -1092,9 +1092,9 @@ describe("the Orion case study (TG-07)", () => {
     return { words, numbering };
   }
 
-  it("is fifth, after Esper, with the words Ongoing project and no code link (D2, D10, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("orion")).toBe(4);
-    expect(portfolioData.caseStudies[3].id).toBe("esper");
+  it("is fourth, before Esper, with the words Ongoing project and no code link (D2, D10, owner brief 2026-10-21; moved ahead of Esper 2026-10-25)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("orion")).toBe(3);
+    expect(portfolioData.caseStudies[4].id).toBe("esper");
     expect(orion.status).toBe("Ongoing project");
     expect(orion).not.toHaveProperty("codeLink");
   });

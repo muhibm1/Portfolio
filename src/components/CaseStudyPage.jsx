@@ -3,6 +3,7 @@ import { portfolioData } from '../data/portfolioData';
 import NotFoundPage from '../pages/NotFoundPage';
 import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagram';
 import CaseStudyBarChart from './CaseStudyBarChart';
+import CaseStudyArchitecture from './CaseStudyArchitecture';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
 import AgentOpsReplay from './AgentOpsReplay';
@@ -167,10 +168,10 @@ function OnThisPageNav({ sections }) {
 }
 
 // A section is `{ id, heading, eyebrow?, subtitle?, blocks }`; the subtitle is one line that
-// sits between the heading and the first block. A section that holds a walkthrough runs the full
+// sits between the heading and the first block. A section that holds a walkthrough, replay or architecture diagram runs the full
 // width of the column, because its console needs the room the prose measure does not.
 function CaseStudySection({ section }) {
-  const hasWalkthrough = section.blocks.some((block) => block.type === 'walkthrough' || block.type === 'replay');
+  const hasWalkthrough = section.blocks.some((block) => ['walkthrough', 'replay', 'architecture'].includes(block.type));
   return (
     <div id={section.id} className={`flex flex-col gap-5 ${hasWalkthrough ? 'min-w-0' : 'max-w-3xl'}`}>
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
@@ -205,8 +206,8 @@ function Block({ block }) {
       return <CaseStudyHubDiagram left={block.left} edge={block.edge} hub={block.hub} right={block.right} />;
     case 'split':
       return <SplitBlock table={block.table} stats={block.stats} />;
-    case 'image':
-      return <ImageBlock block={block} />;
+    case 'architecture':
+      return <CaseStudyArchitecture legend={block.legend} columns={block.columns} lower={block.lower} note={block.note} label={block.label} />;
     case 'bars':
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     case 'walkthrough':
@@ -276,25 +277,6 @@ function CardsBlock({ items }) {
         );
       })}
     </div>
-  );
-}
-
-// A diagram or picture served from public/, shown on a light card so it reads in either theme, with
-// a link to the full-size file for a phone screen.
-function ImageBlock({ block }) {
-  const src = `${import.meta.env.BASE_URL}${block.src}`;
-  return (
-    <figure className="flex flex-col gap-2">
-      <a href={src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[10px] border border-line bg-white">
-        <img src={src} alt={block.alt} width={block.width} height={block.height} loading="lazy" className="block h-auto w-full" />
-      </a>
-      <figcaption className="flex flex-wrap justify-between gap-2 font-mono text-xs text-muted">
-        <span>{block.caption}</span>
-        <a href={src} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-ink">
-          {block.openText}
-        </a>
-      </figcaption>
-    </figure>
   );
 }
 
