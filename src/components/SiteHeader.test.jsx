@@ -37,7 +37,7 @@ describe('SiteHeader', () => {
   });
 
   it('shows Home, All case studies and Contact on a case-study page, with the GitHub link', () => {
-    renderSiteLayoutAt('/work/workhorse');
+    renderSiteLayoutAt('/work/agentops');
 
     expect(headerLinkHref('Home')).toBe('/');
     expect(headerLinkHref('All case studies')).toBe('/work');
@@ -130,7 +130,7 @@ describe('SiteHeader inside App (E3)', () => {
   });
 
   it('updates document.title after following Next case study', () => {
-    renderAppAt('/work/workhorse');
+    renderAppAt('/work/atelier');
 
     fireEvent.click(screen.getByRole('link', { name: /next case study/i }));
 

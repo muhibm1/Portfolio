@@ -7,7 +7,6 @@ import { portfolioData } from '../data/portfolioData';
 import CaseStudyPage from './CaseStudyPage';
 
 const { caseStudies, personal } = portfolioData;
-const workhorse = caseStudies.find((study) => study.id === 'workhorse');
 
 describe('CaseStudyPage', () => {
   afterEach(() => {
@@ -98,47 +97,35 @@ describe('CaseStudyPage', () => {
     });
   });
 
-  describe('the workhorse case study only (G10)', () => {
-    it('renders the header code link and the #mcp entry in "On this page"', () => {
-      renderCaseStudyAt('/work/workhorse');
+  // The WorkHorse page, the only one that carried a retired banner, was removed on 2026-10-25
+  // (owner's request). The banner renderer stays, so it is checked on stub data.
+  describe('a retired banner (owner brief 2026-10-21)', () => {
+    it('shows the banner above the header, with its link', async () => {
+      const stubData = structuredClone(portfolioData);
+      const stub = stubData.caseStudies.find((study) => study.id === 'orion');
+      stub.banner = 'Retired October 2026. The newer work is on the work page.';
+      stub.bannerLink = { text: 'work page', to: '/work' };
 
-      const codeLink = screen.getByRole('link', { name: /code: workhorse-snapshot/i });
-      expect(codeLink).toHaveAttribute('href', workhorse.codeLink.href);
+      vi.resetModules();
+      vi.doMock('../data/portfolioData', () => ({ portfolioData: stubData }));
+      const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
-      const onThisPageNav = screen.getByRole('navigation', { name: 'On this page' });
-      const mcpLink = within(onThisPageNav).getAllByRole('link').find((link) => link.getAttribute('href') === '#mcp');
-      expect(mcpLink).toBeDefined();
-    });
-
-    it('mentions the old desktop app nowhere on the page, because the owner removed it on 2026-10-19', () => {
-      const { container } = renderCaseStudyAt('/work/workhorse');
-
-      expect(container.textContent).not.toMatch(/paddock/i);
-      expect(screen.queryByRole('link', { name: /paddock/i })).toBeNull();
-      expect(container.querySelector('a[href*="paddock"]')).toBeNull();
-      expect(screen.queryByText(/278 desktop tests/i)).toBeNull();
-      expect(screen.queryAllByText(/electron/i)).toHaveLength(0);
-    });
-
-    // The owner retired WorkHorse in October 2026 and asked for this banner (brief, 2026-10-21),
-    // which replaces the earlier rule that the page show no retirement word.
-    it('shows the retired banner above the header, with its build log link, and keeps the code link', () => {
-      renderCaseStudyAt('/work/workhorse');
+      render(
+        <MemoryRouter initialEntries={['/work/orion']}>
+          <Routes>
+            <Route path="/work/:slug" element={<StubCaseStudyPage />} />
+          </Routes>
+        </MemoryRouter>,
+      );
 
       const note = screen.getByRole('note');
-      expect(note).toHaveTextContent(workhorse.banner);
-      expect(workhorse.banner).toMatch(/^Retired October 2026\./);
-      expect(within(note).getByRole('link', { name: 'build log' })).toHaveAttribute('href', '/#build-log');
+      expect(note).toHaveTextContent(stub.banner);
+      expect(within(note).getByRole('link', { name: 'work page' })).toHaveAttribute('href', '/work');
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-      expect(screen.getByRole('link', { name: /code: workhorse-snapshot/i })).toBeInTheDocument();
     });
 
-    it('shows the revised contact heading', () => {
-      renderCaseStudyAt('/work/workhorse');
-
-      expect(
-        screen.getByRole('heading', { name: 'Want to talk through WorkHorse? I reply to email within a day.' }),
-      ).toBeInTheDocument();
+    it('shows no banner on any real case study', () => {
+      expect(caseStudies.filter((study) => study.banner)).toEqual([]);
     });
   });
 
@@ -287,57 +274,12 @@ describe('CaseStudyPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: /not found/i })).toBeInTheDocument();
   });
 
-  describe('tables (G11)', () => {
-    it('renders the outcomes and retrieval tables at /work/workhorse', () => {
-      renderCaseStudyAt('/work/workhorse');
-
-      // The worked example, the outcomes, the 0.5 releases and the retrieval table (2026-10-13).
-      const tables = screen.getAllByRole('table');
-      expect(tables).toHaveLength(4);
-      for (const table of tables) {
-        expect(within(table).getAllByRole('columnheader').length).toBeGreaterThan(0);
-      }
-
-      const outcomesTable = tables.find((table) => within(table).queryByText(/live web app with sign-in/i));
-      expect(outcomesTable).toBeDefined();
-      const outcomesBodyRows = within(outcomesTable).getAllByRole('row').slice(1);
-      expect(outcomesBodyRows).toHaveLength(5);
-      expect(outcomesBodyRows[0]).toHaveTextContent(/^Live web app with sign-in/);
-      expect(outcomesBodyRows[3]).toHaveTextContent(/^Test service/);
-      expect(outcomesBodyRows[4]).toHaveTextContent(/MCP server/);
-      for (const row of outcomesBodyRows) {
-        expect(row.textContent).not.toMatch(/\b(my|mine|client)\b/i);
-      }
-
-      const retrievalTable = tables.find((table) => within(table).queryByText('0.85'));
-      expect(retrievalTable).toBeDefined();
-      const retrievalBodyRows = within(retrievalTable).getAllByRole('row').slice(1);
-      expect(retrievalBodyRows).toHaveLength(6);
-      const lastRow = retrievalBodyRows[retrievalBodyRows.length - 1];
-      expect(lastRow).toHaveTextContent('0.85');
-      expect(lastRow.className).toMatch(/font-semibold/);
-      expect(lastRow.textContent).not.toMatch(/latency/i);
-    });
-
-    it('shows the five-run stat cards in order with no "0" or "28" card', () => {
-      renderCaseStudyAt('/work/workhorse');
-
-      const measuredSection = document.getElementById('measured');
-      const values = within(measuredSection)
-        .getAllByText(/^(5 of 5|40|70|1 of 5)$/)
-        .map((el) => el.textContent);
-      expect(values).toEqual(['5 of 5', '40', '70', '1 of 5']);
-      expect(within(measuredSection).queryByText('0')).toBeNull();
-      expect(within(measuredSection).queryByText('28')).toBeNull();
-    });
-  });
-
   describe('section subtitle (R9)', () => {
     it('renders a section subtitle under its heading only when the data carries one', async () => {
       const stubData = structuredClone(portfolioData);
-      const stubWorkhorse = stubData.caseStudies.find((study) => study.id === 'workhorse');
-      const measured = stubWorkhorse.sections.find((section) => section.id === 'measured');
-      const why = stubWorkhorse.sections.find((section) => section.id === 'why');
+      const stubStudy = stubData.caseStudies.find((study) => study.id === 'orion');
+      const measured = stubStudy.sections.find((section) => section.id === 'results');
+      const why = stubStudy.sections.find((section) => section.id === 'what');
       measured.subtitle = 'Stub subtitle';
 
       vi.resetModules();
@@ -345,7 +287,7 @@ describe('CaseStudyPage', () => {
       const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
       render(
-        <MemoryRouter initialEntries={['/work/workhorse']}>
+        <MemoryRouter initialEntries={['/work/orion']}>
           <Routes>
             <Route path="/work/:slug" element={<StubCaseStudyPage />} />
           </Routes>
@@ -353,45 +295,43 @@ describe('CaseStudyPage', () => {
       );
 
       expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
-      const measuredHeading = within(document.getElementById('measured')).getByRole('heading', { level: 2 });
+      const measuredHeading = within(document.getElementById('results')).getByRole('heading', { level: 2 });
       expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
-      const whyHeading = within(document.getElementById('why')).getByRole('heading', { level: 2 });
+      const whyHeading = within(document.getElementById('what')).getByRole('heading', { level: 2 });
       expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
     });
   });
 
   describe('repository links (G26)', () => {
-    it('renders exactly three public-snapshot anchors with the right attributes and destinations, now that the old desktop app link is gone', () => {
-      renderCaseStudyAt('/work/workhorse');
+    // Moved to the Flywheel page on 2026-10-25, when the WorkHorse page that held three snapshot
+    // links was removed: its header code link and its paragraph link to the design-records agent.
+    it('opens every GitHub link in a new tab, with readable names and the right destinations', () => {
+      renderCaseStudyAt('/work/flywheel');
+      const flywheel = caseStudies.find((study) => study.id === 'flywheel');
 
       const repoLinks = screen
         .getAllByRole('link')
         .filter((link) => link.getAttribute('href')?.startsWith('https://github.com/muhibm1/'));
-      expect(repoLinks).toHaveLength(3);
+      expect(repoLinks.length).toBeGreaterThanOrEqual(2);
 
       for (const link of repoLinks) {
         expect(link).toHaveAttribute('target', '_blank');
         expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-        expect(link.getAttribute('aria-label')).toMatch(/public snapshot/i);
         expect(link.textContent).not.toMatch(/^https?:\/\//);
       }
 
-      expect(repoLinks.find((link) => link.getAttribute('href') === workhorse.codeLink.href)).toBeDefined();
-
-      const studbookSection = document.getElementById('studbook');
-      const mcpSection = document.getElementById('mcp');
-      const studbookLink = within(studbookSection).getByRole('link', { name: /^studbook on github/i });
-      expect(studbookLink).toHaveAttribute('href', personal.repositories.studbook);
-      const mcpStudbookLink = within(mcpSection).getByRole('link', { name: /studbook repository/i });
-      expect(mcpStudbookLink).toHaveAttribute('href', personal.repositories.studbook);
+      expect(repoLinks.find((link) => link.getAttribute('href') === flywheel.codeLink.href)).toBeDefined();
+      const agentLink = screen.getByRole('link', { name: /design-records agent/i });
+      expect(agentLink).toHaveAttribute('href', personal.repositories.studbookAgent);
     });
 
     it('throws a readable error when a paragraph link.text occurs more than once', async () => {
       const brokenData = structuredClone(portfolioData);
-      const brokenWorkhorse = brokenData.caseStudies.find((study) => study.id === 'workhorse');
-      const studbookSection = brokenWorkhorse.sections.find((section) => section.id === 'studbook');
-      const linkedBlock = studbookSection.blocks.find((block) => block.link?.text === 'Studbook');
-      linkedBlock.text = `${linkedBlock.text} Studbook appears again here.`;
+      const brokenStudy = brokenData.caseStudies.find((study) => study.id === 'flywheel');
+      const linkedBlock = brokenStudy.sections
+        .flatMap((section) => section.blocks)
+        .find((block) => block.link?.text === 'design-records agent');
+      linkedBlock.text = `${linkedBlock.text} The design-records agent appears again here.`;
 
       vi.resetModules();
       vi.doMock('../data/portfolioData', () => ({ portfolioData: brokenData }));
@@ -399,7 +339,7 @@ describe('CaseStudyPage', () => {
 
       expect(() =>
         render(
-          <MemoryRouter initialEntries={['/work/workhorse']}>
+          <MemoryRouter initialEntries={['/work/flywheel']}>
             <Routes>
               <Route path="/work/:slug" element={<BrokenCaseStudyPage />} />
             </Routes>

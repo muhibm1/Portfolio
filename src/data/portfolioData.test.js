@@ -22,6 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
+  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (his own sheet, updated).
+  "image",
   "paragraph",
   "bullets",
   "flow",
@@ -67,23 +69,19 @@ const pinnedToolkit = [
 
 // R154: the featured card's four values (D52: 40, not 28) and the WorkHorse case-study stats.
 const pinnedCaseStudyStats = {
-  workhorse: ["28", "9", "5 to 2", "100%"],
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
   esper: ["79%", "0%", "11 of 11", "$0"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
   // Added 2026-10-21 from the owner's redesign brief.
-  "tannhauser-gate": ["28 to 1", "180", "8", "4"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
   // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
-  orion: ["0 of 50", "0.82 and 0.83", "27 of 45", "625"],
+  orion: ["0 of 50", "64%", "0.889", "625"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
-
-const pinnedFeaturedCardStats = ["100%", "3 of 3", "40", "9"];
 
 // The owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), copied verbatim.
 const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer can trust";
@@ -242,8 +240,8 @@ const pinnedCaseStudyNarratives = {
   },
   orion: {
     eyebrow: "Case study · Personal system · Code review",
-    title: "Orion: early results",
-    lead: "Orion is a code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it: what the change reaches downstream, which rules protect those parts, who owns them and what broke there before.",
+    title: "Orion: what an agent should know before it changes anything",
+    lead: "Orion gives coding agents the context a new engineer would spend weeks picking up. Before an agent edits, it gets the rules, owners, past incidents and lessons that cover the files in front of it. Before it commits, it learns what its change reaches. Every passage carries an id that reads back to its source, so nothing is taken on trust. It runs on my own machine and every agent session I start uses it.",
     atAGlance: [
       {
         label: "My role",
@@ -251,45 +249,19 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "What it is",
-        value: "A code reviewer for coding agents and the people who work with them"
+        value: "A context layer and change reviewer for coding agents and the people who work with them"
       },
       {
         label: "Where it stands",
-        value: "An early, ongoing project"
+        value: "In daily use by my own agents, and growing"
       },
       {
         label: "Tested on",
-        value: "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, and a data warehouse of 625 dbt models"
+        value: "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, 42 hand-labelled search questions, and 116 merged changes from a 625-model dbt warehouse"
       }
     ],
     calloutEyebrow: "Where Orion stands",
-    calloutText: "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
-    contactHeading: "Have a system that needs deploying? Let's talk."
-  },
-  "tannhauser-gate": {
-    eyebrow: "Case study · Personal system · Agent harness",
-    title: "Tannhauser Gate: an agent harness, rebuilt on evidence",
-    lead: "My first delivery pipeline used 28 specialist agents. Its run records showed most handoffs cost more than they caught, so I retired it and rebuilt around one frontier coding agent, rules enforced in code, and reviewers that never see the builder's reasoning. Nothing was cut without a replay test behind it.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it end to end"
-      },
-      {
-        label: "What it is",
-        value: "The harness I build agents with: one builder, independent reviewers and hard lines enforced by hooks"
-      },
-      {
-        label: "Where it stands",
-        value: "Rebuilt October 2026, in daily use; the repository is private"
-      },
-      {
-        label: "Quality",
-        value: "180 hook tests passing"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Measure what each agent in a pipeline actually catches, and cut the ones that cost more than they find. The rules that must hold go in code, where no model can talk its way past them.",
+    calloutText: "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
     contactHeading: "Have a system that needs deploying? Let's talk."
   },
   "apple-integration": {
@@ -343,32 +315,6 @@ const pinnedCaseStudyNarratives = {
     calloutEyebrow: "What I'd bring to a client",
     calloutText: "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer release-blocking failures at the gate.",
     contactHeading: "Data you can't trust yet? Let's talk."
-  },
-  workhorse: {
-    eyebrow: "Case study · Personal system · Agentic AI · Retired",
-    title: "WorkHorse: AI-built software you can audit",
-    lead: "AI coding agents can write a feature in minutes. What they rarely leave behind is a reason to trust it: who decided what, what was checked, and what a person actually approved. WorkHorse is the delivery process I built around them. Twenty-eight single-purpose agents take a change from a one-line request to merged, tested and documented code, a person approves at the two moments that matter, and code the agents cannot argue with enforces the rules. This site was built with it.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it end to end"
-      },
-      {
-        label: "What it is",
-        value: "A pipeline of AI agents that delivers software changes, plus a search tool (Studbook) over its own records that the agents query on every run"
-      },
-      {
-        label: "Stack",
-        value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith"
-      },
-      {
-        label: "Quality",
-        value: "507 pipeline tests, run automatically on every code push"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
-    contactHeading: "Want to talk through WorkHorse? I reply to email within a day."
   },
   atelier: {
     eyebrow: "Case study · Personal system · Design studio",
@@ -424,50 +370,6 @@ const pinnedCaseStudyNarratives = {
   }
 };
 
-// The MCP section's paragraphs, in order, word for word (R154, refreshed 2026-10-13).
-const pinnedMcpParagraphs = [
-  "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
-  "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs automatically on every code push (CI, continuous integration).",
-  "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was reusing one connection for a whole session and removing a step that ran the model twice. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
-  "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
-  "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers (an embedding) on faster software, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
-  "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections trust only one named certificate authority (the body that vouches for a server's identity), and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
-];
-
-// R154, D41, D50: the tally sentence, and D43/D47/D53's closing sentence.
-const pinnedMeasuredFirstParagraph =
-  "The first version had five human checkpoints, and it felt safe. I didn't redesign it from impressions. Timestamps from those runs showed that two thirds of the time a change spent in the pipeline was a person waiting at a checkpoint with nothing to decide. More gates were not making it safer, only slower.";
-const pinnedMeasuredLastParagraph =
-  "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine releases came out of those four runs.";
-
-// R154: the four `measured` stat cards, D41/D47/D50/D51/D53/D42.
-const pinnedMeasuredStats = [
-  { value: "5 of 5", label: "real changes merged, tested and documented" },
-  { value: "40", label: "review findings fixed before a person signed off" },
-  { value: "70", label: "new tests and eval cases written in the first four runs" },
-  { value: "1 of 5", label: "rejected at the ship gate, then reworked and merged" },
-];
-
-// R154, D50: the first and fourth rows are the mockup's, unchanged; the fifth row is new.
-const pinnedMeasuredTableRow1 = [
-  "Live web app with sign-in: moderation API type fix",
-  "Merged; the build passed for the first time in 17 days; 9 findings fixed before sign-off.",
-];
-const pinnedMeasuredTableRow4 = [
-  "Test service: added an endpoints section (the addresses other software calls) to its README",
-  "Done; 11 tests; 3 findings fixed before sign-off.",
-];
-const pinnedMeasuredTableRow5 = [
-  "Studbook: MCP server (a way for other agents to query it)",
-  "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
-];
-
-// D32 as amended by D52 (the owner did not keep 28) and the mockup's mobile tag.
-const pinnedFeaturedMobileTags = ["100% faithful", "40 findings fixed pre sign-off"];
-
-// D32: the Studbook split stats.
-const pinnedStudbookSplitStats = ["100%", "3 of 3", "2 to 11", "9 of 12"];
-
 const pinnedRepositories = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
@@ -479,11 +381,6 @@ const pinnedRepositories = {
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
 // banned because it names no approved fact.
 const bannedSkillWords = ["Kubernetes", "Databricks", "Delta Lake", "fine-tuning", "TensorFlow", "NiFi", "MLOps"];
-
-// R138, D50: never "my", "mine" or "client" in the run record; the one "my own" the page keeps
-// (D55, the MCP paragraph "my own ship gate") sits outside the `measured` block, so this regex
-// is only ever run against `measured` paragraphs, stat labels and table cells.
-const NO_OWNERSHIP_OR_CLIENT_WORDS = /\b(my|mine|client)\b/i;
 
 // Overlay 8.5: no string about WorkHorse or Studbook implies users, a team or adoption.
 const NO_USERS_WORDS = /\b(users|customers|adopted|used by|team|teams|our)\b/i;
@@ -510,16 +407,6 @@ function findSection(caseStudy, id) {
 
 // The `measured` section's own paragraphs, stat labels and table cells only (D50's ownership
 // ban is scoped here; it never reaches the `mcp` paragraphs or the "My role" at-a-glance labels).
-function measuredStrings(workhorse) {
-  const measured = findSection(workhorse, "measured");
-  return measured.blocks.flatMap((block) => {
-    if (block.type === "paragraph") return [block.text];
-    if (block.type === "stats") return block.items.map((item) => item.label);
-    if (block.type === "table") return block.rows.flatMap((row) => row.cells);
-    return [];
-  });
-}
-
 // Overlay 8.5's scope: the WorkHorse case study, the featured card, the "Building WorkHorse"
 // line and principles 03 and 04.
 function workhorseAndStudbookStrings(data) {
@@ -539,7 +426,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the eleven case studies, featured work first and the three unlisted pages last (R127, G1, owner brief 2026-10-21)", () => {
+  it("names / then /work then /work/<id> for the nine case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -548,10 +435,8 @@ describe("portfolioData", () => {
       "/work/apple-decision-support-agent",
       "/work/esper",
       "/work/orion",
-      "/work/tannhauser-gate",
       "/work/apple-integration",
       "/work/apple-data-health",
-      "/work/workhorse",
       "/work/atelier",
       "/work/neural-newsletters-llm",
     ]);
@@ -561,7 +446,6 @@ describe("portfolioData", () => {
       "apple-decision-support-agent",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.listed === false).map((study) => study.id)).toEqual([
-      "workhorse",
       "atelier",
       "neural-newsletters-llm",
     ]);
@@ -668,12 +552,6 @@ describe("portfolioData", () => {
     for (const study of portfolioData.caseStudies) {
       expect(study.stats.map((stat) => stat.value)).toEqual(pinnedCaseStudyStats[study.id]);
     }
-  });
-
-  it("carries the featured WorkHorse card's four pinned stat values and mobile tag (R154, D52, G7)", () => {
-    const workhorse = findCaseStudy("workhorse");
-    expect(workhorse.card.stats.map((stat) => stat.value)).toEqual(pinnedFeaturedCardStats);
-    expect(workhorse.card.mobileTags).toEqual(pinnedFeaturedMobileTags);
   });
 
   it("carries each case study's pinned eyebrow, title, lead, at-a-glance, callout and contact heading, word for word from the mockups (G14)", () => {
@@ -799,104 +677,20 @@ describe("portfolioData", () => {
     );
   });
 
-  it("carries no callout note on the WorkHorse study (D24, D25)", () => {
-    expect(findCaseStudy("workhorse").callout).not.toHaveProperty("note");
-  });
-
-  it("carries the pinned MCP paragraphs in order, after the studbook section (R154)", () => {
-    const workhorse = findCaseStudy("workhorse");
-    const mcp = findSection(workhorse, "mcp");
-
-    expect(workhorse.sections.map((section) => section.id)).toContain("mcp");
-    expect(workhorse.sections.findIndex((s) => s.id === "mcp")).toBeGreaterThan(
-      workhorse.sections.findIndex((s) => s.id === "studbook"),
-    );
-    expect(mcp.eyebrow).toBe("Inside WorkHorse");
-    expect(mcp.heading).toBe("An MCP server over the record");
-    expect(mcp.blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
-  });
-
-  it("keeps the old desktop app out of the Studbook section and the repository list, because the owner removed it on 2026-10-19", () => {
-    const studbook = findSection(findCaseStudy("workhorse"), "studbook");
-    const studbookText = collectStrings(studbook).join("\n");
-
-    expect(studbookText).not.toMatch(/paddock/i);
-    expect(studbook.blocks.some((block) => block.link?.href?.includes("paddock"))).toBe(false);
-    expect(Object.keys(portfolioData.personal.repositories)).not.toContain("paddock");
-    expect(Object.values(portfolioData.personal.repositories).join(" ")).not.toMatch(/paddock/i);
-  });
-
-  it("ends the Studbook section's blocks on the conversations paragraph now that nothing follows it", () => {
-    const studbook = findSection(findCaseStudy("workhorse"), "studbook");
-    const lastBlock = studbook.blocks.at(-1);
-
-    expect(lastBlock.type).toBe("paragraph");
-    expect(lastBlock.text.startsWith("Conversations work too.")).toBe(true);
-  });
-
-  it("carries the `measured` first and last paragraphs verbatim, five runs and the first-four-run closing sentence (R154, D41, D43, D47, D50, D53)", () => {
-    const measured = findSection(findCaseStudy("workhorse"), "measured");
-    const paragraphs = measured.blocks.filter((block) => block.type === "paragraph");
-
-    expect(paragraphs[0].text).toBe(pinnedMeasuredFirstParagraph);
-    expect(paragraphs[paragraphs.length - 1].text).toBe(pinnedMeasuredLastParagraph);
-  });
-
-  it("carries the `measured` section's four pinned stat cards (R154, D41, D42, D47, D50, D51, D53)", () => {
-    const measured = findSection(findCaseStudy("workhorse"), "measured");
-    const statsBlock = measured.blocks.find((block) => block.type === "stats");
-
-    expect(statsBlock.items).toEqual(pinnedMeasuredStats);
-  });
-
-  it("carries the `measured` table's five rows, the first, fourth and fifth as pinned (R154, D50)", () => {
-    const measured = findSection(findCaseStudy("workhorse"), "measured");
-    const tableBlock = measured.blocks.find((block) => block.type === "table");
-
-    expect(tableBlock.rows).toHaveLength(5);
-    expect(tableBlock.rows[0].cells).toEqual(pinnedMeasuredTableRow1);
-    expect(tableBlock.rows[3].cells).toEqual(pinnedMeasuredTableRow4);
-    expect(tableBlock.rows[4].cells).toEqual(pinnedMeasuredTableRow5);
-  });
-
-  it("never says my, mine or client in the `measured` section's paragraphs, stat labels or table cells (R138, D50)", () => {
-    for (const text of measuredStrings(findCaseStudy("workhorse"))) {
-      expect(text).not.toMatch(NO_OWNERSHIP_OR_CLIENT_WORDS);
-    }
-  });
-
-  it("keeps 'my own ship gate' in the MCP story, the one exception D55 names", () => {
-    const mcp = findSection(findCaseStudy("workhorse"), "mcp");
-    const allMcpText = mcp.blocks.map((block) => block.text).join(" ");
-
-    expect(allMcpText).toContain("my own ship gate");
-  });
-
-  it("keeps the eleven 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
+  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(11);
-  });
-
-  it("carries the Studbook split stats in order (D32, G14)", () => {
-    const studbook = findSection(findCaseStudy("workhorse"), "studbook");
-    const splitBlock = studbook.blocks.find((block) => block.type === "split");
-
-    expect(splitBlock.stats.items.map((item) => item.value)).toEqual(pinnedStudbookSplitStats);
-    expect(splitBlock.table.rows.at(-1).cells[0]).toBe("Hybrid + reranker, pool of 10 (shipped)");
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
   it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
-  it("carries the WorkHorse case study's codeLink and the hero's codeLine (R153, R154)", () => {
-    expect(findCaseStudy("workhorse").codeLink).toEqual({
-      label: "Code: workhorse-snapshot",
-      href: pinnedRepositories.workhorse,
-    });
+  // The WorkHorse case study and its code link were removed on 2026-10-25 (owner's request).
+  it("carries the hero's codeLine (R153, R154)", () => {
     expect(portfolioData.home.hero.codeLine).toEqual({
       text: "The code is public on GitHub",
       href: portfolioData.personal.github,
@@ -967,10 +761,6 @@ describe("portfolioData", () => {
       expect(allText).not.toContain(bannedWord);
     }
     expect(allText).not.toMatch(/\bGo\b/);
-  });
-
-  it("permits FastAPI as an approved fact (overlay rule 6, R138)", () => {
-    expect(collectStrings(portfolioData).join(" ")).toContain("FastAPI");
   });
 
   it("uses only block types from the ADR 0006 fixed set (ADR 0006, G14)", () => {
@@ -1107,10 +897,11 @@ describe("portfolioData", () => {
       title: "At Apple Maps",
       text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
     });
-    // 2026-10-21: WorkHorse retired; the line names Orion, in the owner's own card wording.
+    // 2026-10-21: WorkHorse retired; the line names Orion. 2026-10-25: reworded to Orion's new
+    // card summary, now that it is the context layer for every agent session.
     expect(home.hero.rightNow.items[1]).toEqual({
       title: "Building Orion",
-      text: "A change reviewer for data platforms that knows the system around the code: lineage, constraints, ownership and incident history",
+      text: "The context layer my coding agents use every day: the rules, owners, past incidents and lessons for the files they are about to touch",
     });
     expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
     expect(home.experience.roles[0].company).toBe("Apple Maps");
@@ -1118,16 +909,6 @@ describe("portfolioData", () => {
     expect(home.toolkit.columns[2].items).toBe(
       "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
     );
-  });
-
-  it("says plugin nowhere and carries the Studbook subtitle, with the MCP copy unchanged (R9)", () => {
-    const workhorse = findCaseStudy("workhorse");
-
-    expect(collectStrings(workhorse).join("\n")).not.toMatch(/\bplugins?\b/i);
-    expect(findSection(workhorse, "studbook").subtitle).toBe(
-      "Cited retrieval (RAG) over WorkHorse's engineering record",
-    );
-    expect(findSection(workhorse, "mcp").blocks.map((block) => block.text)).toEqual(pinnedMcpParagraphs);
   });
 
   it("names the employer Apple Maps in every slot and never via TCS (R2)", () => {
@@ -1257,6 +1038,17 @@ describe("the Orion case study (TG-07)", () => {
     "90% or more", "60%", "$2.77", "$3 to $5", "$30 to $60", "2 min 9 s", "20 minutes", "raised 1",
     "9 got a warning", "3 were raised", "from 45 to about 150", "Hand-check 30", "12 near-misses", "3 or fewer",
     "one false alarm per 20 correct changes", "October 2026",
+    // Added 2026-10-25 (owner's request for an updated page), each from Orion's own results notes:
+    // pipelinebench/results/agentic-review.md and heldout-sonnet-5-5-*-x3.md (held-out recall over
+    // three runs), calitp-history-agent.md (the 26-week history replay), retrieval.md (the search
+    // eval), and the owner's "How Orion runs on your Mac" sheet (the ingest counts).
+    "64%", "62% to 64% across 3 runs", "76%", "mean of 3 runs", "3 of 6 known bugs", "26 weeks",
+    "116 merged changes", "2 of the 6", "0.889", "0.656", "42 hand-labelled", "0.113", "0.562",
+    "16 repositories", "1,743 commits", "4,599 pull requests", "943 sections", "21 past agent sessions",
+    "the 80% I set", "80% pass mark",
+    // Added 2026-10-25 from the owner's "Orion: how it works and how it was built" write-up,
+    // section 11, "Tried, and did not win" (retrieval.md and the held-out gated runs).
+    "from 0.889 to 0.813", "from 0.615 to 0.148", "100%",
   ];
   // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
   // each step's place among them, the plan's step numbers, and the figure caption.
@@ -1264,7 +1056,7 @@ describe("the Orion case study (TG-07)", () => {
     /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
     /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
     /Step [1-7]\./g, // the plan's own numbering
-    /Fig 1/g, // the figure caption
+    /Fig [12]/g, // the figure captions (Fig 2, the architecture diagram, added 2026-10-25)
     /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
   ];
 
@@ -1411,8 +1203,8 @@ describe("the Atelier case study (TG-08)", () => {
     return { words, numbering };
   }
 
-  it("is unlisted, after the listed studies and WorkHorse, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(9);
+  it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(7);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
@@ -1516,8 +1308,8 @@ describe("the Atelier case study (TG-08)", () => {
 describe("Orion page order and pace", () => {
   const orion = findCaseStudy("orion");
 
-  it("puts the walkthrough straight after the opening section, with no terms grid", () => {
-    expect(orion.sections.slice(0, 3).map((section) => section.id)).toEqual(["what", "walkthrough", "results"]);
+  it("puts the walkthrough straight after the opening section, then daily use, with no terms grid", () => {
+    expect(orion.sections.slice(0, 5).map((section) => section.id)).toEqual(["what", "walkthrough", "daily", "architecture", "results"]);
     expect(findSection(orion, "what").blocks.some((block) => block.type === "cards")).toBe(false);
   });
 
