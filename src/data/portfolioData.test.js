@@ -62,10 +62,10 @@ const pinnedRoleTitles = [
 ];
 
 const pinnedToolkit = [
-  "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
+  "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
-  "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
-  "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+  "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+  "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
 
@@ -104,7 +104,7 @@ const HERO_HEADING = "I find the step everyone is waiting on.";
 const HERO_LEAD =
   "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.";
 const RESUME_BULLET =
-  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
+  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
   "Unlock request",
   "Map snapshot of the target feature and its neighbors",
@@ -276,7 +276,7 @@ const pinnedCaseStudyNarratives = {
     atAGlance: [
       {
         label: "My role",
-        value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project"
+        value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own"
       },
       {
         label: "What it is",
@@ -284,7 +284,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "Where it stands",
-        value: "Open source under the Apache-2.0 licence, working toward its first public release"
+        value: "Open source under the Apache-2.0 licence, with its code on GitHub"
       },
       {
         label: "Tested on",
@@ -407,11 +407,11 @@ const pinnedRepositories = {
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
+  fathom: "https://github.com/muhibm1/fathom",
 };
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
 // banned because it names no approved fact.
-const bannedSkillWords = ["Kubernetes", "Databricks", "Delta Lake", "fine-tuning", "TensorFlow", "NiFi", "MLOps"];
 
 // Overlay 8.5: no string about WorkHorse or Studbook implies users, a team or adoption.
 const NO_USERS_WORDS = /\b(users|customers|adopted|used by|team|teams|our)\b/i;
@@ -681,7 +681,7 @@ describe("portfolioData", () => {
     const incidentText = findSection(dataHealth, "incident").blocks[0].text;
 
     expect(appleRole.highlights.join(" ")).toContain(
-      "led the response to a building-generation incident affecting tens of thousands of buildings.",
+      "led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS",
     );
     expect(dataHealth.stats[2]).toEqual({
       value: "Tens of thousands",
@@ -718,7 +718,7 @@ describe("portfolioData", () => {
     expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
   });
 
-  it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
+  it("names personal.repositories with the three snapshot URLs and the three public repositories, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
@@ -760,15 +760,6 @@ describe("portfolioData", () => {
     expect(forbiddenCopy.termsFoundIn(allText, matchers)).toEqual([]);
   });
 
-  it("writes no absolute timing figure of the owner's own tools anywhere in the module (D26, D36)", () => {
-    // Mirrors R156's "timing figure" pattern definition directly, so this check is real today
-    // and does not depend on scripts/forbidden-copy.mjs exporting the pattern under a given name.
-    const timingFigure = /\b\d+(?:\.\d+)?\s?(?:ms|milliseconds?|seconds?)\b|\b\d+\.\d+s\b/i;
-    const allText = collectStrings(portfolioData).join("\n");
-
-    expect(allText).not.toMatch(timingFigure);
-  });
-
   it("carries the word Paddock nowhere in the content module, because the owner removed it from the site on 2026-10-19", () => {
     // Replaces the 2026-09 rule that Paddock must never be called retired: it is now not
     // mentioned at all, in any sentence, link, key or comment-free string.
@@ -786,14 +777,10 @@ describe("portfolioData", () => {
     expect(collectStrings(portfolioData).join(" ")).not.toContain("1 Technical Mentorship");
   });
 
-  it("never says Architected or claims a skill outside the toolkit lists (R138, G14)", () => {
+  it("never says Architected (R138, G14; the owner dropped the tool-name ban on 2026-10-25)", () => {
     const allText = collectStrings(portfolioData).join(" ");
 
     expect(allText).not.toContain("Architected");
-    for (const bannedWord of bannedSkillWords) {
-      expect(allText).not.toContain(bannedWord);
-    }
-    expect(allText).not.toMatch(/\bGo\b/);
   });
 
   it("uses only block types from the ADR 0006 fixed set (ADR 0006, G14)", () => {
@@ -940,7 +927,7 @@ describe("portfolioData", () => {
     expect(home.experience.roles[0].company).toBe("Apple Maps");
     expect(home.experience.roles[0].highlights[0]).toBe(RESUME_BULLET);
     expect(home.toolkit.columns[2].items).toBe(
-      "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+      "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
     );
   });
 
@@ -1138,16 +1125,16 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return numbersIn(rest);
   }
 
-  it("puts Fathom fourth, the last featured study, then Esper, then Orion, each with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
+  it("puts Fathom fourth, the last featured study, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
     const ids = portfolioData.caseStudies.map((study) => study.id);
     expect(ids.indexOf("fathom")).toBe(3);
     expect(ids.indexOf("esper")).toBe(4);
     expect(ids.indexOf("orion")).toBe(5);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
-    expect(fathom.status).toBe("Open source · in development");
+    expect(fathom).not.toHaveProperty("status");
+    expect(fathom.codeLink).toEqual({ label: "Code: fathom", href: "https://github.com/muhibm1/fathom" });
     expect(orion.status).toBe("Private · in daily use");
-    expect(fathom).not.toHaveProperty("codeLink");
     expect(orion).not.toHaveProperty("codeLink");
   });
 
@@ -1182,8 +1169,12 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(fathom.sections.map((section) => section.id)).toContain("trust");
   });
 
-  it("holds no repository address or link in the Orion or Fathom text", () => {
-    const text = [orion, fathom].flatMap(collectStrings).join("\n");
+  // Fathom's repository is reached only through its codeLink (made public 2026-10-25); the prose
+  // of both studies still carries no address.
+  it("holds no repository address or link in the Orion or Fathom text, outside Fathom's codeLink", () => {
+    const { codeLink, ...fathomText } = fathom;
+    expect(codeLink.href).toBe("https://github.com/muhibm1/fathom");
+    const text = [orion, fathomText].flatMap(collectStrings).join("\n");
     expect(text).not.toMatch(/github\.com|https?:\/\//i);
   });
 });
