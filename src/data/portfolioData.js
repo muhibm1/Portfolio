@@ -74,7 +74,7 @@ export const portfolioData = {
           },
           {
             title: "Building Orion",
-            text: "A change reviewer for data platforms that knows the system around the code: lineage, constraints, ownership and incident history",
+            text: "The context layer my coding agents use every day: the rules, owners, past incidents and lessons for the files they are about to touch",
           },
           {
             title: "Looking for",
@@ -204,7 +204,7 @@ export const portfolioData = {
           number: "04",
           title: "Measure before claiming",
           text:
-            "I replayed my own product, Orion, against my own code-review agent on eight past changes. Orion caught 3 of the 11 problems the reviewer blocked on. My product lost on app code, so I kept the agent and narrowed the product to data platforms, where it wins.",
+            "Moving LangChain's open-source email agent to a cheaper model tied on totals, 27 of 33 replies each. Checked case by case, the cheaper model missed the reply deadline in one email every time, so the switch was blocked. An average can hide the one failure a client cares about.",
         },
       ],
     },
