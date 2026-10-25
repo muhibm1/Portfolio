@@ -8,8 +8,8 @@ import { render as renderPage } from '../../entry-server.jsx';
 import { portfolioData } from '../../data/portfolioData';
 import ChipWalkthrough from './ChipWalkthrough';
 
-const orion = portfolioData.caseStudies.find((study) => study.id === 'orion');
-const block = orion.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
+const fathom = portfolioData.caseStudies.find((study) => study.id === 'fathom'); // the walkthrough moved to Fathom with the split (owner, 2026-10-25)
+const block = fathom.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
 const steps = block.steps;
 const indexOf = (id) => steps.findIndex((step) => step.id === id);
 const part = (id) => document.querySelector(`[data-go="${id}"]`);
@@ -155,9 +155,9 @@ describe('ChipWalkthrough', () => {
   });
 });
 
-describe('the Orion page as served', () => {
-  it('carries the chip, with every step listed in full, in the prerendered markup of /work/orion', () => {
-    const html = renderPage('/Portfolio/work/orion');
+describe('the Fathom page as served', () => {
+  it('carries the chip, with every step listed in full, in the prerendered markup of /work/fathom', () => {
+    const html = renderPage('/Portfolio/work/fathom');
     expect(html).toContain('class="cw-die"');
     for (const step of steps) expect(html).toContain(`data-go="${step.id}"`);
     expect(html).toContain(block.caption.title);

@@ -262,8 +262,10 @@ function BulletsBlock({ items }) {
 }
 
 function CardsBlock({ items }) {
+  // Four cards sit two by two, so none is left alone on a row of three.
+  const columns = items.length % 3 !== 0 && items.length % 2 === 0 ? 'sm:grid-cols-2' : 'sm:grid-cols-3';
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div className={`grid grid-cols-1 gap-3 ${columns}`}>
       {items.map((item, index) => {
         const isString = typeof item === 'string';
         const title = isString ? null : item.title;
