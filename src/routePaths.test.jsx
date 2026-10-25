@@ -26,17 +26,20 @@ describe('staticRoutePaths', () => {
       '/work/apple-decision-support-agent',
       '/work/esper',
       '/work/orion',
+      '/work/auspex',
       '/work/tannhauser-gate',
       '/work/apple-integration',
       '/work/apple-data-health',
-      '/work/workhorse',
       '/work/atelier',
       '/work/neural-newsletters-llm',
     ]);
   });
 
-  it('redirects the old decision-support address to its new page, which the site serves (owner brief 2026-10-21)', () => {
-    expect(REDIRECTS).toEqual([{ from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' }]);
+  it('redirects the old decision-support and WorkHorse addresses to pages the site serves (owner brief 2026-10-21; WorkHorse removed 2026-10-25)', () => {
+    expect(REDIRECTS).toEqual([
+      { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
+      { from: '/work/workhorse', to: '/work/tannhauser-gate' },
+    ]);
     const served = staticRoutePaths(portfolioData.caseStudies);
     for (const { from, to } of REDIRECTS) {
       expect(served).toContain(to);

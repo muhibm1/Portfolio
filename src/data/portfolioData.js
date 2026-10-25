@@ -152,6 +152,10 @@ export const portfolioData = {
           text: "Built Auspex, a live trace view of my coding agents: every step on a time axis, what fills each agent's context window, and a grade for each finished turn. A failure that repeats becomes a lesson Orion serves to the next agent.",
         },
         {
+          date: "Oct 23 to 24, 2026",
+          text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions. On Claude Sonnet 5.5 it flagged 64% of unseen real bugs, mean of 3 runs.",
+        },
+        {
           date: "Oct 21, 2026",
           text: "Rebuilt Tannhauser Gate, my agent build harness: one builder, independent reviewers, a risk tier picked by code, ten on-demand commands and four hard lines that are always on. 180 hook tests passing.",
         },
@@ -1896,28 +1900,28 @@ export const portfolioData = {
       card: {
         featured: false,
         eyebrow: "Personal system · Code review",
-        title: "Orion: early results",
+        title: "Orion: what an agent should know before it changes anything",
         summary:
-          "A change reviewer for data platforms that knows the system around the code: lineage, constraints, ownership and incident history.",
+          "The context layer my coding agents use every day. Before an agent edits, Orion hands it the rules, owners, past incidents and lessons for the files it is about to touch, every passage cited. It started as a change reviewer for data platforms, and that is still where it knows the most.",
         linkText: "Read the case study",
-        tags: ["0 of 50 unsafe decisions by AI agents using Orion", "27 of 45 real bugs caught"],
+        tags: ["0 of 50 unsafe decisions by AI agents using Orion", "64% of unseen real bugs flagged, mean of 3 runs"],
       },
       status: "Ongoing project",
       eyebrow: "Case study · Personal system · Code review",
-      title: "Orion: early results",
+      title: "Orion: what an agent should know before it changes anything",
       intro:
-        "Orion is a code reviewer for coding agents and the people who work with them. It reads any change and also knows the system around it: what the change reaches downstream, which rules protect those parts, who owns them and what broke there before.",
+        "Orion gives coding agents the context a new engineer would spend weeks picking up. Before an agent edits, it gets the rules, owners, past incidents and lessons that cover the files in front of it. Before it commits, it learns what its change reaches. Every passage carries an id that reads back to its source, so nothing is taken on trust. It runs on my own machine and every agent session I start uses it.",
       atAGlance: [
         { label: "My role", value: "My own project, built and tested in October 2026" },
         {
           label: "What it is",
-          value: "A code reviewer for coding agents and the people who work with them",
+          value: "A context layer and change reviewer for coding agents and the people who work with them",
         },
-        { label: "Where it stands", value: "An early, ongoing project" },
+        { label: "Where it stands", value: "In daily use by my own agents; still an early project" },
         {
           label: "Tested on",
           value:
-            "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, and a data warehouse of 625 dbt models",
+            "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, 42 hand-labelled search questions, and 116 merged changes from a 625-model dbt warehouse",
         },
       ],
       stats: [
@@ -1925,8 +1929,8 @@ export const portfolioData = {
           value: "0 of 50",
           label: "unsafe decisions by AI agents with Orion, against 8 of 50 with no context",
         },
-        { value: "0.82 and 0.83", label: "benchmark score with Orion, against 0.39 with no context" },
-        { value: "27 of 45", label: "real bugs caught on unseen code" },
+        { value: "64%", label: "of real bugs on unseen code flagged as warnings, mean of 3 runs on Claude Sonnet 5.5" },
+        { value: "0.889", label: "search recall in the top ten results, on 42 hand-labelled questions" },
         { value: "625", label: "dbt models read at real scale, with a map of which columns feed which for 621 of them" },
       ],
       sections: [
@@ -1937,7 +1941,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "This is an early, ongoing project. Everything below comes from a few days of building and testing in October 2026. Most results come from one run on a small budget, often on the cheapest model. Read them as a first measurement, not a final score.",
+                "This is an early, ongoing project. Everything below comes from about ten days of building and testing in October 2026. The newest results are repeated three times; older ones come from one run. Read them as a first measurement, not a final score.",
             },
             {
               type: "paragraph",
@@ -2059,9 +2063,9 @@ export const portfolioData = {
                   id: "mcp",
                   label: "MCP",
                   tag: "built",
-                  readout: "nine tools · none write to the platform",
+                  readout: "fourteen tools · none write to the platform",
                   does:
-                    "The MCP server, a standard way for coding agents to call a tool. It offers nine tools: preflight, explain, history, record_decision (log a person's choice), propose_constraint (suggest a new rule), ask (ask a free-form question about the platform), review, and the record's search_record and read_record. None of them can change the data platform.",
+                    "The MCP server, a standard way for coding agents to call a tool. It offers fourteen. Five give any agent context: context (what to know before starting), impact (what a change reaches), search, read (the full text behind any id) and file_history (owners and past fixes for one file). Then review, the record's search_record and read_record, and six for data platforms: preflight, explain, history, ask, record_decision (log a person's choice) and propose_constraint (suggest a new rule). None of them can change the data platform.",
                   person:
                     "The server's instructions tell the agent to call preflight before writing code and again before opening a pull request, to cite evidence ids rather than paraphrase, and that block means a person decides.",
                 },
@@ -2122,6 +2126,37 @@ export const portfolioData = {
           ],
         },
         {
+          id: "daily",
+          heading: "How my agents use it every day",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Orion runs as a local process on my own machine. A one-time ingest reads my work into one record: 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions, with credentials scrubbed before anything is stored. The first ingest took about three and a half minutes. Each refresh after that reads only what is new and takes about ten seconds. No model is called.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "Session opens", note: "A hook tells the agent Orion is here and when to call it" },
+                { title: "Before editing", note: "context: rules, owners, past fixes and lessons for those files" },
+                { title: "While working", note: "search and read: one ranked, cited list over the record and the code" },
+                { title: "Before committing", note: "impact: callers, importers and past reverts the change reaches" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Search combines three signals: matching words, matching meaning, and the graph of what depends on what, seeded with the files the agent is touching. On 42 hand-labelled questions it puts a right answer in the top ten with recall 0.889, and a search takes tens of milliseconds. The graph is what answers questions about a change: on questions about a data change, the ranking score went from 0.113 without it to 0.562 with it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "It also learns. Auspex, my trace viewer for agents, grades every finished agent turn by fixed rules. When the same failure repeats in one file or repository, Orion drafts a lesson. I approve it by merging it, and from then on Orion hands it to any agent working in that scope. A lesson that keeps failing moves up a ladder: explain, then a checklist, then a check, then a rule enforced in code.",
+            },
+          ],
+        },
+        {
           id: "results",
           heading: "Early results",
           blocks: [
@@ -2168,6 +2203,28 @@ export const portfolioData = {
                 },
                 {
                   cells: [
+                    "The same unseen bugs, stronger model, repeated",
+                    "64% flagged as warnings (62% to 64% across 3 runs), 76% raised at any level",
+                    "Claude Sonnet 5.5, three runs of the same build. One investigating agent that settles suspects with read-only tools matched four separate review passes, for fewer tokens.",
+                  ],
+                  emphasis: true,
+                },
+                {
+                  cells: [
+                    "Noise on a real warehouse's history",
+                    "3 of 6 known bugs flagged over 26 weeks of merged changes, about one false alarm a week",
+                    "116 merged changes from cal-itp/data-infra, each warning labelled by hand. Keeping only warnings backed by evidence cuts false alarms to about one every eight weeks, but flags 2 of the 6.",
+                  ],
+                },
+                {
+                  cells: [
+                    "Search over the record and the code",
+                    "Recall 0.889 in the top ten, ranking score 0.656",
+                    "42 hand-labelled questions, three runs each. Every citation is checked to read back to its source.",
+                  ],
+                },
+                {
+                  cells: [
                     "Gain from reviewing in four focused passes",
                     "18% to 42% recall on the same model",
                     "50-bug tuning set (bugs used to adjust the method, taken from httpx, hono and cobra). One redesign, one day.",
@@ -2192,7 +2249,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug accuracy test and the real-warehouse test.",
+                "Source for every number: the results notes kept alongside Orion's benchmark, one each for the agent test, the real-bug tests, the search test, the warehouse history replay and the real-warehouse test.",
             },
           ],
         },
@@ -2203,16 +2260,29 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The safety result is strong, and real-bug recall is the open problem. Today it sits at 60%.",
+                "The safety result is strong, and real-bug recall is the open problem. Today it sits at 64% on the stronger model, against the 80% I set as the bar.",
             },
             {
               type: "bullets",
               items: [
-                "Early and small. Every result is a single run. Two runs of the same build differ by a few cases.",
-                "Mostly the cheapest model. The 60% figure comes from Claude Haiku 5.5, because that round had $2.77 of model credit. Larger models have not been measured on the newest design yet.",
+                "Early and small. The newest real-bug results are three runs each; the rest are single runs. Runs of the same build differ by a few cases.",
+                "Two models so far. The 60% figure comes from Claude Haiku 5.5 on one run; the 64% from Claude Sonnet 5.5 over three. Opus has not been measured.",
                 "A test platform plus one real warehouse. The benchmark runs on a purpose-built sample platform. The 625-model warehouse shows Orion works at real scale, but Orion read it; no team used it there.",
                 "More passes, more noise. The four-pass review raised 6 false alarms on 19 correct changes, where a single pass raised 1. Cutting that noise is part of the plan below.",
                 "Agents still hedge. Plain decision accuracy is only 0.56 to 0.58, because the models never answer a plain \"go ahead\", even with Orion. That costs every condition equally.",
+              ],
+            },
+            {
+              type: "paragraph",
+              text: "Some ideas did not earn their place, and I took them out:",
+            },
+            {
+              type: "bullets",
+              items: [
+                "A second ranking model on top of search. It lost exact names, so recall in the top ten fell from 0.889 to 0.813, and every search got far slower. Off.",
+                "Showing a warning only when its evidence passed a strict check, on every file. Held-out warnings fell from 0.615 to 0.148. Now the check applies only to files that feed the data platform.",
+                "The investigating agent as the default review. It was cheaper and quieter, but on the warehouse replay it flagged 2 of the 6 known bugs where four passes flagged 3. It stays an option.",
+                "Matching the prompt by meaning before every agent turn. It made the hook many times slower for a check that matches words anyway. Removed.",
               ],
             },
             {
@@ -2297,13 +2367,13 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The gap is smaller than 60% suggests. Of the 45 held-out bugs, 9 got a warning in the right file about something else and 3 were raised but marked as minor. Turning those into catches alone would reach 87% (39 of 45).",
+                "The gap is smaller than 64% suggests. Across the three runs, 76% of the held-out bugs were raised at some level, and several right findings ended one notch too low, as information rather than a warning. Lifting those is the next lever. Two of the seven steps below have moved since this page was first written.",
             },
             {
               type: "bullets",
               items: [
-                "Step 1. Make the score trustworthy first. Run every build three times and report the average and the spread. Grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls to confirm it grades fairly. Pass mark: three runs of today's build agree within a few points.",
-                "Step 2. Measure the stronger models. Every recall number today comes from the cheapest model. Run the four-pass design with Claude Sonnet 5.5 and Opus 5.5 on both bug sets. This costs about $3 to $5 per Sonnet run and double for Opus, roughly $30 to $60 for the full round. Pass mark: held-out recall of 80% or more, the minimum I set for this round.",
+                "Step 1. Make the score trustworthy first. Done in part: every real-bug build now runs three times and reports its spread, and the three runs agree within a few points. Still to do: grow the held-out set from 45 to about 150 real bugs, including SQL and dbt bugs from data teams. Hand-check 30 of the model judge's calls.",
+                "Step 2. Measure the stronger models. Done for Claude Sonnet 5.5, on my subscription with no API spend: 64% on held-out bugs, short of the 80% pass mark. Opus 5.5 is next.",
                 "Step 3. Turn near-misses into catches. Review each changed region in its own pass, so a long change can't use up the model's attention on its first file. Stop the model's second check of its own warnings from downgrading correct ones, which it did about six times per run on Sonnet. Pass mark: the 12 near-misses drop to 3 or fewer.",
                 "Step 4. Bring in what the model doesn't know. Pull the definitions and documentation of the outside code libraries a change uses into the review, the same way Orion already pulls in the functions it calls.",
                 "Step 5. Prove bugs by running them. A test that fails is hard evidence, so the warning ships with proof. A test that passes is a reason to drop the warning, which cuts false alarms too. Pass mark: 90% or more on held-out bugs.",
@@ -2325,6 +2395,191 @@ export const portfolioData = {
           "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
       },
       contactHeading: "Have a system that needs deploying? Let's talk.",
+    },
+
+    // Auspex, added 2026-10-25 at the owner's request, from muhibm1/auspex's README and merged pull
+    // requests (#1 to #20, 2026-10-24 and 25; `npm test` 168 of 168) and the first harvest over his
+    // own sessions (auspex #20 and the harvest thread's notes). The repository is private, so
+    // `status` stands where a code link would.
+    {
+      id: "auspex",
+      card: {
+        featured: false,
+        eyebrow: "Personal system · Agent observability",
+        title: "Auspex: seeing what coding agents actually do",
+        summary:
+          "When several coding agents work at once, it is hard to tell which one is stuck, which is waiting for me, and which said it was done without testing its work. Auspex shows every session live as a trace, grades each finished turn by fixed rules, and hands repeat failures to Orion as lessons.",
+        linkText: "Read the case study",
+        tags: ["Every finished turn graded, no model needed", "168 tests"],
+      },
+      status: "Ongoing project",
+      eyebrow: "Case study · Personal system · Agent observability",
+      title: "Auspex: seeing what coding agents actually do",
+      intro:
+        "I run several coding agents at once, on my own machine and in the cloud. A terminal shows one at a time and hides the rest. Auspex shows them all: every step each agent takes, on a time axis, as it happens. When a turn finishes, it grades the work by a few fixed rules, such as whether the agent ran a test after its last edit. Failures that repeat become lessons Orion hands to the next agent.",
+      atAGlance: [
+        { label: "My role", value: "Designed and built it end to end" },
+        {
+          label: "What it is",
+          value: "A live trace view and grader for coding-agent sessions, running on my own machine",
+        },
+        { label: "Where it stands", value: "In daily use since October 2026; the repository is private" },
+        { label: "Quality", value: "168 tests passing" },
+      ],
+      stats: [
+        { value: "3", label: "feeds merged into one trace per session: transcripts, hooks and traces" },
+        { value: "5", label: "fixed rules that grade every finished turn, with no model call" },
+        { value: "158", label: "finished turns of my own work graded in the first pass" },
+        { value: "0", label: "data sent anywhere: no account, no telemetry" },
+      ],
+      sections: [
+        {
+          id: "why",
+          heading: "The questions I couldn't answer",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "With four or five agents working at once, the useful questions are simple. Which one is stuck? Which is waiting for me to allow a command? What is that subagent doing, and how long has it been at it? Did the agent that just said it was done actually test its work?",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Each agent already records everything it does. Nothing put those records side by side, live, in a form a person can read at a glance. Auspex only watches. It never answers a prompt, approves a command or starts an agent.",
+            },
+          ],
+        },
+        {
+          id: "see",
+          heading: "What you see",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Sessions",
+                  note: "One card per session: its project, whether it is running, waiting on me, idle or ended, the step happening now, and how long it has waited on me.",
+                },
+                {
+                  title: "Trace",
+                  note: "The selected turn as a waterfall: one row per step, bars on a time axis, each subagent in its own colour. It is a run tree, the same shape LangSmith uses: one root per turn, with model calls, tools and subagents beneath it.",
+                  emphasis: true,
+                },
+                {
+                  title: "Context",
+                  note: "What fills each agent's context window, its working memory, as a map of blocks: instructions, files read, command output, chat, and what Orion added. Each Orion passage is marked used or not.",
+                },
+                {
+                  title: "Metrics",
+                  note: "Where the time went (model, tools, waiting on me, waiting on subagents), tokens and cache hits, failed calls, and steps repeated with the same input.",
+                },
+                {
+                  title: "Usage gauge",
+                  note: "How much of my plan's usage limits is spent, and, at the current pace, when a limit will run out.",
+                },
+                {
+                  title: "Ledger",
+                  note: "Week by week: sessions, turn times, tokens, and the share of turns that edited code and then checked it.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "how",
+          heading: "How it works",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Auspex merges three records each agent already writes. Transcripts give the full story of every message and tool call. Hooks give instant events, such as a permission prompt opening. Traces give exact timings. A hook that cannot reach Auspex gives up within a second, so a stopped Auspex never slows an agent down.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Cloud sessions run on remote machines, so each one pushes its transcripts to a repository only I can read, after every turn. Credentials are scrubbed line by line first, and nothing is pushed unless the repository confirms it is private. Auspex reads that repository once a minute, and cloud sessions appear next to local ones.",
+            },
+            {
+              type: "bullets",
+              items: [
+                "It listens only on the local machine and refuses requests addressed to any other host, so a web page cannot read sessions through it.",
+                "No account and no telemetry. The only network call is the fetch of my own private sessions repository.",
+                "Tokens, not dollars. A subscription session has no price per call, so any dollar figure would be invented.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "grading",
+          heading: "Grading every finished turn",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "About half a minute after a turn ends, five fixed rules read what the session recorded. No model is asked anything, so the same session always gets the same grade.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Case" }, { label: "Raised when" }],
+              rows: [
+                {
+                  cells: [
+                    "Finished without a check",
+                    "The agent edited code, then stopped without a test, build, type check or lint after its last edit, or the last one failed",
+                  ],
+                  emphasis: true,
+                },
+                { cells: ["Retry loop", "The same command failed three or more times in one turn"] },
+                { cells: ["Edit churn", "The same file was edited eight or more times in one turn"] },
+                { cells: ["Long wait", "A permission prompt waited ten minutes or more for me"] },
+                { cells: ["Context high", "A model call used 80% or more of its context window"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Every graded turn becomes one row in a history file, and every finding one line in a cases file. Orion reads the cases. When the same kind of failure repeats in the same file or repository, Orion drafts a lesson, and I approve it by merging it. From then on, Orion gives that lesson to any agent whose task touches that scope.",
+            },
+          ],
+        },
+        {
+          id: "first",
+          heading: "The first pass over my own work",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The first harvest over my own sessions raised 29 cases, and 27 of them were wrong: Auspex judged sessions with a larger context window against the standard one, so ordinary turns looked nearly full. The fix was to read the window each session actually asked for. After a regrade, 158 turns produced 5 cases. One of those is still a false alarm: a chained command read as a failing check.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Five cases are too few for a lesson yet, which is the point of the rule: one failure is an anecdote, a repeated one is a lesson.",
+            },
+          ],
+        },
+        {
+          id: "limits",
+          heading: "What it doesn't do yet",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Cloud sessions arrive after each turn, not live, so a stall in the middle of a long cloud turn is not caught as it happens.",
+                "The split of the context window between blocks is estimated from text length and scaled to the model's own measured total.",
+                "The check rules know the common test, build and lint commands. A project that checks its work some other way reads as unchecked until the rules learn it.",
+                "Agent transcript formats are not a published contract, so an update to the agent can rename fields Auspex reads.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "Before a team trusts agents with more work, make what they do visible and grade it by rules a person can read. Then fix what repeats, not what happened once.",
+      },
+      contactHeading: "Running agents you can't see into? Let's talk.",
     },
 
     // The agent harness story, rewritten 2026-10-25 at the owner's request (decision 4 of the
@@ -2404,7 +2659,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The same ledger showed where the rest of the time went. On its fastest release a change still took 2 h 26 m from request to merge, and the agents were working for only a third of it. The median run waited 68 minutes at the gates. The coordinator spent 137 of 250 agent-minutes on bookkeeping, and eight reviewers found nothing that four had not.",
+                "The same ledger showed where the rest of the time went. On its fastest release a change still took 2 h 26 m from request to merge, and the agents were working for only a third of it. The median run waited 68 minutes at the gates.",
             },
           ],
         },
@@ -2433,7 +2688,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The building was quick: about an hour on a typical run. The approvals were not. The median from my design approval to my deployment approval was 4 h 18 m, and the plain-language reviewer sent one deployment page back 35 times.",
+                "The building was quick: about an hour on a typical run. The approvals were not. The median from my design approval to my deployment approval was 4 h 18 m.",
             },
           ],
         },
@@ -2521,9 +2776,7 @@ export const portfolioData = {
               type: "bullets",
               items: [
                 "No change was run all three ways. WorkHorse ran in September and early October on earlier models. I did not rerun it: even with no waiting, its agent time alone was twice a whole thread, so the answer would not change.",
-                "There is no defect count for WorkHorse runs to set against the threads' 4 follow-up fixes in 17.",
                 "The thread figures come from one week: 8 changes timed from ask to last message, 5 of them with full transcripts.",
-                "Tannhauser Gate's reviewers did catch real bugs. What cost the time was the rounds of approval around them.",
               ],
             },
           ],
@@ -2822,569 +3075,6 @@ export const portfolioData = {
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Data you can't trust yet? Let's talk.",
-    },
-
-    {
-      id: "workhorse",
-      // Retired 2026-10 (owner's brief, 2026-10-21): no card on the home page or /work, the page
-      // stays live under its banner, and the snapshot code link stays.
-      listed: false,
-      banner:
-        "Retired October 2026. It cut an ordinary change from about eight hours of agent work to about one, and then one agent per task in its own thread beat it. The measured story is on the agent harness page.",
-      bannerLink: { text: "agent harness page", to: "/work/tannhauser-gate" },
-      card: {
-        featured: false,
-        eyebrow: "Personal system · Agentic AI · Retired",
-        mobileEyebrow: "Personal system · Agentic AI",
-        title: "WorkHorse: AI-built software you can audit",
-        summary:
-          "A 28-agent delivery pipeline where code, not prompts, enforces the rules, and a person approves at the moments that matter. Studbook, its search-and-answer system, answers from the pipeline's own record and cites the paragraph behind every sentence.",
-        mobileSummary:
-          "28 agents, rules enforced in code, and a retrieval system that cites the paragraph behind every sentence.",
-        linkText: "Read the case study",
-        // These run-record figures are the owner's own, hand-maintained numbers. Source: the
-        // G2: rejected entries of 2026-09-28 (08:12 and 08:57 UTC) in
-        // docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/approvals.md, and ADR
-        // 0010. They go stale after the next WorkHorse run; the owner updates them here,
-        // together with their pins in src/data/portfolioData.test.js.
-        stats: [
-          { value: "100%", label: "of Studbook answers fully backed by sources, on a test kept sealed until scoring" },
-          { value: "3 of 3", label: "trick questions the record could not answer, all refused, nothing invented" },
-          { value: "40", label: "problems found in review, fixed before a person signed off" },
-          { value: "9", label: "hooks (code that can block an AI action) the AI can't override" },
-        ],
-        mobileTags: ["100% faithful", "40 findings fixed pre sign-off"],
-      },
-      codeLink: { label: "Code: workhorse-snapshot", href: REPOSITORIES.workhorse },
-      eyebrow: "Case study · Personal system · Agentic AI · Retired",
-      title: "WorkHorse: AI-built software you can audit",
-      intro:
-        "AI coding agents can write a feature in minutes. What they rarely leave behind is a reason to trust it: who decided what, what was checked, and what a person actually approved. WorkHorse is the delivery process I built around them. Twenty-eight single-purpose agents take a change from a one-line request to merged, tested and documented code, a person approves at the two moments that matter, and code the agents cannot argue with enforces the rules. This site was built with it.",
-      // Quality: hooks/tests/run.js in muhibm1/workhorse at 0.6.1, per CHANGELOG.md.
-      atAGlance: [
-        { label: "My role", value: "Designed and built it end to end" },
-        {
-          label: "What it is",
-          value:
-            "A pipeline of AI agents that delivers software changes, plus a search tool (Studbook) over its own records that the agents query on every run",
-        },
-        {
-          label: "Stack",
-          value: "Node.js, Python, FastAPI, SQLite or Postgres with pgvector, LangSmith",
-        },
-        { label: "Quality", value: "507 pipeline tests, run automatically on every code push" },
-      ],
-      stats: [
-        { value: "28", label: "single-purpose agents" },
-        { value: "9", label: "code hooks the AI can't override" },
-        { value: "5 to 2", label: "human gates, cut after measuring" },
-        { value: "100%", label: "faithful Studbook answers on a sealed test set" },
-      ],
-      sections: [
-        {
-          id: "why",
-          heading: "Why I built it",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "AI coding tools move fast until something goes wrong, and then there's rarely a record of what happened or why. Anyone putting them to work on real software has to answer three questions. What did the agent change? Who checked it? Did a person sign off on what actually shipped? I wanted to find out what it takes to answer all three every time, so I built the whole delivery process and measured it.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The design rests on one idea. An AI agent is like a capable new hire who never gets tired and never remembers yesterday. Asking it to be careful does not fix that. Giving each agent a narrow job, writing everything down, and putting the rules that matter where it can't skip them does. Every step writes a document, every claim in it is labelled as confirmed or believed, and approvals are pinned to the exact version a person read.",
-            },
-            {
-              type: "paragraph",
-              text: "A few terms are used throughout:",
-            },
-            {
-              type: "cards",
-              items: [
-                { title: "Agent", note: "One AI session with one job, such as planning, building or reviewing, and only the tools that job needs." },
-                { title: "Gate", note: "A point where the pipeline stops until a person reads a document and approves it." },
-                { title: "Hook", note: "A small piece of code that runs before or after every action an agent takes, and can block it." },
-                {
-                  title: "Risk tier",
-                  note: "How much ceremony a change gets, from 0 (docs and tests) to 3 (regulated or hard to undo).",
-                  emphasis: true,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: "how",
-          heading: "How a change moves through it",
-          blocks: [
-            {
-              type: "flow",
-              columns: 8,
-              steps: [
-                { title: "Design", note: "Person approves", gate: true },
-                { title: "Plan", note: "Tasks and test cases" },
-                { title: "Build", note: "Run side by side, each in its own copy of the code" },
-                { title: "Verify", note: "Read-only checker" },
-                { title: "Fix", note: "Separate agent" },
-                { title: "Review ×4", note: "Bugs, security, fit to design, upkeep" },
-                { title: "Ship", note: "Person approves", gate: true },
-                { title: "Deploy", note: "Person approves at tier 3", dashed: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "In plain terms: a person describes a problem and the outcome they want in one line. Agents investigate and write a design, and a person approves it before any code exists. A planning agent breaks the design into tasks and writes the tests that will prove each one works. Builder agents write the code in parallel, each in its own copy of the repository, so they can't overwrite each other.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "A checker that can read the code but not change it runs every test. If something fails, a different agent fixes it, so nothing ever grades its own work. Four reviewers then read the result at once: for bugs, for security, for whether it matches the design, and for whether another engineer could maintain it from the repository alone. Their findings are fixed before a person sees the ship document, and only that person's approval lets the change merge.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Not every change deserves the same ceremony. A low-risk change needs only the Ship approval; a tier 3 production change also needs a person to approve the deploy, with rollback rehearsed from tier 2 up.",
-            },
-          ],
-        },
-        {
-          // From docs/sdlc/2026-09-20-fix-phone-redaction-scanner/ (brief.md, evals.md,
-          // approvals.md) and the run's row in the `measured` table below.
-          id: "example",
-          heading: "One change, start to finish",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "This site must never publish my phone number, and a scanner checks every file in the repository for it. The scanner had two defects. Here is how WorkHorse fixed them:",
-            },
-            {
-              type: "table",
-              columns: [{ label: "Step" }, { label: "What happened" }],
-              rows: [
-                {
-                  cells: [
-                    "Request",
-                    "One line: the scanner misses the number in files that mix two text encodings, and silently does nothing when it is started through a shortcut path.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Design",
-                    "Agents reproduced both defects before proposing anything, so the design fixed real failures, not guessed ones. The audit also found the same kind of hole one level up: the publishing workflow still reported success even if the scanner's own tests never ran. A person approved the design.",
-                  ],
-                  emphasis: true,
-                },
-                {
-                  cells: [
-                    "Plan",
-                    "34 evaluation cases written before any code: numbers the scanner must catch, and look-alikes it must leave alone.",
-                  ],
-                },
-                { cells: ["Build, verify, review", "Code written and tested; the four reviewers raised 6 findings, all fixed before sign-off."] },
-                { cells: ["Ship", "A person approved the ship document, and the change was merged and published."], emphasis: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Every step left a document behind, so anyone can see later why the scanner works the way it does and what it was tested against.",
-            },
-          ],
-        },
-        {
-          id: "rules",
-          heading: "Rules in code, not in prompts",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "A prompt is a request. A model can reason its way around a request, especially halfway through a long task when the rule is inconvenient. A hook is a lock. It runs outside the model, before or after every tool call, and it doesn't care how good the argument is. So the non-negotiables are nine hooks:",
-            },
-            {
-              type: "cards",
-              items: [
-                "Protected paths agents can't write to",
-                "Tests locked while a fix is made, so a failing test can't be weakened",
-                "Builders fenced inside their own copy of the code",
-                "No merge or push while a required gate is open",
-                "Terminal commands screened before they run",
-                "Formatting applied on every write",
-                "Required documents checked before a phase closes",
-                "No stopping until verification has run",
-                "Every session starts with the change's context loaded",
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The second card is the one people ask about. When code fails a test, the easiest way to make it pass is to change the test. During a fix the tests are locked, so the only way through is to fix the code.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "A session also can't approve its own gate or grant itself permissions. A ship document with an open high-severity finding is refused when it's written and again when someone tries to approve it.",
-            },
-          ],
-        },
-        {
-          id: "who-decides",
-          heading: "Who decides what",
-          blocks: [
-            {
-              type: "cards",
-              items: [
-                { title: "Agents", note: "How to design, plan, build, test and fix the change, and what the reviewers flag." },
-                {
-                  title: "Code",
-                  note: "Which files may be touched, whether tests may change, whether a gate is open, and whether the required documents exist.",
-                },
-                {
-                  title: "A person",
-                  note: "Whether the design is right, whether the change ships, and at tier 3, whether it deploys.",
-                  emphasis: true,
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The split follows the cost of being wrong. An agent that writes a clumsy function costs a review comment. An agent that weakens a test, edits a protected file or approves its own work costs trust in everything the pipeline produces, so those decisions are taken away from it entirely.",
-            },
-          ],
-        },
-        {
-          // These run-record figures (paragraphs, stats and the outcomes table below) are the
-          // owner's own, hand-maintained numbers. Source: the G2: rejected entries of
-          // 2026-09-28 (08:12 and 08:57 UTC) in
-          // docs/sdlc/2026-09-25-rebuild-portfolio-to-approved-redesign/approvals.md, and ADR
-          // 0010. They go stale after the next WorkHorse run; the owner updates them here,
-          // together with their pins in src/data/portfolioData.test.js.
-          id: "measured",
-          heading: "Redesigned from the timestamps, then proven on real changes",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The first version had five human checkpoints, and it felt safe. I didn't redesign it from impressions. Timestamps from those runs showed that two thirds of the time a change spent in the pipeline was a person waiting at a checkpoint with nothing to decide. More gates were not making it safer, only slower.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "So I cut five gates to two, added a clock to every run, halved the agent sessions, capped document sizes, and moved reviewer fixes ahead of the ship document, so a person only sees finished work. Then I put five real changes through it, including one on a live web app with authentication, two on this site and the MCP server inside Studbook (the way other AI agents query it).",
-            },
-            {
-              type: "stats",
-              items: [
-                { value: "5 of 5", label: "real changes merged, tested and documented" },
-                { value: "40", label: "review findings fixed before a person signed off" },
-                { value: "70", label: "new tests and eval cases written in the first four runs" },
-                { value: "1 of 5", label: "rejected at the ship gate, then reworked and merged" },
-              ],
-            },
-            {
-              type: "table",
-              columns: [{ label: "Change" }, { label: "Outcome" }],
-              rows: [
-                {
-                  cells: [
-                    "Live web app with sign-in: moderation API type fix",
-                    "Merged; the build passed for the first time in 17 days; 9 findings fixed before sign-off.",
-                  ],
-                },
-                {
-                  cells: [
-                    "This site: locking the version of Node (the software that builds it) to 22.12, with an automatic check that enforces it",
-                    "Merged and published; 36 new tests; 10 findings fixed; the shipping agent caught a real high-severity issue before release.",
-                  ],
-                },
-                {
-                  cells: [
-                    "This site: phone-number redaction scanner",
-                    "Merged and published; both defects reproduced before design; 34 eval cases; 6 findings fixed.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Test service: added an endpoints section (the addresses other software calls) to its README",
-                    "Done; 11 tests; 3 findings fixed before sign-off.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Studbook: MCP server (a way for other agents to query it)",
-                    "Rejected once at the ship gate against a requirement written before the work started; reworked and merged; 12 of 12 findings fixed before approval.",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The first four runs each held the rules: only the designed human approvals, no questions mid-run, and no ship document presented with an open finding. Every defect they found was fixed and tested the same day, and nine releases came out of those four runs.",
-            },
-          ],
-        },
-        {
-          // Approvals on the pull request: CHANGELOG.md 0.4.0 (2026-09-29) in muhibm1/workhorse.
-          id: "fell-short",
-          heading: "Where it fell short",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The most useful run was one that failed. The first version of the Studbook MCP server, described below, passed every reviewer and was still wrong: it missed a requirement written down before any code existed. Only a person reading the ship document against the original requirement caught it, and the gate sent it back. That is the gate doing its job.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The second weakness was where approvals lived. At first a gate was recorded on the machine where it was approved, so when work moved from my laptop to a cloud session, an approval I had already given stayed behind and had to be given again. Now every gate is posted on the change's pull request (the page where a proposed code change is reviewed), and replying \"/approve\" there, from any device, is the approval. Only the repository's named approvers count, and an approval given before the document was posted does not. Version 0.6 closes the rest of the gap: with its event log on, every approval is also written to one shared log, pinned to the exact text the person read, so a change continues on any machine without asking again, and the gates stay shut if the log can't be reached.",
-            },
-          ],
-        },
-        {
-          // Counted, not remembered: every figure in this section is from the WorkHorse run
-          // ledger, docs/ledger/RUNS.md and runs.json in muhibm1/workhorse (0.5.0, merged
-          // 2026-10-13 as b94e431), which recomputes each run from its committed conductor log
-          // and approvals. Finished runs at risk tiers 0 to 2: 2 on the first version (five
-          // gates), 7 on two gates, 5 from the speed release on. Regenerate with
-          // `workhorse ledger` and update these figures together. The 0.5.x releases and the
-          // first Flywheel pass are from CHANGELOG.md 0.5.0 to 0.5.4 (master 4f5f78e); 0.6.0 and
-          // 0.6.1 from CHANGELOG.md and docs/superpowers/specs/2026-10-14-event-bus-design.md.
-          id: "ledger",
-          heading: "Every run on the record, and what comes next",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Each change WorkHorse carries leaves its log and its approvals in the repository. A ledger recomputes every run from those records, so these numbers are counted, not remembered. Across 18 runs on five projects, the agents went from about eight hours of work on an ordinary change to about one.",
-            },
-            {
-              type: "bars",
-              charts: [
-                {
-                  title: "Agent working time, median per change",
-                  items: [
-                    { label: "First version, five approvals", value: 479, display: "8 h" },
-                    { label: "Two approvals", value: 103, display: "1 h 43 m" },
-                    { label: "From 0.3.12, the speed release", value: 65, display: "1 h 05 m" },
-                  ],
-                },
-                {
-                  title: "Request to merge, median per change",
-                  items: [
-                    { label: "First version, five approvals", value: 2714, display: "45 h" },
-                    { label: "Two approvals", value: 665, display: "11 h" },
-                    { label: "From 0.3.12, the speed release", value: 146, display: "2 h 26 m" },
-                  ],
-                },
-              ],
-              caption:
-                "Finished changes at risk tiers 0 to 2, from the WorkHorse run ledger. Request to merge counts nights, weekends and time waiting for a person.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The ledger also shows the next limit. On the latest runs the agents were working for only a third of the time between the request and the merge. The rest was waiting: for a merge the agents aren't allowed to press, for a run that stopped and nobody restarted, for a person reading a design document with twenty questions in it.",
-            },
-            {
-              type: "paragraph",
-              text: "Version 0.5 goes after that waiting, one release at a time, and 0.6 puts every run on a shared log:",
-            },
-            {
-              type: "table",
-              columns: [{ label: "Release" }, { label: "What it does" }],
-              rows: [
-                {
-                  cells: [
-                    "0.5.0, the ledger",
-                    "Every run is recomputed from its committed record, with its version and cost. A release can only claim a speedup the ledger shows.",
-                  ],
-                },
-                {
-                  cells: [
-                    "0.5.1, merge on approval",
-                    "Approving the ship document merges the change as soon as its checks are green. It never merges over a red check.",
-                  ],
-                },
-                {
-                  cells: [
-                    "0.5.2, a trace per run",
-                    "Every run becomes a LangSmith trace (a step-by-step record of the run): the change at the top, then each phase and step, each step marked as agent work, waiting or a stopped run.",
-                  ],
-                  emphasis: true,
-                },
-                {
-                  cells: [
-                    "0.5.3, scored runs",
-                    "Each trace gets five scores: finished, within its time budget, never stalled, no unexplained gap, and every gate passed first time. Flywheel, my agent-testing tool, groups the failures by the phase where they went wrong.",
-                  ],
-                },
-                {
-                  cells: [
-                    "0.5.4, stall notices",
-                    "A run that stops and needs a person says so on its pull request, so the notice reaches a phone.",
-                  ],
-                },
-                {
-                  cells: [
-                    "0.6.0, an event log",
-                    "Every step of a run and every approval goes to one shared log on Redpanda, a message-streaming service that speaks the Kafka protocol. An approval follows the change to any machine, and the gates close if the log is down. Run timings and replays are read from the same log, and match the ledger on all 18 recorded runs.",
-                  ],
-                },
-                {
-                  cells: [
-                    "0.6.1, fresh search",
-                    "Each document a run writes reaches Studbook's search a few seconds later, through the same steps as a full rebuild, with the same results on all 40 test questions.",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The first scoring pass, over 16 traced runs, flagged 13: 8 went over their time budget, 4 of them in the build phase; 3 stalled; 2 never closed their record. That list is what the next releases, 0.6.2 to 0.6.4, work from: fewer questions per design, review running alongside the build, and big changes split in two. The event log now times each of them per gate and per phase. No 0.5 or 0.6 run has reached the ledger yet, so none of these releases claims a speedup.",
-            },
-          ],
-        },
-        {
-          id: "studbook",
-          heading: "Studbook: answers with receipts",
-          eyebrow: "Inside WorkHorse",
-          subtitle: "Cited retrieval (RAG) over WorkHorse's engineering record",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The pipeline writes everything down. Studbook makes that record answerable. Ask why a design decision was made and it answers from the specs, reviews, ship documents and commit messages, cites the file and section behind every sentence, and says \"Not in the record\" when the record is silent.",
-              link: { text: "Studbook", href: REPOSITORIES.studbook },
-            },
-            {
-              type: "paragraph",
-              text:
-                "In plain terms, it is a search engine and a careful writer working together. The search half finds the five passages most likely to hold the answer. The writer half, a language model, may use only those passages, must cite one for every sentence, and must say so when they don't contain the answer. That pattern is called retrieval-augmented generation, or RAG.",
-            },
-            {
-              type: "flow",
-              columns: 6,
-              steps: [
-                { title: "Question", note: "Follow-ups rewritten to stand alone" },
-                { title: "Vector + full text", note: "Top 10 from each" },
-                { title: "Fusion", note: "Merge the two lists by rank (merge setting k = 10)" },
-                { title: "Rerank", note: "A slower model re-reads them, keeps 5" },
-                { title: "Answer", note: "Haiku 4.5 (a small language model), set to vary as little as possible" },
-                { title: "Receipts", note: "Citations or \"Not in the record\"", gate: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Read left to right: the question is searched two ways at once. Vector search matches meaning, so it finds \"rollback\" when you asked about undoing a release. Full-text search matches exact words, so it finds a specific file name. The two lists are merged into one, a second, slower model re-reads the best candidates and keeps the five most relevant, and only then does the writer answer.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "I built the test before tuning anything: 60 gold questions with known answers across five types, plus nine trap questions about things the record doesn't contain, where the only right answer is to refuse. They were split into a dev set for tuning and a sealed test set (locked with a fingerprint, called a hash, so any change shows) scored once, after tuning froze, so the final score is an exam the system never studied for. Every step in the pipeline above was chosen by measurement.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The table shows recall at five: how often the passage that holds the answer was among the five handed to the writer. If it isn't there, no writer can get the answer right.",
-            },
-            {
-              type: "split",
-              table: {
-                columns: [{ label: "Retrieval setup (dev set)" }, { label: "Recall@5", numeric: true }],
-                rows: [
-                  { cells: ["Vector search only", "0.56"] },
-                  { cells: ["Full text only, after fixing a query bug", "0.62"] },
-                  { cells: ["Hybrid (both searches merged), standard merge setting (k = 60)", "0.65"] },
-                  { cells: ["Hybrid, fusion tuned for a small corpus (k = 10)", "0.74"] },
-                  { cells: ["Hybrid + reranker, pool of 20", "0.82"] },
-                  {
-                    cells: ["Hybrid + reranker, pool of 10 (shipped)", "0.85"],
-                    emphasis: true,
-                  },
-                ],
-              },
-              stats: {
-                items: [
-                  { value: "100%", label: "faithful on the sealed set: no unsupported claims" },
-                  { value: "3 of 3", label: "trap questions refused, nothing invented" },
-                  { value: "2 to 11", label: "of 12 follow-up questions retrieved, after rewriting" },
-                  { value: "9 of 12", label: "follow-ups with the thread, 1 of 12 without" },
-                ],
-              },
-            },
-            {
-              type: "paragraph",
-              text:
-                "Two results in that table are worth a sentence each. The textbook fusion setting is meant for large collections; on a small one, tuning it was worth more than any single feature. And a bigger pool for the reranker scored lower, not higher: more candidates gave it more near misses to choose among.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Measured and rejected: splitting questions into parts, capping chunks per document, synonym expansion, hypothetical-passage search, bigger rerank pools and more passages for the generator. None beat what shipped, and I kept the code so the results can be reproduced.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Conversations work too. A follow-up like \"was it ever fixed?\" means nothing to a search engine on its own, so a small model rewrites it into a standalone question first, under a guard that stops the rewrite from inventing a topic. With the thread, 9 of 12 follow-ups were answered fully correctly, against 1 of 12 without it.",
-            },
-          ],
-        },
-        {
-          // Speed and cost: docs/studbook-record.md in muhibm1/workhorse (#30), and README.md "Fast mode for agents" in muhibm1/studbook (#14,
-          // 961e567): p50 per search through MCP over the 40 dev questions, 4-core cloud CPU,
-          // 3,880 passages from six repositories; fused recall@10 0.8824 against reranked
-          // recall@8 0.8824 (studbook docs/retrieval-ceiling.md). Figures are written in words
-          // because the forbidden-copy scan withholds digit-plus-unit timing figures (D26, D36).
-          id: "mcp",
-          heading: "An MCP server over the record",
-          eyebrow: "Inside WorkHorse",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "MCP, the Model Context Protocol, is a standard way for an AI agent to call an outside tool, the way a USB port is a standard way to plug in a device. Studbook runs as an MCP server, so other agents can query the engineering record mid run and look up a past decision instead of re-deriving it, or worse, contradicting it. The server lives in the Studbook repository.",
-              link: { text: "Studbook repository", href: REPOSITORIES.studbook },
-            },
-            {
-              type: "paragraph",
-              text:
-                "A second way in is only useful if it gives the same answers as the first. Its answers were proved identical to the direct path over 40 evaluation questions: the same passages in the same order, scores within 0.0001, identical model requests. That check runs automatically on every code push (CI, continuous integration).",
-            },
-            {
-              type: "paragraph",
-              text:
-                "WorkHorse built it end to end. The first version missed a requirement written before the work started, and my own ship gate rejected it. The fix was reusing one connection for a whole session and removing a step that ran the model twice. Reworked and merged, with 12 of 12 review findings fixed before approval and the results proved identical over the same 40 questions.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "It now sits inside every run. Before designing a change, the designer and the discovery analyst ask the record what was decided about these files before and what went wrong last time, and get the passages back with where they came from. That only works if a search is fast and free, and at first it was neither: a search took about three seconds.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Measured over the record of all six of my repositories, 3,880 passages, almost all of that time was the reranker, and for an agent it bought nothing: the merged top ten holds a right passage as often as the reranked top eight (recall 0.88 on the dev questions). So the agents' path skips the reranker and reads ten passages, converts the question into numbers (an embedding) on faster software, with the same model and the same stored numbers, and loads the models once at start. A search now takes about forty milliseconds and costs nothing. The record is one SQLite file on the machine, the models run locally, and the one paid tool, a written answer from the model, stays off. The hosted Postgres record still works, and is now optional.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "By default it answers only from decided documents, so an agent cannot cite its own in-flight proposal as settled fact. On the hosted database every search runs with read-only access that also limits which rows it can see. Connections trust only one named certificate authority (the body that vouches for a server's identity), and passwords are never written to a log. Retrieved text reaches the model as data, not as instructions, so a document cannot hijack the agent reading it.",
-            },
-          ],
-        },
-      ],
-      callout: {
-        eyebrow: "What I'd bring to a client",
-        text:
-          "Measure before asserting, put the non-negotiables in code, and cut whatever the numbers don't support. That's how I'd bring AI into a client's delivery process without asking anyone to trust it blindly.",
-      },
-      contactHeading: "Want to talk through WorkHorse? I reply to email within a day.",
     },
 
     // Atelier (fifth, after Orion), added 2026-10-20 (TG-08) from the Atelier README, its studio skill
