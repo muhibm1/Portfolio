@@ -73,7 +73,7 @@ const pinnedCaseStudyStats = {
   esper: ["79%", "0%", "11 of 11", "$0"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
   // Added 2026-10-21 from the owner's redesign brief.
-  "tannhauser-gate": ["28 to 1", "180", "8", "4"],
+  "tannhauser-gate": ["8 h to 1 h", "4 h 18 m", "30 m", "194"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
@@ -268,28 +268,28 @@ const pinnedCaseStudyNarratives = {
   },
   "tannhauser-gate": {
     eyebrow: "Case study · Personal system · Agent harness",
-    title: "Tannhauser Gate: an agent harness, rebuilt on evidence",
-    lead: "My first delivery pipeline used 28 specialist agents. Its run records showed most handoffs cost more than they caught, so I retired it and rebuilt around one frontier coding agent, rules enforced in code, and reviewers that never see the builder's reasoning. Nothing was cut without a replay test behind it.",
+    title: "Agent harness: two pipelines, measured and retired",
+    lead: "I built two pipelines to make coding agents trustworthy. WorkHorse used 28 specialist agents and stopped for my approval at fixed points. Tannhauser Gate replaced them with one builder and independent reviewers. Each was an improvement on the one before. Then I timed both against something simpler: one agent per task, working in its own thread, several at once. The thread won by hours, so I retired both pipelines and kept only the parts that pay for themselves.",
     atAGlance: [
       {
         label: "My role",
-        value: "Designed and built it end to end"
+        value: "Designed, built and measured both pipelines"
       },
       {
         label: "What it is",
-        value: "The harness I build agents with: one builder, independent reviewers and hard lines enforced by hooks"
+        value: "The harness around the coding agents I build with: context before a task, hard rules during it, grading after it"
       },
       {
         label: "Where it stands",
-        value: "Rebuilt October 2026, in daily use; the repository is private"
+        value: "Both pipelines retired in October 2026; the guard runs on every agent session; the repositories are private"
       },
       {
         label: "Quality",
-        value: "180 hook tests passing"
+        value: "194 guard tests passing"
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Measure what each agent in a pipeline actually catches, and cut the ones that cost more than they find. The rules that must hold go in code, where no model can talk its way past them.",
+    calloutText: "Time the process, not just the model. Where a gate costs more than it catches, move the check after the work, and put the few rules that must never break in code that runs on every action.",
     contactHeading: "Have a system that needs deploying? Let's talk."
   },
   "apple-integration": {
