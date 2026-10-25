@@ -481,6 +481,9 @@ html { background: var(--page); scroll-padding-top: 76px; }
 /* The steps, in full */
 .wt-steps { margin-top: 40px; display: grid; gap: 18px; }
 .wt-steps-h { font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: -0.02em; line-height: 1.2; color: var(--ink); }
+details.wt-steps { display: block; }
+details.wt-steps > .wt-sl { margin-top: 18px; }
+summary.wt-steps-h { cursor: pointer; font-size: 17px; color: var(--ink-2, var(--ink)); }
 .wt-sl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 48px; border-top: 1px solid var(--line); }
 .wt-sl li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 6px 14px; padding: 16px 0; border-bottom: 1px solid var(--line); align-content: start; }
 .wt-n { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 3px; }

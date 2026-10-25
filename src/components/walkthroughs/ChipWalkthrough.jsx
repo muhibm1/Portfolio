@@ -486,8 +486,7 @@ export default function ChipWalkthrough({ block }) {
         ))}
       </p>
 
-      <div className="wt-steps">
-        <h3 className="wt-steps-h">{block.listHeading}</h3>
+      <StepList collapsed={block.listCollapsed} heading={block.listHeading}>
         <ol id="wt-steps" className="wt-sl">
           {steps.map((item, i) => (
             <li key={item.id}>
@@ -519,7 +518,25 @@ export default function ChipWalkthrough({ block }) {
             </li>
           ))}
         </ol>
-      </div>
+      </StepList>
+    </div>
+  );
+}
+
+// Wraps the step list under its heading, folded shut when the walkthrough above already shows every step.
+function StepList({ collapsed, heading, children }) {
+  if (collapsed) {
+    return (
+      <details className="wt-steps">
+        <summary className="wt-steps-h">{heading}</summary>
+        {children}
+      </details>
+    );
+  }
+  return (
+    <div className="wt-steps">
+      <h3 className="wt-steps-h">{heading}</h3>
+      {children}
     </div>
   );
 }

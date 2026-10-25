@@ -78,8 +78,6 @@ const pinnedCaseStudyStats = {
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
   // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
   orion: ["0 of 50", "64%", "0.889", "625"],
-  // Added 2026-10-25: the Auspex study's four headline figures.
-  auspex: ["3", "5", "158", "0"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -254,7 +252,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "Where it stands",
-        value: "In daily use by my own agents; still an early project"
+        value: "In daily use by my own agents, and growing"
       },
       {
         label: "Tested on",
@@ -262,34 +260,8 @@ const pinnedCaseStudyNarratives = {
       }
     ],
     calloutEyebrow: "Where Orion stands",
-    calloutText: "This is an early, ongoing project. Read the results as a first measurement, not a final score.",
+    calloutText: "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
     contactHeading: "Have a system that needs deploying? Let's talk."
-  },
-  auspex: {
-    eyebrow: "Case study · Personal system · Agent observability",
-    title: "Auspex: seeing what coding agents actually do",
-    lead: "I run several coding agents at once, on my own machine and in the cloud. A terminal shows one at a time and hides the rest. Auspex shows them all: every step each agent takes, on a time axis, as it happens. When a turn finishes, it grades the work by a few fixed rules, such as whether the agent ran a test after its last edit. Failures that repeat become lessons Orion hands to the next agent.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it end to end"
-      },
-      {
-        label: "What it is",
-        value: "A live trace view and grader for coding-agent sessions, running on my own machine"
-      },
-      {
-        label: "Where it stands",
-        value: "In daily use since October 2026; the repository is private"
-      },
-      {
-        label: "Quality",
-        value: "168 tests passing"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Before a team trusts agents with more work, make what they do visible and grade it by rules a person can read. Then fix what repeats, not what happened once.",
-    contactHeading: "Running agents you can't see into? Let's talk."
   },
   "tannhauser-gate": {
     eyebrow: "Case study · Personal system · Agent harness",
@@ -479,7 +451,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the eleven case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse removed and Auspex added 2026-10-25)", () => {
+  it("names / then /work then /work/<id> for the ten case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse removed 2026-10-25)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -488,7 +460,6 @@ describe("portfolioData", () => {
       "/work/apple-decision-support-agent",
       "/work/esper",
       "/work/orion",
-      "/work/auspex",
       "/work/tannhauser-gate",
       "/work/apple-integration",
       "/work/apple-data-health",
@@ -732,12 +703,12 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the eleven 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
+  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(11);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
   });
 
   it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
@@ -1103,7 +1074,7 @@ describe("the Orion case study (TG-07)", () => {
     "the 80% I set", "80% pass mark",
     // Added 2026-10-25 from the owner's "Orion: how it works and how it was built" write-up,
     // section 11, "Tried, and did not win" (retrieval.md and the held-out gated runs).
-    "from 0.889 to 0.813", "from 0.615 to 0.148", "four passes flagged 3",
+    "from 0.889 to 0.813", "from 0.615 to 0.148", "100%",
   ];
   // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
   // each step's place among them, the plan's step numbers, and the figure caption.
@@ -1259,7 +1230,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies and WorkHorse, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(9);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(8);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
