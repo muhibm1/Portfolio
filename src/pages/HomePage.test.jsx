@@ -86,7 +86,7 @@ describe('HomePage', () => {
     items.forEach((item, index) => {
       expect(within(item).getByText(home.buildLog.entries[index].text)).toBeInTheDocument();
     });
-    expect(home.buildLog.entries[0].date).toBe('Oct 21, 2026');
+    expect(home.buildLog.entries[0].date).toBe('Oct 25, 2026');
   });
 
   it('renders the five production stat values', () => {

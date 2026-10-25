@@ -121,14 +121,15 @@ describe('CaseStudyPage', () => {
     });
 
     // The owner retired WorkHorse in October 2026 and asked for this banner (brief, 2026-10-21),
-    // which replaces the earlier rule that the page show no retirement word.
-    it('shows the retired banner above the header, with its build log link, and keeps the code link', () => {
+    // which replaces the earlier rule that the page show no retirement word. Since 2026-10-25 it
+    // links the agent harness page, where the measured story is told.
+    it('shows the retired banner above the header, with its link to the agent harness page, and keeps the code link', () => {
       renderCaseStudyAt('/work/workhorse');
 
       const note = screen.getByRole('note');
       expect(note).toHaveTextContent(workhorse.banner);
       expect(workhorse.banner).toMatch(/^Retired October 2026\./);
-      expect(within(note).getByRole('link', { name: 'build log' })).toHaveAttribute('href', '/#build-log');
+      expect(within(note).getByRole('link', { name: 'agent harness page' })).toHaveAttribute('href', '/work/tannhauser-gate');
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(screen.getByRole('link', { name: /code: workhorse-snapshot/i })).toBeInTheDocument();
     });
