@@ -18,15 +18,16 @@ function renderCards() {
 }
 
 describe("CaseStudyCards", () => {
-  it("renders one route link per listed study in data order, the three featured ones as articles first (owner brief 2026-10-21)", () => {
+  // Owner's split brief, 2026-10-25: the Apple agent leads, and Fathom joins the featured cards.
+  it("renders one route link per listed study in data order, the four featured ones as articles first (owner brief 2026-10-21, 2026-10-25)", () => {
     renderCards();
 
     const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
     expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(listed.map((study) => `/work/${study.id}`));
-    expect(featured.map((study) => study.id)).toEqual(["agentops", "flywheel", "apple-decision-support-agent"]);
+    expect(featured.map((study) => study.id)).toEqual(["apple-decision-support-agent", "agentops", "flywheel", "fathom"]);
 
     const articles = screen.getAllByRole("article");
-    expect(articles).toHaveLength(3);
+    expect(articles).toHaveLength(4);
     articles.forEach((article, index) => {
       expect(within(article).getByRole("link", { name: /read the case study/i })).toHaveAttribute(
         "href",
@@ -73,7 +74,7 @@ describe("CaseStudyCards", () => {
         expect(within(article).getByText(stat.label)).toBeInTheDocument();
       }
     });
-    expect(featured[1].card.stats.map((stat) => stat.value)).toEqual(["19 to 14", "27 of 33", "0 of 3", "5"]);
+    expect(featured[2].card.stats.map((stat) => stat.value)).toEqual(["19 to 14", "27 of 33", "0 of 3", "5"]);
   });
 
   it("gives featured cards with a public repository one external code link, with no link nested in another", () => {
@@ -119,18 +120,19 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("shows Ongoing project on the Orion card and links to none of the private repositories (TG-07, D2; agent harness page removed 2026-10-25)", () => {
-    renderCards();
+  it("shows the status on the Orion and Fathom cards and links to none of the private repositories (TG-07, D2; owner's split brief 2026-10-25)", () => {
+    const { container } = renderCards();
 
-    for (const id of ["orion"]) {
+    for (const [id, status] of [["orion", "Private · in daily use"], ["fathom", "Open source · in development"]]) {
       const study = caseStudies.find((candidate) => candidate.id === id);
-      expect(study.status).toBe("Ongoing project");
+      expect(study.status).toBe(status);
       expect(study.codeLink).toBeUndefined();
-      const card = document.querySelector(`a[href="/work/${id}"]`);
-      expect(within(card).getByText("Ongoing project")).toBeInTheDocument();
+      expect(within(container).getByText(status)).toBeInTheDocument();
     }
-    expect(screen.getAllByText("Ongoing project")).toHaveLength(1);
+    expect(screen.queryAllByText("Ongoing project")).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/orion"]')).toHaveLength(0);
+    expect(document.querySelectorAll('a[href*="github.com/muhibm1/fathom"]')).toHaveLength(0);
+    expect(document.querySelectorAll('a[href*="github.com/muhibm1/auspex"]')).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/tannhauser"]')).toHaveLength(0);
   });
 });

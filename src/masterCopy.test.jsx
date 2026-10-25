@@ -98,8 +98,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all eleven routes, the home page, the work list and nine case studies (owner brief 2026-10-21)', () => {
-    expect(sitePagePaths()).toHaveLength(11);
+  it('serves all twelve routes, the home page, the work list and ten case studies (owner brief 2026-10-21; Fathom added 2026-10-25)', () => {
+    expect(sitePagePaths()).toHaveLength(12);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {

@@ -5,7 +5,7 @@
 export default function CaseStudyTable({ columns, rows }) {
   return (
     <div role="region" aria-label="Table, scrolls sideways on a narrow screen" tabIndex={0} className="max-w-full overflow-x-auto">
-    <table className="w-full min-w-max border-collapse text-left">
+    <table className="w-full min-w-max border-collapse text-left md:min-w-0">
       <thead>
         <tr className="border-b border-line-mid">
           {columns.map((column) => (

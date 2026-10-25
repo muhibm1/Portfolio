@@ -134,7 +134,7 @@ describe('SiteHeader inside App (E3)', () => {
 
     fireEvent.click(screen.getByRole('link', { name: /next case study/i }));
 
-    expect(document.title).toBe(pageMetaFor('/work/agentops').title);
+    expect(document.title).toBe(pageMetaFor('/work/apple-decision-support-agent').title); // first since 2026-10-25
   });
 });
 

@@ -15,13 +15,13 @@ describe('WorkIndexPage', () => {
     expect(heading).toHaveClass('sr-only');
   });
 
-  it('lists the seven listed case studies in data order, AgentOps first as a featured card (owner brief 2026-10-21)', () => {
+  it('lists the eight listed case studies in data order, the Apple agent first as a featured card (owner brief 2026-10-21, split brief 2026-10-25)', () => {
     renderWorkIndexAt('/work');
 
     const links = caseStudyLinks();
-    expect(links).toHaveLength(7);
+    expect(links).toHaveLength(8);
     expect(links.map((link) => link.getAttribute('href'))).toEqual(listedPaths());
-    expect(links[0]).toHaveAttribute('href', '/work/agentops');
+    expect(links[0]).toHaveAttribute('href', '/work/apple-decision-support-agent');
     expect(screen.getByRole('heading', { name: 'More work' })).toBeInTheDocument();
   });
 

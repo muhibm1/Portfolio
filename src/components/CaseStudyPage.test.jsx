@@ -124,28 +124,40 @@ describe('CaseStudyPage', () => {
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
-    it('shows no banner on any real case study', () => {
-      expect(caseStudies.filter((study) => study.banner)).toEqual([]);
+    // The Orion page points at Fathom, where its data-platform work moved (owner, 2026-10-25).
+    it('shows a banner on the Orion page only, linking to Fathom', () => {
+      expect(caseStudies.filter((study) => study.banner).map((study) => study.id)).toEqual(['orion']);
+      renderCaseStudyAt('/work/orion');
+      const note = screen.getByRole('note');
+      expect(note).toHaveTextContent("Orion's data-platform work became Fathom.");
+      expect(within(note).getByRole('link', { name: 'Fathom' })).toHaveAttribute('href', '/work/fathom');
     });
   });
 
-  describe('the orion case study only (TG-07, D2)', () => {
-    const orion = caseStudies.find((study) => study.id === 'orion');
+  // Both repositories are private, so each page names its status where a code link would sit
+  // (owner's split brief, 2026-10-25).
+  describe.each([
+    ['orion', 'Private · in daily use'],
+    ['fathom', 'Open source · in development'],
+  ])('the %s case study (TG-07, D2)', (slug, status) => {
+    const study = caseStudies.find((candidate) => candidate.id === slug);
 
-    it('says Ongoing project in the header where a code link would sit, with no link to GitHub or anywhere private', () => {
-      const { container } = renderCaseStudyAt('/work/orion');
+    it('names its status in the header where a code link would sit, with no link to GitHub or anywhere private', () => {
+      const { container } = renderCaseStudyAt(`/work/${slug}`);
 
-      expect(orion.status).toBe('Ongoing project');
-      expect(orion.codeLink).toBeUndefined();
-      expect(screen.getByText('Ongoing project').closest('header')).not.toBeNull();
+      expect(study.status).toBe(status);
+      expect(study.codeLink).toBeUndefined();
+      expect(screen.getByText(status).closest('header')).not.toBeNull();
       expect(container.querySelectorAll('a[href*="github.com"]')).toHaveLength(0);
       expect(screen.queryByRole('link', { name: /code:|view the code/i })).toBeNull();
     });
+  });
 
+  describe('the fathom case study only (owner, 2026-10-25)', () => {
     it('shows the walkthrough, with all thirteen steps tagged built or designed and listed in full', () => {
-      renderCaseStudyAt('/work/orion');
+      renderCaseStudyAt('/work/fathom');
 
-      const region = screen.getByRole('region', { name: 'Orion walkthrough' });
+      const region = screen.getByRole('region', { name: 'Fathom walkthrough' });
       expect(region).toBeInTheDocument();
       const list = document.getElementById('wt-steps');
       const items = within(list).getAllByRole('listitem');
@@ -277,9 +289,9 @@ describe('CaseStudyPage', () => {
   describe('section subtitle (R9)', () => {
     it('renders a section subtitle under its heading only when the data carries one', async () => {
       const stubData = structuredClone(portfolioData);
-      const stubStudy = stubData.caseStudies.find((study) => study.id === 'orion');
-      const measured = stubStudy.sections.find((section) => section.id === 'results');
-      const why = stubStudy.sections.find((section) => section.id === 'what');
+      const stubStudy = stubData.caseStudies.find((study) => study.id === 'fathom');
+      const measured = stubStudy.sections.find((section) => section.id === 'evidence');
+      const why = stubStudy.sections.find((section) => section.id === 'problem');
       measured.subtitle = 'Stub subtitle';
 
       vi.resetModules();
@@ -287,7 +299,7 @@ describe('CaseStudyPage', () => {
       const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
       render(
-        <MemoryRouter initialEntries={['/work/orion']}>
+        <MemoryRouter initialEntries={['/work/fathom']}>
           <Routes>
             <Route path="/work/:slug" element={<StubCaseStudyPage />} />
           </Routes>
@@ -295,9 +307,9 @@ describe('CaseStudyPage', () => {
       );
 
       expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
-      const measuredHeading = within(document.getElementById('results')).getByRole('heading', { level: 2 });
+      const measuredHeading = within(document.getElementById('evidence')).getByRole('heading', { level: 2 });
       expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
-      const whyHeading = within(document.getElementById('what')).getByRole('heading', { level: 2 });
+      const whyHeading = within(document.getElementById('problem')).getByRole('heading', { level: 2 });
       expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
     });
   });

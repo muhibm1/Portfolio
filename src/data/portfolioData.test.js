@@ -22,8 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
-  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (his own sheet, updated).
-  "image",
+  // Added 2026-10-25 for the Orion architecture diagram, drawn in the site's own boxes (owner).
+  "architecture",
   "paragraph",
   "bullets",
   "flow",
@@ -72,13 +72,15 @@ const pinnedCaseStudyStats = {
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
   esper: ["79%", "0%", "11 of 11", "$0"],
-  "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
+  "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~94%"],
   // Added 2026-10-21 from the owner's redesign brief.
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
-  // Added 2026-10-19 (TG-07): the Orion study's own four headline results.
-  orion: ["0 of 50", "64%", "0.889", "625"],
+  // Added 2026-10-19 (TG-07); since the split on 2026-10-25 the agent stack's four figures, and
+  // Fathom's four headline results (owner's split brief).
+  orion: ["16", "4,599", "0.889", "158"],
+  fathom: ["0 of 50", "100%", "621 of 625", "7 to 0"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -123,7 +125,7 @@ const DECISION_CHANGED_PARAGRAPHS = [
   "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
   "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
-  "Reviewers agree with its recommendation about 98% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+  "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
   "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
 ];
 const INTEGRATION_CROSS_REFERENCE =
@@ -215,7 +217,7 @@ const pinnedCaseStudyNarratives = {
   esper: {
     eyebrow: "Case study · Personal system · Research agent · LangGraph",
     title: "Esper: a research agent that proves every sentence",
-    lead: "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call.",
+    lead: "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call. Against a coding agent with web search, told to cite, Esper backed 82% of its sentences to the agent's 58%.",
     atAGlance: [
       {
         label: "My role",
@@ -238,31 +240,58 @@ const pinnedCaseStudyNarratives = {
     calloutText: "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
     contactHeading: "Need an agent whose answers can be checked? Let's talk."
   },
+  // Fathom added and Orion rewritten 2026-10-25 (owner's split brief and his follow-up the same day).
   orion: {
-    eyebrow: "Case study · Personal system · Code review",
-    title: "Orion: what an agent should know before it changes anything",
-    lead: "Orion gives coding agents the context a new engineer would spend weeks picking up. Before an agent edits, it gets the rules, owners, past incidents and lessons that cover the files in front of it. Before it commits, it learns what its change reaches. Every passage carries an id that reads back to its source, so nothing is taken on trust. It runs on my own machine and every agent session I start uses it.",
+    eyebrow: "Case study · Personal system · Coding agents",
+    title: "Orion: what my agents know before they start",
+    lead: "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
     atAGlance: [
       {
         label: "My role",
-        value: "My own project, built and tested in October 2026"
+        value: "My own system, designed and built in October 2026 and used every day since"
       },
       {
         label: "What it is",
-        value: "A context layer and change reviewer for coding agents and the people who work with them"
+        value: "A personal context layer over my engineering record, served to any coding agent through MCP"
       },
       {
         label: "Where it stands",
-        value: "In daily use by my own agents, and growing"
+        value: "In daily use on my own machine and growing; private for now"
+      },
+      {
+        label: "Covers",
+        value: "16 repositories: 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and past agent sessions"
+      }
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText: "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
+    contactHeading: "Running coding agents every day? Let's talk."
+  },
+  fathom: {
+    eyebrow: "Case study · Open source · Data platforms",
+    title: "Fathom: what a data change reaches, before it ships",
+    lead: "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
+    atAGlance: [
+      {
+        label: "My role",
+        value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project"
+      },
+      {
+        label: "What it is",
+        value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow"
+      },
+      {
+        label: "Where it stands",
+        value: "Open source under the Apache-2.0 licence, working toward its first public release"
       },
       {
         label: "Tested on",
-        value: "PipelineBench (Orion's own test set), 45 real historical bugs from 8 open-source projects, 42 hand-labelled search questions, and 116 merged changes from a 625-model dbt warehouse"
+        value: "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake"
       }
     ],
-    calloutEyebrow: "Where Orion stands",
-    calloutText: "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
-    contactHeading: "Have a system that needs deploying? Let's talk."
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText: "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
+    contactHeading: "Want agents to change your data platform safely? Let's talk."
   },
   "apple-integration": {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
@@ -426,13 +455,14 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the nine case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25)", () => {
+  it("names / then /work then /work/<id> for the ten case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
+      "/work/apple-decision-support-agent",
       "/work/agentops",
       "/work/flywheel",
-      "/work/apple-decision-support-agent",
+      "/work/fathom",
       "/work/esper",
       "/work/orion",
       "/work/apple-integration",
@@ -441,9 +471,10 @@ describe("portfolioData", () => {
       "/work/neural-newsletters-llm",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.card.featured).map((study) => study.id)).toEqual([
+      "apple-decision-support-agent",
       "agentops",
       "flywheel",
-      "apple-decision-support-agent",
+      "fathom",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.listed === false).map((study) => study.id)).toEqual([
       "atelier",
@@ -451,11 +482,11 @@ describe("portfolioData", () => {
     ]);
   });
 
-  it("carries the AgentOps case study first (owner brief 2026-10-21), with its snapshot codeLink and a `measured` section holding its table (2026-10-12)", () => {
+  it("carries the AgentOps case study second, after the Apple agent (owner brief 2026-10-21; split brief 2026-10-25), with its snapshot codeLink and a `measured` section holding its table (2026-10-12)", () => {
     const agentops = findCaseStudy("agentops");
 
     expect(agentops).toBeDefined();
-    expect(portfolioData.caseStudies[0].id).toBe("agentops");
+    expect(portfolioData.caseStudies[1].id).toBe("agentops");
     expect(agentops.codeLink).toEqual({
       label: "Code: agentops-snapshot",
       href: "https://github.com/muhibm1/agentops-snapshot",
@@ -469,11 +500,11 @@ describe("portfolioData", () => {
     expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
   });
 
-  it("carries the Flywheel case study second, after AgentOps, with its repository codeLink and the AgentOps gate table (2026-10-13)", () => {
+  it("carries the Flywheel case study third, after AgentOps, with its repository codeLink and the AgentOps gate table (2026-10-13)", () => {
     const flywheel = findCaseStudy("flywheel");
 
     expect(flywheel).toBeDefined();
-    expect(portfolioData.caseStudies[1].id).toBe("flywheel");
+    expect(portfolioData.caseStudies[2].id).toBe("flywheel");
     expect(flywheel.codeLink).toEqual({
       label: "Code: flywheel",
       href: "https://github.com/muhibm1/flywheel",
@@ -677,12 +708,12 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
+  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added 2026-10-25)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
   });
 
   it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
@@ -851,7 +882,7 @@ describe("portfolioData", () => {
       { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
       { value: "2 weeks", label: "to clear two months of accumulated tickets" },
       { value: "Zero", label: "backlog since launch" },
-      { value: "~98%", label: "of recommendations match the reviewer's decision" },
+      { value: "~94%", label: "of recommendations match the reviewer's decision" },
     ]);
     expect(decision.sections.map((section) => [section.id, section.heading])).toEqual([["situation", "The situation"], ["built", "What I built"], ["who-decides", "Who decides what"], ["model", "Choosing and tuning the model"], ["people", "Working with the teams"], ["changed", "What changed"]]);
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
@@ -897,11 +928,11 @@ describe("portfolioData", () => {
       title: "At Apple Maps",
       text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
     });
-    // 2026-10-21: WorkHorse retired; the line names Orion. 2026-10-25: reworded to Orion's new
-    // card summary, now that it is the context layer for every agent session.
+    // 2026-10-21: WorkHorse retired; the line names Orion. 2026-10-25: it names Fathom, the part
+    // of Orion a data team could deploy, after the split (owner's brief).
     expect(home.hero.rightNow.items[1]).toEqual({
-      title: "Building Orion",
-      text: "The context layer my coding agents use every day: the rules, owners, past incidents and lessons for the files they are about to touch",
+      title: "Building Fathom",
+      text: "A context layer for AI agents on data platforms: what a change reaches, which rules apply and who owns it, checked before it ships",
     });
     expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
     expect(home.experience.roles[0].company).toBe("Apple Maps");
@@ -953,12 +984,12 @@ describe("portfolioData", () => {
     expect(findCaseStudy("apple-decision-support-agent").intro).toMatch(/cross-team/i);
   });
 
-  // 5 and 15 (minutes per manual review), 3 (3D edits) and 98 (reviewer agreement) come from the owner's draft.
+  // 5 and 15 (minutes per manual review), 3 (3D edits) and 94 (reviewer agreement; 98 in his draft, corrected by him 2026-10-25) come from the owner's draft.
   it("uses only the approved numerals on the decision study (R4, item 12)", () => {
     const text = collectStrings(findCaseStudy("apple-decision-support-agent")).join("\n");
     const numerals = new Set(text.match(/\d+/g));
 
-    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "98", "500", "000", "4"].includes(numeral))).toBe(true);
+    expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "94", "500", "000", "4"].includes(numeral))).toBe(true);
   });
 
   it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
@@ -1022,9 +1053,12 @@ describe("homeReplay (TG-06)", () => {
 // TG-07: the Orion case study. Its words are the owner's own Orion document, copied sentence by
 // sentence; a sentence using a word the copy scan bans is left out. Its thirteen walkthrough
 // steps come from the approved Look. Every number on the page is one the document states.
-describe("the Orion case study (TG-07)", () => {
+// 2026-10-25 (owner's split brief): the data-platform half, walkthrough included, moved to the
+// Fathom page and the Orion page became the agent stack. Both pages are held to the same rule.
+describe("the Orion and Fathom case studies (TG-07)", () => {
   const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
-  const walkthrough = collectBlocks(orion).find((block) => block.type === "walkthrough");
+  const fathom = portfolioData.caseStudies.find((study) => study.id === "fathom");
+  const walkthrough = collectBlocks(fathom).find((block) => block.type === "walkthrough");
 
   // Every figure the owner's document states, as the exact phrase it appears in, so a number cannot
   // be swapped for another one that happens to appear somewhere else (27 of 45 cannot become
@@ -1049,6 +1083,31 @@ describe("the Orion case study (TG-07)", () => {
     // Added 2026-10-25 from the owner's "Orion: how it works and how it was built" write-up,
     // section 11, "Tried, and did not win" (retrieval.md and the held-out gated runs).
     "from 0.889 to 0.813", "from 0.615 to 0.148", "100%",
+    // Added 2026-10-25 from the owner's "How Orion runs on your Mac" sheet (the architecture
+    // drawing) and Orion's own changelog for the parts added since (#64, the daemon's schedule).
+    "16 git checkouts", "120 s", "0.6 s", "every 30 s", "every 10 min", "every 30 min", "every 15 min",
+    "python3.12", "R@10 0.889", "BM25", "p50",
+    // Added 2026-10-25 for the split (owner's brief): Fathom's figures from Orion's
+    // pipelinebench results (llm-agents.md for citation recall, partner-calitp-dbt.md for the
+    // cal-itp sync, lineage and the 12-commit review, heldout-sonnet-5-5-baseline-x3.md for
+    // detection over three runs), and the agent stack's from the owner's sheet and Auspex's first
+    // full regrade on his Mac (158 turns, 5 cases).
+    "46%", "621 of 625", "4 of 625", "up from 4", "7 to 0", "12 real merged commits", "12 real commits",
+    "12 merged commits", "7 warnings, all false", "2 warnings, both correct", "45 real bugs", "74%",
+    "73% to 76%", "across 3 runs", "625 models", "16", "4,599", "158 turns", "158", "5 cases",
+    "past 80%", "over 80% full",
+    // Added 2026-10-25 for the owner's follow-up ("show the bulk and the weight of the work"):
+    // Orion's README and docs/hands-free.md at main 20a11d8 (tools, daemon jobs, lesson rungs,
+    // about 14,350 lines and 357 tests), and Fathom's README at main d993d56 (version, licence,
+    // adapters, rule types, providers, about 14,100 lines and 264 tests) with its results notes
+    // (accuracy.md, calitp-history-deterministic.md, calitp-history-model-consumers.md,
+    // partner-balboa.md, partner-httpx-sonnet-5-5.md and partner-hono-cobra-sonnet-5-5.md).
+    "7 tools", "25 October 2026", "Every 30 s", "Every 15 min", "Every 10 min", "Every 30 min",
+    "~14,000 lines", "357 tests", "5 jobs", "5 sources", "3 rankings", "4 rungs", "0 model calls",
+    "version 0.1", "Version 0.1", "Apache-2.0", "from 0.18 to 0.42", "0.60 on 45 held-out bugs",
+    "7 rule types", "4 warnings in 26 weeks", "0 false alarms a week", "2.23 warnings a week",
+    "0.81 false alarms a week", "7 of 43 to 1", "32 DAGs and 53 tasks", "26 merged changes",
+    "49 unrelated", "264 tests", "5 adapters", "7 MCP tools", "5 providers", "6 languages",
   ];
   // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
   // each step's place among them, the plan's step numbers, and the figure caption.
@@ -1056,7 +1115,8 @@ describe("the Orion case study (TG-07)", () => {
     /Step (?:[1-9]|1[0-3]) of 13/g, // the readout's place in the run
     /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
     /Step [1-7]\./g, // the plan's own numbering
-    /Fig [12]/g, // the figure captions (Fig 2, the architecture diagram, added 2026-10-25)
+    /Fig 1/g, // the figure caption
+    /^M[\d .,HVC-]+$/g, // an arrow path in the architecture drawing (geometry, not a figure)
     /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
   ];
 
@@ -1092,15 +1152,28 @@ describe("the Orion case study (TG-07)", () => {
     return { words, numbering };
   }
 
-  it("is fifth, after Esper, with the words Ongoing project and no code link (D2, D10, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("orion")).toBe(4);
-    expect(portfolioData.caseStudies[3].id).toBe("esper");
-    expect(orion.status).toBe("Ongoing project");
+  it("puts Fathom fourth, the last featured study, then Esper, then Orion, each with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
+    const ids = portfolioData.caseStudies.map((study) => study.id);
+    expect(ids.indexOf("fathom")).toBe(3);
+    expect(ids.indexOf("esper")).toBe(4);
+    expect(ids.indexOf("orion")).toBe(5);
+    expect(fathom.card.featured).toBe(true);
+    expect(orion.card.featured).toBe(false);
+    expect(fathom.status).toBe("Open source · in development");
+    expect(orion.status).toBe("Private · in daily use");
+    expect(fathom).not.toHaveProperty("codeLink");
     expect(orion).not.toHaveProperty("codeLink");
   });
 
-  it("states only figures the owner's document states, in the phrase it states them, on the page and in the walkthrough (D3)", () => {
+  it("states only figures the owner's document states, in the phrase it states them, on both pages and in the walkthrough (D3)", () => {
     expect(collectStrings(orion).flatMap(unknownNumbersIn)).toEqual([]);
+    expect(collectStrings(fathom).flatMap(unknownNumbersIn)).toEqual([]);
+  });
+
+  it("keeps Orion free of the data-platform walkthrough, review and gate (split brief 2026-10-25)", () => {
+    expect(collectBlocks(orion).some((block) => block.type === "walkthrough")).toBe(false);
+    const text = collectStrings(orion).join("\n");
+    expect(text).not.toMatch(/preflight|orion gate|orion review|PipelineBench|dbt/i);
   });
 
   it("states only those figures in what the walkthrough renders, including its step counts and the drawing's description (D3)", () => {
@@ -1117,7 +1190,7 @@ describe("the Orion case study (TG-07)", () => {
   });
 
   it("leaves out the sentences that use words the copy scan bans, and the sample verdict (D3)", () => {
-    const text = collectStrings(orion).join("\n");
+    const text = [orion, fathom].flatMap(collectStrings).join("\n");
     expect(text).not.toMatch(/95%|sandbox|boundar/i);
     expect(text).not.toMatch(/88\/100|CON-031|INC-230/);
     // Plan step 4's sentence about facts missing from the diff is left out whole, because it names Go.
@@ -1158,8 +1231,8 @@ describe("the Orion case study (TG-07)", () => {
     expect(walkthrough.legend.map((item) => item.term)).toEqual(["built", "designed"]);
   });
 
-  it("holds no repository address or link in the Orion text", () => {
-    const text = collectStrings(orion).join("\n");
+  it("holds no repository address or link in the Orion or Fathom text", () => {
+    const text = [orion, fathom].flatMap(collectStrings).join("\n");
     expect(text).not.toMatch(/github\.com|https?:\/\//i);
   });
 });
@@ -1204,7 +1277,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(7);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(8);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
@@ -1305,17 +1378,20 @@ describe("the Atelier case study (TG-08)", () => {
 
 // Owner, 2026-10-21: the Orion walkthrough opens the page in place of the terms grid, and plays
 // 15% faster than the Atelier one.
-describe("Orion page order and pace", () => {
+// 2026-10-25 (owner's split brief): the walkthrough moved to Fathom, after its opening problem;
+// Orion opens on where it sits, then the record, its tools, search, the daemon, its drawing, Auspex, lessons, the weight of the work and what's next.
+describe("Fathom and Orion page order and pace", () => {
+  const fathom = findCaseStudy("fathom");
   const orion = findCaseStudy("orion");
 
-  it("puts the walkthrough straight after the opening section, then daily use, with no terms grid", () => {
-    expect(orion.sections.slice(0, 5).map((section) => section.id)).toEqual(["what", "walkthrough", "daily", "architecture", "results"]);
-    expect(findSection(orion, "what").blocks.some((block) => block.type === "cards")).toBe(false);
+  it("follows the brief's order on both pages", () => {
+    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "verdict", "trust", "review", "loop", "architecture", "evidence", "weight", "plan"]);
+    expect(orion.sections.map((section) => section.id)).toEqual(["loop", "record", "tools", "retrieval", "always-on", "architecture", "auspex", "lessons", "weight", "plan"]);
   });
 
-  it("plays the Orion walkthrough at 0.85 pace and leaves Atelier's at the default", () => {
+  it("plays the Fathom walkthrough at 0.85 pace and leaves Atelier's at the default", () => {
     const paceOf = (study) => collectBlocks(study).find((block) => block.type === "walkthrough").pace;
-    expect(paceOf(orion)).toBe(0.85);
+    expect(paceOf(fathom)).toBe(0.85);
     expect(paceOf(findCaseStudy("atelier"))).toBeUndefined();
   });
 });

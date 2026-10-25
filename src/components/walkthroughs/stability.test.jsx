@@ -13,11 +13,11 @@ import WalkthroughBlock from '../WalkthroughBlock';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const css = fs.readFileSync(path.join(root, 'src/look.css'), 'utf8');
-const orion = portfolioData.caseStudies.find((study) => study.id === 'orion');
+const fathom = portfolioData.caseStudies.find((study) => study.id === 'fathom'); // the walkthrough moved to Fathom with the split (owner, 2026-10-25)
 // The Orion page now draws its walkthrough as a chip (owner, 2026-10-23). The console these tests
 // cover still serves the other walkthroughs, so they keep running it on the Orion words, with the
 // bench figure it was written against.
-const block = { ...orion.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough'), figure: 'orion-bench' };
+const block = { ...fathom.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough'), figure: 'orion-bench' };
 
 // The declarations of the first rule whose selector is exactly `selector`, whitespace squeezed.
 function rule(selector) {
