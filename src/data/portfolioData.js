@@ -1722,9 +1722,11 @@ export const portfolioData = {
 
     // Fathom (fourth, the last featured study), added 2026-10-25 from the owner's Orion / Fathom
     // split brief: Orion's data-platform half, moved here from /work/orion. Every number traces to
-    // Orion's pipelinebench results (llm-agents, partner-calitp-dbt, calitp-history-agent and
-    // heldout-sonnet-5-5-baseline-x3). The repository is private, so `status` stands where a code
-    // link would; there is no codeLink.
+    // Fathom's pipelinebench results (llm-agents, accuracy, partner-calitp-dbt, partner-balboa,
+    // partner-httpx and partner-hono-cobra, calitp-history-deterministic and -model-consumers,
+    // heldout-sonnet-5-5-baseline-x3) and its README at main d993d56 (about 14,100 lines of
+    // Python, 264 tests). The owner's follow-up the same day: position Fathom as open source now,
+    // and he makes the repository public himself, so `status` stands where a code link will go.
     {
       id: "fathom",
       deploymentSummary: {
@@ -1737,29 +1739,29 @@ export const portfolioData = {
       },
       card: {
         featured: true,
-        eyebrow: "Personal system · Data platforms · AI agents",
+        eyebrow: "Open source · Data platforms · AI agents",
         title: "Fathom: what a data change reaches, before it ships",
         summary:
-          "A context layer for AI agents on data platforms. Before an agent changes a model, Fathom tells it what depends on the change, column by column, which rules apply, who owns it and what has broken there before. Then it checks the change in code, and every finding cites its evidence.",
+          "An open-source context layer for AI agents on data platforms. Before an agent changes a model, Fathom tells it what depends on the change, column by column, which rules apply, who owns it and what has broken there before. Then it checks the change in code, reviews it, and cites the evidence for every finding.",
         linkText: "Read the case study",
-        tags: ["0 of 50 forbidden calls by agents using it", "Tested on a public 625-model dbt warehouse"],
+        tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
       },
-      status: "In progress · private repo",
-      eyebrow: "Case study · Personal system · Data platforms",
+      status: "Open source · version 0.1",
+      eyebrow: "Case study · Open source · Data platforms",
       title: "Fathom: what a data change reaches, before it ships",
       intro:
-        "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code. The model may explain the result but never overrule it, and a team's CI gate is the only thing that blocks.",
+        "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
       atAGlance: [
-        { label: "My role", value: "My own project, built in October 2026 as part of Orion and split out on its own" },
+        { label: "My role", value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project" },
         {
           label: "What it is",
-          value: "A context layer and change check for AI agents on data platforms, starting with dbt",
+          value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
         },
-        { label: "Where it stands", value: "In progress, working toward a first release for dbt" },
+        { label: "Where it stands", value: "Version 0.1 under the Apache-2.0 licence, in active development" },
         {
           label: "Tested on",
           value:
-            "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and cal-itp/data-infra, California's public transit data warehouse",
+            "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake",
         },
       ],
       stats: [
@@ -1781,7 +1783,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "So review catches the damage late, if at all, often after a scheduled run has already failed. Fathom moves that knowledge in front of the change.",
+                "Code-context tools index what the repository says. Fathom indexes what production says: which tables feed which dashboards, which pipeline missed its deadline, which change caused the last outage. So the knowledge a senior engineer carries in their head sits in front of every change, instead of turning up in review after a scheduled run has already failed.",
             },
           ],
         },
@@ -1967,6 +1969,32 @@ export const portfolioData = {
           ],
         },
         {
+          id: "verdict",
+          heading: "A verdict, in plain words",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Here is one verdict from the sample platform Fathom ships with, the kind of answer an agent gets before it writes a line.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "The change", note: "Drop the discount column from the orders table" },
+                { title: "What it reaches", note: "Through column lineage, the weekly revenue dashboard the finance team reads, and the job that tests the table" },
+                { title: "What applies", note: "A rule locks those columns, because the same kind of change broke that dashboard in August" },
+                { title: "The verdict", note: "Block. Before merging: run the table's tests, get sign-off from the finance data team, and tell them" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Adding a column to the same table comes back inform and reaches nothing. That difference is what column-level lineage buys: a check an agent learns to trust, instead of one it learns to ignore. The risk score is a sum of named parts, such as readers on the most important dashboards, a blocking rule, a destructive change and how recent the incident was, so anyone can see exactly why it came out where it did.",
+            },
+          ],
+        },
+        {
           id: "trust",
           heading: "How it stays trustworthy",
           blocks: [
@@ -1994,25 +2022,100 @@ export const portfolioData = {
           ],
         },
         {
+          id: "review",
+          heading: "A review that reads the whole change",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Fathom also reviews any diff, platform or not, in four stages: gather the facts in code, ask the model for candidate findings, validate every finding in code, then format. Code findings always come first and never depend on a model. What sets the review apart is what it hands the model and what it refuses to let through.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "The code around the change",
+                  note: "A short file goes to the model whole, a long one as the function each hunk sits in. Every function the change calls is looked up in the repository and shown with a line the model can cite.",
+                },
+                {
+                  title: "Four focused passes",
+                  note: "The model reads each change four times, once per kind of failure: unusual inputs, what called functions really do, control flow and state, and contracts with callers. On Claude Haiku 5.5 this lifted recall on real bugs from 0.18 to 0.42, and to 0.60 on 45 held-out bugs.",
+                },
+                {
+                  title: "A second reading",
+                  note: "Every warning must name the concrete case that fails, or it is lowered to a note. A second pass then re-checks each warning against the whole change, and a stronger model can check a cheaper one.",
+                },
+                {
+                  title: "Who else uses what you changed",
+                  note: "For a removed or re-signed definition in any of six languages, from Python to TypeScript, every use in the repository is listed by file and line, parsed so a comment, a string or a same-named method elsewhere is told apart.",
+                },
+                {
+                  title: "It knows what you meant",
+                  note: "The pull request's title and body are passed as the stated intent, so an announced change is not reported as a bug, while a change the intent does not cover still is.",
+                },
+                {
+                  title: "Nothing slips through",
+                  note: "A key, token or password in an added line blocks, and is redacted before the diff leaves the machine. A diff too big for one call is reviewed in several, and anything not shown is named.",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Any model can sit behind it: offline, Anthropic, any OpenAI-compatible endpoint including local models, a local command, or Claude Code on a subscription with no API key. Every paid call counts against a dollar cap. On a pull request it posts one inline comment per new finding and one summary updated in place, and it never posts a blocking review.",
+            },
+          ],
+        },
+        {
+          id: "loop",
+          heading: "Closing the loop",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Most review tools forget a change once it merges. Fathom keeps an append-only ledger of every verdict, the decision a person made on it and what actually happened next, so its rules grow out of the platform's own history.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "Record the decision", note: "A person approves, waives or rejects, and it is written to the ledger" },
+                { title: "Watch what happened", note: "Postflight finds the commit that landed it and watches the next three runs: clean, failed, late or an incident" },
+                { title: "Compare", note: "Predicted severity against the observed outcome, for every verdict" },
+                { title: "Propose a rule", note: "Repeated missed deadlines, failures after changes or an incident with no rule become a drafted constraint" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "A drafted constraint lands as a pull request, and merging it is the approval. Rules are written in a closed set of seven types, such as locked columns, a locked schedule or a required approver, so every rule is something code can check and a person can read.",
+            },
+          ],
+        },
+        {
           id: "architecture",
           heading: "Architecture",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Fathom is a local process with one database file. A sync reads the platform into a graph. Code checks every change against it. Agents reach it through one MCP server, and a team's CI reaches it through the gate.",
+                "Fathom is a local process with one database file. A sync reads the platform into a graph and a ledger. Code checks every change against them, and review adds the model inside those results. Agents reach it through one MCP server, a team's CI through the gate, and after a merge postflight and propose close the loop.",
             },
             {
               type: "architecture",
-              // The data-platform path of the owner's Orion diagram (sources, store, checks, agent
-              // access), drawn in the same style, for the Fathom split (owner's brief, 2026-10-25).
+              // Drawn in the same style as Orion's, to Fathom at main d993d56 (owner's follow-up,
+              // 2026-10-25: "make sure the architecture ... reflects its current state"): the five
+              // adapters, the graph and the append-only ledger, preflight and review, the MCP
+              // server's seven tools, the gate and pull request comments, and postflight and
+              // propose feeding decisions back to the ledger.
               label: "Fathom's architecture",
               enlarge: "Enlarge",
               close: "Close",
-              viewBox: [20, 42, 930, 376],
+              viewBox: [20, 42, 930, 482],
               legend: [
                 { kind: "data", label: "The platform's own data" },
                 { kind: "code", label: "Deterministic code, no model" },
+                { kind: "plain", label: "Model, checked by code" },
                 { kind: "agent", label: "Agent interface" },
               ],
               labels: [
@@ -2020,104 +2123,122 @@ export const portfolioData = {
                 { x: 196, y: 60, text: "Sync · fathom sync" },
                 { x: 380, y: 60, text: "Store · one DuckDB file" },
                 { x: 590, y: 60, text: "Checks · code first" },
-                { x: 775, y: 60, text: "Agent access" },
+                { x: 775, y: 60, text: "Access" },
               ],
               boxes: [
-                { x: 32, y: 74, w: 138, h: 46, kind: "data", parts: [{ title: "dbt project" }, { text: "models, tests, SQL" }] },
+                { x: 32, y: 74, w: 138, h: 46, kind: "data", parts: [{ title: "dbt project" }, { text: "manifest, catalog, SQL" }] },
                 { x: 32, y: 126, w: 138, h: 46, kind: "data", parts: [{ title: "Airflow" }, { text: "DAGs and their tasks" }] },
                 { x: 32, y: 178, w: 138, h: 46, kind: "data", parts: [{ title: "Git" }, { text: "commits and past fixes" }] },
-                { x: 32, y: 230, w: 138, h: 46, kind: "data", parts: [{ title: "Run history" }, { text: "runs and failures" }] },
-                { x: 32, y: 282, w: 138, h: 46, kind: "data", parts: [{ title: "Incident reports" }, { text: "kept as files in the repo" }] },
-                { x: 32, y: 334, w: 138, h: 46, kind: "data", parts: [{ title: "Rules as code" }, { text: "constraints a team reviews" }] },
+                { x: 32, y: 230, w: 138, h: 58, kind: "data", parts: [{ title: "Run history" }, { text: "task runs, dbt results, table snapshots" }] },
+                { x: 32, y: 294, w: 138, h: 46, kind: "data", parts: [{ title: "Incident reports" }, { text: "kept as files in the repo" }] },
+                { x: 32, y: 346, w: 138, h: 46, kind: "data", parts: [{ title: "Constraints" }, { text: "rules as code, reviewed" }] },
                 {
-                  x: 196, y: 74, w: 155, h: 306, kind: "code",
+                  x: 196, y: 74, w: 155, h: 318, kind: "code",
                   parts: [
                     { title: "Adapters" },
                     { pairs: [["dbt.py", "models"], ["airflow.py", "DAGs"], ["git.py", "commits"], ["runs.py", "runs"], ["incidents.py", "incidents"]] },
                     { rule: true },
-                    { text: "column lineage read from each model's compiled SQL" },
-                    { text: "625 models synced in 2 min 9 s on a real warehouse", gap: true },
-                    { text: "no model is called", gap: true },
+                    { mono: "lineage.py" },
+                    { text: "column lineage from each model's compiled SQL, parsed by sqlglot" },
+                    { text: "an adapter reads one source and never reasons", gap: true },
+                    { text: "every fact carries where it came from", gap: true },
+                    { text: "a real warehouse of 625 models synced in about two minutes", gap: true },
                   ],
                 },
                 {
-                  x: 380, y: 74, w: 178, h: 150, kind: "code",
+                  x: 380, y: 74, w: 178, h: 170, kind: "code",
                   parts: [
                     { title: "System graph" },
-                    { text: "tables, columns and jobs, and what feeds what" },
-                    { text: "owners and tiers", gap: true },
+                    { mono: ".fathom/graph.duckdb" },
+                    { text: "tables, columns and jobs, and what feeds what", gap: true },
+                    { text: "owners and tiers" },
                     { text: "the rules that cover each table" },
-                    { text: "past incidents on each path" },
-                    { text: "every fact says where it came from", gap: true },
+                    { text: "a fact with no source is refused", gap: true },
                   ],
                 },
                 {
-                  x: 380, y: 236, w: 178, h: 144, kind: "code",
+                  x: 380, y: 256, w: 178, h: 136, kind: "code",
                   parts: [
                     { title: "Ledger" },
-                    { text: "every verdict, and the decision a person recorded on it" },
-                    { text: "the outcome after merge: clean, failed, late or an incident", gap: true },
+                    { text: "append-only events" },
+                    { text: "incidents, verdicts, decisions and outcomes after merge", gap: true },
                     { text: "only ever added to", gap: true },
                   ],
                 },
                 {
-                  x: 590, y: 74, w: 155, h: 150, kind: "code",
+                  x: 590, y: 74, w: 155, h: 170, kind: "code",
                   parts: [
                     { title: "Preflight" },
                     { mono: "fathom preflight" },
-                    { text: "what the change reaches, column by column", gap: true },
-                    { text: "which rules it triggers" },
-                    { text: "past incidents on the same path" },
-                    { text: "a risk score you can inspect" },
-                    { text: "verdict: inform, warn or block", gap: true },
+                    { text: "typed change ops from the diff, the SQL or the intent", gap: true },
+                    { text: "column-level blast radius" },
+                    { text: "7 rule types, checked in code" },
+                    { text: "risk as a sum of named parts" },
+                    { text: "inform, warn or block", gap: true },
                   ],
                 },
                 {
-                  x: 590, y: 236, w: 155, h: 144, kind: "plain",
+                  x: 590, y: 256, w: 155, h: 136, kind: "plain",
                   parts: [
                     { title: "Review" },
                     { mono: "fathom review" },
-                    { text: "code checks first, then the model reads the diff in focused passes and argues against itself", gap: true },
-                    { text: "a finding with no valid evidence is marked uncertain", gap: true },
+                    { text: "gather, generate, validate, format", gap: true },
+                    { text: "four focused passes and a second reading" },
+                    { text: "no evidence, no finding", gap: true },
                   ],
                 },
                 {
-                  x: 773, y: 74, w: 165, h: 150, kind: "agent",
+                  x: 773, y: 74, w: 165, h: 170, kind: "agent",
                   parts: [
                     { title: "MCP server" },
-                    { text: "tools for any coding agent" },
+                    { text: "seven tools for any coding agent" },
                     { mono: "preflight · explain", gap: true },
-                    { mono: "history · ask" },
-                    { mono: "review" },
+                    { mono: "history · ask · review" },
                     { mono: "record_decision" },
                     { mono: "propose_constraint" },
                     { text: "none can write to the platform", gap: true },
                   ],
                 },
                 {
-                  x: 773, y: 236, w: 165, h: 72, kind: "code",
-                  parts: [{ title: "CI gate" }, { mono: "fathom gate --fail-on block" }, { text: "the only place a verdict blocks" }],
+                  x: 773, y: 256, w: 165, h: 62, kind: "code",
+                  parts: [{ title: "CI gate" }, { mono: "fathom gate" }, { text: "the only place a verdict blocks" }],
                 },
                 {
-                  x: 773, y: 316, w: 165, h: 64, kind: "plain",
-                  parts: [{ title: "A person decides" }, { text: "approve, waive or reject, written to the ledger" }],
+                  x: 773, y: 326, w: 165, h: 66, kind: "plain",
+                  parts: [{ title: "Pull request comments" }, { text: "one per new finding, never a blocking review" }],
+                },
+                {
+                  x: 380, y: 416, w: 178, h: 78, kind: "code",
+                  parts: [{ title: "Postflight" }, { mono: "fathom postflight" }, { text: "watches the next three runs after a merge and records the outcome" }],
+                },
+                {
+                  x: 590, y: 416, w: 155, h: 78, kind: "code",
+                  parts: [{ title: "Propose" }, { mono: "fathom propose" }, { text: "drafts rules from patterns in the ledger" }],
+                },
+                {
+                  x: 773, y: 416, w: 165, h: 78, kind: "plain",
+                  parts: [{ title: "A person decides" }, { text: "approves, waives or rejects; merging a drafted rule approves it" }],
                 },
               ],
               edges: [
                 { d: "M170 97 H194" }, { d: "M170 149 H194" }, { d: "M170 201 H194" },
-                { d: "M170 253 H194" }, { d: "M170 305 H194" }, { d: "M170 357 H194" },
-                { d: "M351 150 H378" }, { d: "M351 300 H378" },
-                { d: "M558 150 H588" }, { d: "M558 200 H572 V300 H588" },
-                { d: "M667 224 V234" },
-                { d: "M773 150 H747", kind: "agent" },
-                { d: "M745 270 H771", kind: "code" },
-                { d: "M855 380 V396 H469 V382" },
+                { d: "M170 259 H194" }, { d: "M170 317 H194" }, { d: "M170 369 H194" },
+                { d: "M351 160 H378" }, { d: "M351 324 H378" },
+                { d: "M558 160 H588" }, { d: "M558 210 H572 V324 H588" },
+                { d: "M667 244 V254" },
+                { d: "M773 160 H747", kind: "agent" },
+                { d: "M745 230 H760 V287 H771", kind: "code" },
+                { d: "M745 359 H771" },
+                { d: "M469 392 V414", both: true },
+                { d: "M558 370 H574 V455 H588" },
+                { d: "M745 455 H771" },
+                { d: "M855 494 V510 H366 V370 H378" },
               ],
               edgeLabels: [
-                { x: 749, y: 145, text: "calls" },
-                { x: 640, y: 392, text: "decision" },
+                { x: 749, y: 155, text: "calls" },
+                { x: 610, y: 506, text: "decision" },
               ],
-              note: "Everything left of Review is code, and the model never overrules it. Only review calls a model, and each of its findings is checked against the diff and the graph before anyone sees it.",
+              note: "Only review calls a model, and each of its findings is checked against the diff and the graph before anyone sees it. Everything else on this drawing is code, and the model never overrules it.",
             },
           ],
         },
@@ -2168,19 +2289,48 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Every first-pass false alarm came from files Fathom could not map yet, such as shared schema files and hand-written tests. Once they mapped, the two warnings left were both correct. One model finding is confirmed by the project itself: Fathom warned that a change had swapped dbt references for hardcoded production table names, and the project's next commit put the references back. Replayed over 26 weeks of 116 merged changes, it flagged 3 of 6 known bugs at about one false alarm a week.",
+                "Every first-pass false alarm came from files Fathom could not map yet, such as shared schema files and hand-written tests. Once they mapped, the two warnings left were both correct. One model finding is confirmed by the project itself: Fathom warned that a change had swapped dbt references for hardcoded production table names, and the project's next commit put the references back.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "116 merged changes over 26 weeks" }, { label: "Warnings" }, { label: "False alarms" }],
+              rows: [
+                { cells: ["Code checks only", "4 warnings in 26 weeks", "0 false alarms a week"] },
+                { cells: ["Code checks plus model review", "2.23 warnings a week", "0.81 false alarms a week, with 3 of 6 known bugs flagged"], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "A second public platform took the adapters further. Datacoves' balboa runs dbt on Snowflake, with Airflow written in the newer TaskFlow style and no published manifest. Models whose columns could not be read went from 7 of 43 to 1, a semantic view that is not SQL, and Airflow went from nothing read to 32 DAGs and 53 tasks.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Fathom reviews ordinary code too. On 26 merged changes from three open-source projects in three languages, httpx, Hono and Cobra, its code checks raised no false warning: parsing told 49 unrelated .read() calls apart from the method a change had removed.",
             },
           ],
         },
         {
-          id: "stands",
-          heading: "What it still has to prove",
+          id: "weight",
+          heading: "The weight of the work",
           blocks: [
             {
-              type: "bullets",
+              type: "paragraph",
+              text:
+                "Fathom is a full system, built and tested like one, with its own benchmark to keep it honest.",
+            },
+            {
+              type: "stats",
               items: [
-                "PipelineBench is my own benchmark. cal-itp is the outside check, and a second public warehouse is next, so no result rests on one platform.",
-                "Finding real bugs is in good shape. The open work is severity: raising more of the bugs it finds to a warning, and only when the evidence backs it.",
+                { value: "~14,000 lines", label: "of Python, with no model SDK as a dependency" },
+                { value: "264 tests", label: "with the benchmark's ground truth checked against Fathom on every run" },
+                { value: "60 scenarios", label: "in PipelineBench, with answers written by hand" },
+                { value: "5 adapters", label: "dbt, Airflow, Git, run history and incidents" },
+                { value: "7 rule types", label: "a team writes its constraints in, each checked in code" },
+                { value: "7 MCP tools", label: "none of which can write to the platform" },
+                { value: "5 providers", label: "behind one model interface, from offline to a subscription" },
+                { value: "6 languages", label: "its reference check parses" },
               ],
             },
           ],
@@ -2192,10 +2342,10 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "A first release for dbt: preflight and the CI gate, shipped when false alarms at warn and block stay low, every finding is cited, results carry their spread, and one outside replay is done.",
-                "A second public warehouse, such as GitLab's public data-team dbt project, so the results come from more than one team's platform.",
-                "Smarter severity. Escalate only when code-checked evidence backs it: downstream readers, a broken rule or a past incident. Before warning, run the failing case it names.",
-                "A design partner. Replay Fathom on a team's last six months of reverted changes and incidents, then two weeks in CI that only comment.",
+                "The public release for dbt teams: preflight, review and the CI gate, with a guide for two weeks in shadow mode, where Fathom only comments while a team counts its warnings.",
+                "More platforms. After cal-itp on BigQuery and balboa on Snowflake, a third public warehouse such as GitLab's data-team dbt project.",
+                "Severity that earns its warnings. Evidence-gated escalation, and confirming the failing case with a read-only query on the warehouse, are built; next is tuning them on more teams' history.",
+                "A design partner. Replay Fathom on a team's last six months of changes and incidents, then two weeks in CI that only comment.",
               ],
             },
           ],
@@ -2388,37 +2538,39 @@ export const portfolioData = {
       contactHeading: "Need an agent whose answers can be checked? Let's talk.",
     },
 
-    // Orion, rewritten 2026-10-25 as "My agent stack" from the owner's Orion / Fathom split brief:
-    // the loop of context before work (Orion), a guard during it and grading after (Auspex).
-    // Orion's data-platform half became Fathom (/work/fathom). The ingest counts are the owner's
-    // "How Orion runs on your Mac" sheet; the Auspex figures are its first full regrade on his Mac
-    // (158 turns, 5 cases). Both repositories are private, so `status` stands where a code link
-    // would; there is no codeLink.
+    // Orion, rewritten 2026-10-25 from the owner's Orion / Fathom split brief and his follow-up
+    // ("the Orion case study should still be called Orion ... show the bulk and the weight of the
+    // work"): the personal context layer over his own engineering record. Orion's data-platform
+    // half became Fathom (/work/fathom). The ingest counts are the owner's "How Orion runs on your
+    // Mac" sheet; tools, daemon jobs, lessons and retrieval follow Orion's README and
+    // docs/hands-free.md at main 20a11d8 (about 14,350 lines of Python, 357 tests); the Auspex
+    // figures are its first full regrade on his Mac (158 turns, 5 cases). The repository stays
+    // private, so `status` stands where a code link would; there is no codeLink.
     {
       id: "orion",
       banner: "Orion's data-platform work became Fathom.",
       bannerLink: { text: "Fathom", to: "/work/fathom" },
       card: {
         featured: false,
-        eyebrow: "Coding agents · Context and grading",
-        title: "My agent stack: context before, a guard during, grading after",
+        eyebrow: "Personal system · Coding agents · Context",
+        title: "Orion: what my agents know before they start",
         summary:
-          "The loop every one of my coding agents runs in. Orion hands an agent the rules, past fixes and lessons for the files it is about to touch, every passage cited. A guard holds a few hard lines while it works. Auspex grades each finished turn, and a failure that repeats comes back to Orion as a lesson.",
+          "Every coding agent starts a session knowing nothing about my work. Orion reads 16 repositories of commits, pull requests, design notes and past agent sessions into one cited record, keeps it current on its own, and hands each agent the rules, past fixes and lessons for the files it is about to touch.",
         linkText: "Read the case study",
-        tags: ["16 repositories in one cited record", "Every finished turn graded"],
+        tags: ["16 repositories in one cited record", "7 tools, no model call"],
       },
-      status: "Private · personal tooling",
-      eyebrow: "Case study · Coding agents",
-      title: "My agent stack: context before, a guard during, grading after",
+      status: "Private · in daily use",
+      eyebrow: "Case study · Personal system · Coding agents",
+      title: "Orion: what my agents know before they start",
       intro:
-        "I run coding agents every day, and each one starts a session knowing nothing about my work. My agent stack closes that gap with a loop. Before an agent works, Orion gives it the context a new engineer would spend weeks picking up. While it works, a guard holds a few hard lines. After each turn, Auspex grades what it did, and what keeps going wrong comes back to Orion as a lesson.",
+        "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
       atAGlance: [
-        { label: "My role", value: "My own tools, built in October 2026 and used every day since" },
+        { label: "My role", value: "My own system, designed and built in October 2026 and used every day since" },
         {
           label: "What it is",
-          value: "Orion, a context layer over my own engineering record, and Auspex, a trace viewer that grades agent sessions",
+          value: "A personal context layer over my engineering record, served to any coding agent through MCP",
         },
-        { label: "Where it stands", value: "In daily use on my own machine, and growing" },
+        { label: "Where it stands", value: "In daily use on my own machine and growing; private for now" },
         {
           label: "Covers",
           value: "16 repositories: 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and past agent sessions",
@@ -2433,12 +2585,12 @@ export const portfolioData = {
       sections: [
         {
           id: "loop",
-          heading: "The loop",
+          heading: "Where it sits",
           blocks: [
             {
               type: "paragraph",
               text:
-                "A coding agent is only as good as what it knows when it starts, and only as trustworthy as what you can see it did. Each part of the stack covers one moment of a turn.",
+                "A coding agent is only as good as what it knows when it starts, and only as trustworthy as what you can see it did. Orion covers the first moment of every turn, and it works with two other pieces I run alongside it.",
             },
             {
               type: "flow",
@@ -2446,34 +2598,124 @@ export const portfolioData = {
               steps: [
                 { title: "Before: Orion", note: "The rules, past fixes and lessons for the files the agent is about to touch, every passage cited" },
                 { title: "During: a guard", note: "A hook in every session that refuses a short list of hard lines, whatever the agent was asked" },
-                { title: "After: Auspex", note: "Grades each finished turn; a failure that repeats becomes a lesson Orion hands to the next agent" },
+                { title: "After: Auspex", note: "Grades each finished turn; a mistake that repeats becomes a lesson Orion hands to the next agent" },
               ],
             },
           ],
         },
         {
-          id: "daily",
-          heading: "Orion: context before the work",
+          id: "record",
+          heading: "One cited record of my work",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Orion runs as a local process on my own machine. A one-time ingest reads my work into one record: 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions, with credentials scrubbed before anything is stored. The first ingest took about three and a half minutes. An always-on service keeps it current after that, and no model is called.",
+                "Orion runs as a local process on my own machine. Its ingest reads five sources into one document store: every commit of every checkout, the pull requests, reviews, issues and comments behind them on GitHub, my Claude Code session transcripts, the cases Auspex raises, and the Markdown where my projects write down their designs, decisions and retros. On 25 October 2026 that came to 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Every item has an id",
+                  note: "A commit is git:, a pull request or issue gh:, a session session:, a note md:, a case case:. Any id an agent cites reads back to its full text, and one that does not is reported as not recorded.",
+                },
+                {
+                  title: "Secrets never reach it",
+                  note: "Tokens, keys, bearer headers, .env assignments and passwords in URLs are scrubbed before anything is stored. When the rules change, the next full run cleans what is already there.",
+                },
+                {
+                  title: "Incremental by design",
+                  note: "A stored commit is never read again, GitHub is asked only for what changed since the last run, and a run with nothing new takes half a second.",
+                },
+                {
+                  title: "Stored once",
+                  note: "The same file in two clones, or the same commit in a fork, is stored once and the copy marked. Cloud sessions are exported, scrubbed, to a shared folder, so they join the same record.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "tools",
+          heading: "Seven tools, no model call",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Agents reach Orion through one MCP server, so any session in any repository gets the same tools. All seven are deterministic: no model call, an id on every item, the answer packed to a token budget, and anything that did not fit listed by id rather than dropped.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Tool" }, { label: "When an agent calls it" }, { label: "What comes back" }],
+              rows: [
+                { cells: ["context", "Starting a task", "Lessons and sensitive areas in scope, owners, related notes and recent fixes"] },
+                { cells: ["impact", "Before committing", "Callers of the changed functions in every repository, importers, owners, past fixes and reverts"] },
+                { cells: ["search", "Any time", "One ranked list over the record and the code"] },
+                { cells: ["read", "Following a citation", "The full text behind any id Orion returned, or not recorded"] },
+                { cells: ["file_history", "Before rewriting a file", "Its owners, and the fixes and reverts that touched it, first"] },
+                { cells: ["search_record and read_record", "Asking why something is the way it is", "Design notes, decisions, plans and retros across every repository"] },
+              ],
             },
             {
               type: "flow",
               columns: 4,
               steps: [
                 { title: "Session opens", note: "A hook tells the agent Orion is here and when to call it" },
-                { title: "Before editing", note: "context: rules, owners, past fixes and lessons for those files" },
+                { title: "Before editing", note: "context: the rules, owners, past fixes and lessons for those files" },
                 { title: "While working", note: "search and read: one ranked, cited list over the record and the code" },
                 { title: "Before committing", note: "impact: callers, importers and past reverts the change reaches" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "retrieval",
+          heading: "Search that knows what depends on what",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Every file is cut by its syntax: one chunk per function or class, Markdown at its headings, commit patches per file. A search then ranks three ways at once. Matching words, through BM25. Matching meaning, through bge-small embeddings computed on my machine, so nothing leaves it. And the code graph, seeded with the files the agent is touching, so their importers, their imports and the records that touched them rank first. Reciprocal rank fusion merges the three into one list, and a local cross-encoder can rerank the top few dozen.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The code graph spans every repository at once: definitions, imports, calls, HTTP routes and environment variables, parsed with tree-sitter rather than matched as text. That is how impact can tell an agent that a function it is changing in one repository is called from another.",
+            },
+            {
+              type: "cards",
+              items: [
+                { title: "0.889 recall in the top ten", note: "On 42 hand-labelled questions about my own work, with a mean reciprocal rank of 0.656." },
+                { title: "Tens of milliseconds", note: "A typical search, served from an in-process cache until the index changes." },
+                { title: "Every answer reads back", note: "Each hit cites a chunk id and a line span, and a citation can be scored against the index." },
+              ],
+            },
+          ],
+        },
+        {
+          id: "always-on",
+          heading: "Always on, hands free",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Nobody runs Orion by hand. One setup command installs it as a service on my Mac, registers it with Claude Code, and starts a daemon that keeps everything current with no model calls.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Daemon job" }, { label: "How often" }, { label: "What it does" }],
+              rows: [
+                { cells: ["local", "Every 30 s", "For each checkout that moved, ingests its history and notes and refreshes its index and code graph"] },
+                { cells: ["pull", "Every 15 min", "Fetches, and fast-forwards a checkout only when it is clean; it never merges, rebases or resets"] },
+                { cells: ["sessions", "Every 10 min", "Brings new agent session transcripts into the record and the index"] },
+                { cells: ["github", "Every 30 min", "Pull requests, reviews, comments and issues; the token is never written to disk"] },
+                { cells: ["outcomes", "Every 10 min", "Judges whether context Orion added to a prompt was actually used"] },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Search combines three signals: matching words, matching meaning, and the graph of what depends on what, seeded with the files the agent is touching. On 42 hand-labelled questions it puts a right answer in the top ten with recall 0.889, and a search takes tens of milliseconds. Every passage carries an id that reads back to its source, so nothing is taken on trust.",
+                "A prompt hook adds the record's most relevant passages to each prompt in well under a second, or adds nothing when nothing is relevant. It fails open: no daemon, a timeout or no match, and the agent simply carries on. Every hook call, tool call and daemon job is one line in a usage log, which is how Auspex sees whether an agent used what Orion gave it.",
             },
           ],
         },
@@ -2484,18 +2726,18 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Orion is a local process with local files. A one-time ingest reads my checkouts, GitHub history and agent sessions into one record, and an always-on daemon keeps it current. Agents reach everything through one MCP server and two hooks, and Auspex reads what they did.",
+                "Orion is a local process with local files. The ingest reads my checkouts, GitHub history, agent sessions and Auspex cases into one record, and an always-on daemon keeps it current. Agents reach everything through one MCP server and two hooks, and Auspex reads what they did.",
             },
             {
               type: "architecture",
-              // The owner's "How Orion runs on your Mac" diagram, laid out as he drew it, with the
-              // parts added since (the daemon, the prompt hook, the usage log, the spend cap). The
-              // data-platform parts moved to Fathom on 2026-10-25 (owner's split brief); Auspex
-              // takes the place of review and gate.
+              // The owner's "How Orion runs on your Mac" diagram, laid out as he drew it, redrawn to
+              // Orion at main 20a11d8: the Auspex cases source and the lessons store added, the
+              // model provider and the ask tool gone (Orion makes no model call), the outcomes job
+              // on the daemon. The data-platform parts moved to Fathom on 2026-10-25.
               label: "Orion's architecture",
               enlarge: "Enlarge",
               close: "Close",
-              viewBox: [20, 42, 930, 594],
+              viewBox: [20, 42, 930, 608],
               legend: [
                 { kind: "data", label: "Your data" },
                 { kind: "code", label: "Deterministic code, no model" },
@@ -2513,22 +2755,23 @@ export const portfolioData = {
                 { x: 32, y: 74, w: 138, h: 58, kind: "data", parts: [{ title: "~/C.Projects" }, { text: "16 git checkouts" }, { text: "code + Markdown" }] },
                 { x: 32, y: 139, w: 138, h: 58, kind: "data", parts: [{ title: "GitHub" }, { text: "PRs, issues, reviews" }, { text: "+ upstream of forks" }] },
                 { x: 32, y: 204, w: 138, h: 56, kind: "data", parts: [{ title: "~/.claude/projects" }, { text: "Claude Code session transcripts" }] },
-                { x: 32, y: 270, w: 138, h: 42, kind: "plain", parts: [{ mono: "~/.config/orion/" }, { mono: "record.toml" }] },
-                { x: 40, y: 316, w: 130, h: 32, kind: "bare", parts: [{ text: "says which roots, repos and sessions" }] },
+                { x: 32, y: 267, w: 138, h: 46, kind: "data", parts: [{ title: "~/.auspex" }, { text: "cases.jsonl, graded turns" }] },
+                { x: 32, y: 320, w: 138, h: 50, kind: "plain", parts: [{ mono: "record.toml" }, { text: "which roots, repos and sessions" }] },
                 {
-                  x: 196, y: 74, w: 155, h: 186, kind: "code",
+                  x: 196, y: 74, w: 155, h: 226, kind: "code",
                   parts: [
                     { title: "Ingesters" },
-                    { pairs: [["git.py", "commits"], ["github.py", "PRs, issues"], ["markdown.py", "sections"], ["sessions.py", "turns"]] },
+                    { pairs: [["git.py", "commits"], ["github.py", "PRs, issues"], ["sessions.py", "turns"], ["cases.py", "cases"], ["markdown.py", "sections"]] },
                     { rule: true },
                     { mono: "scrub.py" },
                     { text: "redacts secrets first" },
                     { text: "incremental: only new items since last run", gap: true },
+                    { text: "a copy in a fork or clone is stored once" },
                   ],
                 },
                 {
                   x: 380, y: 74, w: 178, h: 82, kind: "code",
-                  parts: [{ title: "DocStore" }, { mono: "record/docs.sqlite" }, { text: "ids: git: · gh: · md: · session:" }, { text: "full text behind every citation" }],
+                  parts: [{ title: "DocStore" }, { mono: "record/docs.sqlite" }, { text: "ids: git: · gh: · md: · session: · case:" }, { text: "full text behind every citation" }],
                 },
                 {
                   x: 380, y: 166, w: 178, h: 100, kind: "retrieval",
@@ -2543,7 +2786,7 @@ export const portfolioData = {
                 },
                 {
                   x: 380, y: 276, w: 178, h: 76, kind: "code",
-                  parts: [{ title: "Code graph" }, { mono: ".orion/graph.duckdb" }, { text: "definitions, imports, calls, HTTP routes, owners, past fixes" }],
+                  parts: [{ title: "Code graph" }, { mono: ".orion/graph.duckdb" }, { text: "definitions, imports, calls, HTTP routes, env, across every repo" }],
                 },
                 {
                   x: 32, y: 376, w: 526, h: 118, kind: "retrieval",
@@ -2567,8 +2810,8 @@ export const portfolioData = {
                   parts: [
                     { title: "Auspex" },
                     { text: "my trace viewer: reads every session transcript and Orion's usage log" },
-                    { text: "grades every finished turn by fixed rules and shows whether agents used Orion's context", gap: true },
-                    { text: "a failure that repeats becomes a lesson Orion hands to the next agent", gap: true },
+                    { text: "grades every finished turn by fixed rules and writes each failure as a case", gap: true },
+                    { text: "shows whether agents used Orion's context", gap: true },
                   ],
                 },
                 {
@@ -2587,7 +2830,8 @@ export const portfolioData = {
                     { section: "Agent tools" },
                     { mono: "context" }, { mono: "impact" }, { mono: "search" }, { mono: "read" }, { mono: "file_history" },
                     { section: "Record" },
-                    { mono: "search_record" }, { mono: "read_record" }, { mono: "ask" },
+                    { mono: "search_record" }, { mono: "read_record" },
+                    { text: "deterministic, cited, packed to a token budget", gap: true },
                     { rule: true },
                     { sub: "Answer cache" },
                     { text: "keyed by HEAD + working tree + index stamp, 120 s" },
@@ -2608,38 +2852,39 @@ export const portfolioData = {
                   ],
                 },
                 {
-                  x: 773, y: 322, w: 165, h: 100, kind: "plain",
+                  x: 773, y: 322, w: 165, h: 120, kind: "code",
                   parts: [
-                    { title: "Model provider" },
-                    { text: ["anthropic, openai-compatible, or ", { mono: "claude -p" }] },
-                    { text: "for ask only" },
-                    { text: "dollar cap and spend ledger on every paid call", gap: true },
+                    { title: "Lessons" },
+                    { mono: "lessons/" },
+                    { text: "drafted from two cases of one kind in one place" },
+                    { text: "a merge is the approval", gap: true },
+                    { text: "served only in scope, cited as lesson:id", gap: true },
                   ],
                 },
                 {
-                  x: 590, y: 515, w: 348, h: 117, kind: "code",
+                  x: 590, y: 515, w: 348, h: 130, kind: "code",
                   parts: [
                     { title: "orion daemon ·", titleMono: "launchd" },
                     { text: "always on, no model calls. Keeps the record, retrieval index and code graph current for every checkout in record.toml:" },
                     { text: "changed checkouts every 30 s · sessions every 10 min · GitHub every 30 min", gap: true },
                     { text: "git fetch + fast-forward of clean checkouts every 15 min" },
+                    { text: "outcomes every 10 min: was the added context used?" },
                     { text: "answers the prompt hook over a Unix socket, fails open", gap: true },
                   ],
                 },
               ],
               edges: [
-                { d: "M170 103 H194" }, { d: "M170 168 H194" }, { d: "M170 232 H194" },
+                { d: "M170 103 H194" }, { d: "M170 168 H194" }, { d: "M170 232 H194" }, { d: "M170 290 H194" },
                 { d: "M351 120 H378" },
                 { d: "M590 128 H560" }, { d: "M590 298 H560" }, { d: "M590 328 H560" },
                 { d: "M469 266 V276", end: false }, { d: "M469 352 V374" },
                 { d: "M366 590 H342" },
-                { d: "M100 260 V270", dashed: true, end: false },
-                { d: "M170 292 C 205 292, 225 285, 245 262", dashed: true },
+                { d: "M170 345 C 205 345, 225 330, 245 302", dashed: true },
                 { d: "M130 74 V68 H365 V210 H378", dashed: true },
-                { d: "M745 364 C 758 364, 760 372, 771 372", dashed: true },
                 { d: "M588 470 H574 V96 H560", dashed: true }, { d: "M574 210 H560", dashed: true }, { d: "M574 312 H560", dashed: true },
                 { d: "M590 560 H574 V470", kind: "code", dashed: true, end: false },
                 { d: "M760 515 V222 H781", kind: "code" },
+                { d: "M773 410 H747", kind: "code" },
                 { d: "M469 156 V164", kind: "retrieval" },
                 { d: "M378 250 H361 V374", kind: "retrieval" },
                 { d: "M561 435 H587", kind: "retrieval", both: true },
@@ -2650,7 +2895,7 @@ export const portfolioData = {
                 { x: 750, y: 185, text: "ids" },
                 { x: 764, y: 505, text: "socket", kind: "code" },
               ],
-              note: "Orange is the retrieval path. Every tool that returns text goes through it, and every passage it returns carries an id that read can expand. An id that does not read back is reported as not recorded.",
+              note: "Orange is the retrieval path. Every tool that returns text goes through it, and every passage it returns carries an id that read can expand. An id that does not read back is reported as not recorded. Nothing on this drawing calls a model.",
             },
           ],
         },
@@ -2671,7 +2916,57 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The first full pass graded 158 turns and raised 5 cases. Three were sessions that ran their context window past 80%, and one edited code and finished without a test or build. The fifth was a false alarm, a chained command read as a failing check, and it became a rule fix.",
+                "The first full pass graded 158 turns and raised 5 cases. Three were sessions that ran their context window past 80%, and one edited code and finished without a test or build. The fifth was a chained command read as a failing check, and it became a sharper rule.",
+            },
+          ],
+        },
+        {
+          id: "lessons",
+          heading: "From repeated mistakes to lessons",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "This is where the loop closes. A mistake an agent makes twice in the same place should not be made a third time, so Orion turns Auspex's cases into lessons the next agent reads before it starts. Everything on this path is code: no model writes or judges a lesson.",
+            },
+            {
+              type: "flow",
+              columns: 4,
+              steps: [
+                { title: "A case", note: "Auspex writes each failure as a case, and the ingest stores it with its session and files" },
+                { title: "Two in one place", note: "Two cases of one kind in one file or repository draft a lesson, scoped to the narrowest place they share" },
+                { title: "A merge approves it", note: "Drafts are never served. Merging the pull request that accepts one is the approval" },
+                { title: "Served in scope", note: "context lists the lesson first whenever an agent works there, cited by its id" },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Each lesson sits on a rung of a ladder: explain what went wrong, then a checklist to tick before finishing, then a check to build, then the same check enforced. If the same case happens again after Orion served the lesson, the next draft moves it a rung. Because the usage log records every id Orion returned, \"it happened after the lesson was served\" is a fact, not a guess. Orion says what to build, and I decide.",
+            },
+          ],
+        },
+        {
+          id: "weight",
+          heading: "The weight of the work",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Orion is a full system, built and tested like one, not a script around a model.",
+            },
+            {
+              type: "stats",
+              items: [
+                { value: "~14,000 lines", label: "of Python, in one local package" },
+                { value: "357 tests", label: "including one that runs the whole path end to end over MCP" },
+                { value: "7 tools", label: "on the MCP server, each one deterministic and cited" },
+                { value: "5 jobs", label: "on the always-on daemon, keeping the record current" },
+                { value: "5 sources", label: "ingested into one scrubbed record" },
+                { value: "3 rankings", label: "fused in every search: words, meaning and the code graph" },
+                { value: "4 rungs", label: "on the lesson ladder, from explain to enforce" },
+                { value: "0 model calls", label: "between the record and the agent" },
+              ],
             },
           ],
         },
@@ -2682,8 +2977,9 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Lessons from real sessions. When the same case repeats in one file or repository, Orion drafts a lesson, and I approve it by merging it. A lesson that keeps failing moves up a ladder: explain, then a checklist, then a check, then a rule enforced in code.",
-                "Proof that the context helps. Auspex already marks which of Orion's answers an agent used. Next is comparing turns with and without them.",
+                "Proof that the context helps. Auspex already marks which of Orion's answers each agent used, and the outcomes job judges it every ten minutes. Next is comparing turns with and without them.",
+                "The first lessons from real sessions. As Auspex's cases repeat in one place, Orion drafts the lessons, and each one I merge is served to every agent that works there.",
+                "Every agent in one record. Cloud sessions already export their transcripts, scrubbed, to a shared folder, so local and cloud agents feed the same record and learn from the same lessons.",
               ],
             },
           ],
@@ -2692,7 +2988,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "The habit of closing the loop on agents: give them the context before they work, hold the lines that matter in code, and grade what they actually did, so the next run starts from what the last one got wrong.",
+          "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
       },
       contactHeading: "Running coding agents every day? Let's talk.",
     },

@@ -120,10 +120,10 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("shows the status on the agent stack and Fathom cards and links to none of the private repositories (TG-07, D2; owner's split brief 2026-10-25)", () => {
+  it("shows the status on the Orion and Fathom cards and links to none of the private repositories (TG-07, D2; owner's split brief 2026-10-25)", () => {
     const { container } = renderCards();
 
-    for (const [id, status] of [["orion", "Private · personal tooling"], ["fathom", "In progress · private repo"]]) {
+    for (const [id, status] of [["orion", "Private · in daily use"], ["fathom", "Open source · version 0.1"]]) {
       const study = caseStudies.find((candidate) => candidate.id === id);
       expect(study.status).toBe(status);
       expect(study.codeLink).toBeUndefined();

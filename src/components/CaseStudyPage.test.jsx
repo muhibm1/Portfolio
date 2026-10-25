@@ -124,8 +124,8 @@ describe('CaseStudyPage', () => {
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
-    // The agent stack page points at Fathom, where its data-platform work moved (owner, 2026-10-25).
-    it('shows a banner on the agent stack page only, linking to Fathom', () => {
+    // The Orion page points at Fathom, where its data-platform work moved (owner, 2026-10-25).
+    it('shows a banner on the Orion page only, linking to Fathom', () => {
       expect(caseStudies.filter((study) => study.banner).map((study) => study.id)).toEqual(['orion']);
       renderCaseStudyAt('/work/orion');
       const note = screen.getByRole('note');
@@ -137,8 +137,8 @@ describe('CaseStudyPage', () => {
   // Both repositories are private, so each page names its status where a code link would sit
   // (owner's split brief, 2026-10-25).
   describe.each([
-    ['orion', 'Private · personal tooling'],
-    ['fathom', 'In progress · private repo'],
+    ['orion', 'Private · in daily use'],
+    ['fathom', 'Open source · version 0.1'],
   ])('the %s case study (TG-07, D2)', (slug, status) => {
     const study = caseStudies.find((candidate) => candidate.id === slug);
 

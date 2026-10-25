@@ -240,23 +240,23 @@ const pinnedCaseStudyNarratives = {
     calloutText: "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
     contactHeading: "Need an agent whose answers can be checked? Let's talk."
   },
-  // Rewritten 2026-10-25 as the agent stack, and Fathom added (owner's split brief).
+  // Fathom added and Orion rewritten 2026-10-25 (owner's split brief and his follow-up the same day).
   orion: {
-    eyebrow: "Case study · Coding agents",
-    title: "My agent stack: context before, a guard during, grading after",
-    lead: "I run coding agents every day, and each one starts a session knowing nothing about my work. My agent stack closes that gap with a loop. Before an agent works, Orion gives it the context a new engineer would spend weeks picking up. While it works, a guard holds a few hard lines. After each turn, Auspex grades what it did, and what keeps going wrong comes back to Orion as a lesson.",
+    eyebrow: "Case study · Personal system · Coding agents",
+    title: "Orion: what my agents know before they start",
+    lead: "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
     atAGlance: [
       {
         label: "My role",
-        value: "My own tools, built in October 2026 and used every day since"
+        value: "My own system, designed and built in October 2026 and used every day since"
       },
       {
         label: "What it is",
-        value: "Orion, a context layer over my own engineering record, and Auspex, a trace viewer that grades agent sessions"
+        value: "A personal context layer over my engineering record, served to any coding agent through MCP"
       },
       {
         label: "Where it stands",
-        value: "In daily use on my own machine, and growing"
+        value: "In daily use on my own machine and growing; private for now"
       },
       {
         label: "Covers",
@@ -264,29 +264,29 @@ const pinnedCaseStudyNarratives = {
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
-    calloutText: "The habit of closing the loop on agents: give them the context before they work, hold the lines that matter in code, and grade what they actually did, so the next run starts from what the last one got wrong.",
+    calloutText: "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
     contactHeading: "Running coding agents every day? Let's talk."
   },
   fathom: {
-    eyebrow: "Case study · Personal system · Data platforms",
+    eyebrow: "Case study · Open source · Data platforms",
     title: "Fathom: what a data change reaches, before it ships",
-    lead: "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code. The model may explain the result but never overrule it, and a team's CI gate is the only thing that blocks.",
+    lead: "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
     atAGlance: [
       {
         label: "My role",
-        value: "My own project, built in October 2026 as part of Orion and split out on its own"
+        value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project"
       },
       {
         label: "What it is",
-        value: "A context layer and change check for AI agents on data platforms, starting with dbt"
+        value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow"
       },
       {
         label: "Where it stands",
-        value: "In progress, working toward a first release for dbt"
+        value: "Version 0.1 under the Apache-2.0 licence, in active development"
       },
       {
         label: "Tested on",
-        value: "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and cal-itp/data-infra, California's public transit data warehouse"
+        value: "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake"
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
@@ -1096,6 +1096,18 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     "12 merged commits", "7 warnings, all false", "2 warnings, both correct", "45 real bugs", "74%",
     "73% to 76%", "across 3 runs", "625 models", "16", "4,599", "158 turns", "158", "5 cases",
     "past 80%", "over 80% full",
+    // Added 2026-10-25 for the owner's follow-up ("show the bulk and the weight of the work"):
+    // Orion's README and docs/hands-free.md at main 20a11d8 (tools, daemon jobs, lesson rungs,
+    // about 14,350 lines and 357 tests), and Fathom's README at main d993d56 (version, licence,
+    // adapters, rule types, providers, about 14,100 lines and 264 tests) with its results notes
+    // (accuracy.md, calitp-history-deterministic.md, calitp-history-model-consumers.md,
+    // partner-balboa.md, partner-httpx-sonnet-5-5.md and partner-hono-cobra-sonnet-5-5.md).
+    "7 tools", "25 October 2026", "Every 30 s", "Every 15 min", "Every 10 min", "Every 30 min",
+    "~14,000 lines", "357 tests", "5 jobs", "5 sources", "3 rankings", "4 rungs", "0 model calls",
+    "version 0.1", "Version 0.1", "Apache-2.0", "from 0.18 to 0.42", "0.60 on 45 held-out bugs",
+    "7 rule types", "4 warnings in 26 weeks", "0 false alarms a week", "2.23 warnings a week",
+    "0.81 false alarms a week", "7 of 43 to 1", "32 DAGs and 53 tasks", "26 merged changes",
+    "49 unrelated", "264 tests", "5 adapters", "7 MCP tools", "5 providers", "6 languages",
   ];
   // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
   // each step's place among them, the plan's step numbers, and the figure caption.
@@ -1140,15 +1152,15 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return { words, numbering };
   }
 
-  it("puts Fathom fourth, the last featured study, then Esper, then the agent stack, each with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
+  it("puts Fathom fourth, the last featured study, then Esper, then Orion, each with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
     const ids = portfolioData.caseStudies.map((study) => study.id);
     expect(ids.indexOf("fathom")).toBe(3);
     expect(ids.indexOf("esper")).toBe(4);
     expect(ids.indexOf("orion")).toBe(5);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
-    expect(fathom.status).toBe("In progress · private repo");
-    expect(orion.status).toBe("Private · personal tooling");
+    expect(fathom.status).toBe("Open source · version 0.1");
+    expect(orion.status).toBe("Private · in daily use");
     expect(fathom).not.toHaveProperty("codeLink");
     expect(orion).not.toHaveProperty("codeLink");
   });
@@ -1158,7 +1170,7 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(collectStrings(fathom).flatMap(unknownNumbersIn)).toEqual([]);
   });
 
-  it("keeps the agent stack free of the data-platform walkthrough, review and gate (split brief 2026-10-25)", () => {
+  it("keeps Orion free of the data-platform walkthrough, review and gate (split brief 2026-10-25)", () => {
     expect(collectBlocks(orion).some((block) => block.type === "walkthrough")).toBe(false);
     const text = collectStrings(orion).join("\n");
     expect(text).not.toMatch(/preflight|orion gate|orion review|PipelineBench|dbt/i);
@@ -1367,14 +1379,14 @@ describe("the Atelier case study (TG-08)", () => {
 // Owner, 2026-10-21: the Orion walkthrough opens the page in place of the terms grid, and plays
 // 15% faster than the Atelier one.
 // 2026-10-25 (owner's split brief): the walkthrough moved to Fathom, after its opening problem;
-// the agent stack opens on the loop, then Orion, its drawing, Auspex and what's next.
-describe("Fathom and agent stack page order and pace", () => {
+// Orion opens on where it sits, then the record, its tools, search, the daemon, its drawing, Auspex, lessons, the weight of the work and what's next.
+describe("Fathom and Orion page order and pace", () => {
   const fathom = findCaseStudy("fathom");
   const orion = findCaseStudy("orion");
 
   it("follows the brief's order on both pages", () => {
-    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "trust", "architecture", "evidence", "stands", "plan"]);
-    expect(orion.sections.map((section) => section.id)).toEqual(["loop", "daily", "architecture", "auspex", "plan"]);
+    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "verdict", "trust", "review", "loop", "architecture", "evidence", "weight", "plan"]);
+    expect(orion.sections.map((section) => section.id)).toEqual(["loop", "record", "tools", "retrieval", "always-on", "architecture", "auspex", "lessons", "weight", "plan"]);
   });
 
   it("plays the Fathom walkthrough at 0.85 pace and leaves Atelier's at the default", () => {
