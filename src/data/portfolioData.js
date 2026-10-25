@@ -141,7 +141,7 @@ export const portfolioData = {
       entries: [
         {
           date: "Oct 25, 2026",
-          text: "Split Orion in two. Orion stays my private context layer over my own engineering record. Its data-platform half became Fathom, the part a data team could deploy, tested on cal-itp's public warehouse.",
+          text: "Gave Fathom a home of its own. Orion and Fathom began as two ideas I built side by side: context for my own coding agents, and context for agents working on a data team's platform. Each had grown into a full system, so Orion stays my private context layer and Fathom became its own project, the one a data team can deploy, tested on cal-itp's public warehouse.",
         },
         {
           date: "Oct 25, 2026",
@@ -173,7 +173,7 @@ export const portfolioData = {
         },
         {
           date: "Oct 16 to 20, 2026",
-          text: "Built Orion: 38 pull requests merged and about 200 tests. Agents using it made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
+          text: "Built Orion and Fathom side by side in one codebase: 38 pull requests merged and about 200 tests. Agents using Fathom made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
         },
         {
           date: "Oct 13, 2026",
@@ -220,7 +220,7 @@ export const portfolioData = {
     workingWithPeople: {
       eyebrow: "Working with people",
       text:
-        "I've taken a client's goals for an education platform redesign through to a beta-ready launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
+        "I've taken a client's goals for an education platform redesign through to launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
     },
 
     experience: {
@@ -233,10 +233,10 @@ export const portfolioData = {
           period: "Feb 2025 to present",
           subheading: "Data Health team · Austin, TX",
           highlights: [
-            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
+            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
             "Built a Python tool linking ticketing, repository and geo-data systems through each system's OAuth2 sign-in and API, cutting permission turnaround by about 50%.",
-            "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across 50+ regions.",
-            "Worked with the DataOps and data evaluation teams to migrate data validation to new infrastructure and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings.",
+            "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across a 50+ region pipeline on Spark, Iceberg on S3 and Snowflake.",
+            "Worked with the DataOps and data evaluation teams to migrate data validation to new infrastructure and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
           ],
         },
         {
@@ -245,7 +245,8 @@ export const portfolioData = {
           period: "May 2024 to Feb 2025",
           highlights: [
             "Owned the connection to a large language model that powered the product's core personalization feature, refining its instructions against how it behaved in real use.",
-            "Rebuilt a broken content-generation pipeline. CI/CD release checks and tests cut production incidents by about 40%.",
+            "Rebuilt an LLM content pipeline that shipped malformed output on nearly every run. A new Postgres schema, CI/CD quality gates and prompt tuning took it to structured output on every run.",
+            "Fixed an N+1 query in the personalization fetch, cutting its latency by about 80%, from two seconds to four hundred milliseconds.",
             "Built the REST API layer and the WebSocket live-update infrastructure on Elixir Phoenix and Postgres.",
           ],
         },
@@ -263,7 +264,7 @@ export const portfolioData = {
           title: "Software Consultant",
           period: "Dec 2022 to May 2024",
           highlights: [
-            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through to a beta-ready platform they could launch and demo. QA and reporting workflows kept delivery visible to the client.",
+            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through launch to a few hundred users. QA and reporting workflows kept delivery visible to the client, and I stayed on to support the migration after its acquisition in May 2024.",
           ],
         },
         {
@@ -295,7 +296,7 @@ export const portfolioData = {
       columns: [
         {
           title: "Build",
-          items: "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
+          items: "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
         },
         {
           title: "Data",
@@ -304,7 +305,7 @@ export const portfolioData = {
         {
           title: "AI",
           items:
-            "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+            "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
         },
         {
           title: "Ship",
@@ -1891,7 +1892,7 @@ export const portfolioData = {
       intro:
         "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
       atAGlance: [
-        { label: "My role", value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project" },
+        { label: "My role", value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own" },
         {
           label: "What it is",
           value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
@@ -2497,7 +2498,7 @@ export const portfolioData = {
     // private, so `status` stands where a code link would; there is no codeLink.
     {
       id: "orion",
-      banner: "Orion's data-platform work became Fathom.",
+      banner: "Fathom, Orion's sister project, brings the same idea to data platforms.",
       bannerLink: { text: "Fathom", to: "/work/fathom" },
       card: {
         featured: false,

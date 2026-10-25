@@ -129,7 +129,7 @@ describe('CaseStudyPage', () => {
       expect(caseStudies.filter((study) => study.banner).map((study) => study.id)).toEqual(['orion']);
       renderCaseStudyAt('/work/orion');
       const note = screen.getByRole('note');
-      expect(note).toHaveTextContent("Orion's data-platform work became Fathom.");
+      expect(note).toHaveTextContent("Fathom, Orion's sister project, brings the same idea to data platforms.");
       expect(within(note).getByRole('link', { name: 'Fathom' })).toHaveAttribute('href', '/work/fathom');
     });
   });

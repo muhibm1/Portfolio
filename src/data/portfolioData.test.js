@@ -62,9 +62,9 @@ const pinnedRoleTitles = [
 ];
 
 const pinnedToolkit = [
-  "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
+  "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
-  "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+  "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
   "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
@@ -104,7 +104,7 @@ const HERO_HEADING = "I find the step everyone is waiting on.";
 const HERO_LEAD =
   "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.";
 const RESUME_BULLET =
-  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
+  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
   "Unlock request",
   "Map snapshot of the target feature and its neighbors",
@@ -276,7 +276,7 @@ const pinnedCaseStudyNarratives = {
     atAGlance: [
       {
         label: "My role",
-        value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project"
+        value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own"
       },
       {
         label: "What it is",
@@ -681,7 +681,7 @@ describe("portfolioData", () => {
     const incidentText = findSection(dataHealth, "incident").blocks[0].text;
 
     expect(appleRole.highlights.join(" ")).toContain(
-      "led the response to a building-generation incident affecting tens of thousands of buildings.",
+      "led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS",
     );
     expect(dataHealth.stats[2]).toEqual({
       value: "Tens of thousands",
@@ -940,7 +940,7 @@ describe("portfolioData", () => {
     expect(home.experience.roles[0].company).toBe("Apple Maps");
     expect(home.experience.roles[0].highlights[0]).toBe(RESUME_BULLET);
     expect(home.toolkit.columns[2].items).toBe(
-      "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+      "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
     );
   });
 
