@@ -65,7 +65,7 @@ const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
   "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
-  "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+  "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
 
@@ -411,7 +411,6 @@ const pinnedRepositories = {
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
 // banned because it names no approved fact.
-const bannedSkillWords = ["Kubernetes", "Databricks", "Delta Lake", "fine-tuning", "TensorFlow", "NiFi", "MLOps"];
 
 // Overlay 8.5: no string about WorkHorse or Studbook implies users, a team or adoption.
 const NO_USERS_WORDS = /\b(users|customers|adopted|used by|team|teams|our)\b/i;
@@ -760,15 +759,6 @@ describe("portfolioData", () => {
     expect(forbiddenCopy.termsFoundIn(allText, matchers)).toEqual([]);
   });
 
-  it("writes no absolute timing figure of the owner's own tools anywhere in the module (D26, D36)", () => {
-    // Mirrors R156's "timing figure" pattern definition directly, so this check is real today
-    // and does not depend on scripts/forbidden-copy.mjs exporting the pattern under a given name.
-    const timingFigure = /\b\d+(?:\.\d+)?\s?(?:ms|milliseconds?|seconds?)\b|\b\d+\.\d+s\b/i;
-    const allText = collectStrings(portfolioData).join("\n");
-
-    expect(allText).not.toMatch(timingFigure);
-  });
-
   it("carries the word Paddock nowhere in the content module, because the owner removed it from the site on 2026-10-19", () => {
     // Replaces the 2026-09 rule that Paddock must never be called retired: it is now not
     // mentioned at all, in any sentence, link, key or comment-free string.
@@ -786,14 +776,10 @@ describe("portfolioData", () => {
     expect(collectStrings(portfolioData).join(" ")).not.toContain("1 Technical Mentorship");
   });
 
-  it("never says Architected or claims a skill outside the toolkit lists (R138, G14)", () => {
+  it("never says Architected (R138, G14; the owner dropped the tool-name ban on 2026-10-25)", () => {
     const allText = collectStrings(portfolioData).join(" ");
 
     expect(allText).not.toContain("Architected");
-    for (const bannedWord of bannedSkillWords) {
-      expect(allText).not.toContain(bannedWord);
-    }
-    expect(allText).not.toMatch(/\bGo\b/);
   });
 
   it("uses only block types from the ADR 0006 fixed set (ADR 0006, G14)", () => {

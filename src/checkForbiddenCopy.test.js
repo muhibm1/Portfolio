@@ -64,7 +64,6 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'times-sign.txt', text: '2× faster' },
   { fileName: 'ascii-2x.txt', text: '2x faster' },
   { fileName: 'plus-fifty-two-percent.txt', text: 'saw a +52% jump' },
-  { fileName: 'timing-figure.txt', text: 'the query took 1.5s' },
   // 2026-10-19: the owner removed Paddock from the site, so the plain word is banned. The
   // retirement-wording fixture ('Paddock was retired last quarter.') now hits two terms and is
   // covered by its own test below, not by this one-hit-per-file list.
@@ -339,30 +338,16 @@ describe('forbidden-copy file scan', () => {
     expect(hitLines.some((line) => line.includes('bare-seconds.txt'))).toBe(false);
   });
 
-  it('matches "about 120 ms", "40 seconds" and "0.5s" for the timing pattern', () => {
-    const msPath = writeFixture('about-120-ms.txt', 'A response in about 120 ms.\n');
-    const secondsPath = writeFixture('forty-seconds.txt', 'It finished in 40 seconds.\n');
-    const decimalSecondsPath = writeFixture('point-five-s.txt', 'A run of 0.5s.\n');
-
-    const { hitLines } = scanFiles([msPath, secondsPath, decimalSecondsPath], matchers);
-
-    expect(hitLines.filter((line) => line.includes('about-120-ms.txt') && line.includes('timing figure'))).toHaveLength(1);
-    expect(hitLines.filter((line) => line.includes('forty-seconds.txt') && line.includes('timing figure'))).toHaveLength(1);
-    expect(hitLines.filter((line) => line.includes('point-five-s.txt') && line.includes('timing figure'))).toHaveLength(1);
-  });
-
-  // "sub-10ms" is its own term (a literal match) and also fits the timing pattern (D36: the
-  // pattern catches this figure and any successor even when the literal term also fires), so it
-  // is tested on its own rather than folded into the one-hit-per-file fixture set above.
-  it('matches "sub-10ms" as both its own term and the timing pattern', () => {
+  // 2026-10-25: the owner dropped the general timing-figure ban ("those are stupid, so we can
+  // throw those out for now"), so the scanner no longer carries the pattern; "sub-10ms" stays
+  // banned as its own withdrawn claim.
+  it('matches "sub-10ms" as its own term', () => {
     const fixturePath = writeFixture('sub-10ms.txt', 'sub-10ms response times\n');
 
     const { exitCode, hitLines } = scanFiles([fixturePath], matchers);
 
     expect(exitCode).toBe(EXIT_HIT);
-    expect(hitLines.filter((line) => line.includes('sub-10ms.txt'))).toHaveLength(2);
-    expect(hitLines.some((line) => line.includes('sub-10ms.txt') && line.endsWith(': sub-10ms'))).toBe(true);
-    expect(hitLines.some((line) => line.includes('sub-10ms.txt') && line.includes('timing figure'))).toBe(true);
+    expect(hitLines.filter((line) => line.includes('sub-10ms.txt'))).toHaveLength(1);
   });
 
   // E4: the timing pattern skips .css and .svg files.

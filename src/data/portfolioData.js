@@ -144,10 +144,6 @@ export const portfolioData = {
           text: "Gave Fathom a home of its own. Orion and Fathom began as two ideas I built side by side: context for my own coding agents, and context for agents working on a data team's platform. Each had grown into a full system, so Orion stays my private context layer and Fathom became its own project, the one a data team can deploy, tested on cal-itp's public warehouse.",
         },
         {
-          date: "Oct 25, 2026",
-          text: "Put every paid model call in Flywheel, Orion and AgentOps behind a dollar cap, a spend ledger and free replay of recorded answers. Flywheel now also holds any change to its own grading for approval, and reruns only the close calls: 34% fewer runs, with the same decision in 12 of 12 replayed comparisons.",
-        },
-        {
           date: "Oct 24 to 25, 2026",
           text: "Measured Esper against what most people would use, a coding agent with web search, told to cite. 82% of Esper's sentences were backed by the page they cite, against 58% for the agent.",
         },
@@ -156,20 +152,12 @@ export const portfolioData = {
           text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions.",
         },
         {
-          date: "Oct 21, 2026",
-          text: "Benchmarked Orion's review against my own code-review agent on 8 past changes. Orion caught 3 of the 11 problems the reviewer blocked on, so the reviewer stays, and Orion's review moved to data platforms, where its system context exists.",
-        },
-        {
           date: "Oct 20, 2026",
           text: "Ran Flywheel on two of LangChain's open-source agents. Moving the email agent from Claude Sonnet 4.5 to the cheaper Haiku 4.5 tied on totals, 27 of 33 replies each, but Flywheel blocked it on one email type: a reply deadline Sonnet acknowledged 3 of 3 times and Haiku 0 of 3.",
         },
         {
           date: "Oct 19, 2026",
           text: "Finished Esper, a research agent that proves every sentence. 79% of its sentences were backed by the page they cite, against 29% for LangChain's Open Deep Research.",
-        },
-        {
-          date: "Oct 18, 2026",
-          text: "Retired Studbook, my question-answering system; its role moved into Orion's record.",
         },
         {
           date: "Oct 16 to 20, 2026",
@@ -246,7 +234,7 @@ export const portfolioData = {
           highlights: [
             "Owned the connection to a large language model that powered the product's core personalization feature, refining its instructions against how it behaved in real use.",
             "Rebuilt an LLM content pipeline that shipped malformed output on nearly every run. A new Postgres schema, CI/CD quality gates and prompt tuning took it to structured output on every run.",
-            "Fixed an N+1 query in the personalization fetch, cutting its latency by about 80%, from two seconds to four hundred milliseconds.",
+            "Fixed an N+1 query in the personalization fetch, cutting its latency by about 80%, from 2 s to 400 ms.",
             "Built the REST API layer and the WebSocket live-update infrastructure on Elixir Phoenix and Postgres.",
           ],
         },
@@ -309,7 +297,7 @@ export const portfolioData = {
         },
         {
           title: "Ship",
-          items: "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+          items: "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
         },
         {
           title: "People",
