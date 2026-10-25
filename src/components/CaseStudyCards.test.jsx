@@ -98,7 +98,7 @@ describe("CaseStudyCards", () => {
         expect(anchor.querySelector("a")).toBeNull();
       }
     });
-    expect(screen.getAllByText("View the code")).toHaveLength(2);
+    expect(screen.getAllByText("View the code")).toHaveLength(3);
   });
 
   it("puts the More work heading above the compact cards, each with its two tags and the read-more label", () => {
@@ -120,18 +120,22 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("shows the status on the Orion and Fathom cards and links to none of the private repositories (TG-07, D2; owner's split brief 2026-10-25)", () => {
+  it("shows the status on the Orion card, links Fathom's public repository, and links to none of the private repositories (TG-07, D2; owner 2026-10-25)", () => {
     const { container } = renderCards();
 
-    for (const [id, status] of [["orion", "Private · in daily use"], ["fathom", "Open source · in development"]]) {
-      const study = caseStudies.find((candidate) => candidate.id === id);
-      expect(study.status).toBe(status);
-      expect(study.codeLink).toBeUndefined();
-      expect(within(container).getByText(status)).toBeInTheDocument();
-    }
+    const orion = caseStudies.find((candidate) => candidate.id === "orion");
+    expect(orion.status).toBe("Private · in daily use");
+    expect(orion.codeLink).toBeUndefined();
+    expect(within(container).getByText("Private · in daily use")).toBeInTheDocument();
+
+    const fathom = caseStudies.find((candidate) => candidate.id === "fathom");
+    expect(fathom.status).toBeUndefined();
+    expect(fathom.codeLink).toEqual({ label: "Code: fathom", href: "https://github.com/muhibm1/fathom" });
+    expect(within(container).queryByText("Open source · in development")).toBeNull();
+    expect(document.querySelectorAll('a[href="https://github.com/muhibm1/fathom"]')).toHaveLength(1);
+
     expect(screen.queryAllByText("Ongoing project")).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/orion"]')).toHaveLength(0);
-    expect(document.querySelectorAll('a[href*="github.com/muhibm1/fathom"]')).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/auspex"]')).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/tannhauser"]')).toHaveLength(0);
   });

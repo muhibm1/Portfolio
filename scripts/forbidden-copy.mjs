@@ -156,6 +156,8 @@ export const ZERO_REJECTED_TERM = {
  * `four real changes`, `rejected ship`, `half the latency`, `2×`, `+52%`, plus
  * TIMING_FIGURE_TERM, PADDOCK_RETIREMENT_TERM, TWO_X_TERM, ELEVEN_X_TERM and FOUR_OF_FOUR_TERM
  * (the last three were plain strings until a review fix moved them to boundary-aware patterns).
+ * 2026-10-25: the owner dropped the general timing-figure ban, so TIMING_FIGURE_TERM is no longer
+ * in FORBIDDEN_TERMS; it stays exported for the handoff-document check in publicDirectory.test.js.
  *
  * The 2026-09-29 change adds three strings, `crossed team`, `fully manual` and `restricted
  * geospatial`, and the six pattern terms above (SANDBOX_TERM to HIGH_IMPACT_TERM). It adds no
@@ -191,7 +193,6 @@ export const FORBIDDEN_TERMS = [
   'half the latency',
   `2${MULTIPLICATION_SIGN}`,
   '+52%',
-  TIMING_FIGURE_TERM,
   PADDOCK_RETIREMENT_TERM,
   'Paddock',
   TWO_X_TERM,

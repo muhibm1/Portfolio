@@ -27,13 +27,15 @@
 // The three public snapshot repositories, held once (R153) and referenced from every place the
 // work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
 // desktop app was removed from the site on 2026-10-19 at his word.
-// Flywheel and the Studbook agent (added 2026-10-13) are public repositories, not snapshots.
+// Flywheel and the Studbook agent (added 2026-10-13) and Fathom (public 2026-10-25) are public
+// repositories, not snapshots.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse-snapshot",
   studbook: "https://github.com/muhibm1/studbook-snapshot",
   agentops: "https://github.com/muhibm1/agentops-snapshot",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
+  fathom: "https://github.com/muhibm1/fathom",
 };
 
 // The Flywheel study of two LangChain open-source agents, in the public flywheel repository.
@@ -141,11 +143,7 @@ export const portfolioData = {
       entries: [
         {
           date: "Oct 25, 2026",
-          text: "Split Orion in two. Orion stays my private context layer over my own engineering record. Its data-platform half became Fathom, the part a data team could deploy, tested on cal-itp's public warehouse.",
-        },
-        {
-          date: "Oct 25, 2026",
-          text: "Put every paid model call in Flywheel, Orion and AgentOps behind a dollar cap, a spend ledger and free replay of recorded answers. Flywheel now also holds any change to its own grading for approval, and reruns only the close calls: 34% fewer runs, with the same decision in 12 of 12 replayed comparisons.",
+          text: "Gave Fathom a home of its own. Orion and Fathom began as two ideas I built side by side: context for my own coding agents, and context for agents working on a data team's platform. Each had grown into a full system, so Orion stays my private context layer and Fathom became its own project, the one a data team can deploy, tested on cal-itp's public warehouse.",
         },
         {
           date: "Oct 24 to 25, 2026",
@@ -156,10 +154,6 @@ export const portfolioData = {
           text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions.",
         },
         {
-          date: "Oct 21, 2026",
-          text: "Benchmarked Orion's review against my own code-review agent on 8 past changes. Orion caught 3 of the 11 problems the reviewer blocked on, so the reviewer stays, and Orion's review moved to data platforms, where its system context exists.",
-        },
-        {
           date: "Oct 20, 2026",
           text: "Ran Flywheel on two of LangChain's open-source agents. Moving the email agent from Claude Sonnet 4.5 to the cheaper Haiku 4.5 tied on totals, 27 of 33 replies each, but Flywheel blocked it on one email type: a reply deadline Sonnet acknowledged 3 of 3 times and Haiku 0 of 3.",
         },
@@ -168,12 +162,8 @@ export const portfolioData = {
           text: "Finished Esper, a research agent that proves every sentence. 79% of its sentences were backed by the page they cite, against 29% for LangChain's Open Deep Research.",
         },
         {
-          date: "Oct 18, 2026",
-          text: "Retired Studbook, my question-answering system; its role moved into Orion's record.",
-        },
-        {
           date: "Oct 16 to 20, 2026",
-          text: "Built Orion: 38 pull requests merged and about 200 tests. Agents using it made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
+          text: "Built Orion and Fathom side by side in one codebase: 38 pull requests merged and about 200 tests. Agents using Fathom made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
         },
         {
           date: "Oct 13, 2026",
@@ -220,7 +210,7 @@ export const portfolioData = {
     workingWithPeople: {
       eyebrow: "Working with people",
       text:
-        "I've taken a client's goals for an education platform redesign through to a beta-ready launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
+        "I've taken a client's goals for an education platform redesign through to launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
     },
 
     experience: {
@@ -233,10 +223,10 @@ export const portfolioData = {
           period: "Feb 2025 to present",
           subheading: "Data Health team · Austin, TX",
           highlights: [
-            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
+            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
             "Built a Python tool linking ticketing, repository and geo-data systems through each system's OAuth2 sign-in and API, cutting permission turnaround by about 50%.",
-            "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across 50+ regions.",
-            "Worked with the DataOps and data evaluation teams to migrate data validation to new infrastructure and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings.",
+            "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across a 50+ region pipeline on Spark, Iceberg on S3 and Snowflake.",
+            "Worked with the DataOps and data evaluation teams to migrate data validation to new infrastructure and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
           ],
         },
         {
@@ -245,7 +235,8 @@ export const portfolioData = {
           period: "May 2024 to Feb 2025",
           highlights: [
             "Owned the connection to a large language model that powered the product's core personalization feature, refining its instructions against how it behaved in real use.",
-            "Rebuilt a broken content-generation pipeline. CI/CD release checks and tests cut production incidents by about 40%.",
+            "Rebuilt an LLM content pipeline that shipped malformed output on nearly every run. A new Postgres schema, CI/CD quality gates and prompt tuning took it to structured output on every run.",
+            "Fixed an N+1 query in the personalization fetch, cutting its latency by about 80%, from 2 s to 400 ms.",
             "Built the REST API layer and the WebSocket live-update infrastructure on Elixir Phoenix and Postgres.",
           ],
         },
@@ -263,7 +254,7 @@ export const portfolioData = {
           title: "Software Consultant",
           period: "Dec 2022 to May 2024",
           highlights: [
-            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through to a beta-ready platform they could launch and demo. QA and reporting workflows kept delivery visible to the client.",
+            "Turned a client's goals for an education platform redesign into scoped work, modernized its frontend and built the backend connectivity it needed, and owned delivery through launch to a few hundred users. QA and reporting workflows kept delivery visible to the client, and I stayed on to support the migration after its acquisition in May 2024.",
           ],
         },
         {
@@ -295,7 +286,7 @@ export const portfolioData = {
       columns: [
         {
           title: "Build",
-          items: "Python, SQL, TypeScript, JavaScript, React, Elixir and Phoenix, Node.js",
+          items: "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
         },
         {
           title: "Data",
@@ -304,11 +295,11 @@ export const portfolioData = {
         {
           title: "AI",
           items:
-            "Agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+            "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
         },
         {
           title: "Ship",
-          items: "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+          items: "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
         },
         {
           title: "People",
@@ -1865,7 +1856,7 @@ export const portfolioData = {
     // partner-httpx and partner-hono-cobra, calitp-history-deterministic and -model-consumers,
     // heldout-sonnet-5-5-baseline-x3) and its README at main d993d56 (about 14,100 lines of
     // Python, 264 tests). The owner's follow-up the same day: position Fathom as open source now,
-    // and he makes the repository public himself, so `status` stands where a code link will go.
+    // and he made the repository public himself after a history scrub, so the card and page link to it.
     {
       id: "fathom",
       deploymentSummary: {
@@ -1885,18 +1876,18 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
       },
-      status: "Open source · in development",
+      codeLink: { label: "Code: fathom", href: REPOSITORIES.fathom },
       eyebrow: "Case study · Open source · Data platforms",
       title: "Fathom: what a data change reaches, before it ships",
       intro:
         "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
       atAGlance: [
-        { label: "My role", value: "Designed and built it, as part of Orion in October 2026, then split it out as its own project" },
+        { label: "My role", value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own" },
         {
           label: "What it is",
           value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
         },
-        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, working toward its first public release" },
+        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, with its code on GitHub" },
         {
           label: "Tested on",
           value:
@@ -2497,7 +2488,7 @@ export const portfolioData = {
     // private, so `status` stands where a code link would; there is no codeLink.
     {
       id: "orion",
-      banner: "Orion's data-platform work became Fathom.",
+      banner: "Fathom, Orion's sister project, brings the same idea to data platforms.",
       bannerLink: { text: "Fathom", to: "/work/fathom" },
       card: {
         featured: false,
