@@ -154,17 +154,16 @@ describe('CaseStudyPage', () => {
   });
 
   describe('the fathom case study only (owner, 2026-10-25)', () => {
-    it('shows the walkthrough, with all thirteen steps tagged built or designed and listed in full', () => {
+    // The chip walkthrough gave way to a replay of one recorded check (owner, 2026-10-25).
+    it('shows the replay of one recorded check, at rest on the decision, with its seven steps', () => {
       renderCaseStudyAt('/work/fathom');
 
-      const region = screen.getByRole('region', { name: 'Fathom walkthrough' });
-      expect(region).toBeInTheDocument();
-      const list = document.getElementById('wt-steps');
-      const items = within(list).getAllByRole('listitem');
-      expect(items).toHaveLength(13);
-      const tags = items.map((item) => item.querySelector('[data-tag]').getAttribute('data-tag'));
-      expect(tags.filter((tag) => tag === 'built')).toHaveLength(12);
-      expect(tags.filter((tag) => tag === 'designed')).toHaveLength(1);
+      const region = screen.getByRole('region', { name: 'Fathom replay' });
+      const steps = within(within(region).getByRole('list', { name: 'Steps of the check' })).getAllByRole('button');
+      expect(steps).toHaveLength(7);
+      expect(within(region).getByRole('button', { name: 'Approve' })).toBeEnabled();
+      expect(within(region).getByRole('link', { name: 'Skip to the next section' })).toHaveAttribute('href', '#trust');
+      expect(document.querySelector('.wt')).toBeNull();
     });
   });
 

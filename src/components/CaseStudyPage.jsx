@@ -7,6 +7,7 @@ import CaseStudyArchitecture from './CaseStudyArchitecture';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
 import AgentOpsReplay from './AgentOpsReplay';
+import FathomReplay from './FathomReplay';
 import ContactBand from './ContactBand';
 import DeploymentSummary from './DeploymentSummary';
 
@@ -171,7 +172,7 @@ function OnThisPageNav({ sections }) {
 // sits between the heading and the first block. A section that holds a walkthrough, replay or architecture diagram runs the full
 // width of the column, because its console needs the room the prose measure does not.
 function CaseStudySection({ section }) {
-  const hasWalkthrough = section.blocks.some((block) => ['walkthrough', 'replay', 'architecture'].includes(block.type));
+  const hasWalkthrough = section.blocks.some((block) => ['walkthrough', 'replay', 'fathom-replay', 'architecture'].includes(block.type));
   return (
     <div id={section.id} className={`flex flex-col gap-5 ${hasWalkthrough ? 'min-w-0' : 'max-w-3xl'}`}>
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
@@ -215,6 +216,9 @@ function Block({ block }) {
     case 'replay':
       // The home page's AgentOps replay, with its skip link pointed at the next section here.
       return <AgentOpsReplay replay={{ ...portfolioData.homeReplay, skip: { text: 'Skip to the next section', href: block.skipHref } }} />;
+    case 'fathom-replay':
+      // The Fathom study's replay of one recorded check, in the same frame as the AgentOps one.
+      return <FathomReplay replay={{ ...portfolioData.fathomReplay, skip: { text: 'Skip to the next section', href: block.skipHref } }} />;
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }

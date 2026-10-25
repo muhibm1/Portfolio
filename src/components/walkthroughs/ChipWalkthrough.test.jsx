@@ -5,11 +5,12 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render as renderPage } from '../../entry-server.jsx';
-import { portfolioData } from '../../data/portfolioData';
 import ChipWalkthrough from './ChipWalkthrough';
+import { chipWalkthroughFixture } from './fixtures/chipWalkthrough';
 
-const fathom = portfolioData.caseStudies.find((study) => study.id === 'fathom'); // the walkthrough moved to Fathom with the split (owner, 2026-10-25)
-const block = fathom.sections.flatMap((section) => section.blocks).find((candidate) => candidate.type === 'walkthrough');
+// The Fathom page showed this chip walkthrough until 2026-10-25 (owner); the page now shows a
+// replay, and the engine keeps running on the old block, kept unchanged as a fixture.
+const block = chipWalkthroughFixture;
 const steps = block.steps;
 const indexOf = (id) => steps.findIndex((step) => step.id === id);
 const part = (id) => document.querySelector(`[data-go="${id}"]`);
@@ -155,16 +156,10 @@ describe('ChipWalkthrough', () => {
   });
 });
 
-describe('the Fathom page as served', () => {
-  it('carries the chip, with every step listed in full, in the prerendered markup of /work/fathom', () => {
-    const html = renderPage('/Portfolio/work/fathom');
-    expect(html).toContain('class="cw-die"');
-    for (const step of steps) expect(html).toContain(`data-go="${step.id}"`);
-    expect(html).toContain(block.caption.title);
-  });
-
-  it('keeps the chip off every other page', () => {
-    for (const route of ['/Portfolio', '/Portfolio/work', '/Portfolio/work/atelier', '/Portfolio/work/workhorse']) {
+describe('the site as served', () => {
+  // The Fathom page swapped this chip for a replay (owner, 2026-10-25), so no page draws it now.
+  it('keeps the chip off every page, the Fathom page included', () => {
+    for (const route of ['/Portfolio', '/Portfolio/work', '/Portfolio/work/fathom', '/Portfolio/work/atelier', '/Portfolio/work/workhorse']) {
       expect(renderPage(route), route).not.toContain('cw-die');
     }
   });
