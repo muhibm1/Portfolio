@@ -162,7 +162,7 @@ describe('CaseStudyPage', () => {
       const steps = within(within(region).getByRole('list', { name: 'Steps of the check' })).getAllByRole('button');
       expect(steps).toHaveLength(7);
       expect(within(region).getByRole('button', { name: 'Approve' })).toBeEnabled();
-      expect(within(region).getByRole('link', { name: 'Skip to the next section' })).toHaveAttribute('href', '#verdict');
+      expect(within(region).getByRole('link', { name: 'Skip to the next section' })).toHaveAttribute('href', '#trust');
       expect(document.querySelector('.wt')).toBeNull();
     });
   });

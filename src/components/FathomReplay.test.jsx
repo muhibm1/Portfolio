@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { portfolioData } from '../data/portfolioData';
 import FathomReplay from './FathomReplay';
 
-const replay = { ...portfolioData.fathomReplay, skip: { text: 'Skip to the next section', href: '#verdict' } };
+const replay = { ...portfolioData.fathomReplay, skip: { text: 'Skip to the next section', href: '#trust' } };
 const { panes } = replay;
 
 let observers;
