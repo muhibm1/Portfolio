@@ -144,16 +144,8 @@ export const portfolioData = {
           text: "Put every paid model call in Flywheel, Orion and AgentOps behind a dollar cap, a spend ledger and free replay of recorded answers. Flywheel now also holds any change to its own grading for approval, and reruns only the close calls: 34% fewer runs, with the same decision in 12 of 12 replayed comparisons.",
         },
         {
-          date: "Oct 24, 2026",
-          text: "Retired Tannhauser Gate as a pipeline. From my design approval to my deployment approval took a median of 4 h 18 m; one agent per task in its own thread finished a change of the same size in about 30 minutes. Its guard stayed: hard rules checked on every action, 194 tests.",
-        },
-        {
           date: "Oct 23 to 24, 2026",
           text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions. On Claude Sonnet 5.5 it flagged 64% of unseen real bugs, mean of 3 runs.",
-        },
-        {
-          date: "Oct 21, 2026",
-          text: "Rebuilt Tannhauser Gate, my agent build harness: one builder, independent reviewers, a risk tier picked by code, ten on-demand commands and four hard lines that are always on. 180 hook tests passing.",
         },
         {
           date: "Oct 21, 2026",
@@ -174,10 +166,6 @@ export const portfolioData = {
         {
           date: "Oct 16 to 20, 2026",
           text: "Built Orion: 38 pull requests merged and about 200 tests. Agents using it made 0 of 50 unsafe decisions on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
-        },
-        {
-          date: "Oct 2026",
-          text: "Retired WorkHorse, my 28-agent delivery pipeline. Its own records showed the coordinator spending 137 of 250 agent-minutes on bookkeeping, and eight reviewers finding nothing four hadn't.",
         },
         {
           date: "Oct 13, 2026",
@@ -2154,6 +2142,69 @@ export const portfolioData = {
           ],
         },
         {
+          id: "architecture",
+          heading: "How it's built",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Three kinds of source feed three stores. Search, pre-flight and review work on those stores, and agents reach all of it through one MCP server and two hooks. Everything an agent is told carries an id that reads back to its source.",
+            },
+            {
+              type: "architecture",
+              columns: ["Sources", "Stores", "Engines", "How agents reach it"],
+              engine: 2,
+              lanes: [
+                {
+                  label: "The engineering record",
+                  cells: [
+                    [
+                      { title: "Code", note: "every checkout on my machines" },
+                      { title: "Pull requests, reviews, issues" },
+                      { title: "Past agent sessions" },
+                      { title: "Notes and design documents" },
+                    ],
+                    [
+                      { title: "Document store", note: "SQLite, stable ids, credentials scrubbed before anything is kept" },
+                      { title: "Code graph", note: "functions, calls, routes and settings across repositories" },
+                    ],
+                    [
+                      { title: "Search index", note: "matching words, matching meaning and the dependency graph, fused into one ranking" },
+                    ],
+                    [
+                      { title: "MCP server", note: "context, impact, search, read, file history" },
+                      { title: "Session and prompt hooks", note: "the right passages arrive before the agent asks" },
+                    ],
+                  ],
+                },
+                {
+                  label: "The data platform",
+                  cells: [
+                    [
+                      { title: "dbt models and catalog" },
+                      { title: "Airflow pipelines and runs" },
+                      { title: "Postmortems and rules" },
+                    ],
+                    [{ title: "Asset graph and ledger", note: "DuckDB, column-level lineage, every fact with its source" }],
+                    [{ title: "Pre-flight and gate", note: "fixed rules and a transparent risk score, one cited verdict" }],
+                    [{ title: "CI gate", note: "and a comment on the pull request" }],
+                  ],
+                },
+                {
+                  label: "Review",
+                  cells: [
+                    [{ title: "The change", note: "any diff" }],
+                    [{ title: "Both graphs", note: "what the change touches and what it reaches", dashed: true }],
+                    [{ title: "Review", note: "code checks first, then four focused model passes, a second reading, and severity tied to evidence" }],
+                    [{ title: "Command line and pull request review" }],
+                  ],
+                },
+              ],
+              note: "Only review calls a model, through a provider interface that any model can sit behind. Ingest, search, the graphs and pre-flight are plain code, and every call lands in a usage log.",
+            },
+          ],
+        },
+        {
           id: "results",
           heading: "Results so far",
           blocks: [
@@ -2301,213 +2352,6 @@ export const portfolioData = {
     },
 
 
-    // The agent harness story, rewritten 2026-10-25 at the owner's request (decision 4 of the
-    // 2026-10-24 harness analysis): both pipelines told as measured results. Sources: WorkHorse
-    // docs/ledger/RUNS.md (generated 2026-10-13); notes/ledger.md and README.md in
-    // muhibm1/tannhauser-gate (ten runs, 16 to 20 Oct; retired as a pipeline 2026-10-24, guard
-    // hook kept, hooks/tests/run.js 194 of 194); thread times from the project's thread list and
-    // the transcripts in muhibm1/auspex-runs; the follow-up fix count from muhibm1/auspex's merged
-    // pull requests. The slug stays tannhauser-gate so existing links keep working. The
-    // repositories are private, so `status` stands where a code link would.
-    {
-      id: "tannhauser-gate",
-      card: {
-        featured: false,
-        eyebrow: "Personal system · Agent harness",
-        title: "Agent harness: two pipelines, measured and retired",
-        summary:
-          "I built two pipelines to make coding agents trustworthy, then timed them against one agent per task working in its own thread. The thread finished a change in about 30 minutes; the pipelines took hours, mostly waiting. I retired both and kept what costs almost nothing: hard rules checked on every action, and grading after the work instead of gates before it.",
-        linkText: "Read the case study",
-        tags: ["Two pipelines retired on their own numbers", "194 guard tests"],
-      },
-      status: "Ongoing project",
-      eyebrow: "Case study · Personal system · Agent harness",
-      title: "Agent harness: two pipelines, measured and retired",
-      intro:
-        "I built two pipelines to make coding agents trustworthy. WorkHorse used 28 specialist agents and stopped for my approval at fixed points. Tannhauser Gate replaced them with one builder and independent reviewers. Each was an improvement on the one before. Then I timed both against something simpler: one agent per task, working in its own thread, several at once. The thread won by hours, so I retired both pipelines and kept only the parts that pay for themselves.",
-      atAGlance: [
-        { label: "My role", value: "Designed, built and measured both pipelines" },
-        {
-          label: "What it is",
-          value: "The harness around the coding agents I build with: context before a task, hard rules during it, grading after it",
-        },
-        { label: "Where it stands", value: "Both pipelines retired in October 2026; the guard runs on every agent session; the repositories are private" },
-        { label: "Quality", value: "194 guard tests passing" },
-      ],
-      stats: [
-        { value: "8 h to 1 h", label: "agent time per ordinary change, from WorkHorse's first version to its fastest" },
-        { value: "4 h 18 m", label: "median from my design approval to my deployment approval, Tannhauser Gate, 10 runs" },
-        { value: "30 m", label: "median from ask to last message, one agent per task in its own thread, 8 changes" },
-        { value: "194", label: "guard tests: hard rules checked on every action an agent takes" },
-      ],
-      sections: [
-        {
-          id: "why",
-          heading: "The problem both pipelines tried to solve",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Coding agents write a feature in minutes. What they rarely leave behind is a reason to trust it: what changed, who checked it, and whether a person signed off on what actually shipped. Both pipelines were my answer to that. Both also had to be fast, because a check nobody waits for is a check nobody keeps.",
-            },
-            {
-              type: "cards",
-              items: [
-                { title: "Pipeline", note: "Every change walks the same stages in order, such as design, build, review and ship." },
-                { title: "Gate", note: "A point where work stops until a person reads a page and approves it." },
-                { title: "Thread", note: "One agent given one task, working on its own, with several running side by side." },
-                { title: "Harness", note: "The software around a model that turns it into a working agent: its context, its rules and its checks.", emphasis: true },
-              ],
-            },
-          ],
-        },
-        {
-          id: "workhorse",
-          heading: "First try: WorkHorse, 28 agents and five gates",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "WorkHorse imitated a software team. Single-purpose agents designed, planned, built, verified, fixed and reviewed each change, and I approved it at the gates. Code it could not argue with enforced the rules. A ledger recomputed every run from its committed record, so its numbers are counted, not remembered.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Over 18 runs on five projects it got much faster. Agent working time on an ordinary change fell from about eight hours on the first version to about one hour. Cutting the gates from five to two did most of that.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The same ledger showed where the rest of the time went. On its fastest release a change still took 2 h 26 m from request to merge, and the agents were working for only a third of it. The median run waited 68 minutes at the gates.",
-            },
-          ],
-        },
-        {
-          id: "tannhauser",
-          heading: "Second try: Tannhauser Gate, one builder and two approvals",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Tannhauser Gate kept what the ledger supported and cut the rest. One frontier coding agent built each change, test first. Independent reviewers checked it without seeing the builder's reasoning, so they judged the change and not the argument for it. Code picked how much review a change got, and I approved two pages written for a non-engineer: a design before any code, and a deployment summary before anything shipped.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "It ran 10 changes between 16 and 20 October 2026, all merged, with no paid API calls. The reviewers caught real problems:",
-            },
-            {
-              type: "bullets",
-              items: [
-                "An offline notice missing from four screens of a mobile app, reproduced in a browser and fixed by mounting it once for the whole app.",
-                "A case-study figure whose box changed height on every step, so the page below it jumped by 150 to 264 pixels.",
-                "Tests that read private files and would have crashed on the public build server.",
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The building was quick: about an hour on a typical run. The approvals were not. The median from my design approval to my deployment approval was 4 h 18 m.",
-            },
-          ],
-        },
-        {
-          id: "measured",
-          heading: "The test that retired both",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "By late October the plain approach had caught up. One agent per task, in its own thread, with several running at once, and me reading the result. I set one rule: a piece of process that makes an agent slower has to catch enough to pay for the time. These are the medians, in minutes.",
-            },
-            {
-              type: "bars",
-              charts: [
-                {
-                  title: "Time per change, median",
-                  items: [
-                    { label: "WorkHorse, request to merge, fastest release (5 runs)", value: 146, display: "2 h 26 m" },
-                    { label: "WorkHorse, agent working time (5 runs)", value: 65, display: "1 h 05 m" },
-                    { label: "Tannhauser Gate, design approval to deployment approval (10 runs)", value: 258, display: "4 h 18 m" },
-                    { label: "One agent per thread, ask to last message (8 changes)", value: 30, display: "30 m" },
-                    { label: "One agent per thread, agent working time (5 changes)", value: 21, display: "21 m" },
-                  ],
-                },
-              ],
-              caption:
-                "WorkHorse from its run ledger, Tannhauser Gate from its run ledger, threads from one week of feature work in October 2026. The thread figure from ask to last message includes my own reading time.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The gate wait alone was longer than a whole thread. A faster model does not close that gap, because waiting for a person and restarting a stopped run are not model time.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The pipelines' real argument was quality: gates and reviewers are meant to stop bad changes. So I checked what skipping them cost. Of the first 17 pull requests merged on my trace viewer for agents, 4 fixed something merged earlier the same day. Each fix was small, and the quickest took 3 minutes. Mistakes still happen; the fast loop makes them cheap. That points to checking the work after it is done, not slowing every change before it starts.",
-            },
-          ],
-        },
-        {
-          id: "kept",
-          heading: "What I kept: a harness around the agent, not in front of it",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Each part that survived either runs before or after the work, or runs during it fast enough not to notice. Nothing waits on a person except a step that cannot be undone.",
-            },
-            {
-              type: "cards",
-              items: [
-                {
-                  title: "Before: context",
-                  note: "Orion, my context layer, gives the agent the project's constraints, what a change could break and the lessons from past mistakes, within a fixed token budget.",
-                },
-                {
-                  title: "During: a guard",
-                  note: "Tannhauser Gate's hook checks every action in about forty-five milliseconds and refuses the few that must never happen: outside spending, a public repository, live trading, reading secrets. 194 tests cover it.",
-                  emphasis: true,
-                },
-                {
-                  title: "After: grading",
-                  note: "My trace viewer grades each finished turn and flags work that ended without a check. A failure that repeats becomes a lesson Orion serves to the next agent.",
-                },
-                {
-                  title: "Gates: only what can't be undone",
-                  note: "Making a repository public, posting anything outside, and spending on a paid API still wait for my typed go. Everything else ships and gets fixed fast.",
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "What went: the fixed stages, the design and ship gates, the risk tiers, the approval pages and WorkHorse's event log. Each one cost hours and caught less than it cost.",
-            },
-          ],
-        },
-        {
-          id: "limits",
-          heading: "What these numbers don't show",
-          blocks: [
-            {
-              type: "bullets",
-              items: [
-                "No change was run all three ways. WorkHorse ran in September and early October on earlier models. I did not rerun it: even with no waiting, its agent time alone was twice a whole thread, so the answer would not change.",
-                "The thread figures come from one week: 8 changes timed from ask to last message, 5 of them with full transcripts.",
-              ],
-            },
-          ],
-        },
-      ],
-      callout: {
-        eyebrow: "What I'd bring to a client",
-        text:
-          "Time the process, not just the model. Where a gate costs more than it catches, move the check after the work, and put the few rules that must never break in code that runs on every action.",
-      },
-      contactHeading: "Have a system that needs deploying? Let's talk.",
-    },
 
     {
       id: "apple-integration",
