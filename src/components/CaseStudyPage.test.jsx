@@ -102,16 +102,16 @@ describe('CaseStudyPage', () => {
   describe('a retired banner (owner brief 2026-10-21)', () => {
     it('shows the banner above the header, with its link', async () => {
       const stubData = structuredClone(portfolioData);
-      const stub = stubData.caseStudies.find((study) => study.id === 'tannhauser-gate');
-      stub.banner = 'Retired October 2026. The measured story is on the agent harness page.';
-      stub.bannerLink = { text: 'agent harness page', to: '/work/tannhauser-gate' };
+      const stub = stubData.caseStudies.find((study) => study.id === 'orion');
+      stub.banner = 'Retired October 2026. The newer work is on the work page.';
+      stub.bannerLink = { text: 'work page', to: '/work' };
 
       vi.resetModules();
       vi.doMock('../data/portfolioData', () => ({ portfolioData: stubData }));
       const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
       render(
-        <MemoryRouter initialEntries={['/work/tannhauser-gate']}>
+        <MemoryRouter initialEntries={['/work/orion']}>
           <Routes>
             <Route path="/work/:slug" element={<StubCaseStudyPage />} />
           </Routes>
@@ -120,7 +120,7 @@ describe('CaseStudyPage', () => {
 
       const note = screen.getByRole('note');
       expect(note).toHaveTextContent(stub.banner);
-      expect(within(note).getByRole('link', { name: 'agent harness page' })).toHaveAttribute('href', '/work/tannhauser-gate');
+      expect(within(note).getByRole('link', { name: 'work page' })).toHaveAttribute('href', '/work');
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
@@ -277,9 +277,9 @@ describe('CaseStudyPage', () => {
   describe('section subtitle (R9)', () => {
     it('renders a section subtitle under its heading only when the data carries one', async () => {
       const stubData = structuredClone(portfolioData);
-      const stubStudy = stubData.caseStudies.find((study) => study.id === 'tannhauser-gate');
-      const measured = stubStudy.sections.find((section) => section.id === 'measured');
-      const why = stubStudy.sections.find((section) => section.id === 'why');
+      const stubStudy = stubData.caseStudies.find((study) => study.id === 'orion');
+      const measured = stubStudy.sections.find((section) => section.id === 'results');
+      const why = stubStudy.sections.find((section) => section.id === 'what');
       measured.subtitle = 'Stub subtitle';
 
       vi.resetModules();
@@ -287,7 +287,7 @@ describe('CaseStudyPage', () => {
       const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
       render(
-        <MemoryRouter initialEntries={['/work/tannhauser-gate']}>
+        <MemoryRouter initialEntries={['/work/orion']}>
           <Routes>
             <Route path="/work/:slug" element={<StubCaseStudyPage />} />
           </Routes>
@@ -295,9 +295,9 @@ describe('CaseStudyPage', () => {
       );
 
       expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
-      const measuredHeading = within(document.getElementById('measured')).getByRole('heading', { level: 2 });
+      const measuredHeading = within(document.getElementById('results')).getByRole('heading', { level: 2 });
       expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
-      const whyHeading = within(document.getElementById('why')).getByRole('heading', { level: 2 });
+      const whyHeading = within(document.getElementById('what')).getByRole('heading', { level: 2 });
       expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
     });
   });

@@ -3,6 +3,7 @@ import { portfolioData } from '../data/portfolioData';
 import NotFoundPage from '../pages/NotFoundPage';
 import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagram';
 import CaseStudyBarChart from './CaseStudyBarChart';
+import CaseStudyArchitecture from './CaseStudyArchitecture';
 import CaseStudyTable from './CaseStudyTable';
 import WalkthroughBlock from './WalkthroughBlock';
 import AgentOpsReplay from './AgentOpsReplay';
@@ -205,6 +206,8 @@ function Block({ block }) {
       return <CaseStudyHubDiagram left={block.left} edge={block.edge} hub={block.hub} right={block.right} />;
     case 'split':
       return <SplitBlock table={block.table} stats={block.stats} />;
+    case 'architecture':
+      return <CaseStudyArchitecture columns={block.columns} lanes={block.lanes} engine={block.engine} note={block.note} caption={block.caption} />;
     case 'bars':
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     case 'walkthrough':

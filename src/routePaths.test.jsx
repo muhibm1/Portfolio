@@ -17,7 +17,7 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the ten case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21)', () => {
+  it('returns / then /work then /work/<id> for each of the nine case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
@@ -26,7 +26,6 @@ describe('staticRoutePaths', () => {
       '/work/apple-decision-support-agent',
       '/work/esper',
       '/work/orion',
-      '/work/tannhauser-gate',
       '/work/apple-integration',
       '/work/apple-data-health',
       '/work/atelier',
@@ -34,10 +33,11 @@ describe('staticRoutePaths', () => {
     ]);
   });
 
-  it('redirects the old decision-support and WorkHorse addresses to pages the site serves (owner brief 2026-10-21; WorkHorse removed 2026-10-25)', () => {
+  it('redirects the old decision-support, WorkHorse and agent harness addresses to pages the site serves (owner brief 2026-10-21; both removed 2026-10-25)', () => {
     expect(REDIRECTS).toEqual([
       { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
-      { from: '/work/workhorse', to: '/work/tannhauser-gate' },
+      { from: '/work/workhorse', to: '/work' },
+      { from: '/work/tannhauser-gate', to: '/work' },
     ]);
     const served = staticRoutePaths(portfolioData.caseStudies);
     for (const { from, to } of REDIRECTS) {

@@ -22,6 +22,8 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
+  // Added 2026-10-25 for the Orion architecture diagram the owner asked for (CaseStudyArchitecture).
+  "architecture",
   "paragraph",
   "bullets",
   "flow",
@@ -72,7 +74,6 @@ const pinnedCaseStudyStats = {
   esper: ["79%", "0%", "11 of 11", "$0"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~98%"],
   // Added 2026-10-21 from the owner's redesign brief.
-  "tannhauser-gate": ["8 h to 1 h", "4 h 18 m", "30 m", "194"],
   "apple-integration": ["~50%", "3 systems", "On demand"],
   "apple-data-health": ["Hundreds of thousands", "~40% fewer", "Tens of thousands"],
   "neural-newsletters-llm": ["~40%", "15 to 20%", "Live"],
@@ -263,32 +264,6 @@ const pinnedCaseStudyNarratives = {
     calloutText: "A work in progress, in daily use today. Every result here is a first measurement, and the next runs build on it.",
     contactHeading: "Have a system that needs deploying? Let's talk."
   },
-  "tannhauser-gate": {
-    eyebrow: "Case study · Personal system · Agent harness",
-    title: "Agent harness: two pipelines, measured and retired",
-    lead: "I built two pipelines to make coding agents trustworthy. WorkHorse used 28 specialist agents and stopped for my approval at fixed points. Tannhauser Gate replaced them with one builder and independent reviewers. Each was an improvement on the one before. Then I timed both against something simpler: one agent per task, working in its own thread, several at once. The thread won by hours, so I retired both pipelines and kept only the parts that pay for themselves.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed, built and measured both pipelines"
-      },
-      {
-        label: "What it is",
-        value: "The harness around the coding agents I build with: context before a task, hard rules during it, grading after it"
-      },
-      {
-        label: "Where it stands",
-        value: "Both pipelines retired in October 2026; the guard runs on every agent session; the repositories are private"
-      },
-      {
-        label: "Quality",
-        value: "194 guard tests passing"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Time the process, not just the model. Where a gate costs more than it catches, move the check after the work, and put the few rules that must never break in code that runs on every action.",
-    contactHeading: "Have a system that needs deploying? Let's talk."
-  },
   "apple-integration": {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
@@ -451,7 +426,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the ten case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse removed 2026-10-25)", () => {
+  it("names / then /work then /work/<id> for the nine case studies, featured work first and the two unlisted pages last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -460,7 +435,6 @@ describe("portfolioData", () => {
       "/work/apple-decision-support-agent",
       "/work/esper",
       "/work/orion",
-      "/work/tannhauser-gate",
       "/work/apple-integration",
       "/work/apple-data-health",
       "/work/atelier",
@@ -703,20 +677,19 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
+  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
   it("names personal.repositories with the three snapshot URLs and the two public repositories, held once (R153)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
-  // The WorkHorse case study and its code link were removed on 2026-10-25 (owner's request); its
-  // story is on the agent harness page.
+  // The WorkHorse case study and its code link were removed on 2026-10-25 (owner's request).
   it("carries the hero's codeLine (R153, R154)", () => {
     expect(portfolioData.home.hero.codeLine).toEqual({
       text: "The code is public on GitHub",
@@ -1229,8 +1202,8 @@ describe("the Atelier case study (TG-08)", () => {
     return { words, numbering };
   }
 
-  it("is unlisted, after the listed studies and WorkHorse, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(8);
+  it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(7);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
@@ -1335,7 +1308,7 @@ describe("Orion page order and pace", () => {
   const orion = findCaseStudy("orion");
 
   it("puts the walkthrough straight after the opening section, then daily use, with no terms grid", () => {
-    expect(orion.sections.slice(0, 4).map((section) => section.id)).toEqual(["what", "walkthrough", "daily", "results"]);
+    expect(orion.sections.slice(0, 5).map((section) => section.id)).toEqual(["what", "walkthrough", "daily", "architecture", "results"]);
     expect(findSection(orion, "what").blocks.some((block) => block.type === "cards")).toBe(false);
   });
 
