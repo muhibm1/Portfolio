@@ -1049,6 +1049,10 @@ describe("the Orion case study (TG-07)", () => {
     // Added 2026-10-25 from the owner's "Orion: how it works and how it was built" write-up,
     // section 11, "Tried, and did not win" (retrieval.md and the held-out gated runs).
     "from 0.889 to 0.813", "from 0.615 to 0.148", "100%",
+    // Added 2026-10-25 from the owner's "How Orion runs on your Mac" sheet (the architecture
+    // drawing) and Orion's own changelog for the parts added since (#64, the daemon's schedule).
+    "16 git checkouts", "120 s", "0.6 s", "every 30 s", "every 10 min", "every 30 min", "every 15 min",
+    "python3.12", "R@10 0.889", "BM25", "p50",
   ];
   // Numbers the page makes up from its own structure, not from the document: the thirteen steps,
   // each step's place among them, the plan's step numbers, and the figure caption.
@@ -1057,6 +1061,7 @@ describe("the Orion case study (TG-07)", () => {
     /\b[Ss](?:how s|tep )(?:tep )?(?:[1-9]|1[0-3]),/g, // the spoken step names and the "show step" buttons
     /Step [1-7]\./g, // the plan's own numbering
     /Fig 1/g, // the figure caption
+    /^M[\d .,HVC-]+$/g, // an arrow path in the architecture drawing (geometry, not a figure)
     /reads risk out of 100/g, // the drawing's description of its dial, which the studio wrote
   ];
 

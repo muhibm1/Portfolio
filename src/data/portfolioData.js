@@ -1988,150 +1988,180 @@ export const portfolioData = {
             },
             {
               type: "architecture",
-              label: "Orion's architecture, from sources to the agent",
+              // The owner's "How Orion runs on your Mac" diagram, laid out as he drew it, with the
+              // parts added since (the daemon, the prompt hook, the usage log, the spend cap).
+              label: "Orion's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 594],
               legend: [
                 { kind: "data", label: "Your data" },
-                { kind: "code", label: "Code, no model" },
-                { kind: "retrieval", label: "Retrieval path" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "Retrieval (RAG)" },
                 { kind: "agent", label: "Agent interface" },
-                { kind: "model", label: "Model, review only" },
               ],
-              columns: [
+              labels: [
+                { x: 30, y: 60, text: "Sources" },
+                { x: 196, y: 60, text: "Ingest · orion record" },
+                { x: 380, y: 60, text: "Stores · ~/.cache/orion" },
+                { x: 590, y: 60, text: "MCP server · python3.12" },
+                { x: 775, y: 60, text: "Agent" },
+              ],
+              boxes: [
+                { x: 32, y: 74, w: 138, h: 58, kind: "data", parts: [{ title: "~/C.Projects" }, { text: "16 git checkouts" }, { text: "code + Markdown" }] },
+                { x: 32, y: 139, w: 138, h: 58, kind: "data", parts: [{ title: "GitHub" }, { text: "PRs, issues, reviews" }, { text: "+ upstream of forks" }] },
+                { x: 32, y: 204, w: 138, h: 56, kind: "data", parts: [{ title: "~/.claude/projects" }, { text: "Claude Code session transcripts" }] },
+                { x: 32, y: 270, w: 138, h: 42, kind: "plain", parts: [{ mono: "~/.config/orion/" }, { mono: "record.toml" }] },
+                { x: 40, y: 316, w: 130, h: 32, kind: "bare", parts: [{ text: "says which roots, repos and sessions" }] },
                 {
-                  label: "Sources",
-                  nodes: [
-                    { kind: "data", title: "Checkouts", mono: "~/C.Projects", lines: ["Code and Markdown in every repository"] },
-                    { kind: "data", title: "GitHub", lines: ["Pull requests, issues, reviews, and the upstream of forks"] },
-                    { kind: "data", title: "Agent sessions", mono: "~/.claude/projects", lines: ["Claude Code transcripts"] },
-                    { kind: "data", title: "Record settings", mono: "record.toml", lines: ["Which roots, repositories and sessions to read"] },
+                  x: 196, y: 74, w: 155, h: 186, kind: "code",
+                  parts: [
+                    { title: "Ingesters" },
+                    { pairs: [["git.py", "commits"], ["github.py", "PRs, issues"], ["markdown.py", "sections"], ["sessions.py", "turns"]] },
+                    { rule: true },
+                    { mono: "scrub.py" },
+                    { text: "redacts secrets first" },
+                    { text: "incremental: only new items since last run", gap: true },
                   ],
                 },
                 {
-                  label: "Ingest",
-                  nodes: [
+                  x: 380, y: 74, w: 178, h: 82, kind: "code",
+                  parts: [{ title: "DocStore" }, { mono: "record/docs.sqlite" }, { text: "ids: git: · gh: · md: · session:" }, { text: "full text behind every citation" }],
+                },
+                {
+                  x: 380, y: 166, w: 178, h: 100, kind: "retrieval",
+                  parts: [
+                    { title: "Retrieval index" },
+                    { mono: "rag.duckdb" },
+                    { text: "syntax-aware chunks (tree-sitter)" },
+                    { text: "BM25 postings · bge-small vectors" },
+                    { text: "import edges · chunk views" },
+                    { text: "from the record + each checkout" },
+                  ],
+                },
+                {
+                  x: 380, y: 276, w: 178, h: 76, kind: "code",
+                  parts: [{ title: "Code graph + ledger" }, { mono: ".orion/graph.duckdb" }, { text: "definitions, imports, calls, HTTP routes, owners, past fixes" }],
+                },
+                {
+                  x: 32, y: 376, w: 138, h: 118, kind: "code",
+                  parts: [
+                    { title: "Deterministic first" },
+                    { text: "diff parse, credential scan, callers, sensitive areas, constraints, risk" },
+                    { text: "model may explain and rank inside these results, never overrule them", gap: true },
+                  ],
+                },
+                {
+                  x: 196, y: 376, w: 362, h: 118, kind: "retrieval",
+                  parts: [
+                    { title: "Retrieval core ·", titleMono: "orion.rag", accent: true },
+                    { text: "one query in, one ranked and cited list out (p50 tens of ms)" },
                     {
-                      kind: "code",
-                      title: "Ingesters",
-                      mono: "orion record",
-                      groups: [{ label: "Reads", items: ["git.py", "github.py", "markdown.py", "sessions.py"] }],
-                      lines: ["Only new items since the last run"],
-                    },
-                    { kind: "code", title: "Scrub", mono: "scrub.py", lines: ["Redacts secrets before anything is stored"] },
-                  ],
-                },
-                {
-                  label: "Stores",
-                  nodes: [
-                    { kind: "code", title: "DocStore", mono: "docs.sqlite", lines: ["The full text behind every citation, under stable ids"] },
-                    { kind: "retrieval", title: "Retrieval index", mono: "rag.duckdb", lines: ["Syntax-aware chunks, word postings and local vectors, from the record and each checkout"] },
-                    { kind: "code", title: "Code graph and ledger", mono: "graph.duckdb", lines: ["Definitions, imports, calls, HTTP routes, owners, past fixes"] },
-                  ],
-                },
-                {
-                  label: "MCP server",
-                  nodes: [
-                    {
-                      kind: "agent",
-                      title: "orion serve",
-                      lines: ["One per agent session"],
-                      groups: [
-                        { label: "Agent tools", items: ["context", "impact", "search", "read", "file_history"] },
-                        { label: "Record", items: ["search_record", "read_record"] },
-                        { label: "Review", items: ["review"] },
-                        { label: "Data platform", items: ["preflight", "explain", "history", "ask", "record_decision", "propose_constraint"] },
+                      chips: [
+                        { top: "BM25", bottom: "lexical" },
+                        { top: "dense", bottom: "bge-small" },
+                        { top: "graph", bottom: "blast radius" },
+                        { top: "RRF fuse", bottom: "→ top k", strong: true },
                       ],
                     },
-                    { kind: "code", title: "Answer cache", lines: ["Keyed by the commit, the working tree and the index"] },
+                    { text: "Scope.from_change: seeds = the paths you touch, filters = repo, kind, date.", gap: true },
+                    { text: "R@10 0.889, MRR 0.656 on 42 hand-labelled queries." },
                   ],
                 },
                 {
-                  label: "Agent",
-                  nodes: [
-                    {
-                      kind: "agent",
-                      title: "Claude Code",
-                      lines: [
-                        "Session hook: Orion is here, and when to call it",
-                        "Prompt hook: adds the most relevant passages to a prompt, or nothing",
-                        "Set up once by orion setup mac",
-                      ],
-                    },
-                    {
-                      kind: "model",
-                      title: "Model provider",
-                      lines: ["Anthropic, any OpenAI-compatible model, or the Claude Code command line", "Review and ask only, with a dollar cap on paid calls"],
-                    },
+                  x: 32, y: 515, w: 308, h: 100, kind: "plain",
+                  parts: [
+                    { title: "Review and gate" },
+                    { mono: "orion review --git origin/main" },
+                    { text: "deterministic findings, then the configured model provider (the only model call); each finding checked against the diff." },
+                    { mono: "orion gate --fail-on block" },
+                    { text: "CI exit code: the only place a verdict is enforced" },
+                  ],
+                },
+                {
+                  x: 366, y: 503, w: 200, h: 44, kind: "bare",
+                  parts: [{ text: "dashed bus: the daemon and auto-refresh run rag index_checkout, record sync and code graph sync into the stores" }],
+                },
+                {
+                  x: 366, y: 555, w: 192, h: 70, kind: "plain",
+                  parts: [{ title: "Usage log" }, { mono: "~/.orion/usage.jsonl" }, { text: ["every hook, tool and daemon call; read by ", { mono: "orion usage stats" }] }],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 420, kind: "agent",
+                  parts: [
+                    { title: "orion serve" },
+                    { text: "stdio, one per session" },
+                    { section: "Agent tools" },
+                    { mono: "context" }, { mono: "impact" }, { mono: "search" }, { mono: "read" }, { mono: "file_history" },
+                    { section: "Record" },
+                    { mono: "search_record" }, { mono: "read_record" },
+                    { section: "Review" },
+                    { mono: "review" },
+                    { section: "Data platform" },
+                    { mono: "preflight · explain" }, { mono: "history · ask" }, { mono: "record_decision" }, { mono: "propose_constraint" },
+                    { rule: true },
+                    { sub: "Answer cache" },
+                    { text: "keyed by HEAD + working tree + index stamp, 120 s" },
+                    { sub: "Auto-refresh" },
+                    { text: "checkout changed? re-index in the background (~0.6 s for a one-file edit)" },
+                  ],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 232, kind: "agent",
+                  parts: [
+                    { title: "Claude Code" },
+                    { text: "any session, any repo" },
+                    { inner: { kind: "plain", parts: [{ mono: "SessionStart" }, { text: "hook says Orion is here, when to call" }] } },
+                    { inner: { kind: "code", parts: [{ mono: "UserPromptSubmit" }, { text: "adds the most relevant passages to a prompt, or nothing; fast, and fails open" }] } },
+                    { text: ["registered once by ", { mono: "orion setup mac" }] },
+                    { mono: "→ ~/.claude.json" },
+                    { mono: "→ ~/.claude/settings" },
+                  ],
+                },
+                {
+                  x: 773, y: 322, w: 165, h: 100, kind: "plain",
+                  parts: [
+                    { title: "Model provider" },
+                    { text: ["anthropic, openai-compatible, or ", { mono: "claude -p" }] },
+                    { text: "review + ask only" },
+                    { text: "dollar cap and spend ledger on every paid call", gap: true },
+                  ],
+                },
+                {
+                  x: 590, y: 515, w: 348, h: 117, kind: "code",
+                  parts: [
+                    { title: "orion daemon ·", titleMono: "launchd" },
+                    { text: "always on, no model calls. Keeps the record, retrieval index and code graph current for every checkout in record.toml:" },
+                    { text: "changed checkouts every 30 s · sessions every 10 min · GitHub every 30 min", gap: true },
+                    { text: "git fetch + fast-forward of clean checkouts every 15 min" },
+                    { text: "answers the prompt hook over a Unix socket, fails open", gap: true },
                   ],
                 },
               ],
-              lower: [
-                {
-                  span: 2,
-                  nodes: [
-                    {
-                      kind: "code",
-                      title: "Deterministic first",
-                      lines: [
-                        "Diff parse, credential scan, callers, sensitive areas, constraints, risk",
-                        "A model may explain and rank inside these results, never overrule them",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  span: 2,
-                  nodes: [
-                    {
-                      kind: "retrieval",
-                      title: "Retrieval core",
-                      mono: "orion.rag",
-                      lines: ["One query in, one ranked and cited list out, in tens of milliseconds. Recall 0.889 in the top ten on 42 hand-labelled questions."],
-                      chips: ["words", "meaning", "graph", "fused ranking"],
-                    },
-                  ],
-                },
-                {
-                  span: 2,
-                  nodes: [
-                    {
-                      kind: "code",
-                      title: "orion daemon",
-                      mono: "launchd",
-                      lines: [
-                        "Always on, no model calls",
-                        "Re-indexes changed checkouts and pulls new sessions and GitHub items on a schedule",
-                        "Answers the prompt hook, and fails open",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  span: 3,
-                  nodes: [
-                    {
-                      kind: "code",
-                      title: "Review and gate",
-                      mono: "orion review · orion gate",
-                      lines: [
-                        "Code findings first, then the model provider, each finding checked against the diff",
-                        "The CI exit code is the only place a verdict is enforced",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  span: 3,
-                  nodes: [
-                    {
-                      kind: "code",
-                      title: "Usage log",
-                      mono: "usage.jsonl",
-                      lines: ["Every hook, tool and daemon call, read by orion usage stats"],
-                    },
-                  ],
-                },
+              edges: [
+                { d: "M170 103 H194" }, { d: "M170 168 H194" }, { d: "M170 232 H194" },
+                { d: "M351 120 H378" },
+                { d: "M590 128 H560" }, { d: "M590 298 H560" }, { d: "M590 328 H560" },
+                { d: "M469 266 V276", end: false }, { d: "M469 352 V374" },
+                { d: "M170 435 H194" }, { d: "M100 494 V513" },
+                { d: "M100 260 V270", dashed: true, end: false },
+                { d: "M170 292 C 205 292, 225 285, 245 262", dashed: true },
+                { d: "M130 74 V68 H365 V210 H378", dashed: true },
+                { d: "M745 364 C 758 364, 760 372, 771 372", dashed: true },
+                { d: "M588 470 H574 V96 H560", dashed: true }, { d: "M574 210 H560", dashed: true }, { d: "M574 312 H560", dashed: true },
+                { d: "M590 560 H574 V470", kind: "code", dashed: true, end: false },
+                { d: "M760 515 V222 H781", kind: "code" },
+                { d: "M469 156 V164", kind: "retrieval" },
+                { d: "M378 250 H361 V374", kind: "retrieval" },
+                { d: "M561 435 H587", kind: "retrieval", both: true },
+                { d: "M773 150 H748", kind: "agent" }, { d: "M745 190 H770", kind: "agent" },
               ],
-              note: "The highlighted boxes are the retrieval path. Every tool that returns text goes through it, and every passage carries an id that read can expand. An id that does not read back is reported as not recorded.",
+              edgeLabels: [
+                { x: 749, y: 145, text: "calls" },
+                { x: 750, y: 185, text: "ids" },
+                { x: 764, y: 505, text: "socket", kind: "code" },
+              ],
+              note: "Orange is the retrieval path. Every tool that returns text goes through it, and every passage it returns carries an id that read can expand. An id that does not read back is reported as not recorded.",
             },
           ],
         },

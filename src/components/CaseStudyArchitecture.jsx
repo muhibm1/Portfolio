@@ -1,115 +1,179 @@
-// Renders an `architecture` case-study block: a system drawn as live page content in the site's own
-// boxes and type, so it follows the theme and the column like every other block. The top row reads
-// left to right as stages joined by arrows; the second row holds the parts that sit under them.
-// On a phone every column stacks, and the arrows turn downward.
+import { useEffect, useRef, useState } from 'react';
 
-// Literal Tailwind classes per node kind, so the scanner sees them. The retrieval path is the one
-// drawn dark, as the sheet this came from drew it in its accent colour.
-const KIND_CLASS = {
-  data: 'border-dashed border-line bg-transparent text-ink',
-  code: 'border-line bg-surface text-ink',
-  retrieval: 'border-ink bg-dark text-dark-ink',
-  agent: 'border-ink bg-surface text-ink',
-  model: 'border-dashed border-ink bg-transparent text-ink',
-};
-
-const SWATCH_CLASS = {
-  data: 'border-dashed border-line bg-transparent',
-  code: 'border-line bg-surface',
-  retrieval: 'border-ink bg-dark',
-  agent: 'border-ink bg-surface',
-  model: 'border-dashed border-ink bg-transparent',
-};
-
-// Grid spans for the second row, written out for the same reason.
-const SPAN_CLASS = { 1: 'lg:col-span-1', 2: 'lg:col-span-2', 3: 'lg:col-span-3' };
+// Renders an `architecture` case-study block: a system diagram laid out like a drawing (boxes at
+// fixed places, joined by arrows) but built from live page text, so it takes the site's type and
+// both themes. The drawing is one SVG whose boxes are HTML inside foreignObject, so it scales
+// with the column as a whole; Enlarge opens the same drawing at reading size, scrollable on a
+// phone. Every word comes from the block in portfolioData.
 
 /**
- * `legend` is `[{ kind, label }]`; `columns` is the top row, `[{ label, nodes }]`; `lower` is the
- * second row, `[{ span, nodes }]` on a six-column grid; `note` closes the figure. A node is
- * `{ kind, title, mono?, lines?, groups?, chips? }`: `lines` are short plain lines, `groups` are
- * `{ label, items }` lists of tool names, and `chips` is a row of steps joined by arrows.
+ * `viewBox` frames the drawing; `labels` are column headings `{ x, y, text }`; `boxes` are
+ * `{ x, y, w, h, kind, parts }` where kind is data, code, retrieval, agent, plain or bare; `edges`
+ * are `{ d, kind, dashed?, both? }` SVG paths; `edgeLabels` are `{ x, y, text, kind? }`. A box's
+ * `parts` are read in order: `{ title, accent? }`, `{ mono }`, `{ text }` (a string, or a list of
+ * strings and `{ mono }` runs), `{ pairs }`, `{ section }`, `{ rule: true }`, `{ chips }` and
+ * `{ inner: { kind, parts } }`.
  */
-export default function CaseStudyArchitecture({ legend, columns, lower, note, label }) {
+export default function CaseStudyArchitecture({ block }) {
+  const [open, setOpen] = useState(false);
+  const closeRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    closeRef.current?.focus();
+    const onKey = (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const { overflow } = document.body.style;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = overflow;
+    };
+  }, [open]);
+
   return (
-    <figure className="flex flex-col gap-5" aria-label={label}>
-      <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
-        {legend.map((item) => (
-          <li key={item.kind} className="flex items-center gap-2">
-            <span aria-hidden="true" className={`inline-block h-3 w-3 rounded-[3px] border ${SWATCH_CLASS[item.kind]}`} />
-            {item.label}
-          </li>
-        ))}
-      </ul>
-
-      <ol className="grid grid-cols-1 gap-2 lg:grid-cols-[1fr_14px_1fr_14px_1fr_14px_1.1fr_14px_1fr]">
-        {columns.flatMap((column, index) => {
-          const cell = (
-            <li key={column.label} className="flex min-w-0 flex-col gap-2">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-muted">{column.label}</span>
-              {column.nodes.map((node) => (
-                <ArchitectureNode key={node.title} node={node} />
-              ))}
+    <figure className="arch flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ul className="arch-legend">
+          {block.legend.map((item) => (
+            <li key={item.kind}>
+              <i aria-hidden="true" className={`arch-swatch arch-${item.kind}`} />
+              {item.label}
             </li>
-          );
-          if (index === 0) return [cell];
-          return [
-            <li key={`${column.label}-arrow`} aria-hidden="true" className="flex items-center justify-center font-mono text-xs text-muted">
-              <span className="lg:hidden">{'↓'}</span>
-              <span className="hidden lg:inline">{'→'}</span>
-            </li>,
-            cell,
-          ];
-        })}
-      </ol>
-
-      <div className="grid grid-cols-1 gap-2 lg:grid-cols-6">
-        {lower.map((cell) => (
-          <div key={cell.nodes[0].title} className={`flex min-w-0 flex-col gap-2 ${SPAN_CLASS[cell.span] ?? ''}`}>
-            {cell.nodes.map((node) => (
-              <ArchitectureNode key={node.title} node={node} />
-            ))}
-          </div>
-        ))}
+          ))}
+        </ul>
+        <button type="button" className="arch-enlarge" onClick={() => setOpen(true)}>
+          {block.enlarge}
+        </button>
       </div>
+      <div className="arch-card">
+        <Drawing block={block} />
+      </div>
+      {block.note && <figcaption className="text-sm text-muted">{block.note}</figcaption>}
 
-      {note && <figcaption className="text-sm text-muted">{note}</figcaption>}
+      {open && (
+        <div className="arch-overlay" role="dialog" aria-modal="true" aria-label={block.label}>
+          <div className="arch-overlay-bar">
+            <span className="font-mono text-xs uppercase tracking-widest text-muted">{block.label}</span>
+            <button ref={closeRef} type="button" className="arch-enlarge" onClick={() => setOpen(false)}>
+              {block.close}
+            </button>
+          </div>
+          <div className="arch-overlay-body">
+            <div className="arch-card arch-card-large">
+              <Drawing block={block} />
+            </div>
+          </div>
+        </div>
+      )}
     </figure>
   );
 }
 
-function ArchitectureNode({ node }) {
-  const dark = node.kind === 'retrieval';
-  const soft = dark ? 'text-dark-muted' : 'text-muted';
+function Drawing({ block }) {
+  const [, , vw, vh] = block.viewBox;
   return (
-    <div className={`flex min-w-0 flex-col gap-1.5 rounded-[10px] border p-3 ${KIND_CLASS[node.kind]}`} data-kind={node.kind}>
-      <p className="font-display text-sm font-semibold break-words">{node.title}</p>
-      {node.mono && <p className={`font-mono text-[11px] break-words ${soft}`}>{node.mono}</p>}
-      {node.lines?.map((line) => (
-        <p key={line} className={`text-xs ${soft}`}>
-          {line}
-        </p>
+    <svg viewBox={block.viewBox.join(' ')} className="arch-svg" role="group" aria-label={block.label} style={{ aspectRatio: `${vw} / ${vh}` }}>
+      <defs>
+        {['line', 'retrieval', 'agent', 'code'].map((kind) => (
+          <marker key={kind} id={`arch-head-${kind}`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" className={`arch-head-${kind}`} />
+          </marker>
+        ))}
+      </defs>
+      {block.labels.map((label) => (
+        <text key={label.text} x={label.x} y={label.y} className="arch-col">
+          {label.text}
+        </text>
       ))}
-      {node.groups?.map((group) => (
-        <div key={group.label} className="flex flex-col gap-0.5">
-          <span className={`font-mono text-[10px] uppercase tracking-widest ${soft}`}>{group.label}</span>
-          <span className="font-mono text-[11px] break-words">{group.items.join(' · ')}</span>
-        </div>
+      {block.boxes.map((box) => (
+        <foreignObject key={`${box.x}-${box.y}`} x={box.x} y={box.y} width={box.w} height={box.h}>
+          <div className={`arch-box arch-${box.kind}`} data-kind={box.kind}>
+            <Parts parts={box.parts} />
+          </div>
+        </foreignObject>
       ))}
-      {node.chips && (
-        <ol className="mt-1 flex flex-wrap items-center gap-1.5">
-          {node.chips.map((chip, index) => (
-            <li key={chip} className="flex items-center gap-1.5">
-              {index > 0 && (
-                <span aria-hidden="true" className={`font-mono text-xs ${soft}`}>
-                  {'→'}
-                </span>
-              )}
-              <span className={`rounded-md border px-2 py-1 font-mono text-[11px] ${dark ? 'border-dark-edge-strong' : 'border-line'}`}>{chip}</span>
-            </li>
-          ))}
-        </ol>
+      {block.edges.map((edge) => {
+        const kind = edge.kind ?? 'line';
+        return (
+          <path
+            key={edge.d}
+            d={edge.d}
+            className={`arch-edge arch-edge-${kind}${edge.dashed ? ' arch-dashed' : ''}`}
+            markerEnd={edge.end === false ? undefined : `url(#arch-head-${kind})`}
+            markerStart={edge.both ? `url(#arch-head-${kind})` : undefined}
+          />
+        );
+      })}
+      {block.edgeLabels.map((label) => (
+        <text key={label.text} x={label.x} y={label.y} className={`arch-edge-label arch-edge-label-${label.kind ?? 'line'}`}>
+          {label.text}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+function Parts({ parts }) {
+  return parts.map((part, index) => <Part key={index} part={part} />);
+}
+
+function Part({ part }) {
+  if (part.title) {
+    return (
+      <p className={`arch-title${part.accent ? ' arch-accent' : ''}`}>
+        {part.title}
+        {part.titleMono && <span className="arch-mono"> {part.titleMono}</span>}
+      </p>
+    );
+  }
+  if (part.mono) return <p className="arch-mono">{part.mono}</p>;
+  if (part.section) return <p className="arch-section">{part.section}</p>;
+  if (part.rule) return <hr className="arch-rule" />;
+  if (part.sub) return <p className="arch-sub">{part.sub}</p>;
+  if (part.pairs) {
+    return (
+      <dl className="arch-pairs">
+        {part.pairs.map(([term, meaning]) => (
+          <div key={term}>
+            <dt className="arch-mono">{term}</dt>
+            <dd>{meaning}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+  if (part.chips) {
+    return (
+      <ol className="arch-chips">
+        {part.chips.map((chip) => (
+          <li key={chip.top} className={chip.strong ? 'arch-chip-strong' : undefined}>
+            <span className={chip.strong ? 'arch-mono' : undefined}>{chip.top}</span>
+            <span>{chip.bottom}</span>
+          </li>
+        ))}
+      </ol>
+    );
+  }
+  if (part.inner) {
+    return (
+      <div className={`arch-inner arch-inner-${part.inner.kind ?? 'plain'}`}>
+        <Parts parts={part.inner.parts} />
+      </div>
+    );
+  }
+  const runs = Array.isArray(part.text) ? part.text : [part.text];
+  return (
+    <p className={`arch-text${part.gap ? ' arch-gap' : ''}`}>
+      {runs.map((run, index) =>
+        typeof run === 'string' ? run : (
+          <span key={index} className="arch-mono">
+            {run.mono}
+          </span>
+        ),
       )}
-    </div>
+    </p>
   );
 }

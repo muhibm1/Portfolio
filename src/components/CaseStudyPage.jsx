@@ -207,7 +207,7 @@ function Block({ block }) {
     case 'split':
       return <SplitBlock table={block.table} stats={block.stats} />;
     case 'architecture':
-      return <CaseStudyArchitecture legend={block.legend} columns={block.columns} lower={block.lower} note={block.note} label={block.label} />;
+      return <CaseStudyArchitecture block={block} />;
     case 'bars':
       return <CaseStudyBarChart charts={block.charts} caption={block.caption} />;
     case 'walkthrough':
