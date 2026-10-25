@@ -21,10 +21,10 @@ function renderAppAt(path) {
 
 describe('route table (E2)', () => {
   it('renders the case study for a slug with a trailing slash, the same as without one', () => {
-    renderAppAt('/work/workhorse/');
+    renderAppAt('/work/orion/');
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
-      caseStudies.find((study) => study.id === 'workhorse').title,
+      caseStudies.find((study) => study.id === 'orion').title,
     );
   });
 

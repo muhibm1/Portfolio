@@ -151,12 +151,22 @@ describe('siteRedirects and redirectPage (owner brief 2026-10-21)', () => {
     '<html><head><meta http-equiv="Content-Security-Policy" content="default-src \'self\'">' +
     '<meta name="referrer" content="strict-origin-when-cross-origin"><title>t</title></head><body><div id="root"></div></body></html>';
 
-  it('points the old decision-support address at the full URL of its new page', () => {
+  it('points the old decision-support, WorkHorse and agent harness addresses at the full URLs of their new pages', () => {
     expect(siteRedirects()).toEqual([
       {
         from: '/work/apple-llm-triage',
         to: '/work/apple-decision-support-agent',
         targetUrl: 'https://muhibm1.github.io/Portfolio/work/apple-decision-support-agent/',
+      },
+      {
+        from: '/work/workhorse',
+        to: '/work',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/',
+      },
+      {
+        from: '/work/tannhauser-gate',
+        to: '/work',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/',
       },
     ]);
   });

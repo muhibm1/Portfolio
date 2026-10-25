@@ -11,7 +11,6 @@ import { portfolioData } from './data/portfolioData';
 const BASE = '/Portfolio';
 const DECISION_PATH = '/work/apple-decision-support-agent';
 const INTEGRATION_PATH = '/work/apple-integration';
-const WORKHORSE_PATH = '/work/workhorse';
 
 const SHELL_HTML =
   '<!doctype html><html><head><title>shell title</title>\n' +
@@ -23,7 +22,6 @@ const DECISION_SENTENCE =
 const INTEGRATION_SENTENCE =
   'The judgment behind these requests is covered in the decision support agent case study. This one is about what happens after the decision is made.';
 const THROUGHPUT_SENTENCE = 'It came from removing the investigation in front of it.';
-const STUDBOOK_SUBTITLE = "Cited retrieval (RAG) over WorkHorse's engineering record";
 const HERO_HEADING = 'I find the step everyone is waiting on.';
 const HERO_LEAD =
   'Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.';
@@ -100,8 +98,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all thirteen routes, the home page, the work list and eleven case studies (owner brief 2026-10-21)', () => {
-    expect(sitePagePaths()).toHaveLength(13);
+  it('serves all eleven routes, the home page, the work list and nine case studies (owner brief 2026-10-21)', () => {
+    expect(sitePagePaths()).toHaveLength(11);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {
@@ -158,21 +156,6 @@ describe('master copy served on every route (2026-10-08)', () => {
 
     expect(text).toContain(THROUGHPUT_SENTENCE);
     expect(text).not.toMatch(AGENT_AUTHORITY);
-  });
-
-  it('serves the Studbook subtitle once, under its heading, on the WorkHorse page only (R9)', () => {
-    const escaped = escapeHtml(STUDBOOK_SUBTITLE);
-    const studbook = studyForPath(WORKHORSE_PATH).sections.find((section) => section.id === 'studbook');
-    const heading = [...parse(pages[WORKHORSE_PATH]).querySelectorAll('h2')].find(
-      (h2) => h2.textContent === studbook.heading,
-    );
-
-    for (const path of sitePagePaths()) {
-      expect(occurrences(pages[path], escaped), path).toBe(path === WORKHORSE_PATH ? 1 : 0);
-    }
-
-    expect(heading.nextElementSibling.tagName).toBe('P');
-    expect(heading.nextElementSibling.textContent).toBe(STUDBOOK_SUBTITLE);
   });
 
   it('serves a human gate marker on the decision page and only on gate steps elsewhere (R5)', () => {
