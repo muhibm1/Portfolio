@@ -25,4 +25,5 @@ export const REDIRECTS = [
   { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
   { from: '/work/workhorse', to: '/work' },
   { from: '/work/tannhauser-gate', to: '/work' },
+  { from: '/work/neural-newsletters-llm', to: '/work' },
 ];

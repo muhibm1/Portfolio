@@ -38,13 +38,14 @@ describe("CaseStudyCards", () => {
 
   // WorkHorse's page was removed on 2026-10-25 (owner's request); its address redirects to the
   // work list, so it has neither a card nor a page.
-  it("gives no card to Atelier or Neural Newsletters, whose pages stay live, and none to WorkHorse", () => {
+  it("gives no card to Atelier, whose page stays live, and none to WorkHorse or Neural Newsletters (removed 2026-10-25)", () => {
     renderCards();
 
     expect(caseStudies.find((study) => study.id === "workhorse")).toBeUndefined();
     expect(document.querySelectorAll('a[href="/work/workhorse"]')).toHaveLength(0);
+    expect(caseStudies.find((study) => study.id === "neural-newsletters-llm")).toBeUndefined();
     for (const id of ["atelier", "neural-newsletters-llm"]) {
-      expect(caseStudies.find((study) => study.id === id).listed).toBe(false);
+      expect(caseStudies.find((study) => study.id === id)?.listed ?? false).toBe(false);
       expect(document.querySelectorAll(`a[href="/work/${id}"]`)).toHaveLength(0);
     }
   });
@@ -83,7 +84,7 @@ describe("CaseStudyCards", () => {
     const articles = screen.getAllByRole("article");
     articles.forEach((article, index) => {
       const study = featured[index];
-      const codeLinks = within(article).queryAllByRole("link", { name: /public snapshot/i });
+      const codeLinks = within(article).queryAllByRole("link", { name: /public repository/i });
       if (!study.codeLink) {
         expect(codeLinks).toHaveLength(0);
         return;

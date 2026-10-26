@@ -168,6 +168,11 @@ describe('siteRedirects and redirectPage (owner brief 2026-10-21)', () => {
         to: '/work',
         targetUrl: 'https://muhibm1.github.io/Portfolio/work/',
       },
+      {
+        from: '/work/neural-newsletters-llm',
+        to: '/work',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/',
+      },
     ]);
   });
 

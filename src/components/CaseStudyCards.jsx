@@ -60,7 +60,7 @@ function FeaturedCard({ study }) {
             href={codeLink.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`View the code: ${codeLink.label} on GitHub, public snapshot`}
+            aria-label={`View the code: ${codeLink.label} on GitHub, public repository`}
             className="justify-self-start text-[15px] text-ink-2 underline decoration-[var(--underline)] underline-offset-4 hover:text-ink"
           >
             View the code
