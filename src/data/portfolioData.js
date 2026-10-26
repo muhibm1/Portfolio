@@ -17,22 +17,21 @@
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
 // 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
 // and held-out splits), pending the owner's approval. Its codeLink points at the public
-// agentops-snapshot repository, published 2026-10-12.
+// agentops repository (a snapshot until 2026-10-26).
 // The Flywheel case study (third, after AgentOps) was added 2026-10-13 from the flywheel and studbook-agent READMEs.
 // Refreshed 2026-10-13 (owner's request, from his case-studies-v2 draft): WorkHorse gains the 0.5
 // releases and the faster Studbook record, checked against muhibm1/workhorse and muhibm1/studbook;
 // AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
 // Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
 
-// The three public snapshot repositories, held once (R153) and referenced from every place the
-// work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
-// desktop app was removed from the site on 2026-10-19 at his word.
-// Flywheel and the Studbook agent (added 2026-10-13) and Fathom (public 2026-10-25) are public
-// repositories, not snapshots.
+// The public repositories, held once (R153) and referenced from every place the work is
+// discussed. The owner's old desktop app was removed from the site on 2026-10-19 at his word.
+// On 2026-10-26 the one-commit snapshots gave way to the repositories themselves, republished
+// with their full, cleaned history.
 const REPOSITORIES = {
-  workhorse: "https://github.com/muhibm1/workhorse-snapshot",
-  studbook: "https://github.com/muhibm1/studbook-snapshot",
-  agentops: "https://github.com/muhibm1/agentops-snapshot",
+  workhorse: "https://github.com/muhibm1/workhorse",
+  studbook: "https://github.com/muhibm1/studbook",
+  agentops: "https://github.com/muhibm1/agentops",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
@@ -905,7 +904,7 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["Approval enforced in code", "Compared with a plain read-think-act agent"],
       },
-      codeLink: { label: "Code: agentops-snapshot", href: REPOSITORIES.agentops },
+      codeLink: { label: "Code: agentops", href: REPOSITORIES.agentops },
       eyebrow: "Case study · Personal system · Agentic AI · Incident response",
       title: "AgentOps: an incident agent that can't act alone",
       intro:
@@ -3662,135 +3661,6 @@ export const portfolioData = {
         text: "Everything runs on the AI subscription I already pay for, on a cloud computer. No pay-per-use key is used anywhere.",
       },
       contactHeading: "Have a system that needs deploying? Let's talk.",
-    },
-
-    {
-      id: "neural-newsletters-llm",
-      // Off the home page and /work since 2026-10-21 (owner's brief); the role stays in Experience.
-      listed: false,
-      card: {
-        featured: false,
-        eyebrow: "Neural Newsletters · Full stack and LLM",
-        title: "Rebuilding an LLM content pipeline that shipped broken output",
-        summary:
-          "Found why an AI content pipeline was producing broken output, rebuilt its data handling and database structure (schema), then made it dependable with automated test checks (CI/CD gates), faster database queries and live status updates to readers over WebSockets.",
-        linkText: "Read the case study",
-        tags: ["~40% fewer incidents", "15 to 20% lower latency"],
-      },
-      eyebrow: "Case study · Neural Newsletters · Software Engineer · May 2024 to Feb 2025",
-      title: "Rebuilding an LLM content pipeline that shipped broken output",
-      intro:
-        "Neural Newsletters used an LLM (large language model, the kind of AI behind chatbots) to write a personalized version of each article for each reader. The pipeline behind that feature, the chain of steps from incoming article to finished page, was producing broken output that couldn't ship. The prompt, the written instructions given to the model, looked like the obvious culprit, but the real problem was underneath it, in the data going in and the database holding it. I rebuilt that layer and hardened the path from ingestion to the reader's screen.",
-      atAGlance: [
-        { label: "My role", value: "Owned the LLM integration end to end" },
-        { label: "Worked with", value: "The CTO (chief technology officer), on turning business goals into requirements" },
-        { label: "Stack", value: "Elixir and Phoenix (the server code), Postgres (the database), TypeScript and React (the reader's web page), WebSockets (a live connection to the page)" },
-        { label: "Scale", value: "Thousands of articles across recurring runs" },
-      ],
-      stats: [
-        { value: "~40%", label: "fewer production incidents (failures hitting live readers) after adding automated release checks (CI/CD) and tests" },
-        { value: "15 to 20%", label: "lower generation latency (waiting time) from changes to the database structure and its queries" },
-        { value: "Live", label: "generation status streamed to readers over WebSockets" },
-      ],
-      sections: [
-        {
-          id: "situation",
-          heading: "The situation",
-          blocks: [
-            {
-              type: "flow",
-              columns: 5,
-              steps: [
-                { title: "Articles in", note: "Mixed sources, made consistent" },
-                { title: "Postgres", note: "Rebuilt database structure" },
-                { title: "LLM", note: "Personalization prompts" },
-                { title: "REST API", note: "Elixir Phoenix" },
-                { title: "Reader", note: "Live status over WebSockets", gate: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "In plain terms: articles came in from many sources, were stored in a database, handed to a language model to personalize, and served to the reader through an API. The personalization feature was the product's core, and the pipeline behind it was producing malformed, unshippable output: articles cut off partway, text from one article showing up in another, odd formatting and stray characters. It processed thousands of articles across recurring runs, so a fault anywhere showed up everywhere.",
-            },
-          ],
-        },
-        {
-          id: "diagnosis",
-          heading: "Why the prompt wasn't the problem",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "When an LLM produces bad output, the instinct is to rewrite the prompt. I looked at what the model was being given first. Source articles arrived in different formats, some reached the model only half read into usable text, and fields in the database no longer meant what the code assumed they did.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "A model can only be as good as its input. No prompt fixes an article that arrives with half its text missing, so the fix had to go below the prompt.",
-            },
-          ],
-        },
-        {
-          id: "rebuild",
-          heading: "Fixing it underneath",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "I rebuilt the pipeline's data handling and schema from the ground up. The schema is the database's structure: which fields exist and what they mean. Restructuring it removed dead fields that no longer meant anything, and rewriting the queries behind it cut generation latency by 15 to 20%.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "I also wrote ETL, the step that extracts data from each source, transforms it into one consistent shape and loads it into the database, so every source reached the model looking the same. If one article can't be read, it is set aside and reported, instead of taking down the whole run.",
-            },
-          ],
-        },
-        {
-          id: "model",
-          heading: "The model layer",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "With clean input in place, I owned the LLM integration behind the personalization feature, writing and iterating on prompt logic directly against production behavior to keep outputs accurate and consistent for real readers. Most of that tuning was about structure: getting the model to return its output in exactly the shape the rest of the pipeline expected, every time.",
-            },
-          ],
-        },
-        {
-          id: "harden",
-          heading: "Making it dependable",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Fixing a pipeline once is not the same as keeping it fixed. I set up CI/CD (the automatic build, test and release process) with quality gates and automated tests: every change runs the tests automatically, and a change that fails them can't be deployed. That cut production incidents by about 40%.",
-            },
-          ],
-        },
-        {
-          id: "realtime",
-          heading: "Getting it to the reader",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "I designed and built the REST API layer (the way the web page asks the server for data), connecting the Elixir Phoenix backend (the server) to the React and TypeScript frontend (what the reader sees). Generating a personalized article takes a while, so I also built the WebSocket infrastructure that streams live generation status to readers. A WebSocket keeps a connection open between the page and the server, so the page updates the moment an article is ready instead of making the reader refresh. The design balanced how fast updates arrive, how many readers it can hold at once, and what happens when a connection drops.",
-            },
-            {
-              type: "paragraph",
-              text: "Throughout, I worked directly with the CTO to turn ambiguous business goals into technical requirements.",
-            },
-          ],
-        },
-      ],
-      callout: {
-        eyebrow: "What I'd bring to a client",
-        text:
-          "When an LLM feature misbehaves, the fix is often underneath it: the data going in and the schema holding it. I look there before blaming the prompt, and I own the path all the way to the user's screen.",
-      },
-      contactHeading: "An LLM feature that won't behave? Let's talk.",
     },
   ],
 };

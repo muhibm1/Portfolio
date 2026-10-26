@@ -17,7 +17,7 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the ten case studies in data order, featured work first and the unlisted pages last (owner brief 2026-10-21; split brief 2026-10-25)', () => {
+  it('returns / then /work then /work/<id> for each of the nine case studies in data order, featured work first and the unlisted page last (owner brief 2026-10-21; split brief 2026-10-25)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
@@ -30,7 +30,6 @@ describe('staticRoutePaths', () => {
       '/work/apple-integration',
       '/work/apple-data-health',
       '/work/atelier',
-      '/work/neural-newsletters-llm',
     ]);
   });
 
@@ -39,6 +38,7 @@ describe('staticRoutePaths', () => {
       { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
       { from: '/work/workhorse', to: '/work' },
       { from: '/work/tannhauser-gate', to: '/work' },
+      { from: '/work/neural-newsletters-llm', to: '/work' },
     ]);
     const served = staticRoutePaths(portfolioData.caseStudies);
     for (const { from, to } of REDIRECTS) {
