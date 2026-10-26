@@ -84,7 +84,7 @@ describe("CaseStudyCards", () => {
     const articles = screen.getAllByRole("article");
     articles.forEach((article, index) => {
       const study = featured[index];
-      const codeLinks = within(article).queryAllByRole("link", { name: /public snapshot/i });
+      const codeLinks = within(article).queryAllByRole("link", { name: /public repository/i });
       if (!study.codeLink) {
         expect(codeLinks).toHaveLength(0);
         return;

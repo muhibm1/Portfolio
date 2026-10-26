@@ -21,10 +21,9 @@ const DESKTOP_COLUMNS_CLASS = {
   4: 'md:grid-cols-4',
 };
 
-// Every link off this page to a repository points at a fixed public snapshot, not the source
-// repository itself; the aria-label says so.
+// Every link off this page to a repository points at a public repository; the aria-label says so.
 function githubSnapshotLabel(linkText) {
-  return `${linkText} on GitHub, public snapshot`;
+  return `${linkText} on GitHub, public repository`;
 }
 
 /**

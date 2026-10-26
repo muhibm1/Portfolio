@@ -375,9 +375,9 @@ const pinnedCaseStudyNarratives = {
 };
 
 const pinnedRepositories = {
-  workhorse: "https://github.com/muhibm1/workhorse-snapshot",
-  studbook: "https://github.com/muhibm1/studbook-snapshot",
-  agentops: "https://github.com/muhibm1/agentops-snapshot",
+  workhorse: "https://github.com/muhibm1/workhorse",
+  studbook: "https://github.com/muhibm1/studbook",
+  agentops: "https://github.com/muhibm1/agentops",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
@@ -455,14 +455,14 @@ describe("portfolioData", () => {
     ]);
   });
 
-  it("carries the AgentOps case study second, after the Apple agent (owner brief 2026-10-21; split brief 2026-10-25), with its snapshot codeLink and a `measured` section holding its table (2026-10-12)", () => {
+  it("carries the AgentOps case study second, after the Apple agent (owner brief 2026-10-21; split brief 2026-10-25), with its repository codeLink and a `measured` section holding its table (2026-10-12)", () => {
     const agentops = findCaseStudy("agentops");
 
     expect(agentops).toBeDefined();
     expect(portfolioData.caseStudies[1].id).toBe("agentops");
     expect(agentops.codeLink).toEqual({
-      label: "Code: agentops-snapshot",
-      href: "https://github.com/muhibm1/agentops-snapshot",
+      label: "Code: agentops",
+      href: "https://github.com/muhibm1/agentops",
     });
 
     const measured = findSection(agentops, "measured");
@@ -689,7 +689,7 @@ describe("portfolioData", () => {
     expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
   });
 
-  it("names personal.repositories with the three snapshot URLs and the three public repositories, held once (R153)", () => {
+  it("names personal.repositories with the six public repositories, held once (R153; snapshots retired 2026-10-26)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 

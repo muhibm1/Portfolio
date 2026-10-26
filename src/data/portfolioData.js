@@ -17,22 +17,21 @@
 // The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
 // 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
 // and held-out splits), pending the owner's approval. Its codeLink points at the public
-// agentops-snapshot repository, published 2026-10-12.
+// agentops repository (a snapshot until 2026-10-26).
 // The Flywheel case study (third, after AgentOps) was added 2026-10-13 from the flywheel and studbook-agent READMEs.
 // Refreshed 2026-10-13 (owner's request, from his case-studies-v2 draft): WorkHorse gains the 0.5
 // releases and the faster Studbook record, checked against muhibm1/workhorse and muhibm1/studbook;
 // AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
 // Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
 
-// The three public snapshot repositories, held once (R153) and referenced from every place the
-// work is discussed: the featured card, the hero code line and the WorkHorse page. The owner's old
-// desktop app was removed from the site on 2026-10-19 at his word.
-// Flywheel and the Studbook agent (added 2026-10-13) and Fathom (public 2026-10-25) are public
-// repositories, not snapshots.
+// The public repositories, held once (R153) and referenced from every place the work is
+// discussed. The owner's old desktop app was removed from the site on 2026-10-19 at his word.
+// On 2026-10-26 the one-commit snapshots gave way to the repositories themselves, republished
+// with their full, cleaned history.
 const REPOSITORIES = {
-  workhorse: "https://github.com/muhibm1/workhorse-snapshot",
-  studbook: "https://github.com/muhibm1/studbook-snapshot",
-  agentops: "https://github.com/muhibm1/agentops-snapshot",
+  workhorse: "https://github.com/muhibm1/workhorse",
+  studbook: "https://github.com/muhibm1/studbook",
+  agentops: "https://github.com/muhibm1/agentops",
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
@@ -905,7 +904,7 @@ export const portfolioData = {
         linkText: "Read the case study",
         tags: ["Approval enforced in code", "Compared with a plain read-think-act agent"],
       },
-      codeLink: { label: "Code: agentops-snapshot", href: REPOSITORIES.agentops },
+      codeLink: { label: "Code: agentops", href: REPOSITORIES.agentops },
       eyebrow: "Case study · Personal system · Agentic AI · Incident response",
       title: "AgentOps: an incident agent that can't act alone",
       intro:
