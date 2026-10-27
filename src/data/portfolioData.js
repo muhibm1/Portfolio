@@ -2342,7 +2342,7 @@ export const portfolioData = {
       intro:
         "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
       atAGlance: [
-        { label: "My role", value: "Designed and built it in October 2026, as the first weeks of a client engagement" },
+        { label: "My role", value: "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be" },
         {
           label: "What it is",
           value: "An open-source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents",
@@ -2351,7 +2351,7 @@ export const portfolioData = {
         { label: "Where it stands", value: "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push" },
       ],
       stats: [
-        { value: "29 checks", label: "on every build, each data problem named with the records behind it" },
+        { value: "18 checks", label: "on every build: 12 that fail it, 6 that name each data problem with its records" },
         { value: "5 of 5", label: "deliberate failures caught and recovered from" },
         { value: "46 of 47", label: "held-out questions answered by an agent using only the tools" },
         { value: "73 of 73", label: "of its citations real and current, checked in code" },
@@ -2394,7 +2394,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Mess named, not hidden",
-                  note: "29 checks run on every build. Hard checks fail it if the finance tables stop matching. Source-quality checks list each problem with its records, such as the customer entered twice, so a person can fix it at the source while the models handle it the safe way.",
+                  note: "18 checks run on every build. Twelve hard checks fail it if the finance tables stop matching. Six source-quality checks list each problem with its records, such as the customer entered twice, so a person can fix it at the source while the models handle it the safe way.",
                 },
               ],
             },
@@ -2481,7 +2481,7 @@ export const portfolioData = {
                     {
                       chips: [
                         { top: "edp trace", bottom: "adds up" },
-                        { top: "29 checks", bottom: "dbt build" },
+                        { top: "18 checks", bottom: "dbt build" },
                         { top: "5 monitors", bottom: "totals vs Odoo" },
                         { top: "citations", bottom: "real, current", strong: true },
                       ],
@@ -2716,7 +2716,7 @@ export const portfolioData = {
       ],
       stats: [
         { value: "102 of 103", label: "held-out questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
-        { value: "47 to 77", label: "finance questions right, from the usual one-query version to the full agent" },
+        { value: "73 to 77", label: "finance questions right, from one query read by the model to the full agent (47 if the first column is taken as the answer)" },
         { value: "18 of 18", label: "requests that would expose fewer than 50 people or single users refused, by the tool" },
         { value: "46 of 47", label: "questions the data cannot answer, declined instead of guessed" },
       ],

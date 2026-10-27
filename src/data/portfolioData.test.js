@@ -83,9 +83,9 @@ const pinnedCaseStudyStats = {
   orion: ["16", "4,599", "0.889", "158"],
   fathom: ["0 of 50", "100%", "621 of 625", "7 to 0"],
   // Added 2026-10-27 from the erp-data-platform repository's results.
-  "erp-data-platform": ["29 checks", "5 of 5", "46 of 47", "73 of 73"],
+  "erp-data-platform": ["18 checks", "5 of 5", "46 of 47", "73 of 73"],
   // Added 2026-10-27 from erp-data-platform's analyst/eval/RESULTS.md.
-  "analyst-agent": ["102 of 103", "47 to 77", "18 of 18", "46 of 47"],
+  "analyst-agent": ["102 of 103", "73 to 77", "18 of 18", "46 of 47"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -305,7 +305,7 @@ const pinnedCaseStudyNarratives = {
     atAGlance: [
       {
         label: "My role",
-        value: "Designed and built it in October 2026, as the first weeks of a client engagement"
+        value: "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be"
       },
       {
         label: "What it is",
