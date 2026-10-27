@@ -223,9 +223,9 @@ export const portfolioData = {
           subheading: "Data Health team · Austin, TX",
           highlights: [
             "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
-            "Built a Python tool linking ticketing, repository and geo-data systems through each system's OAuth2 sign-in and API, cutting permission turnaround by about 50%.",
+            "Built a Python tool that manages map edit permissions for protected features: it lets an approved editor make a change, then locks the feature again. It connects ticketing, repository and geo-data systems over OAuth2 and cut turnaround time by about 50%.",
             "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across a 50+ region pipeline on Spark, Iceberg on S3 and Snowflake.",
-            "Worked with the DataOps and data evaluation teams to migrate data validation to new infrastructure and run checks earlier in the pipeline, cutting release-blocking failures by about 40%. I also led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
+            "Cut release-blocking failures by about 40% by moving validation checks upstream and making them more robust, using root cause analysis and the remediation from each incident to refine every check. I also led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
           ],
         },
         {
@@ -2001,7 +2001,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Any model can sit behind it: offline, Anthropic, any OpenAI-compatible endpoint including local models, a local command, or Claude Code on a subscription with no API key. Every paid call counts against a dollar cap. On a pull request it posts one inline comment per new finding and one summary updated in place, and it never posts a blocking review.",
+                "Any model can sit behind it: offline, Anthropic, any OpenAI-compatible endpoint including local models, a local command, or a coding agent on a subscription with no API key. Every paid call counts against a dollar cap. On a pull request it posts one inline comment per new finding and one summary updated in place, and it never posts a blocking review.",
             },
           ],
         },
