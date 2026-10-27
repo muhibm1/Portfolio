@@ -190,7 +190,7 @@ const pinnedCaseStudyNarratives = {
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
-    calloutText: "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a failing check means a real regression, not model noise.",
+    calloutText: "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a statistical test on each case keeps model noise from blocking a good change.",
     contactHeading: "Have an agent that works in the demo? Let's talk."
   },
   "apple-decision-support-agent": {
