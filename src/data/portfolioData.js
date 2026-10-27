@@ -2516,6 +2516,158 @@ export const portfolioData = {
       contactHeading: "Building AI on your ERP or CRM data? Let's talk.",
     },
 
+    // Added 2026-10-27 from erp-data-platform's analyst/README.md and analyst/eval/RESULTS.md,
+    // pending the owner's approval. Not featured until he says so.
+    {
+      id: "analyst-agent",
+      card: {
+        featured: false,
+        eyebrow: "Open source · Question to SQL · LangGraph",
+        title: "An analyst agent: ask a warehouse a question in plain English",
+        summary:
+          "An agent that answers business questions by writing SQL, checking it, running it read-only and explaining the result, with the query behind every answer. It works on two datasets, finance and a simulated search ads account, and the second took one configuration file and no change to the agent.",
+        linkText: "Read the case study",
+        tags: ["102 of 103 held-out questions", "18 of 18 privacy requests refused"],
+      },
+      codeLink: { label: "Code: erp-data-platform/analyst", href: `${REPOSITORIES.erpDataPlatform}/tree/main/analyst` },
+      eyebrow: "Case study · Open source · Question to SQL agent",
+      title: "An analyst agent: ask a warehouse a question in plain English",
+      intro:
+        "Most teams' first question to SQL demo writes one query and shows whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read-only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
+      atAGlance: [
+        { label: "My role", value: "Designed, built and evaluated it in October 2026" },
+        {
+          label: "What it is",
+          value: "A question to SQL agent with retrieval, a repair loop, read-only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds",
+        },
+        { label: "Stack", value: "Python, LangGraph, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku" },
+        { label: "Where it stands", value: "Open source under the MIT licence, in the erp-data-platform repository, with 18 tests that need no model" },
+      ],
+      stats: [
+        { value: "102 of 103", label: "held-out questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
+        { value: "47 to 77", label: "finance questions right, from the usual one-query version to the full agent" },
+        { value: "18 of 18", label: "requests that would expose fewer than 50 people or single users refused, by the tool" },
+        { value: "$0", label: "of pay-per-use API credit; every model call ran on a Claude subscription" },
+      ],
+      sections: [
+        {
+          id: "problem",
+          heading: "The problem",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Analysts spend much of their day turning a manager's question into SQL. An agent can take that work, but only if people can trust it. Four things usually go wrong. The model picks the wrong table because it does not know what the business means by \"owed\" or \"cost per install\". The query is almost right and nobody notices. The answer adds dollars to yen. Or the agent happily reports a group of five people, which a privacy rule forbids.",
+            },
+          ],
+        },
+        {
+          id: "built",
+          heading: "What I built",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Context retrieval",
+                  note: "A domain file describes each table, the business terms and a few worked examples. For each question, a keyword ranker and a local embedding model each rank those notes, the two rankings are fused, and only the top tables, terms and examples go into the prompt.",
+                },
+                {
+                  title: "A graph, not a single call",
+                  note: "A LangGraph state graph runs retrieve, draft, run, read, cite and remember. The model drafts one query, or declines, or asks to clarify. A failed query goes back to it with the error, up to three tries.",
+                },
+                {
+                  title: "Rules in code and in the database",
+                  note: "sqlglot parses every query first: one SELECT, allowed schemas only, no writes, no file reads. The database then enforces the same rules again with a read-only role, a read-only transaction, a five-second limit and 200 rows.",
+                },
+                {
+                  title: "Privacy in the tool, not the prompt",
+                  note: "On the ads data, user-level records sit where the agent's role cannot read, and any result row under 50 installs comes back blanked. So the agent cannot leak a small group, whatever it writes.",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Finance queries go through the platform's own query tool unchanged, so every citation to an Odoo record version is checked in code. Conversations are saved per thread, so \"and how much have they paid?\" works as a follow-up.",
+            },
+          ],
+        },
+        {
+          id: "second-dataset",
+          heading: "A second dataset in one file",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "To test whether the agent is general, I built a simulated search ads account: six campaigns spending in dollars, pounds, euros and yen, 52 keywords over 60 days, audience splits by age and gender, two product page A/B tests, and user-level taps kept in a private schema. Onboarding it meant writing one file: the connection, the schemas the agent may read, the read-only role, the privacy rule, and notes on terms such as converting spend to dollars, rolling rates up from totals, and when an A/B difference is significant. Columns are read live from the database. The agent's code did not change.",
+            },
+          ],
+        },
+        {
+          id: "measured",
+          heading: "How I measured it",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Every answer in the question sets is computed by gold SQL, never written by hand. Dev and test are kept apart, the test sets were frozen before any run, and code grades every answer. Four versions of the agent ran on the same 103 held-out questions, to show what each part adds.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Held-out questions, Claude Sonnet" }, { label: "Finance (77)" }, { label: "Ads (26)" }],
+              rows: [
+                { cells: ["One query, first column taken as the answer", "47", "not run"] },
+                { cells: ["One query, read by the model", "73", "25"] },
+                { cells: ["Full loop, table names only", "73", "25"] },
+                { cells: ["Full agent, with retrieved notes", "77", "25"], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The biggest gain is reading the result well: the usual version often selected the right row but took the customer id as the answer. The notes fixed two finance traps, empty aging buckets that turn a sum to nothing and a merged customer, and for Haiku they were worth seven finance questions. On ads they cost Haiku three, by pulling the audience table into view. That fix belongs in the domain file, and the run files record every query tried, so each miss can be explained.",
+            },
+          ],
+        },
+        {
+          id: "safety",
+          heading: "What it never did",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Across 697 scored answers, no query tried to write or read outside its schemas.",
+                "It refused all 18 requests that would expose fewer than 50 people or user-level records.",
+                "It declined 46 of 47 questions the data cannot answer, such as a credit score or a competitor's bids.",
+                "Nine times, the reading step saw its own query was wrong and declined rather than guess.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "next",
+          heading: "What's next",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Send a self-declined answer back for another try instead of stopping.",
+                "Tighten the ads notes so the audience table is used only for age and gender questions.",
+                "Add questions written by someone who did not write the domain notes, and a real warehouse beside the simulated ones.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "An analyst agent people can check: the business's own terms written down as data, every query checked in code and again by the database, privacy rules the agent cannot talk its way past, and an evaluation on the client's own questions that shows what each part is worth before anyone relies on it.",
+      },
+      contactHeading: "Want your team to ask the warehouse in plain English? Let's talk.",
+    },
+
     {
       id: "esper",
       card: {
