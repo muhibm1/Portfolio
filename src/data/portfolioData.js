@@ -35,6 +35,7 @@ const REPOSITORIES = {
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
+  erpDataPlatform: "https://github.com/muhibm1/erp-data-platform",
 };
 
 // The Flywheel study of two LangChain open-source agents, in the public flywheel repository.
@@ -2298,6 +2299,221 @@ export const portfolioData = {
           "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
       },
       contactHeading: "Want agents to change your data platform safely? Let's talk.",
+    },
+
+    // Added 2026-10-27 from the erp-data-platform repository's README, eval/RESULTS.md,
+    // eval/DATASET.md, drills/report.json and docs/handoff-test.md, pending the owner's approval.
+    {
+      id: "erp-data-platform",
+      deploymentSummary: {
+        problem:
+          "A company's ERP holds its orders, invoices and payments, but finance cannot trust a number it cannot trace, and an AI assistant built on that data is only as good as the records it reads and the checks around it.",
+        decision:
+          "Treat it as a client engagement: load the ERP through its API, keep every version of every record, make each finance number trace to the exact records behind it, then prove the pipeline fails loudly by breaking it on purpose. I chose to let AI agents read the warehouse only through read-only tools that cite their sources, with the citations checked in code.",
+        result:
+          "Every finance number traces to records that add up. Five deliberate failures were each caught and recovered from. An agent with only the tools answered 46 of 47 held-out questions correctly, and all 73 of its citations were real, current records.",
+      },
+      card: {
+        featured: true,
+        eyebrow: "Open source · ERP data · AI agents",
+        title: "An ERP's data, made trustworthy for finance and for AI",
+        summary:
+          "The data side of an ERP engagement, end to end, on a real Odoo with a simulated year of business: extraction, traceable finance tables, monitors and failure drills, a question set for judging and training models, and tools that let an AI agent answer from the warehouse with sources a person can check.",
+        linkText: "Read the case study",
+        tags: ["5 of 5 failure drills caught", "46 of 47 answered, every citation real"],
+      },
+      codeLink: { label: "Code: erp-data-platform", href: REPOSITORIES.erpDataPlatform },
+      eyebrow: "Case study · Open source · ERP data engineering",
+      title: "An ERP's data, made trustworthy for finance and for AI",
+      intro:
+        "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
+      atAGlance: [
+        { label: "My role", value: "Designed and built it in October 2026, as the first weeks of a client engagement" },
+        {
+          label: "What it is",
+          value: "An open-source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents",
+        },
+        { label: "Stack", value: "Odoo 17 Community, Python, Postgres 16, dbt, Fathom for lineage and change checks, MCP" },
+        { label: "Where it stands", value: "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push" },
+      ],
+      stats: [
+        { value: "29 checks", label: "on every build, each data problem named with the records behind it" },
+        { value: "5 of 5", label: "deliberate failures caught and recovered from" },
+        { value: "46 of 47", label: "held-out questions answered by an agent using only the tools" },
+        { value: "73 of 73", label: "of its citations real and current, checked in code" },
+      ],
+      sections: [
+        {
+          id: "problem",
+          heading: "The problem",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Finance wants three answers from the ERP: what each customer was billed and has paid, who is late and by how much, and whether every deal sales won turned into cash. The data rarely cooperates. A customer gets entered twice. Accounting reopens a posted invoice and changes it. Some invoices are in euros. A deal is marked won with no order behind it. A record is deleted after it was loaded.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Each of those makes a total quietly wrong, and a wrong total that nobody can trace is worse than none. The same mess is what an AI finance assistant would read. So the engagement starts with the data, not the model.",
+            },
+          ],
+        },
+        {
+          id: "built",
+          heading: "What I built",
+          blocks: [
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Extraction the way a client allows it",
+                  note: "Deals, customers, orders, invoices and payments come out through Odoo's API, with no database access to the ERP. Each load fetches only what changed, so a rerun stores nothing new. A custom field a client adds is picked up on its own, and a field the load needs going missing stops it with the field's name.",
+                },
+                {
+                  title: "Every version kept",
+                  note: "Raw tables are append-only, one row per saved version of a record. When an invoice is changed after posting, both versions stay, and a deletion in Odoo is noticed and recorded.",
+                },
+                {
+                  title: "Numbers that show their work",
+                  note: "dbt turns the records into three finance tables in US dollars. Any number traces to the invoices and payments behind it, with each one's Odoo id and the exact version used, and the trace checks that they add up. A test traces every customer and every won deal.",
+                },
+                {
+                  title: "Mess named, not hidden",
+                  note: "29 checks run on every build. Hard checks fail it if the finance tables stop matching. Source-quality checks list each problem with its records, such as the customer entered twice, so a person can fix it at the source while the models handle it the safe way.",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "The company is simulated, but the system is real: a seeded year of business run through Odoo's own logic, 145 deals, 72 invoices raised through Odoo's invoicing wizard and 59 payments, some late and some partial. The mess is added after the first load, so it arrives the way it would in production. Rebuilt from nothing with the same seed, all 184 question answers came out identical.",
+            },
+          ],
+        },
+        {
+          id: "reliability",
+          heading: "Broken on purpose",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A pipeline earns trust by how it fails. It runs on a schedule under a database lock, retries a dropped connection with backoff, and runs five monitors after every load: did it succeed, is the data fresh, did a table shrink, did Odoo's fields change, and does the warehouse bill the same total as Odoo itself. Then I broke it five ways.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Failure" }, { label: "What the pipeline did" }],
+              rows: [
+                { cells: ["Odoo goes down mid-schedule", "Failed in 6 seconds with the error recorded, then caught up on everything changed meanwhile once Odoo returned"] },
+                { cells: ["Two runs start at once", "The second found the lock taken and stepped aside"] },
+                { cells: ["An admin adds a custom field, fills it, deletes it", "Warned both times; the value was loaded"] },
+                { cells: ["Three invoices lost from the warehouse", "Caught against Odoo's own totals and repaired with one command in under a second"], emphasis: true },
+                { cells: ["Three hours with no load", "The freshness monitor failed"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Two drills found real problems. A schema change waited forever behind a reader's open transaction, so runs now give up on a lock after 30 seconds instead of hanging. And the lost invoices passed every dbt check, because those checks compare the warehouse with itself. That is why one monitor asks Odoo for its own totals. Both are written up as postmortems that Fathom reads, next to the rules they produced.",
+            },
+          ],
+        },
+        {
+          id: "agents",
+          heading: "Letting an AI agent ask",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Six tools, served over MCP and on the command line, let any agent read the warehouse: find a customer, summarise what they owe, list invoices, follow won deals to cash, run one query, and check citations. They are built so an answer can be checked without trusting the agent.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "Read-only by construction",
+                  note: "Queries run as a database role that can read only the modelled tables, inside a read-only transaction with a five-second limit. Raw tables, server files and writes are refused by the database, not by a prompt.",
+                },
+                {
+                  title: "Every row carries its source",
+                  note: "Each row from an Odoo record names the record and the exact version used, so an answer can cite precisely what it rests on.",
+                },
+                {
+                  title: "Citations checked in code",
+                  note: "A citation must name a real record, a version that exists, and the newest version. An invented reference, or one pointing at the old copy of an edited invoice, fails.",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Claude Sonnet got only the 47 held-out questions and the tools. It answered 46 correctly, and all 73 of its citations were real and current. The miss taught the most: asked for a customer's most overdue invoice, it cited a real, current invoice that was not the most overdue one. The citation check passed, because a citation proves where an answer came from, not that it is right. So answers and citations are graded separately, and a finance team gets both the number and the records behind it.",
+            },
+          ],
+        },
+        {
+          id: "data",
+          heading: "Data to judge and train models",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The warehouse also produces 184 finance questions over 31 customers, six kinds, from billed totals to days overdue to cash collected on a deal. Every answer is computed by SQL and stored with the query, never written by a person or a model. Train, dev and test never share a customer, and the build fails if a customer, a question, an invoice or a record set crosses a split. Train is exported as chat examples for fine-tuning, and a dataset card records the splits, the share of zero answers and every leakage check.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Held-out test, 47 questions" }, { label: "Correct" }],
+              rows: [
+                { cells: ["Claude Sonnet, records in the prompt, told about the data problems", "47"] },
+                { cells: ["Claude Sonnet, same records, no warning", "47"] },
+                { cells: ["Claude Sonnet, only the tools, every answer cited", "46"], emphasis: true },
+                { cells: ["Answering 0 or an empty list to everything", "23"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "On records this size the model read the mess correctly without being warned. The value is the method, ready for harder records: answers from SQL, splits no customer crosses, a floor to beat, scores by data problem, and grading in code.",
+            },
+          ],
+        },
+        {
+          id: "handoff",
+          heading: "Handed over, and tested",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "An engagement ends with a team that can run the system without me. To test the runbook, I broke the pipeline the way a bad morning does, a failed run plus invoices missing from the warehouse, and gave a fresh agent the docs and nothing else. It found both problems and fixed them in seven commands without reading any code. It also named six places the runbook fell short, such as a missing connection line and no way to see which records a repair restored, and each is now fixed.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Fathom sits on top for change control: it reads the dbt project for column lineage, owners and rules, so proposing to drop a column from the aging table comes back blocked, naming month-end close and the collections queue as the reports it would break.",
+            },
+          ],
+        },
+        {
+          id: "next",
+          heading: "What's next",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "A second source system beside Odoo, such as a CRM or accounting export, matched to the same customers.",
+                "A harder question set: longer histories, partial payments across many invoices, and questions that span customers.",
+                "A fine-tuning run on the train split, scored against the same held-out test.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "What I'd bring to a client",
+        text:
+          "The data side of an AI engagement, owned end to end: get the data out of the systems the client already runs, make every number traceable, prove the pipeline fails loudly before trusting it, build the evaluation data from the client's own records, and hand over a runbook someone else has already used.",
+      },
+      contactHeading: "Building AI on your ERP or CRM data? Let's talk.",
     },
 
     {
