@@ -2741,7 +2741,7 @@ export const portfolioData = {
               columns: 6,
               steps: [
                 { title: "Retrieve", note: "Picks the tables, terms and examples the question needs" },
-                { title: "Draft", note: "Model writes one query, or declines" },
+                { title: "Draft", note: "Model looks a name up if it must, then writes one query, or declines" },
                 { title: "Check", note: "Code allows one SELECT on allowed tables, no writes", gate: true },
                 { title: "Run", note: "Read-only role, five-second limit; an error goes back to Draft, up to 3 tries" },
                 { title: "Read", note: "Model turns the rows into an answer" },
@@ -2757,7 +2757,7 @@ export const portfolioData = {
                 },
                 {
                   title: "A graph, not a single call",
-                  note: "A LangGraph state graph runs retrieve, draft, run, read, cite and remember. The model drafts one query, or declines, or asks to clarify. A failed query goes back to it with the error, up to three tries.",
+                  note: "A LangGraph state graph runs retrieve, draft, run, read, cite and remember. The model drafts one query, or declines, or asks to clarify, or first looks up how the data spells a name. A failed query goes back to it with the error, up to three tries, and a reading it judges wrong gets one more draft. The model is reached through LangChain's chat-model interface, so LangSmith can trace every step.",
                 },
                 {
                   title: "Rules in code and in the database",
@@ -2814,6 +2814,31 @@ export const portfolioData = {
           ],
         },
         {
+          id: "loose-names",
+          heading: "Questions that name things loosely",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The held-out sets name keywords and campaigns the way the data spells them. People don't. A marketer asks about \"the Mint keyword\" when the data says \"mint budget\", or \"the German campaign\" when it says \"Ledgerly - DE - Search\". On questions like that, the first version wrote a query that matched nothing and confidently reported 0. So I wrote 16 new test questions in that style, three of them about things that do not exist, and froze them before any agent ran. Then I gave the agent two new moves: look up how the data spells a name before writing the final query, and take one more try when it judges its own reading was wrong.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Loose-name questions, Claude Sonnet" }, { label: "Correct of 16" }],
+              rows: [
+                { cells: ["One query, read by the model", "10"] },
+                { cells: ["First version of the agent", "9"] },
+                { cells: ["Agent that looks names up first", "15"], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "It gained six questions and lost none, at the price of about one extra model call per question. Two of the gains are questions about things that do not exist, where the first version answered 0 and the new one says the data cannot answer. The one miss was the privacy rule refusing a lookup over a table that holds no people counts. That rule is now narrower, with a test.",
+            },
+          ],
+        },
+        {
           id: "safety",
           heading: "What it never did",
           blocks: [
@@ -2835,7 +2860,6 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Send a self-declined answer back for another try instead of stopping.",
                 "Tighten the ads notes so the audience table is used only for age and gender questions.",
                 "Add questions written by someone who did not write the domain notes, and a real warehouse beside the simulated ones.",
               ],
