@@ -1012,14 +1012,14 @@ describe("portfolioData", () => {
     expect([...numerals].every((numeral) => ["30", "350", "2", "2025", "5", "15", "3", "94", "500", "000", "4"].includes(numeral))).toBe(true);
   });
 
-  it("carries the share image's new aria-label and stat label and no decided wording (R8)", () => {
+  it("carries the share image's aria-label and headline and no decided wording (R8, redesigned 2026-10-27)", () => {
     const svgPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../docs/design/og.svg");
     const svg = readFileSync(svgPath, "utf8");
 
     expect(svg).toContain(
-      'aria-label="Muhammad Muhibullah, Forward Deployed Engineer. 30 to 350 plus tickets a day."',
+      'aria-label="Muhammad Muhibullah, Forward Deployed Engineer. I build the agents and fix the process around them."',
     );
-    expect(svg).toContain('class="stat-label">Tickets a day</text>');
+    expect(svg).toContain('<h1>I build the agents and<br/>fix the process around them.</h1>');
     expect(svg).not.toMatch(/Tickets decided|decided a day/);
   });
 
