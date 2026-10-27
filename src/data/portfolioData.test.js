@@ -339,11 +339,11 @@ const pinnedCaseStudyNarratives = {
       },
       {
         label: "Stack",
-        value: "Python, LangGraph, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku"
+        value: "Python, LangGraph, LangChain, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku"
       },
       {
         label: "Where it stands",
-        value: "Open source under the MIT licence, in the erp-data-platform repository, with 18 tests that need no model"
+        value: "Open source under the MIT licence, in the erp-data-platform repository, with 40 tests that need no model"
       }
     ],
     calloutEyebrow: "What I'd bring to a client",
