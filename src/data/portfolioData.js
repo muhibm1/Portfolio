@@ -1204,7 +1204,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The two agents are close on accuracy. The difference is what each does before it is sure. The baseline changed the system without approval in 21 of 24 runs, and in half of them it acted before reading the evidence it needed. AgentOps never did either, and the one time it fell short it stopped and handed the incident to a person with its findings, rather than guessing. Getting here took eleven paid runs, each one changing one thing, running the same incidents again, and comparing incident by incident. The first four runs each failed on a bug in my own code that no test with a stand-in model could catch; the last found a bug in my scoring that had marked one approved change as unapproved. Every run is published with what it found and what I changed, and the three held-out incidents were never used to tune anything.",
+                "The two agents are close on accuracy. The difference is what each does before it is sure. The baseline changed the system without approval in 21 of 24 runs, and in half of them it acted before reading the evidence it needed. AgentOps never did either, and the one time it fell short it stopped and handed the incident to a person with its findings, rather than guessing. Getting here took eleven live runs, each one changing one thing, running the same incidents again, and comparing incident by incident. The first four runs each failed on a bug in my own code that no test with a stand-in model could catch; the last found a bug in my scoring that had marked one approved change as unapproved. Every run is published with what it found and what I changed, and the three held-out incidents were never used to tune anything.",
             },
             {
               type: "paragraph",
@@ -1215,7 +1215,7 @@ export const portfolioData = {
         },
         {
           id: "loop",
-          heading: "Eleven paid runs, one change at a time",
+          heading: "Eleven live runs, one change at a time",
           blocks: [
             {
               type: "paragraph",
@@ -1269,7 +1269,7 @@ export const portfolioData = {
                 },
                 {
                   title: "A cheap live run belongs in the loop from day one",
-                  note: "The whole loop, eleven runs on two models, cost about $6.50. The first failing run was worth more than the test suite.",
+                  note: "The whole loop took eleven live runs on two models. The first failing run was worth more than the test suite.",
                 },
               ],
             },
@@ -1310,7 +1310,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The repository carries a handover document for a team taking it over, the evaluation method written so another team could adopt it, and the record of every paid run with its fix. Those are the parts I would expect a customer to read first.",
+                "The repository carries a handover document for a team taking it over, the evaluation method written so another team could adopt it, and the record of every live run with its fix. Those are the parts I would expect a customer to read first.",
             },
           ],
         },
@@ -1580,7 +1580,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling within the normal variation. So a failing check means a real change, not model noise.",
+                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling within the normal variation, so this failing check was a real change, not model noise.",
             },
           ],
         },
@@ -1684,7 +1684,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. The paid runs on LangChain's client cost $1.97.",
+                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. Gating the unchanged agent against itself 2,000 times from the stored runs then measured the false-alarm rate directly: never on the SQL agent, but half of all gates on the email agent at 3 runs a side, and one in six with pooled main, because eight of its checks pass only some of the time. The next step is a per-case statistical test, which on the same runs cut false alarms to 5%.",
             },
           ],
         },
@@ -2751,7 +2751,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Privacy in the tool, not the prompt",
-                  note: "On the ads data, user-level records sit where the agent's role cannot read, and any result row under 50 installs comes back blanked. So the agent cannot leak a small group, whatever it writes.",
+                  note: "On the ads data, user-level records sit where the agent's role cannot read. Every people figure in a result must come from at least 50 people or it comes back blanked. The tool traces each column to its source, so renaming a count does not hide it, and it checks the counts behind every rate. What it cannot stop alone is differencing across separate questions; that needs a privacy budget.",
                 },
               ],
             },
