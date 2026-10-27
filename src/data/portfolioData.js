@@ -131,7 +131,7 @@ export const portfolioData = {
       eyebrow: "01 · About",
       heading: "A system isn't done until people trust it.",
       text:
-        "I'm Muhammad, a data engineer on the platform behind Apple Maps, based in Austin. Before that I built product software at a startup, delivered a platform redesign for a freelance client, and taught machine learning to two cohorts of mostly first-time coders. Teaching is still how I think about deployment: a system isn't done until the people using it understand it and trust it. At Apple that meant deploying an agent that hands reviewers a documented recommendation instead of a verdict, and it cleared a two-month backlog in two weeks. Outside work I build agent systems every day and measure them hard enough to throw out what doesn't hold up.",
+        "I'm Muhammad, a data engineer on the platform behind Apple Maps, based in Austin. Before that I built product software at a startup, delivered a platform redesign for a freelance client, and taught AI and applied data engineering to two cohorts preparing for their first jobs. Teaching is still how I think about deployment: a system isn't done until the people using it understand it and trust it. At Apple that meant deploying an agent that hands reviewers a documented recommendation instead of a verdict, and it cleared a two-month backlog in two weeks. Outside work I build agent systems every day and measure them hard enough to throw out what doesn't hold up.",
     },
 
     buildLog: {
@@ -209,7 +209,7 @@ export const portfolioData = {
     workingWithPeople: {
       eyebrow: "Working with people",
       text:
-        "I've taken a client's goals for an education platform redesign through to launch, taught machine learning to cohorts of about 30 who were mostly new to code, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
+        "I've taken a client's goals for an education platform redesign through to launch, taught AI and applied data engineering to cohorts of about 30 to get them job ready, and turned a CTO's business goals into technical requirements. Getting the room to understand a system is part of shipping it.",
     },
 
     experience: {
@@ -244,7 +244,7 @@ export const portfolioData = {
           title: "AI Instructor",
           period: "Oct 2023 to Mar 2025",
           highlights: [
-            "Taught machine learning, neural networks, deep learning and natural language processing to two cohorts of about 30, most new to code.",
+            "Taught AI and applied data engineering to two cohorts of about 30, built to get graduates job ready.",
             "Ran 4.5 hours a week of office hours and 1:1 mentorship with hands-on code review.",
           ],
         },
