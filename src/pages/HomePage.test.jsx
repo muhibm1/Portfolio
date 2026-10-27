@@ -72,7 +72,7 @@ describe('HomePage', () => {
 
     const about = document.getElementById('about');
     expect(within(about).getByRole('heading', { name: home.about.heading })).toBeInTheDocument();
-    expect(home.about.paragraphs).toHaveLength(2);
+    expect(home.about.paragraphs).toHaveLength(1);
     for (const paragraph of home.about.paragraphs) {
       expect(within(about).getByText(paragraph)).toBeInTheDocument();
     }

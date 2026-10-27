@@ -130,10 +130,9 @@ export const portfolioData = {
     about: {
       eyebrow: "01 · About",
       heading: "A system isn't done until people trust it.",
-      // The owner's own wording, 2026-10-27.
+      // The owner's own wording, 2026-10-27, cut to one paragraph at his request.
       paragraphs: [
-        "I'm a deployment-focused data engineer who loves building AI agents, automating workflows, and keeping data platforms reliable. Right now, I'm on the data platform behind Apple Maps, building decision support agents and leading automation that helps review teams move faster while people keep the final call. Before that, I built an AI content pipeline at an early-stage startup, taught AI and applied data engineering to cohorts of aspiring engineers at edX, and delivered client software as a consultant, including an education platform I took from discovery through launch.",
-        "Outside of work, I build what makes agents dependable: orchestration, context engineering and retrieval, evaluation, and guardrails that keep a person in control. You can explore those projects here. I bring enterprise discipline and startup speed, and I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
+        "I'm a deployment-focused data engineer who loves building AI agents, automating workflows and keeping data platforms reliable. At Apple Maps I build decision support agents and lead automation that helps review teams move faster while people keep the final call. Before that I built an AI content pipeline at an early-stage startup, taught AI and applied data engineering at edX, and took a client's education platform from discovery through launch. Outside work I build what makes agents dependable: orchestration, context, evaluation and guardrails that keep a person in control. I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
       ],
     },
 
