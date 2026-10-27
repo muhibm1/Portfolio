@@ -999,6 +999,175 @@ export const portfolioData = {
           ],
         },
         {
+          id: "architecture",
+          heading: "Architecture",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The graph sits between three things it does not trust: the evidence, the model and the operator's command line. Evidence arrives as data through one interface. Model answers must fit a template with no control fields. Actions come only from the runbook, and every step is saved, so a run can pause for days and pick up where it stopped.",
+            },
+            {
+              type: "architecture",
+              // Drawn to agentops at main 11acbfe (graph.py, actions/, runbooks/default.yaml, cli.py).
+              label: "AgentOps' architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 568],
+              legend: [
+                { kind: "data", label: "Untrusted input" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "Human approval" },
+                { kind: "agent", label: "Model step" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Inputs" },
+                { x: 196, y: 60, text: "LangGraph state graph · one typed state" },
+                { x: 590, y: 60, text: "Guards" },
+                { x: 775, y: 60, text: "Records" },
+              ],
+              boxes: [
+                {
+                  x: 32, y: 74, w: 138, h: 76, kind: "data",
+                  parts: [{ title: "Incident" }, { text: "symptoms, worded like a page or a ticket" }],
+                },
+                {
+                  x: 32, y: 160, w: 138, h: 120, kind: "data",
+                  parts: [
+                    { title: "Evidence" },
+                    { mono: "scenarios/*.json" },
+                    { text: "8 scripted incidents: logs, metrics, deploys" },
+                    { text: ["read through ", { mono: "EvidenceSource" }], gap: true },
+                  ],
+                },
+                {
+                  x: 32, y: 290, w: 138, h: 132, kind: "plain",
+                  parts: [
+                    { title: "Operator" },
+                    { mono: "agentops" },
+                    { text: "run · approve · history · fork" },
+                    { text: ["or ", { mono: "langgraph dev" }], gap: true },
+                  ],
+                },
+                {
+                  x: 196, y: 74, w: 155, h: 60, kind: "agent",
+                  parts: [{ title: "triage" }, { text: "lists likely causes" }],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 60, kind: "code",
+                  parts: [{ title: "evidence" }, { text: "logs · metrics · deploys, in parallel" }],
+                },
+                {
+                  x: 380, y: 152, w: 178, h: 66, kind: "code",
+                  parts: [{ title: "merge" }, { text: "joins evidence, spends the budget" }],
+                },
+                {
+                  x: 196, y: 152, w: 155, h: 66, kind: "agent",
+                  parts: [{ title: "rca" }, { text: "re-scores, proposes one action" }],
+                },
+                {
+                  x: 196, y: 236, w: 155, h: 84, kind: "retrieval",
+                  parts: [{ title: "approval", accent: true }, { mono: "interrupt()" }, { text: "approve, reject or edit" }],
+                },
+                {
+                  x: 380, y: 236, w: 178, h: 84, kind: "code",
+                  parts: [{ title: "execute" }, { text: "valid params, preconditions, not run before, dry run, apply once" }],
+                },
+                {
+                  x: 380, y: 338, w: 178, h: 66, kind: "code",
+                  parts: [{ title: "verify" }, { text: "symptoms cleared? if not, back to the evidence" }],
+                },
+                {
+                  x: 196, y: 338, w: 155, h: 66, kind: "agent",
+                  parts: [{ title: "postmortem" }, { text: "what happened, cited" }],
+                },
+                {
+                  x: 196, y: 420, w: 362, h: 50, kind: "agent",
+                  parts: [{ title: "escalate" }, { text: "no clear cause or no budget left: a hand-off with everything found" }],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 184, kind: "code",
+                  parts: [
+                    { title: "Runbook" },
+                    { mono: "runbooks/default.yaml" },
+                    { text: "the only actions that can run:", gap: true },
+                    { mono: "scale_db_pool" }, { mono: "rollback_deploy" }, { mono: "circuit_break_…" }, { mono: "rerun_partition" }, { mono: "pause_batch_job" },
+                  ],
+                },
+                {
+                  x: 590, y: 268, w: 155, h: 96, kind: "code",
+                  parts: [{ title: "Templates" }, { text: "every model answer is a Pydantic model with no control field, citing only evidence collected" }],
+                },
+                {
+                  x: 590, y: 374, w: 155, h: 96, kind: "code",
+                  parts: [{ title: "Fence" }, { text: "evidence wrapped in a random marker and read as data, never as instructions" }],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 124, kind: "code",
+                  parts: [
+                    { title: "Checkpoints" },
+                    { mono: "agentops.sqlite" },
+                    { text: "state saved after every step; a thread picks up after a crash, and can be replayed or forked" },
+                  ],
+                },
+                {
+                  x: 773, y: 208, w: 165, h: 112, kind: "code",
+                  parts: [
+                    { title: "Audit log" },
+                    { mono: "audit/<incident>.jsonl" },
+                    { text: "append-only: proposal, decision, apply, verdict" },
+                  ],
+                },
+                {
+                  x: 773, y: 330, w: 165, h: 140, kind: "plain",
+                  parts: [
+                    { title: "LangSmith" },
+                    { text: "opt-in traces of every model and tool call" },
+                    { text: "evaluators score the graph against a plain agent", gap: true },
+                  ],
+                },
+                {
+                  x: 32, y: 492, w: 526, h: 100, kind: "plain",
+                  parts: [
+                    { title: "Measured against a plain agent" },
+                    { text: "same model, same tools, no approval step; 24 live runs each" },
+                    {
+                      chips: [
+                        { top: "24 of 24", bottom: "waited for approval", strong: true },
+                        { top: "3 of 24", bottom: "plain agent waited" },
+                        { top: "23 of 24", bottom: "right end state" },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  x: 590, y: 492, w: 348, h: 100, kind: "code",
+                  parts: [
+                    { title: "Tests and CI" },
+                    { text: "the control flow, every guard and the crash-after-apply case run on a scripted model" },
+                    { text: "CI calls no live model and reads no secrets", gap: true },
+                  ],
+                },
+              ],
+              edges: [
+                { d: "M170 104 H194" },
+                { d: "M351 104 H378" },
+                { d: "M469 134 V150" },
+                { d: "M380 185 H353" },
+                { d: "M273 218 V234" },
+                { d: "M351 278 H378", kind: "retrieval" },
+                { d: "M469 320 V336" },
+                { d: "M380 371 H353" },
+                { d: "M101 160 V155 H186 V68 H469 V72", dashed: true, kind: "code" },
+                { d: "M170 300 H186 V278 H194", kind: "retrieval" },
+                { d: "M558 300 H574 V166 H588", kind: "code" },
+              ],
+              edgeLabels: [],
+              note: "Orange is the one place a person decides. The graph cannot be built without a checkpointer, and execute is reachable only from approval, so no flag, prompt or model answer can skip it. Blue boxes are the only model calls.",
+            },
+          ],
+        },
+        {
           // The home page's replay, shown here too (owner, 2026-10-23). Its values are homeReplay.
           id: "watch-a-run",
           heading: "Watch a run",
@@ -1470,6 +1639,145 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Mining reads each recorded run, the scores attached to it, and the step labels that LangGraph adds. So every failure gets a signature: what went wrong, and at which step, such as a wrong outcome at the step where the agent hands the incident to a person. Failures group by signature, so twenty failures are often three bugs. A failure already covered by the dataset is not proposed twice.",
+            },
+          ],
+        },
+        {
+          id: "architecture",
+          heading: "Architecture",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Flywheel is a command line tool and a GitHub Action around the agent's own repository. LangSmith holds the record of real runs. The test cases live in a file next to the agent's code, so a new case is reviewed like any other change. Only one step needs a person: confirming what the right answer was.",
+            },
+            {
+              type: "architecture",
+              // Drawn to flywheel at main d439a3f (cli.py, mine.py, gate.py, action.yml).
+              label: "Flywheel's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 528],
+              legend: [
+                { kind: "data", label: "The agent's repository" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "A person decides" },
+                { kind: "agent", label: "The agent under test" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Agent repository" },
+                { x: 196, y: 60, text: "Record · LangSmith" },
+                { x: 380, y: 60, text: "Flywheel · CLI" },
+                { x: 590, y: 60, text: "Pull request · Action" },
+                { x: 775, y: 60, text: "Result" },
+              ],
+              boxes: [
+                {
+                  x: 32, y: 74, w: 138, h: 130, kind: "agent",
+                  parts: [
+                    { title: "The agent" },
+                    { text: "any Python agent; gated so far: AgentOps, a design-records agent, LangChain's email and SQL agents" },
+                  ],
+                },
+                {
+                  x: 32, y: 214, w: 138, h: 96, kind: "data",
+                  parts: [{ title: "Test cases" }, { text: "a dataset file next to the code" }, { mono: "flywheel.toml" }],
+                },
+                {
+                  x: 32, y: 320, w: 138, h: 96, kind: "data",
+                  parts: [{ title: "Evaluators" }, { text: "the agent's own checks, LangSmith's signature" }],
+                },
+                {
+                  x: 196, y: 74, w: 155, h: 130, kind: "plain",
+                  parts: [
+                    { title: "Traces" },
+                    { text: "every real run: inputs, outputs or error, scores" },
+                    { text: "and the LangGraph node it reached", gap: true },
+                  ],
+                },
+                {
+                  x: 196, y: 214, w: 155, h: 96, kind: "plain",
+                  parts: [{ title: "Dataset" }, { text: ["a mirror of the file, kept by ", { mono: "flywheel sync" }] }],
+                },
+                {
+                  x: 196, y: 320, w: 155, h: 96, kind: "plain",
+                  parts: [{ title: "Experiments" }, { text: "each case run 3 times, on main and on the change" }],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 76, kind: "code",
+                  parts: [{ title: "mine" }, { text: "failures grouped by what went wrong, and where" }],
+                },
+                {
+                  x: 380, y: 160, w: 178, h: 70, kind: "retrieval",
+                  parts: [{ title: "review", accent: true }, { text: "a person confirms the right answer" }],
+                },
+                {
+                  x: 380, y: 240, w: 178, h: 70, kind: "code",
+                  parts: [{ title: "promote" }, { text: "the case joins the test file" }],
+                },
+                {
+                  x: 380, y: 320, w: 178, h: 96, kind: "code",
+                  parts: [
+                    { title: "gate" },
+                    { text: "case by case: broken, fixed, wobble, new" },
+                    { text: "plus a sign test" },
+                  ],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 342, kind: "code",
+                  parts: [
+                    { title: "Flywheel Action" },
+                    { text: "on every pull request" },
+                    { section: "Steps" },
+                    { text: "install the base branch, run the cases" },
+                    { text: "install the change, run the cases" },
+                    { text: "compare, comment, pass or fail the check" },
+                    { rule: true },
+                    { text: "reuses main's stored result when nothing it depends on changed", gap: true },
+                    { text: "fails the check if the change edits its own checks without a person's approval", gap: true },
+                  ],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 160, kind: "plain",
+                  parts: [
+                    { title: "Comment" },
+                    { text: "\"7 test cases, 3 times each, before and after this change. 2 cases that passed before now fail.\"" },
+                    { text: "each broken case links to its trace", gap: true },
+                  ],
+                },
+                {
+                  x: 773, y: 244, w: 165, h: 172, kind: "retrieval",
+                  parts: [{ title: "Check", accent: true }, { text: "red when a case broke" }, { text: "a person reads the trace and decides to fix or merge", gap: true }],
+                },
+                {
+                  x: 32, y: 438, w: 906, h: 86, kind: "plain",
+                  parts: [
+                    { title: "What it caught" },
+                    {
+                      chips: [
+                        { top: "19 to 14", bottom: "AgentOps, of 21: blocked", strong: true },
+                        { top: "996 passed", bottom: "unit tests on the same change" },
+                        { top: "main vs main", bottom: "control run passed" },
+                        { top: "27 of 33", bottom: "LangChain email: totals tied" },
+                      ],
+                    },
+                    { text: "On LangChain's email agent the totals called Sonnet and Haiku equal; case by case, Haiku missed the reply deadline in one email, every time.", gap: true },
+                  ],
+                },
+              ],
+              edges: [
+                { d: "M170 139 H194", kind: "agent" },
+                { d: "M351 112 H378" },
+                { d: "M469 150 V158", kind: "retrieval" },
+                { d: "M469 230 V238" },
+                { d: "M172 240 H194" },
+                { d: "M351 368 H378" },
+                { d: "M558 368 H574 V245 H588" },
+                { d: "M745 154 H771" },
+                { d: "M745 330 H771", kind: "retrieval" },
+              ],
+              edgeLabels: [],
+              note: "Orange is the person. Mining proposes and the gate decides by fixed rules; neither asks a model whether the agent got better. A case that came from real traffic is what caught the AgentOps regression; the hand-written version of the same scenario only wobbled.",
             },
           ],
         },
@@ -2747,6 +3055,171 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "Finance queries go through the platform's own query tool unchanged, so every citation to an Odoo record version is checked in code. Conversations are saved per thread, so \"and how much have they paid?\" works as a follow-up.",
+            },
+          ],
+        },
+        {
+          id: "architecture",
+          heading: "Architecture",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The model takes two steps in a fixed graph: it writes the query, and it reads the result. Everything around those two steps is code: picking the context, checking the query, running it under a role that can only read, and checking the citations. The database enforces the same rules again, so a mistake in one layer is caught by the other.",
+            },
+            {
+              type: "architecture",
+              // Drawn to erp-data-platform analyst/ at main 5e377c6 (graph.py, sql.py, retrieve.py).
+              label: "The analyst agent's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 572],
+              legend: [
+                { kind: "data", label: "Data and domain notes" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "Retrieval" },
+                { kind: "agent", label: "Model step" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Ask" },
+                { x: 196, y: 60, text: "Context" },
+                { x: 380, y: 60, text: "LangGraph state graph" },
+                { x: 590, y: 60, text: "Rules · twice" },
+                { x: 775, y: 60, text: "Warehouses" },
+              ],
+              boxes: [
+                {
+                  x: 32, y: 74, w: 138, h: 76, kind: "plain",
+                  parts: [{ title: "Question" }, { text: "\"Which three customers owe us the most?\"" }],
+                },
+                {
+                  x: 32, y: 160, w: 138, h: 160, kind: "data",
+                  parts: [
+                    { title: "Domain file" },
+                    { mono: "domains/*.yaml" },
+                    { text: "connection, allowed schemas, read-only role, privacy rule" },
+                    { text: "notes on tables, business terms and worked examples", gap: true },
+                  ],
+                },
+                {
+                  x: 32, y: 330, w: 138, h: 92, kind: "code",
+                  parts: [{ title: "Thread memory" }, { text: "LangGraph checkpointer: each turn saved per thread, so follow-ups work" }],
+                },
+                {
+                  x: 196, y: 74, w: 155, h: 246, kind: "retrieval",
+                  parts: [
+                    { title: "retrieve" },
+                    { pairs: [["BM25", "exact words"], ["bge-small", "meaning, local"]] },
+                    { text: "rankings fused (RRF)" },
+                    { rule: true },
+                    { text: "into the prompt:", gap: true },
+                    { text: "top 4 tables, 4 terms, 2 examples" },
+                    { text: "milliseconds, no model call", gap: true },
+                  ],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 84, kind: "agent",
+                  parts: [{ title: "draft" }, { text: "one query, or \"not answerable\", or a clarifying question" }],
+                },
+                {
+                  x: 380, y: 184, w: 178, h: 70, kind: "code",
+                  parts: [{ title: "execute" }, { text: "check, then run; a failure goes back with its error" }],
+                },
+                {
+                  x: 380, y: 264, w: 178, h: 70, kind: "agent",
+                  parts: [{ title: "answer" }, { text: "reads the rows: a value and one sentence, or declines" }],
+                },
+                {
+                  x: 380, y: 344, w: 178, h: 58, kind: "code",
+                  parts: [{ title: "cite" }, { text: "source records checked, real and current" }],
+                },
+                {
+                  x: 380, y: 412, w: 178, h: 50, kind: "code",
+                  parts: [{ title: "remember" }, { text: "saves the turn" }],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 140, kind: "code",
+                  parts: [
+                    { title: "1 · sqlglot" },
+                    { text: "parses the query before it runs" },
+                    { text: "one SELECT, allowed schemas only, no writes, no file reads" },
+                  ],
+                },
+                {
+                  x: 590, y: 224, w: 155, h: 130, kind: "code",
+                  parts: [
+                    { title: "2 · Postgres" },
+                    { text: "read-only role, read-only transaction" },
+                    { text: "5 s limit, 200 rows" },
+                  ],
+                },
+                {
+                  x: 590, y: 364, w: 155, h: 98, kind: "code",
+                  parts: [{ title: "Privacy rule" }, { text: "any row under 50 installs comes back blanked" }],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 140, kind: "data",
+                  parts: [
+                    { title: "Finance" },
+                    { text: "the ERP warehouse" },
+                    { text: ["queries run through ", { mono: "edp.ask.query" }, " unchanged"], gap: true },
+                  ],
+                },
+                {
+                  x: 773, y: 224, w: 165, h: 238, kind: "data",
+                  parts: [
+                    { title: "Search ads" },
+                    { text: "simulated: 6 campaigns in 4 currencies, 52 keywords, 2 A/B tests" },
+                    { text: "user-level taps in a private schema the role cannot read", gap: true },
+                    { text: "added with one file, no code change", gap: true },
+                  ],
+                },
+                {
+                  x: 32, y: 482, w: 526, h: 112, kind: "plain",
+                  parts: [
+                    { title: "Evaluation" },
+                    { text: "103 held-out questions, answers from gold SQL, frozen before any run, graded in code" },
+                    {
+                      chips: [
+                        { top: "one query", bottom: "47" },
+                        { top: "+ model reads", bottom: "73" },
+                        { top: "+ full loop", bottom: "73" },
+                        { top: "+ notes", bottom: "77", strong: true },
+                      ],
+                    },
+                    { text: "finance, out of 77, Claude Sonnet: what each part adds", gap: true },
+                  ],
+                },
+                {
+                  x: 590, y: 482, w: 348, h: 112, kind: "code",
+                  parts: [
+                    { title: "What it never did" },
+                    { text: "102 of 103 held-out questions right with Sonnet, 96 with Haiku" },
+                    { text: "no query wrote or read outside its schemas, across 697 scored answers", gap: true },
+                    { text: "18 of 18 small-group requests refused; 46 of 47 unanswerable questions declined" },
+                  ],
+                },
+              ],
+              edges: [
+                { d: "M170 112 H194" },
+                { d: "M170 240 H194" },
+                { d: "M351 116 H378", kind: "retrieval" },
+                { d: "M440 158 V182", kind: "agent" },
+                { d: "M500 184 V160", kind: "agent" },
+                { d: "M469 254 V262" },
+                { d: "M469 334 V342" },
+                { d: "M469 402 V410" },
+                { d: "M558 210 H574 V144 H588" },
+                { d: "M558 230 H588" },
+                { d: "M745 144 H771" },
+                { d: "M745 290 H771" },
+                { d: "M380 120 H366 V437 H378", dashed: true },
+              ],
+              edgeLabels: [
+                { x: 508, y: 176, text: "repair, up to 3" },
+                { x: 296, y: 452, text: "declines or asks" },
+              ],
+              note: "Blue boxes are the only model calls. The query passes two independent gates, sqlglot in code and the database's own role, so it can only read, and the privacy rule lives in the tool, where no prompt can talk it out of anything.",
             },
           ],
         },
