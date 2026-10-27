@@ -1580,7 +1580,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling within the normal variation. So a failing check means a real change, not model noise.",
+                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling within the normal variation, so this failing check was a real change, not model noise.",
             },
           ],
         },
@@ -1684,7 +1684,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way.",
+                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. Gating the unchanged agent against itself 2,000 times from the stored runs then measured the false-alarm rate directly: never on the SQL agent, but half of all gates on the email agent at 3 runs a side, and one in six with pooled main, because eight of its checks pass only some of the time. The next step is a per-case statistical test, which on the same runs cut false alarms to 5%.",
             },
           ],
         },
@@ -2739,7 +2739,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Privacy in the tool, not the prompt",
-                  note: "On the ads data, user-level records sit where the agent's role cannot read, and any result row under 50 installs comes back blanked. So the agent cannot leak a small group, whatever it writes.",
+                  note: "On the ads data, user-level records sit where the agent's role cannot read. Every people figure in a result must come from at least 50 people or it comes back blanked. The tool traces each column to its source, so renaming a count does not hide it, and it checks the counts behind every rate. What it cannot stop alone is differencing across separate questions; that needs a privacy budget.",
                 },
               ],
             },
