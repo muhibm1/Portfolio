@@ -2711,8 +2711,8 @@ export const portfolioData = {
           label: "What it is",
           value: "A question to SQL agent with retrieval, a repair loop, read-only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds",
         },
-        { label: "Stack", value: "Python, LangGraph, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku" },
-        { label: "Where it stands", value: "Open source under the MIT licence, in the erp-data-platform repository, with 18 tests that need no model" },
+        { label: "Stack", value: "Python, LangGraph, LangChain, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku" },
+        { label: "Where it stands", value: "Open source under the MIT licence, in the erp-data-platform repository, with 40 tests that need no model" },
       ],
       stats: [
         { value: "102 of 103", label: "held-out questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
