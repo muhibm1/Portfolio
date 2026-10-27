@@ -1,6 +1,6 @@
 import { bodyLargeClasses, eyebrowClasses, h2Classes, wrapClasses } from './lookClasses';
 
-/** "01 · About": a short heading and one paragraph, in the same two-column split as Experience. */
+/** "01 · About": a short heading and the owner's paragraphs, in the same two-column split as Experience. */
 export default function AboutSection({ about }) {
   return (
     <section id="about" aria-labelledby="about-heading" className="border-t border-line py-[72px] tab:py-[120px]">
@@ -11,7 +11,13 @@ export default function AboutSection({ about }) {
             {about.heading}
           </h2>
         </div>
-        <p className={`${bodyLargeClasses} md:col-span-6 md:col-start-7`}>{about.text}</p>
+        <div className="grid gap-5 md:col-span-6 md:col-start-7">
+          {about.paragraphs.map((paragraph) => (
+            <p key={paragraph} className={bodyLargeClasses}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
     </section>
   );

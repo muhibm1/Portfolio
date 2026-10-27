@@ -130,8 +130,11 @@ export const portfolioData = {
     about: {
       eyebrow: "01 · About",
       heading: "A system isn't done until people trust it.",
-      text:
-        "I'm Muhammad, a data engineer on the platform behind Apple Maps, based in Austin. Before that I built product software at a startup, delivered a platform redesign for a freelance client, and taught AI and applied data engineering to two cohorts preparing for their first jobs. Teaching is still how I think about deployment: a system isn't done until the people using it understand it and trust it. At Apple that meant deploying an agent that hands reviewers a documented recommendation instead of a verdict, and it cleared a two-month backlog in two weeks. Outside work I build agent systems every day and measure them hard enough to throw out what doesn't hold up.",
+      // The owner's own wording, 2026-10-27.
+      paragraphs: [
+        "I'm a deployment-focused data engineer who loves building AI agents, automating workflows, and keeping data platforms reliable. Right now, I'm on the data platform behind Apple Maps, building decision support agents and leading automation that helps review teams move faster while people keep the final call. Before that, I built an AI content pipeline at an early-stage startup, taught AI and applied data engineering to cohorts of aspiring engineers at edX, and delivered client software as a consultant, including an education platform I took from discovery through launch.",
+        "Outside of work, I build what makes agents dependable: orchestration, context engineering and retrieval, evaluation, and guardrails that keep a person in control. You can explore those projects here. I bring enterprise discipline and startup speed, and I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
+      ],
     },
 
     buildLog: {
