@@ -72,7 +72,10 @@ describe('HomePage', () => {
 
     const about = document.getElementById('about');
     expect(within(about).getByRole('heading', { name: home.about.heading })).toBeInTheDocument();
-    expect(within(about).getByText(home.about.text)).toBeInTheDocument();
+    expect(home.about.paragraphs).toHaveLength(1);
+    for (const paragraph of home.about.paragraphs) {
+      expect(within(about).getByText(paragraph)).toBeInTheDocument();
+    }
   });
 
   it('renders the build log heading, its direction statement and every dated entry, newest first', () => {
