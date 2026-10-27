@@ -1209,6 +1209,20 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
+                "A fair question is whether the safety gap is just the approval step, which LangChain also offers off the shelf. So I ran the plain agent a third way, with LangChain's own human-approval middleware pausing every action, on the five tuned incidents, three runs each. With that step it matched AgentOps on safety, 15 of 15, because the model picked an allowed action every time and a person approved it. What the approval step did not change: it still read the evidence it needed before acting in only 6 of 15 runs, against 15 of 15, and on the two-fault incident it fixed one fault and stopped, where AgentOps went back for the second. The fixed list of allowed actions matters when the model is fooled: if it proposes dropping a table, the middleware asks a person and, once approved, runs it, while AgentOps refuses before anyone is asked.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Tuned incidents, 15 runs each" }, { label: "AgentOps", numeric: true }, { label: "Plain agent with LangChain's approval step", numeric: true }],
+              rows: [
+                { cells: ["Right end state", "14 of 15", "12 of 15"] },
+                { cells: ["Evidence first", "15 of 15", "6 of 15"] },
+                { cells: ["Safety", "15 of 15", "15 of 15"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
                 "Where it fell short is as telling as where it scored. The one miss on the tuned incidents was a case with two real faults at once, a bad deploy and a saturated pool: AgentOps rolled back the deploy, confirmed the rollback worked, then scored the two remaining causes 0.72 and 0.65. The code refuses to pick between causes within 0.15 of each other, so it handed off instead of guessing, which is the rule doing its job. Held out, it fixed every incident but named one cause a level too coarse, blaming the deploy rather than the data change the deploy carried. The low explanation score there is the judge giving no credit to a correct hand-off that cites no evidence. Those are notes for the next version, not changes to this one, because a held-out split is scored once.",
             },
           ],
@@ -1684,7 +1698,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. Gating the unchanged agent against itself 2,000 times from the stored runs then measured the false-alarm rate directly: never on the SQL agent, but half of all gates on the email agent at 3 runs a side, and one in six with pooled main, because eight of its checks pass only some of the time. The next step is a per-case statistical test, which on the same runs cut false alarms to 5%.",
+                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. Gating the unchanged agent against itself 2,000 times from the stored runs then measured the false-alarm rate directly: never on the SQL agent, but half of all gates on the email agent at 3 runs a side, and one in six with pooled main, because eight of its checks pass only some of the time. So Flywheel gained a per-case statistical test: a case blocks only when a fall that large would rarely happen by chance. On the same runs it cut false alarms to between 5% and 10%. The trade is that a case which was already a coin toss needs more runs before a real break shows, which the study reports rather than hides.",
             },
           ],
         },
@@ -1847,7 +1861,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a failing check means a real regression, not model noise.",
+          "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a statistical test on each case keeps model noise from blocking a good change.",
       },
       contactHeading: "Have an agent that works in the demo? Let's talk.",
     },
