@@ -84,6 +84,8 @@ const pinnedCaseStudyStats = {
   fathom: ["0 of 50", "100%", "621 of 625", "7 to 0"],
   // Added 2026-10-27 from the erp-data-platform repository's results.
   "erp-data-platform": ["29 checks", "5 of 5", "46 of 47", "73 of 73"],
+  // Added 2026-10-27 from erp-data-platform's analyst/eval/RESULTS.md.
+  "analyst-agent": ["102 of 103", "47 to 77", "18 of 18", "$0"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -322,6 +324,32 @@ const pinnedCaseStudyNarratives = {
     calloutText: "The data side of an AI engagement, owned end to end: get the data out of the systems the client already runs, make every number traceable, prove the pipeline fails loudly before trusting it, build the evaluation data from the client's own records, and hand over a runbook someone else has already used.",
     contactHeading: "Building AI on your ERP or CRM data? Let's talk."
   },
+  "analyst-agent": {
+    eyebrow: "Case study · Open source · Question to SQL agent",
+    title: "An analyst agent: ask a warehouse a question in plain English",
+    lead: "Most teams' first question to SQL demo writes one query and shows whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read-only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
+    atAGlance: [
+      {
+        label: "My role",
+        value: "Designed, built and evaluated it in October 2026"
+      },
+      {
+        label: "What it is",
+        value: "A question to SQL agent with retrieval, a repair loop, read-only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds"
+      },
+      {
+        label: "Stack",
+        value: "Python, LangGraph, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku"
+      },
+      {
+        label: "Where it stands",
+        value: "Open source under the MIT licence, in the erp-data-platform repository, with 18 tests that need no model"
+      }
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText: "An analyst agent people can check: the business's own terms written down as data, every query checked in code and again by the database, privacy rules the agent cannot talk its way past, and an evaluation on the client's own questions that shows what each part is worth before anyone relies on it.",
+    contactHeading: "Want your team to ask the warehouse in plain English? Let's talk."
+  },
   "apple-integration": {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
@@ -459,7 +487,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the ten case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27)", () => {
+  it("names / then /work then /work/<id> for the eleven case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27; the analyst agent added sixth, not featured, the same day)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -468,6 +496,7 @@ describe("portfolioData", () => {
       "/work/flywheel",
       "/work/fathom",
       "/work/erp-data-platform",
+      "/work/analyst-agent",
       "/work/esper",
       "/work/orion",
       "/work/apple-integration",
@@ -712,12 +741,12 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)", () => {
+  it("keeps the eleven 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(11);
   });
 
   it("names personal.repositories with the seven public repositories, held once (R153; snapshots retired 2026-10-26; erp-data-platform added 2026-10-27)", () => {
@@ -1114,12 +1143,13 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return numbersIn(rest);
   }
 
-  it("puts Fathom fourth, then the ERP data platform as the last featured study, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
+  it("puts Fathom fourth, then the ERP data platform as the last featured study, then the analyst agent, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
     const ids = portfolioData.caseStudies.map((study) => study.id);
     expect(ids.indexOf("fathom")).toBe(3);
     expect(ids.indexOf("erp-data-platform")).toBe(4);
-    expect(ids.indexOf("esper")).toBe(5);
-    expect(ids.indexOf("orion")).toBe(6);
+    expect(ids.indexOf("analyst-agent")).toBe(5);
+    expect(ids.indexOf("esper")).toBe(6);
+    expect(ids.indexOf("orion")).toBe(7);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
     expect(fathom).not.toHaveProperty("status");
@@ -1209,7 +1239,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(9);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(10);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
