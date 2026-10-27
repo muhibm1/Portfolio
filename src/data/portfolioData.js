@@ -2392,6 +2392,163 @@ export const portfolioData = {
           ],
         },
         {
+          id: "architecture",
+          heading: "Architecture",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Records leave Odoo only through its API. One scheduled command loads them, rebuilds the finance tables and checks them, and the warehouse keeps every version it ever saw. Agents reach it through one MCP server that can only read, and every answer points back to an Odoo record.",
+            },
+            {
+              type: "architecture",
+              // Drawn to erp-data-platform at main 8082625, in the same shape as Orion's diagram.
+              label: "The ERP data platform's architecture",
+              enlarge: "Enlarge",
+              close: "Close",
+              viewBox: [20, 42, 930, 574],
+              legend: [
+                { kind: "data", label: "Source system" },
+                { kind: "code", label: "Deterministic code, no model" },
+                { kind: "retrieval", label: "Trust: checks and citations" },
+                { kind: "agent", label: "Agent interface" },
+              ],
+              labels: [
+                { x: 30, y: 60, text: "Source" },
+                { x: 196, y: 60, text: "Load · edp run" },
+                { x: 380, y: 60, text: "Warehouse · Postgres 16" },
+                { x: 590, y: 60, text: "Serve · edp mcp" },
+                { x: 775, y: 60, text: "Use" },
+              ],
+              boxes: [
+                {
+                  x: 32, y: 74, w: 138, h: 112, kind: "data",
+                  parts: [{ title: "Odoo 17" }, { text: "CRM, Sales, Invoicing" }, { mono: "/jsonrpc" }, { text: "API only, no database access", gap: true }],
+                },
+                {
+                  x: 32, y: 196, w: 138, h: 100, kind: "plain",
+                  parts: [{ mono: "edp.simulate" }, { text: "a seeded year of business through Odoo's own logic" }, { text: "mess added after the first load", gap: true }],
+                },
+                {
+                  x: 32, y: 306, w: 138, h: 64, kind: "plain",
+                  parts: [{ title: "Schedule" }, { text: "cron, or" }, { mono: "edp run --every" }],
+                },
+                {
+                  x: 196, y: 74, w: 155, h: 296, kind: "code",
+                  parts: [
+                    { title: "edp run" },
+                    { pairs: [["lock", "one run at a time"], ["extract", "only what changed"], ["retry", "backoff on a dropped link"], ["dbt build", "models + checks"], ["monitor", "five checks"]] },
+                    { rule: true },
+                    { text: "a new custom field is picked up; a missing one stops the load by name" },
+                    { text: "exit 0 ok · 1 failed · 3 lock taken", gap: true },
+                  ],
+                },
+                {
+                  x: 380, y: 74, w: 178, h: 90, kind: "code",
+                  parts: [{ title: "Raw" }, { mono: "raw.*" }, { text: "append-only, one row per saved version" }, { text: "(odoo_id, write_date)" }],
+                },
+                {
+                  x: 380, y: 174, w: 178, h: 112, kind: "code",
+                  parts: [
+                    { title: "dbt models" },
+                    { text: "staging → intermediate → marts" },
+                    { mono: "revenue_by_customer" }, { mono: "receivables_aging" }, { mono: "deal_to_cash" },
+                  ],
+                },
+                {
+                  x: 380, y: 296, w: 178, h: 74, kind: "code",
+                  parts: [{ title: "Fathom" }, { text: "lineage and owners" }, { text: "rules CON-101 to 103" }, { text: "incidents INC-001 to 004" }],
+                },
+                {
+                  x: 32, y: 392, w: 526, h: 110, kind: "retrieval",
+                  parts: [
+                    { title: "Trust layer", accent: true },
+                    { text: "every number can be traced, checked, and compared with Odoo" },
+                    {
+                      chips: [
+                        { top: "edp trace", bottom: "adds up" },
+                        { top: "29 checks", bottom: "dbt build" },
+                        { top: "5 monitors", bottom: "totals vs Odoo" },
+                        { top: "citations", bottom: "real, current", strong: true },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  x: 590, y: 74, w: 155, h: 428, kind: "agent",
+                  parts: [
+                    { title: "edp mcp" },
+                    { text: ["stdio, or ", { mono: "edp tool" }] },
+                    { section: "Tools" },
+                    { mono: "find_customers" }, { mono: "customer_summary" }, { mono: "list_invoices" }, { mono: "list_deals" }, { mono: "query" }, { mono: "check_citations" },
+                    { rule: true },
+                    { sub: "Read-only" },
+                    { text: "query runs as edp_reader: modelled tables only, read-only transaction, 5 s, 200 rows" },
+                    { sub: "Cited" },
+                    { text: "every row names its Odoo record and version" },
+                  ],
+                },
+                {
+                  x: 773, y: 74, w: 165, h: 130, kind: "agent",
+                  parts: [
+                    { title: "AI agents" },
+                    { text: "any MCP client" },
+                    { inner: { kind: "plain", parts: [{ text: "Sonnet with only these tools: 46 of 47 right" }, { text: "73 citations, all real and current" }] } },
+                  ],
+                },
+                {
+                  x: 773, y: 218, w: 165, h: 100, kind: "plain",
+                  parts: [
+                    { title: "Finance" },
+                    { text: "month-end close, collections" },
+                    { text: ["any number to its records with ", { mono: "edp trace" }], gap: true },
+                  ],
+                },
+                {
+                  x: 32, y: 522, w: 170, h: 86, kind: "plain",
+                  parts: [{ title: "Alerts" }, { mono: "alerts.jsonl" }, { text: "and a webhook when one is set" }],
+                },
+                {
+                  x: 214, y: 522, w: 166, h: 86, kind: "code",
+                  parts: [{ title: "Failure drills" }, { text: "5 of 5 handled: Odoo down, two runs at once, schema change, lost invoices, stale data" }],
+                },
+                {
+                  x: 392, y: 522, w: 166, h: 86, kind: "plain",
+                  parts: [{ title: "Question set" }, { mono: "eval/" }, { text: "184 questions with SQL answers, split by customer, graded in code" }],
+                },
+                {
+                  x: 590, y: 522, w: 348, h: 86, kind: "code",
+                  parts: [
+                    { title: "CI ·", titleMono: "GitHub Actions" },
+                    { text: "on every push: installs Odoo and Postgres from nothing, loads the demo, runs the tests, the monitors, every drill and the question set" },
+                    { text: "no model call", gap: true },
+                  ],
+                },
+              ],
+              edges: [
+                { d: "M170 128 H194" },
+                { d: "M170 246 H194" },
+                { d: "M170 338 H194" },
+                { d: "M351 118 H378" },
+                { d: "M469 164 V172" },
+                { d: "M469 286 V294" },
+                { d: "M590 230 H560" },
+                { d: "M273 370 V390", kind: "retrieval" },
+                { d: "M469 370 V390", kind: "retrieval" },
+                { d: "M561 450 H588", kind: "retrieval", both: true },
+                { d: "M117 502 V520", kind: "retrieval" },
+                { d: "M773 120 H747", kind: "agent" },
+                { d: "M745 170 H770", kind: "agent" },
+              ],
+              edgeLabels: [
+                { x: 749, y: 115, text: "calls" },
+                { x: 750, y: 165, text: "rows" },
+              ],
+              note: "Orange is the trust path: the checks that a number is right and the citations that show where it came from. A citation proves where an answer came from, not that it is right, so the question set grades both. Nothing on this drawing calls a model except the agents.",
+            },
+          ],
+        },
+        {
           id: "reliability",
           heading: "Broken on purpose",
           blocks: [
@@ -2547,7 +2704,7 @@ export const portfolioData = {
         { value: "102 of 103", label: "held-out questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
         { value: "47 to 77", label: "finance questions right, from the usual one-query version to the full agent" },
         { value: "18 of 18", label: "requests that would expose fewer than 50 people or single users refused, by the tool" },
-        { value: "$0", label: "of pay-per-use API credit; every model call ran on a Claude subscription" },
+        { value: "46 of 47", label: "questions the data cannot answer, declined instead of guessed" },
       ],
       sections: [
         {
@@ -2700,7 +2857,6 @@ export const portfolioData = {
         { value: "79%", label: "of sentences backed by the page they cite, against 29% for Open Deep Research and 35% for one model call" },
         { value: "0%", label: "of sentences without a citation, against 59% for Open Deep Research" },
         { value: "11 of 11", label: "cases where Flywheel, my agent-testing tool, caught a deliberately planted bug, using recordings that cost nothing to replay" },
-        { value: "$0", label: "of pay-per-use API credit for the whole evaluation; every model call ran on a Claude subscription" },
       ],
       sections: [
         {
@@ -2772,7 +2928,7 @@ export const portfolioData = {
                 { cells: ["Sentences with no citation", "0%", "25%", "59%"] },
                 { cells: ["Expert checklist covered", "86%", "76%", "91%"] },
                 { cells: ["Quotes found on the saved page by code", "100%", "not applicable", "not applicable"] },
-                { cells: ["Subscription usage per question, in tokens", "2.3 million", "0.02 million", "4.1 million"] },
+                { cells: ["Model tokens per question", "2.3 million", "0.02 million", "4.1 million"] },
               ],
             },
             {
@@ -2813,11 +2969,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The whole evaluation spent no API credit (pay-per-use money). Every model call, web search, baseline answer and grading call ran through Claude Code on a subscription, started by a program rather than typed in by hand. That includes Open Deep Research, whose own model and search connections I swapped for small stand-ins that use the same calls and the same saved pages. Dollar figures in this study are API spend only; subscription use is counted in tokens.",
+                "For a fair comparison, Open Deep Research kept its own pipeline, but its model and search connections were swapped for small stand-ins that make the same calls over the same saved pages, so every system answered from the same material.",
             },
             {
               type: "paragraph",
-              text: "Deep mode, the mode measured above, costs about 2.3 million subscription tokens and a quarter of an hour per question. So I measured where the tokens went. The researchers' steps took 54% and the searches 29%. The strong models took under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep mode's 78%, and covered 90% of the checklists against 87%. With only twelve questions, that gap is within the noise, so I read the two as the same. Standard mode used 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this saves a third, not ten times. The next saving is to use fewer, larger researcher steps, which I can test on the same questions at no cost.",
+              text: "Deep mode, the mode measured above, costs about 2.3 million model tokens and a quarter of an hour per question. So I measured where the tokens went. The researchers' steps took 54% and the searches 29%. The strong models took under 10%. A standard mode keeps the same pipeline and checks with half the research budget. On the same 12 questions it backed 82% of its sentences against deep mode's 78%, and covered 90% of the checklists against 87%. With only twelve questions, that gap is within the noise, so I read the two as the same. Standard mode used 1.5 million tokens and about eight minutes per question. It is now the default. The honest caveat is that this saves a third, not ten times. The next saving is to use fewer, larger researcher steps, which I can test on the same questions.",
             },
           ],
         },
@@ -4004,7 +4160,7 @@ export const portfolioData = {
                 {
                   title: "What it runs on",
                   note:
-                    "ffmpeg, a free video tool, makes the filmstrip and the video. Grouping similar colours and converting Figma frames are small, tested pieces of code that use no other software libraries. No step calls a paid service.",
+                    "ffmpeg, a free video tool, makes the filmstrip and the video. Grouping similar colours and converting Figma frames are small, tested pieces of code that use no other software libraries.",
                 },
                 {
                   title: "The motion map",
@@ -4028,7 +4184,7 @@ export const portfolioData = {
       ],
       callout: {
         eyebrow: "How it runs",
-        text: "Everything runs on the AI subscription I already pay for, on a cloud computer. No pay-per-use key is used anywhere.",
+        text: "Everything runs on a cloud computer with open-source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
       },
       contactHeading: "Have a system that needs deploying? Let's talk.",
     },

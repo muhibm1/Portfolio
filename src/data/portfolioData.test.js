@@ -73,7 +73,7 @@ const pinnedToolkit = [
 const pinnedCaseStudyStats = {
   agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
   flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
-  esper: ["79%", "0%", "11 of 11", "$0"],
+  esper: ["79%", "0%", "11 of 11"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~94%"],
   // Added 2026-10-21 from the owner's redesign brief.
   "apple-integration": ["~50%", "3 systems", "On demand"],
@@ -85,7 +85,7 @@ const pinnedCaseStudyStats = {
   // Added 2026-10-27 from the erp-data-platform repository's results.
   "erp-data-platform": ["29 checks", "5 of 5", "46 of 47", "73 of 73"],
   // Added 2026-10-27 from erp-data-platform's analyst/eval/RESULTS.md.
-  "analyst-agent": ["102 of 103", "47 to 77", "18 of 18", "$0"],
+  "analyst-agent": ["102 of 103", "47 to 77", "18 of 18", "46 of 47"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -425,7 +425,7 @@ const pinnedCaseStudyNarratives = {
       }
     ],
     calloutEyebrow: "How it runs",
-    calloutText: "Everything runs on the AI subscription I already pay for, on a cloud computer. No pay-per-use key is used anywhere.",
+    calloutText: "Everything runs on a cloud computer with open-source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
     contactHeading: "Have a system that needs deploying? Let's talk."
   },
 };
