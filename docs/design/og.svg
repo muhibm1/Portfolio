@@ -6,7 +6,7 @@
   @fontsource files under node_modules, so the render contacts no third-party host.
 -->
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img"
-  aria-label="Muhammad Muhibullah, Forward Deployed Engineer. I find the step everyone is waiting on. 10x review throughput, about 94% agreement with reviewers, 2 weeks to clear 2 months of backlog.">
+  aria-label="Muhammad Muhibullah, Forward Deployed Engineer. I build the agents and fix the process around them.">
   <title>Muhammad Muhibullah, Forward Deployed Engineer</title>
   <foreignObject x="0" y="0" width="1200" height="630">
     <div xmlns="http://www.w3.org/1999/xhtml" class="root">
@@ -27,7 +27,7 @@
 .eyebrow{font-family:Mono;font-weight:500;font-size:19px;letter-spacing:.12em;text-transform:uppercase;color:#6e6e73}
 .name{font-family:SG;font-weight:600;font-size:30px;color:#1d1d1f;margin-top:10px;letter-spacing:-.01em}
 h1{font-family:SG;font-weight:500;letter-spacing:-.03em;color:#1d1d1f;line-height:1.02}
-.big h1{font-size:92px;margin-top:auto}
+.big h1{font-size:74px;margin-top:auto}
 .main{display:flex;gap:52px;flex:1;margin-top:30px;align-items:center}
 .main h1{font-size:64px;flex:1.2}
 .right{flex:.8;display:flex;flex-direction:column;gap:24px;border-left:1px solid #e3e3e8;padding-left:44px}
@@ -38,7 +38,7 @@ h1{font-family:SG;font-weight:500;letter-spacing:-.03em;color:#1d1d1f;line-heigh
 .url{font-family:Mono;font-weight:500;font-size:19px;color:#424245}
 </style>
       <div class="glow"></div>
-      <div class="card"><div class="eyebrow">Forward deployed engineer</div><div class="name">Muhammad Muhibullah</div><div class="main"><h1>I find the step everyone is waiting on.</h1><div class="right"><div><div class="v">10x</div><div class="l">review throughput, agent at Apple Maps</div></div><div><div class="v">~94%</div><div class="l">agreement with reviewers</div></div><div><div class="v">2 weeks</div><div class="l">to clear 2 months of backlog</div></div></div></div><div class="foot"><div class="who">Data Engineer at Apple Maps · Austin, TX</div><div class="url">muhibm1.github.io/Portfolio</div></div></div>
+      <div class="card big"><div class="eyebrow">Forward deployed engineer</div><div class="name">Muhammad Muhibullah</div><h1>I build the agents and<br/>fix the process around them.</h1><div class="foot"><div class="who">Data Engineer at Apple Maps · Austin, TX</div><div class="url">muhibm1.github.io/Portfolio</div></div></div>
     </div>
   </foreignObject>
 </svg>
