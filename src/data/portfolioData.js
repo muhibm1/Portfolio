@@ -2723,6 +2723,18 @@ export const portfolioData = {
           heading: "What I built",
           blocks: [
             {
+              type: "flow",
+              columns: 6,
+              steps: [
+                { title: "Retrieve", note: "Picks the tables, terms and examples the question needs" },
+                { title: "Draft", note: "Model writes one query, or declines" },
+                { title: "Check", note: "Code allows one SELECT on allowed tables, no writes", gate: true },
+                { title: "Run", note: "Read-only role, five-second limit; an error goes back to Draft, up to 3 tries" },
+                { title: "Read", note: "Model turns the rows into an answer" },
+                { title: "Cite", note: "Source records checked, real and current", dashed: true },
+              ],
+            },
+            {
               type: "cards",
               items: [
                 {
