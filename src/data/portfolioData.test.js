@@ -82,6 +82,8 @@ const pinnedCaseStudyStats = {
   // Fathom's four headline results (owner's split brief).
   orion: ["16", "4,599", "0.889", "158"],
   fathom: ["0 of 50", "100%", "621 of 625", "7 to 0"],
+  // Added 2026-10-27 from the erp-data-platform repository's results.
+  "erp-data-platform": ["29 checks", "5 of 5", "46 of 47", "73 of 73"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -294,6 +296,32 @@ const pinnedCaseStudyNarratives = {
     calloutText: "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
     contactHeading: "Want agents to change your data platform safely? Let's talk."
   },
+  "erp-data-platform": {
+    eyebrow: "Case study · Open source · ERP data engineering",
+    title: "An ERP's data, made trustworthy for finance and for AI",
+    lead: "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
+    atAGlance: [
+      {
+        label: "My role",
+        value: "Designed and built it in October 2026, as the first weeks of a client engagement"
+      },
+      {
+        label: "What it is",
+        value: "An open-source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents"
+      },
+      {
+        label: "Stack",
+        value: "Odoo 17 Community, Python, Postgres 16, dbt, Fathom for lineage and change checks, MCP"
+      },
+      {
+        label: "Where it stands",
+        value: "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push"
+      }
+    ],
+    calloutEyebrow: "What I'd bring to a client",
+    calloutText: "The data side of an AI engagement, owned end to end: get the data out of the systems the client already runs, make every number traceable, prove the pipeline fails loudly before trusting it, build the evaluation data from the client's own records, and hand over a runbook someone else has already used.",
+    contactHeading: "Building AI on your ERP or CRM data? Let's talk."
+  },
   "apple-integration": {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
@@ -381,6 +409,7 @@ const pinnedRepositories = {
   flywheel: "https://github.com/muhibm1/flywheel",
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
+  erpDataPlatform: "https://github.com/muhibm1/erp-data-platform",
 };
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
@@ -430,7 +459,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the nine case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day)", () => {
+  it("names / then /work then /work/<id> for the ten case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -438,6 +467,7 @@ describe("portfolioData", () => {
       "/work/agentops",
       "/work/flywheel",
       "/work/fathom",
+      "/work/erp-data-platform",
       "/work/esper",
       "/work/orion",
       "/work/apple-integration",
@@ -449,6 +479,7 @@ describe("portfolioData", () => {
       "agentops",
       "flywheel",
       "fathom",
+      "erp-data-platform",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.listed === false).map((study) => study.id)).toEqual([
       "atelier",
@@ -681,15 +712,15 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the nine 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25)", () => {
+  it("keeps the ten 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(9);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(10);
   });
 
-  it("names personal.repositories with the six public repositories, held once (R153; snapshots retired 2026-10-26)", () => {
+  it("names personal.repositories with the seven public repositories, held once (R153; snapshots retired 2026-10-26; erp-data-platform added 2026-10-27)", () => {
     expect(portfolioData.personal.repositories).toEqual(pinnedRepositories);
   });
 
@@ -1083,11 +1114,12 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return numbersIn(rest);
   }
 
-  it("puts Fathom fourth, the last featured study, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
+  it("puts Fathom fourth, then the ERP data platform as the last featured study, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
     const ids = portfolioData.caseStudies.map((study) => study.id);
     expect(ids.indexOf("fathom")).toBe(3);
-    expect(ids.indexOf("esper")).toBe(4);
-    expect(ids.indexOf("orion")).toBe(5);
+    expect(ids.indexOf("erp-data-platform")).toBe(4);
+    expect(ids.indexOf("esper")).toBe(5);
+    expect(ids.indexOf("orion")).toBe(6);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
     expect(fathom).not.toHaveProperty("status");
@@ -1177,7 +1209,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(8);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(9);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");

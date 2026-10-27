@@ -19,15 +19,15 @@ function renderCards() {
 
 describe("CaseStudyCards", () => {
   // Owner's split brief, 2026-10-25: the Apple agent leads, and Fathom joins the featured cards.
-  it("renders one route link per listed study in data order, the four featured ones as articles first (owner brief 2026-10-21, 2026-10-25)", () => {
+  it("renders one route link per listed study in data order, the five featured ones as articles first (owner brief 2026-10-21, 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)", () => {
     renderCards();
 
     const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
     expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(listed.map((study) => `/work/${study.id}`));
-    expect(featured.map((study) => study.id)).toEqual(["apple-decision-support-agent", "agentops", "flywheel", "fathom"]);
+    expect(featured.map((study) => study.id)).toEqual(["apple-decision-support-agent", "agentops", "flywheel", "fathom", "erp-data-platform"]);
 
     const articles = screen.getAllByRole("article");
-    expect(articles).toHaveLength(4);
+    expect(articles).toHaveLength(5);
     articles.forEach((article, index) => {
       expect(within(article).getByRole("link", { name: /read the case study/i })).toHaveAttribute(
         "href",
@@ -99,7 +99,7 @@ describe("CaseStudyCards", () => {
         expect(anchor.querySelector("a")).toBeNull();
       }
     });
-    expect(screen.getAllByText("View the code")).toHaveLength(3);
+    expect(screen.getAllByText("View the code")).toHaveLength(4);
   });
 
   it("puts the More work heading above the compact cards, each with its two tags and the read-more label", () => {
