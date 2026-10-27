@@ -17,7 +17,7 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the nine case studies in data order, featured work first and the unlisted page last (owner brief 2026-10-21; split brief 2026-10-25)', () => {
+  it('returns / then /work then /work/<id> for each of the ten case studies in data order, featured work first and the unlisted page last (owner brief 2026-10-21; split brief 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
@@ -25,6 +25,7 @@ describe('staticRoutePaths', () => {
       '/work/agentops',
       '/work/flywheel',
       '/work/fathom',
+      '/work/erp-data-platform',
       '/work/esper',
       '/work/orion',
       '/work/apple-integration',
