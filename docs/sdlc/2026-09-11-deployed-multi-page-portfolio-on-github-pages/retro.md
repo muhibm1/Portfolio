@@ -142,7 +142,7 @@ artifact labelled the delegation honestly, so it was visible, just unresolved un
 redaction gaps across docs, mockups left in `public/`, Back to Top broken off `/home`. Round 2
 (approvals.md, 03:30:20): the redaction script from round 1's fix still missed `+1`/`1`
 country-code prefixes and silently skipped UTF-16 files instead of failing loudly. Both were
-delegated Claude decisions, not the owner's own reading (approvals.md notes, both rounds: "the
+delegated agent decisions, not the owner's own reading (approvals.md notes, both rounds: "the
 owner has not read the packet") (confirmed, approvals.md 01:46:12 and 03:30:20). **Confirmed** (conductor-log.md): the packet compiler itself was
 factually wrong on all three G4 packets and was corrected each time, at `01:41:01`/`01:45:08`
 (mislabelled PR-line assumption, mislabelled Back to Top finding, imprecise phone counts), at
