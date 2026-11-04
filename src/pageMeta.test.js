@@ -30,10 +30,19 @@ describe('pageMetaFor (G16)', () => {
   it.each(portfolioData.caseStudies)('describes the $id case study', (caseStudy) => {
     expect(pageMetaFor(`/work/${caseStudy.id}`)).toEqual({
       title: `${caseStudy.title} | ${SITE_NAME}`,
-      description: caseStudy.intro,
+      description: caseStudy.metaDescription ?? caseStudy.intro,
       canonical: `${SITE_URL}work/${caseStudy.id}/`,
       ogImage: `${SITE_URL}og.png`,
     });
+  });
+
+  // 2026-11-04: search results cut a description at about 160 characters, so every listed case
+  // study carries a short one of its own. The home page keeps the hero lead (master copy R1).
+  it.each(
+    portfolioData.caseStudies.filter((c) => c.listed !== false).map((c) => [`/work/${c.id}`, c]),
+  )('gives %s a description of 160 characters or fewer', (route, source) => {
+    expect(source.metaDescription).toBeTruthy();
+    expect(pageMetaFor(route).description.length).toBeLessThanOrEqual(160);
   });
 
   it('describes an unknown path as not found, with no canonical', () => {

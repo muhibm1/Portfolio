@@ -144,6 +144,14 @@ export const portfolioData = {
         "I've stopped building agents that imitate a software team. Frontier models already plan and write code well. What stays valuable is what they can't bring with them: a company's own context, rules enforced in code, and proof that a change is safe. That's what I build now, and what I'd help a customer deploy.",
       entries: [
         {
+          date: "Oct 27, 2026",
+          text: "Built an analyst agent on the ERP warehouse: it turns a plain-English question into checked, read-only SQL and answers with the query it used. It answered 102 of 103 held-out questions, and a second dataset took one configuration file and no change to the agent.",
+        },
+        {
+          date: "Oct 27, 2026",
+          text: "Built an ERP's data side end to end, treated as a client engagement: extraction through the API, finance numbers that trace to the records behind them, and five deliberate failures, each caught and recovered from. An agent with only read-only tools answered 46 of 47 held-out questions, and all 73 of its citations were real, current records.",
+        },
+        {
           date: "Oct 25, 2026",
           text: "Gave Fathom a home of its own. Orion and Fathom began as two ideas I built side by side: context for my own coding agents, and context for agents working on a data team's platform. Each had grown into a full system, so Orion stays my private context layer and Fathom became its own project, the one a data team can deploy, tested on cal-itp's public warehouse.",
         },
@@ -699,6 +707,8 @@ export const portfolioData = {
       title: "A review backlog, turned into an analysis the reviewer can trust",
       intro:
         "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+      metaDescription:
+        "An agent that investigates map data unlock requests and hands the reviewer a recommendation. 30 to 350+ tickets a day; a two-month backlog cleared in two weeks.",
       atAGlance: [
         { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
         { label: "Live since", value: "November 2025" },
@@ -912,6 +922,8 @@ export const portfolioData = {
       title: "AgentOps: an incident agent that can't act alone",
       intro:
         "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
+      metaDescription:
+        "An incident-response agent on LangGraph that investigates, then waits for a person. In 24 of 24 live runs, nothing changed before someone approved.",
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end" },
         {
@@ -1403,6 +1415,8 @@ export const portfolioData = {
       title: "Flywheel: an agent's real failures, turned into its tests",
       intro:
         "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases. It checks every pull request against them case by case. On three agents it blocked a change that looked fine: one passed every unit test of its behaviour, one looked like random noise in the average scores, and on LangChain's own email agent a cheaper model tied on totals but failed one kind of email every time.",
+      metaDescription:
+        "Turns an agent's real failures, recorded in LangSmith, into test cases, and checks every pull request against them case by case, not on an average score.",
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end" },
         {
@@ -1897,6 +1911,8 @@ export const portfolioData = {
       title: "Fathom: what a data change reaches, before it ships",
       intro:
         "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
+      metaDescription:
+        "Gives coding agents a data platform's lineage, rules, owners and incident history before a change ships. 0 of 50 forbidden calls, against 8 of 50 without it.",
       atAGlance: [
         { label: "My role", value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own" },
         {
@@ -2341,6 +2357,8 @@ export const portfolioData = {
       title: "An ERP's data, made trustworthy for finance and for AI",
       intro:
         "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
+      metaDescription:
+        "An ERP's data made trustworthy: API extraction, dbt finance tables that trace to their records, five failure drills, and cited read-only tools for AI agents.",
       atAGlance: [
         { label: "My role", value: "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be" },
         {
@@ -2705,6 +2723,8 @@ export const portfolioData = {
       title: "An analyst agent: ask a warehouse a question in plain English",
       intro:
         "Most teams' first question to SQL demo writes one query and shows whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read-only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
+      metaDescription:
+        "An agent that turns plain-English business questions into checked, read-only SQL and answers with the query it used. 102 of 103 held-out questions answered.",
       atAGlance: [
         { label: "My role", value: "Designed, built and evaluated it in October 2026" },
         {
@@ -2890,6 +2910,8 @@ export const portfolioData = {
       title: "Esper: a research agent that proves every sentence",
       intro:
         "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call. Against a coding agent with web search, told to cite, Esper backed 82% of its sentences to the agent's 58%.",
+      metaDescription:
+        "A LangGraph research agent where every sentence cites a checked quote. 79% of its sentences were backed by their source, against 29% for Open Deep Research.",
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end, with an agent doing the typing" },
         {
@@ -3079,6 +3101,8 @@ export const portfolioData = {
       title: "Orion: what my agents know before they start",
       intro:
         "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
+      metaDescription:
+        "My context layer for coding agents: one cited record of 16 repositories' commits, pull requests, notes and sessions, kept current with no model calls.",
       atAGlance: [
         { label: "My role", value: "My own system, designed and built in October 2026 and used every day since" },
         {
@@ -3524,6 +3548,8 @@ export const portfolioData = {
       title: "Three systems, one tool, half the turnaround",
       intro:
         "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API, and records why each change was made. Turnaround dropped by about half.",
+      metaDescription:
+        "One Python tool that changes protected map feature permissions across three systems through their official APIs, cutting turnaround by about half.",
       atAGlance: [
         { label: "My role", value: "Built it end to end" },
         { label: "Systems", value: "Ticketing, code repository, geo-data" },
@@ -3665,6 +3691,8 @@ export const portfolioData = {
       title: "Keeping a 50+ region data pipeline shippable",
       intro:
         "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
+      metaDescription:
+        "Keeping bad data from blocking Apple Maps releases across 50+ regions: automated fixes, earlier checks, and about 40% fewer release-blocking failures.",
       atAGlance: [
         { label: "My role", value: "Data Engineer, Data Health team" },
         { label: "Partners", value: "DataOps and the data evaluation team" },
