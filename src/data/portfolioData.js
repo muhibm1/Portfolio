@@ -3125,7 +3125,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Orion runs as a local process on my own machine. Its ingest reads five sources into one document store: every commit of every checkout, the pull requests, reviews, issues and comments behind them on GitHub, my Claude Code session transcripts, the cases Auspex raises, and the Markdown where my projects write down their designs, decisions and retros. On 25 October 2026 that came to 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions.",
+                "Orion runs as a local process on my own machine. Its ingest reads five sources into one document store: every commit of every checkout, the pull requests, reviews, issues and comments behind them on GitHub, the transcripts of my coding-agent sessions, the cases Auspex raises, and the Markdown where my projects write down their designs, decisions and retros. On 25 October 2026 that came to 16 repositories, 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and 21 past agent sessions.",
             },
             {
               type: "cards",
@@ -3214,7 +3214,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Nobody runs Orion by hand. One setup command installs it as a service on my Mac, registers it with Claude Code, and starts a daemon that keeps everything current with no model calls.",
+                "Nobody runs Orion by hand. One setup command installs it as a service on my Mac, registers it with my coding agent, and starts a daemon that keeps everything current with no model calls.",
             },
             {
               type: "table",
@@ -3269,7 +3269,7 @@ export const portfolioData = {
               boxes: [
                 { x: 32, y: 74, w: 138, h: 58, kind: "data", parts: [{ title: "~/C.Projects" }, { text: "16 git checkouts" }, { text: "code + Markdown" }] },
                 { x: 32, y: 139, w: 138, h: 58, kind: "data", parts: [{ title: "GitHub" }, { text: "PRs, issues, reviews" }, { text: "+ upstream of forks" }] },
-                { x: 32, y: 204, w: 138, h: 56, kind: "data", parts: [{ title: "~/.claude/projects" }, { text: "Claude Code session transcripts" }] },
+                { x: 32, y: 204, w: 138, h: 56, kind: "data", parts: [{ title: "Agent sessions" }, { text: "coding-agent session transcripts" }] },
                 { x: 32, y: 267, w: 138, h: 46, kind: "data", parts: [{ title: "~/.auspex" }, { text: "cases.jsonl, graded turns" }] },
                 { x: 32, y: 320, w: 138, h: 50, kind: "plain", parts: [{ mono: "record.toml" }, { text: "which roots, repos and sessions" }] },
                 {
@@ -3357,13 +3357,12 @@ export const portfolioData = {
                 {
                   x: 773, y: 74, w: 165, h: 232, kind: "agent",
                   parts: [
-                    { title: "Claude Code" },
+                    { title: "Coding agent" },
                     { text: "any session, any repo" },
                     { inner: { kind: "plain", parts: [{ mono: "SessionStart" }, { text: "hook says Orion is here, when to call" }] } },
                     { inner: { kind: "code", parts: [{ mono: "UserPromptSubmit" }, { text: "adds the most relevant passages to a prompt, or nothing; fast, and fails open" }] } },
                     { text: ["registered once by ", { mono: "orion setup mac" }] },
-                    { mono: "→ ~/.claude.json" },
-                    { mono: "→ ~/.claude/settings" },
+                    { mono: "→ agent config and hooks" },
                   ],
                 },
                 {
