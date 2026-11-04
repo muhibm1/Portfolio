@@ -14,6 +14,7 @@ import {
   EXIT_CANNOT_RUN,
   EXIT_CLEAN,
   EXIT_HIT,
+  CODING_TOOL_TERM,
   FORBIDDEN_TERMS,
   PAGE_SCOPED_TERMS,
   buildMatchers,
@@ -97,6 +98,9 @@ const ONE_FILE_PER_TERM_RENDERING = [
   { fileName: 'acts-on-live-data.txt', text: 'acts on live data' },
   { fileName: 'decision-system.txt', text: 'a decision system' },
   { fileName: 'zero-rejected.txt', text: 'zero rejected' },
+  // 2026-11-04 owner rule: the coding tool is never named. Built from parts so this file does
+  // not carry the name itself.
+  { fileName: 'coding-tool.txt', text: ['built with', 'Claude', 'Code'].join(' ') },
 ];
 
 describe('forbidden-copy matchers', () => {
@@ -432,6 +436,20 @@ describe('forbidden-copy file scan', () => {
 
   // 2026-10-08, R12: "nine plugin releases" used to be site copy; the owner now bans "plugin",
   // so the same sentence must hit.
+  it('matches the coding tool name across a line break, hyphenated, and as a session link', () => {
+    const name = ['Claude', 'Code'].join('\n');
+    const pathA = writeFixture('tool-hyphen.txt', `${['claude', 'code'].join('-')} sessions\n`);
+    const pathB = writeFixture('tool-link.txt', `see ${['claude.ai', 'code'].join('/')}/session_1\n`);
+    expect(hitsFor(pathA, matchers)).toHaveLength(1);
+    expect(hitsFor(pathB, matchers)).toHaveLength(1);
+    expect(new RegExp(CODING_TOOL_TERM.pattern).test(name)).toBe(true);
+  });
+
+  it('does not match a model name or the word "code" alone', () => {
+    const cleanPath = writeFixture('tool-clean.txt', 'Claude Sonnet 5.5 wrote no code here\n');
+    expect(hitsFor(cleanPath, matchers)).toHaveLength(0);
+  });
+
   it('matches "nine plugin releases came out of the first four runs" on the plugin term (R12)', () => {
     const fixturePath = writeFixture(
       'nine-plugin-releases.txt',

@@ -77,7 +77,7 @@ function workIndexMeta() {
 function caseStudyMeta(caseStudy) {
   return {
     title: `${caseStudy.title} | ${SITE_NAME}`,
-    description: caseStudy.intro,
+    description: caseStudy.metaDescription ?? caseStudy.intro,
     canonical: `${SITE_URL}work/${caseStudy.id}/`,
     ogImage: OG_IMAGE,
   };

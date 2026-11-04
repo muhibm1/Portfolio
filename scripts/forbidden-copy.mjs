@@ -133,6 +133,13 @@ export const PLUGIN_TERM = { label: 'plugin', pattern: /\bplugins?\b/i, skipExte
 // Master copy document section 3 (quoted in the change's spec.md "Data") removal rows: the agent does not act, a person decides.
 export const ACT_ON_LIVE_DATA_TERM = { label: 'acts on live data', pattern: /\bacts? on live data\b/i, skipExtensions: [] }
 export const DECISION_SYSTEM_TERM = { label: 'decision system', pattern: /\bdecision systems?\b/i, skipExtensions: [] }
+// 2026-11-04 owner rule: the coding tool used to build this work is never named in site copy or
+// repository text, nor its session links. Word-bounded, any spacing or hyphen between the words.
+export const CODING_TOOL_TERM = {
+  label: 'coding tool name',
+  pattern: /\bclaude[\s-]*code\b|\bclaude\.ai\/code\b/i,
+  skipExtensions: [],
+}
 // "10 rejected" and "0 rejected" inside a larger number are not the banned claim.
 export const ZERO_REJECTED_TERM = {
   label: '0 rejected',
@@ -231,6 +238,8 @@ export const FORBIDDEN_TERMS = [
   // Owner decision D4: the throughput claim is "more than tenfold", never a count of times.
   'eleven times',
   ZERO_REJECTED_TERM,
+  // 2026-11-04 owner rule: the coding tool behind the work is never named in the repository.
+  CODING_TOOL_TERM,
 ]
 
 // "cross-team" stays legal on the decision and homepage copy but not on the integration page
