@@ -65,7 +65,7 @@ const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
   "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
-  "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+  "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
 
@@ -453,7 +453,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         "label": "Stack",
-        "value": "Python, LangGraph, FastAPI, OpenTelemetry, Prometheus, Grafana, SQLite or Postgres checkpoints, Docker, Kubernetes with Kustomize"
+        "value": "Python, LangGraph, FastAPI, OpenTelemetry, Prometheus, Grafana, SQLite or Postgres checkpoints, Docker"
       },
       {
         "label": "Where it stands",
