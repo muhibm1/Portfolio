@@ -4418,7 +4418,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A wrong answer has real consequences. Many locks exist because a partner or an end user asked for them directly, and some carry legal weight. A lock might keep navigation out of a restricted location, or stop the map sending commercial or recreational traffic through a business that isn't open to the public. At face value, enabling navigation can look like the obvious fix, and without the record, nothing says otherwise.",
+                "A wrong answer has real consequences. Some locks carry obligations that are not visible from the feature itself, so the obvious fix can be the wrong one, and without the record, nothing says otherwise.",
             },
             {
               type: "paragraph",
