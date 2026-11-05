@@ -88,6 +88,14 @@ const pinnedCaseStudyStats = {
   "analyst-agent": ["102 of 103", "73 to 77", "18 of 18", "46 of 47"],
   // Added 2026-11-05 from erp-data-platform's remit/README.md and remit/results/.
   "collections-agent": ["5 to 1", "~18 fewer", "10 of 10", "24 of 24"],
+  // Added 2026-11-05 (new projects pass).
+  "rl-environment": ["215","0 of 44","1 second","44 of 44"],
+  // Added 2026-11-05 (new projects pass).
+  "salesforce-agent": ["10 tools","40 cases","5 of 5","0"],
+  // Added 2026-11-05 (new projects pass).
+  "agent-service": ["7 of 7","6 guards","2 agents","~150 lines"],
+  // Added 2026-11-05 (new projects pass).
+  "rag-retrieval": ["45 of 46","14 of 46","13 of 24","0.30 to 0.54"],
   // Added 2026-10-20 (TG-08): the Atelier sources hold no measured result, so the study has no stat cards.
   atelier: [],
 };
@@ -378,6 +386,110 @@ const pinnedCaseStudyNarratives = {
     calloutText: "An agent that takes action in the systems the business already runs, introduced the way trust is actually earned: a playbook the team agrees on, code that owns every decision, a person who approves every write until the numbers say otherwise, writes that happen once and can be traced, and a runbook for the people who keep it running.",
     contactHeading: "Want an agent working inside your ERP? Let's talk."
   },
+  "rl-environment": {
+    "eyebrow": "Case study · Open source · RL environment",
+    "title": "Voight: a training ground for finance agents, scored by the books",
+    "lead": "Every other project here builds an agent on top of a model. This one is the first step toward training one. Teams that train models for business work need two things: tasks that look like the real job, and a score the model cannot fool. That pair is called an RL environment (RL, reinforcement learning, is training by trial and score). Voight builds one from the Odoo company in my ERP data platform. The job is cash application: a customer's money has arrived and has to be applied to the right open invoices. Each attempt gets its own fresh copy of the books, and the score comes from what the database says afterwards, never from what the agent says it did.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed and built it in November 2026, as the first milestone toward training a small open model for finance work"
+      },
+      {
+        "label": "What it is",
+        "value": "Resettable copies of an Odoo company, 215 finance tasks with answer keys, six tools for the agent, and a checker that scores each attempt from the database"
+      },
+      {
+        "label": "Stack",
+        "value": "Python, Odoo 17, Postgres 16 template databases, the simulated company from the ERP data platform"
+      },
+      {
+        "label": "Where it stands",
+        "value": "Open source under the MIT licence; tasks, checker and baselines are done, and training a small open model on it is next"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "A way to find out whether a smaller model can take over one narrow job: the job written down as rules, tasks drawn from the client's own system of record, a score that comes from that system rather than the model's account of itself, and tests that show the score cannot be gamed.",
+    "contactHeading": "Want to know whether a small model can do one of your jobs? Let's talk."
+  },
+  "salesforce-agent": {
+    "eyebrow": "Case study · Salesforce support agent",
+    "title": "Halyard: a support agent for Salesforce that asks before it writes",
+    "lead": "Salesforce is where most companies keep their customer cases. Halyard is an agent that works that queue. It reads an open case, the account behind it, the account's other cases and the knowledge base, decides how urgent the case is and who should see it, drafts the reply and proposes what to change on the record. Then it stops. Nothing reaches Salesforce until a named person approves it, and a short policy file decides what the agent may ever propose. It is written in TypeScript and shipped as an MCP server, a sub-agent and an agent skill, the three pieces a customer's own agents can pick up.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed and built it in November 2026 against a seeded Salesforce org, the way the first week of a customer engagement would go"
+      },
+      {
+        "label": "What it is",
+        "value": "An MCP server with 7 read tools and 3 propose tools, a two-call sub-agent, an agent skill, a write policy, an approval queue with an audit log, a seeded org of 40 cases and an eval"
+      },
+      {
+        "label": "Stack",
+        "value": "TypeScript, the MCP SDK, the Anthropic SDK with structured outputs, the Salesforce REST API, Vitest"
+      },
+      {
+        "label": "Where it stands",
+        "value": "Working end to end against the seeded org; the run on a live Developer Edition org and the live model evals are next"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "An agent that fits the CRM a support team already runs, shipped in the pieces their own agents can use, with a policy their Salesforce admin can read, a person approving every write, and an eval written from their support lead's own answers before anyone trusts it with a queue.",
+    "contactHeading": "Want an agent working your support queue? Let's talk."
+  },
+  "agent-service": {
+    "eyebrow": "Case study · Agent deployment",
+    "title": "Lodestar: running an agent as a service a team can operate",
+    "lead": "An agent that works on a laptop is not yet something a team can run. Running it means knowing, for every request, what it cost, how long it took and where the time went; refusing work when the day's budget is spent or a request is taking too long; stopping everything with one switch when something looks wrong; and surviving a crash without doing anything twice. Lodestar is one small, repeatable way to get all of that around any agent built on LangGraph, proven on two agents from this portfolio: AgentOps, which pauses for a person before it acts, and the analyst agent, which answers finance questions with SQL. A lodestar is the star a navigator steers by.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed and built it in November 2026, with the runbook an on-call engineer would use"
+      },
+      {
+        "label": "What it is",
+        "value": "A service around any LangGraph agent: an HTTP API, per-request metering and tracing, guards that refuse work with a reason, crash recovery, failure drills, a load tool and deployment files"
+      },
+      {
+        "label": "Stack",
+        "value": "Python, LangGraph, FastAPI, OpenTelemetry, Prometheus, Grafana, SQLite or Postgres checkpoints, Docker, Kubernetes with Kustomize"
+      },
+      {
+        "label": "Where it stands",
+        "value": "Private for now; tests, drills, manifests and images all run in CI on every push, and a one-hour load run is under way"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "The part of a deployment that decides whether a team keeps an agent: knowing what each request cost and why it was slow, limits that refuse work instead of surprising anyone, one switch that stops it cleanly, and drills that prove each of those before the first real request.",
+    "contactHeading": "Want your agent running as a service your team can operate? Let's talk."
+  },
+  "rag-retrieval": {
+    "eyebrow": "Case study · RAG · Retrieval evaluation",
+    "title": "Marginalia: measuring whether RAG found the right passage",
+    "lead": "Ask a question of a few thousand pages of company policy and get the passages that answer it, with the file and heading each one came from. That is the retrieval half of RAG (retrieval-augmented generation), the pattern behind every \"chat with your documents\" product. The half that usually goes unmeasured is whether the right passage was found at all. Marginalia makes that measurement the headline, on the GitLab Handbook, the public internal handbook of a real company: 624 pages of its people, finance and policy sections at a pinned commit, and hand-written questions whose answers are known.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed and built it in November 2026, question sets included"
+      },
+      {
+        "label": "What it is",
+        "value": "Retrieval over the GitLab Handbook: three ways of cutting pages, keyword and vector search fused, a reranker, and question sets with known answers"
+      },
+      {
+        "label": "Stack",
+        "value": "Python, Postgres full-text search, BM25, open embedding and reranking models on a CPU, pytest"
+      },
+      {
+        "label": "Where it stands",
+        "value": "Private, version 0.1; retrieval is measured, and the answering step is built and runs next"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "Retrieval measured before the model writes a word: questions collected in the client's own people's words, a held-out set no one tunes on, and a report that says which change moved which number, so the client knows what their documents assistant actually finds.",
+    "contactHeading": "Want to know what your RAG system actually finds? Let's talk."
+  },
   "apple-integration": {
     eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
     title: "Three systems, one tool, half the turnaround",
@@ -515,7 +627,7 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the twelve case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27; the analyst agent added sixth, not featured, the same day; the collections agent added seventh, not featured, 2026-11-05)", () => {
+  it("names / then /work then /work/<id> for the sixteen case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27; the analyst agent added sixth, not featured, the same day; the collections agent added seventh, not featured, 2026-11-05; the RL environment, Salesforce agent, agent service and RAG studies after it, not featured, the same day)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
@@ -526,6 +638,10 @@ describe("portfolioData", () => {
       "/work/erp-data-platform",
       "/work/analyst-agent",
       "/work/collections-agent",
+      "/work/rl-environment",
+      "/work/salesforce-agent",
+      "/work/agent-service",
+      "/work/rag-retrieval",
       "/work/esper",
       "/work/orion",
       "/work/apple-integration",
@@ -770,12 +886,12 @@ describe("portfolioData", () => {
     );
   });
 
-  it("keeps the twelve 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent 2026-11-05)", () => {
+  it("keeps the sixteen 'My role' at-a-glance labels, outside the ownership ban's scope (D55, TG-08; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent 2026-11-05)", () => {
     const myRoleLabels = portfolioData.caseStudies.map(
       (study) => study.atAGlance.find((row) => row.label === "My role")?.value,
     );
 
-    expect(myRoleLabels.filter(Boolean)).toHaveLength(12);
+    expect(myRoleLabels.filter(Boolean)).toHaveLength(16);
   });
 
   it("names personal.repositories with the seven public repositories, held once (R153; snapshots retired 2026-10-26; erp-data-platform added 2026-10-27)", () => {
@@ -1178,8 +1294,9 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     expect(ids.indexOf("erp-data-platform")).toBe(4);
     expect(ids.indexOf("analyst-agent")).toBe(5);
     expect(ids.indexOf("collections-agent")).toBe(6);
-    expect(ids.indexOf("esper")).toBe(7);
-    expect(ids.indexOf("orion")).toBe(8);
+    expect(ids.indexOf("rl-environment")).toBe(7);
+    expect(ids.indexOf("esper")).toBe(11);
+    expect(ids.indexOf("orion")).toBe(12);
     expect(fathom.card.featured).toBe(true);
     expect(orion.card.featured).toBe(false);
     expect(fathom).not.toHaveProperty("status");
@@ -1269,7 +1386,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(11);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(15);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
