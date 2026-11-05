@@ -56,8 +56,8 @@ export const portfolioData = {
 
   home: {
     hero: {
-      eyebrow: "Forward deployed engineer · Austin, TX · Open to remote and relocation",
-      mobileEyebrow: "Austin, TX · Open to remote and relocation",
+      eyebrow: "Forward deployed engineer · Austin, TX",
+      mobileEyebrow: "Forward deployed engineer",
       heading: "I find the step everyone is waiting on.",
       lead:
         "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.",
@@ -77,10 +77,6 @@ export const portfolioData = {
           {
             title: "Building Fathom",
             text: "A context layer for AI agents on data platforms: what a change reaches, which rules apply and who owns it, checked before it ships",
-          },
-          {
-            title: "Looking for",
-            text: "Forward deployed engineering and deployment strategy roles",
           },
         ],
       },
@@ -321,7 +317,7 @@ export const portfolioData = {
         },
         {
           title: "Ship",
-          items: "AWS (S3, Lambda), Docker, Kubernetes, Jenkins, CI/CD, OAuth2, REST, WebSockets",
+          items: "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
         },
         {
           title: "People",
@@ -339,7 +335,7 @@ export const portfolioData = {
       emailButton: "Email mmalqaim@gmail.com",
       mobileEmailButton: "Email me",
       linkedinButton: "LinkedIn",
-      location: "Austin, TX · Open to relocation and remote",
+      location: "Austin, TX",
     },
   },
 
@@ -1666,7 +1662,7 @@ export const portfolioData = {
         {
           // muhibm1/workhorse CHANGELOG.md 0.5.3 (#34) and the first mining report,
           // /mnt/project-files/workhorse/flywheel-mine-workhorse-runs-2026-10-13.md.
-          id: "workhorse-runs",
+          id: "pipeline-runs",
           heading: "A third agent: a delivery pipeline's own runs",
           blocks: [
             {
@@ -3240,7 +3236,7 @@ export const portfolioData = {
                 "Train a 1.5B open model on the training split with GRPO, a reinforcement learning method that needs no second critic model, and LoRA, which tunes a thin slice of the weights.",
                 "Add harder kinds, such as two invoices with the same balance, short payments across several invoices and typos in references, so the set keeps its signal as the small model improves.",
                 "Scale to a 7B model and compare it with the large models on quality, cost per task and time per task, then score the test split once.",
-                "Serve the tuned model behind Lodestar with a router that sends uncertain cases to a large model, and reuse the environment as an attack range with harder injections.",
+                "Once a small model is trained, serve it behind Lodestar with a router that sends uncertain cases to a large model, and reuse the environment as an attack range with harder injections.",
               ],
             },
           ],
@@ -3465,7 +3461,7 @@ export const portfolioData = {
           label: "What it is",
           value: "A service around any LangGraph agent: an HTTP API, per-request metering and tracing, guards that refuse work with a reason, crash recovery, failure drills, a load tool and deployment files",
         },
-        { label: "Stack", value: "Python, LangGraph, FastAPI, OpenTelemetry, Prometheus, Grafana, SQLite or Postgres checkpoints, Docker, Kubernetes with Kustomize" },
+        { label: "Stack", value: "Python, LangGraph, FastAPI, OpenTelemetry, Prometheus, Grafana, SQLite or Postgres checkpoints, Docker" },
         { label: "Where it stands", value: "Private for now; tests, drills, manifests and images all run in CI on every push, and a one-hour load run is under way" },
       ],
       stats: [
@@ -3516,7 +3512,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "An agent joins by implementing five small methods: build its graph over the checkpointer the service hands it, turn a request into the graph's first input, turn a person's decision into the command that continues the pause, and read the graph's state back as an outcome. AgentOps took about 150 lines and the analyst about the same. Deploying the second agent is one Kustomize overlay: the agent's name, the image tag, a longer budget and the warehouse connection.",
+                "An agent joins by implementing five small methods: build its graph over the checkpointer the service hands it, turn a request into the graph's first input, turn a person's decision into the command that continues the pause, and read the graph's state back as an outcome. AgentOps took about 150 lines and the analyst about the same. Deploying the second agent takes one small configuration file: the agent's name, the image tag, a longer budget and the warehouse connection.",
             },
           ],
         },
@@ -3552,9 +3548,9 @@ export const portfolioData = {
               type: "bullets",
               items: [
                 "A one-hour load run with four workers, already under way, reporting throughput, latency percentiles, errors and refusals, and cost per request.",
-                "A run on a local Kubernetes cluster with the Grafana dashboard filled from it. The image and manifests are built, rendered and schema-checked in CI today.",
+                "A run on a local container cluster with the Grafana dashboard filled from it. The image and deployment files are built and checked in CI today.",
                 "Live models through the same adapters. The drills ran on stub models whose cost is priced at list rates and labelled simulated everywhere it appears.",
-                "Serving the small model trained in Voight, with a router that sends uncertain cases to a large one.",
+                "Serving a small model once one has been trained in Voight, with a router that sends uncertain cases to a large one.",
               ],
             },
           ],
