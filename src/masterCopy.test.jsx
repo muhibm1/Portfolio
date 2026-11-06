@@ -98,8 +98,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all eighteen routes, the home page, the work list and sixteen case studies (owner brief 2026-10-21; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent added 2026-11-05; four more studies the same day)', () => {
-    expect(sitePagePaths()).toHaveLength(18);
+  it('serves all fourteen routes, the home page, the work list and twelve case studies (owner brief 2026-10-21; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent added 2026-11-05)', () => {
+    expect(sitePagePaths()).toHaveLength(14);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {
