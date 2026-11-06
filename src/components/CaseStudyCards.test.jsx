@@ -109,10 +109,6 @@ describe("CaseStudyCards", () => {
     expect(more.map((study) => study.id)).toEqual([
       "analyst-agent",
       "collections-agent",
-      "rl-environment",
-      "salesforce-agent",
-      "agent-service",
-      "rag-retrieval",
       "esper",
       "orion",
       "apple-integration",
