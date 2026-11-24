@@ -38,12 +38,11 @@ describe('HomePage', () => {
     expect(home.toolkit.columns.length).toBeGreaterThan(0);
   });
 
-  it('shows the AgentOps replay in the hero with its nine steps as text', () => {
+  // AgentOps no longer leads, so its replay is off the home page for now (owner, 2026-11-24).
+  it('shows no AgentOps replay in the hero', () => {
     renderHomePage();
 
-    const replay = portfolioData.homeReplay;
-    expect(screen.getByRole('region', { name: replay.regionLabel })).toBeInTheDocument();
-    expect(replay.steps).toHaveLength(9);
+    expect(screen.queryByRole('region', { name: portfolioData.homeReplay.regionLabel })).toBeNull();
   });
 
   it('drops the AgentOps proof band, since AgentOps is a deployment card, and skips the replay to the study (owner brief 2026-11-24)', () => {

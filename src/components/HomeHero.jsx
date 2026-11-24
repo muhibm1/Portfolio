@@ -1,15 +1,14 @@
-import AgentOpsReplay from './AgentOpsReplay';
 import CopyEmail from './CopyEmail';
 import { primaryButtonClasses } from './buttonClasses';
 import { eyebrowClasses } from './lookClasses';
 
 /**
  * The hero of the Look: eyebrow, the one big heading, the call to action with the email address,
- * the lead paragraph, and the AgentOps replay under them so it sits on the first screen. On a
- * wide screen the lead sits beside the heading; on a tablet or phone it follows the replay.
- * Copy comes straight from home.hero and homeReplay.
+ * and the lead paragraph. On a wide screen the lead sits beside the heading; on a tablet or phone
+ * it follows the call to action. The AgentOps replay was taken off on 2026-11-24 (owner), since
+ * AgentOps no longer leads. Copy comes straight from home.hero.
  */
-export default function HomeHero({ hero, email, replay }) {
+export default function HomeHero({ hero, email }) {
   return (
     <section
       aria-labelledby="home-heading"
@@ -37,10 +36,6 @@ export default function HomeHero({ hero, email, replay }) {
       <p className="order-last mt-8 max-w-[62ch] text-[17px] leading-[1.6] text-ink-2 wide:order-none wide:col-span-4 wide:col-start-9 wide:row-span-2 wide:row-start-2 wide:mt-0 wide:self-start wide:pt-2 wide:text-base">
         {hero.lead}
       </p>
-
-      <div className="col-span-full mt-[18px] tab:mt-7 wide:mt-[30px]">
-        <AgentOpsReplay replay={replay} />
-      </div>
     </section>
   );
 }

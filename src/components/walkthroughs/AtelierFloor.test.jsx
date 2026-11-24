@@ -251,12 +251,12 @@ describe('AtelierFloor', () => {
 });
 
 describe('the Atelier page as served (D5)', () => {
-  it('carries the studio floor in the prerendered markup of /work/atelier, with the plates at the first station', () => {
+  // Every walkthrough is off the site for now (owner, 2026-11-24).
+  it('leaves the studio floor out of the prerendered markup of /work/atelier while the walkthrough is hidden', () => {
     const html = renderPage('/Portfolio/work/atelier');
 
-    expect(html).toContain('data-part="intake"');
-    expect(html).toContain('viewBox="0 0 6800 4300"');
-    expect(html).not.toContain('data-on');
+    expect(html).not.toContain('data-part="intake"');
+    expect(html).not.toContain('viewBox="0 0 6800 4300"');
   });
 
   it('keeps each page to its own drawing: the studio floor only on Atelier\'s page, the bench only on Orion\'s', () => {
