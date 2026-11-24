@@ -39,6 +39,8 @@ export default function CaseStudyPage() {
 
   const caseStudy = caseStudies[position];
   const { previous, next } = neighboursOf(caseStudies, caseStudy);
+  // A section flagged hidden stays in the data but is not shown (walkthroughs, owner 2026-11-24).
+  const shownSections = caseStudy.sections.filter((section) => !section.hidden);
 
   return (
     <main>
@@ -54,9 +56,9 @@ export default function CaseStudyPage() {
       <AtAGlanceAndStats caseStudy={caseStudy} />
 
       <section className="grid grid-cols-1 gap-8 px-4 sm:px-8 md:grid-cols-[220px_1fr] md:gap-12 md:px-16">
-        <OnThisPageNav sections={caseStudy.sections} />
+        <OnThisPageNav sections={shownSections} />
         <div className="flex min-w-0 flex-col gap-16 pb-16">
-          {caseStudy.sections.map((section) => (
+          {shownSections.map((section) => (
             <CaseStudySection key={section.id} section={section} />
           ))}
 

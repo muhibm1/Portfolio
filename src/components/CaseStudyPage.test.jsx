@@ -58,7 +58,7 @@ describe('CaseStudyPage', () => {
 
       const onThisPageNav = screen.getByRole('navigation', { name: 'On this page' });
       const links = within(onThisPageNav).getAllByRole('link');
-      expect(links).toHaveLength(study.sections.length);
+      expect(links).toHaveLength(study.sections.filter((section) => !section.hidden).length);
       for (const link of links) {
         const targetId = link.getAttribute('href').slice(1);
         expect(document.getElementById(targetId)).not.toBeNull();
@@ -71,7 +71,7 @@ describe('CaseStudyPage', () => {
       expect(screen.getByText(study.callout.text)).toBeInTheDocument();
       expect(study.callout.note).toBeUndefined();
       expect(container.textContent).not.toMatch(/private repository/i);
-      const hasWalkthrough = study.sections.some((section) => section.blocks.some((block) => block.type === 'walkthrough'));
+      const hasWalkthrough = study.sections.some((section) => !section.hidden && section.blocks.some((block) => block.type === 'walkthrough'));
       if (!hasWalkthrough) expect(container.textContent).not.toMatch(/walkthrough/i);
     });
 
@@ -198,17 +198,14 @@ describe('CaseStudyPage', () => {
       expect(screen.queryByRole('link', { name: /code:|view the code/i })).toBeNull();
     });
 
-    it('shows the walkthrough, with all twelve phases listed in full, eleven built and one designed', () => {
+    // Every walkthrough is off the site for now (owner, 2026-11-24); the block stays in the data, hidden.
+    it('keeps the walkthrough in the data but does not show it', () => {
       renderCaseStudyAt('/work/atelier');
 
-      const region = screen.getByRole('region', { name: 'Atelier walkthrough' });
-      expect(region).toBeInTheDocument();
-      const list = document.getElementById('wt-steps');
-      const items = within(list).getAllByRole('listitem');
-      expect(items).toHaveLength(12);
-      const tags = items.map((item) => item.querySelector('[data-tag]').getAttribute('data-tag'));
-      expect(tags.filter((tag) => tag === 'built')).toHaveLength(11);
-      expect(tags.filter((tag) => tag === 'designed')).toHaveLength(1);
+      const atelier = caseStudies.find((study) => study.id === 'atelier');
+      expect(atelier.sections.find((section) => section.id === 'walkthrough').hidden).toBe(true);
+      expect(screen.queryByRole('region', { name: 'Atelier walkthrough' })).toBeNull();
+      expect(document.getElementById('walkthrough')).toBeNull();
     });
 
     it('calls the private build system my build pipeline, in the visible words', () => {

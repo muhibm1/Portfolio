@@ -25,7 +25,7 @@ export default function HomePage() {
 
   return (
     <main>
-      <HomeHero hero={home.hero} email={personal.email} replay={portfolioData.homeReplay} />
+      <HomeHero hero={home.hero} email={personal.email} />
       <HomeSection id="study" intro={home.studyIntro}>
         <CaseStudyCards caseStudies={studies} />
       </HomeSection>
