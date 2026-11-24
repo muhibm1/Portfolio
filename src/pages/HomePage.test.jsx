@@ -46,18 +46,19 @@ describe('HomePage', () => {
     expect(replay.steps).toHaveLength(9);
   });
 
-  it('drops the AgentOps proof band, since AgentOps is now the first featured card, and skips the replay to the stats (owner brief 2026-10-21)', () => {
+  it('drops the AgentOps proof band, since AgentOps is a deployment card, and skips the replay to the study (owner brief 2026-11-24)', () => {
     renderHomePage();
 
     expect(document.getElementById('agentops')).toBeNull();
-    expect(document.getElementById('stats')).not.toBeNull();
-    expect(portfolioData.homeReplay.skip.href).toBe('#stats');
+    expect(document.getElementById('study')).not.toBeNull();
+    expect(portfolioData.homeReplay.skip.href).toBe('#study');
   });
 
-  it('orders the sections hero, stats, About, work, build log, How I work, Experience, Contact (owner brief 2026-10-21)', () => {
+  it('orders the sections hero, study, deployments, notes, stats, About, How I work, Experience, Contact (owner brief 2026-11-24)', () => {
     renderHomePage();
 
-    const ids = ['stats', 'about', 'work', 'build-log', 'approach', 'experience', 'contact'];
+    expect(document.getElementById('build-log')).toBeNull();
+    const ids = ['study', 'work', 'notes', 'stats', 'about', 'approach', 'experience', 'contact'];
     const elements = ids.map((id) => document.getElementById(id));
     elements.forEach((element, index) => {
       expect(element, ids[index]).not.toBeNull();
@@ -78,18 +79,40 @@ describe('HomePage', () => {
     }
   });
 
-  it('renders the build log heading, its direction statement and every dated entry, newest first', () => {
+  it('leads with the study as one featured card, then the three deployments, each a featured card (owner brief 2026-11-24)', () => {
     renderHomePage();
 
-    const log = document.getElementById('build-log');
-    expect(within(log).getByRole('heading', { name: 'Build log: what changed and why' })).toBeInTheDocument();
-    expect(within(log).getByText(home.buildLog.direction)).toBeInTheDocument();
-    const items = within(log).getAllByRole('listitem');
-    expect(items).toHaveLength(home.buildLog.entries.length);
-    items.forEach((item, index) => {
-      expect(within(item).getByText(home.buildLog.entries[index].text)).toBeInTheDocument();
-    });
-    expect(home.buildLog.entries[0].date).toBe('Oct 27, 2026');
+    const study = document.getElementById('study');
+    expect(within(study).getByRole('heading', { level: 2, name: home.studyIntro.heading })).toBeInTheDocument();
+    expect(within(study).getAllByRole('article')).toHaveLength(1);
+    expect(study.querySelector('a[href="/work/building-around-a-model"]')).not.toBeNull();
+
+    const work = document.getElementById('work');
+    const articles = within(work).getAllByRole('article');
+    expect(articles.map((article) => within(article).getByRole('heading', { level: 3 }).textContent)).toEqual([
+      'CasePilot: a support agent inside Salesforce that asks before it writes',
+      "ClearLedger: finance answers that hold up when the books don't",
+      "AgentOps: an incident agent that can't act alone",
+    ]);
+  });
+
+  it('renders the short notes on Agent Harbor and Flywheel, each linking into the study (owner brief 2026-11-24)', () => {
+    renderHomePage();
+
+    const notes = document.getElementById('notes');
+    expect(within(notes).getByRole('heading', { level: 2, name: home.notes.heading })).toBeInTheDocument();
+    expect(within(notes).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual(['Agent Harbor', 'Flywheel']);
+    for (const item of home.notes.items) {
+      expect(within(notes).getByRole('link', { name: new RegExp(item.link.text) })).toHaveAttribute('href', item.link.to);
+    }
+  });
+
+  it('shows no standalone card for Flywheel, Fathom, SourceLens or Foothold (owner brief 2026-11-24)', () => {
+    renderHomePage();
+
+    for (const id of ['flywheel', 'fathom', 'sourcelens', 'foothold']) {
+      expect(document.querySelector(`a[href="/work/${id}"]`), id).toBeNull();
+    }
   });
 
   it('renders the five production stat values', () => {
@@ -106,10 +129,10 @@ describe('HomePage', () => {
     expect(screen.getByText(home.stats.caption)).toBeInTheDocument();
   });
 
-  it('renders the six numbered section eyebrows', () => {
+  it('renders the seven numbered section eyebrows', () => {
     renderHomePage();
 
-    for (const eyebrow of ['01 · About', '02 · Work', '03 · Build log', '04 · How I work', '05 · Experience', '06 · Contact']) {
+    for (const eyebrow of ['01 · The study', '02 · Deployments', '03 · Notes', '04 · About', '05 · How I work', '06 · Experience', '07 · Contact']) {
       expect(screen.getByText(eyebrow)).toBeInTheDocument();
     }
   });
@@ -149,16 +172,16 @@ describe('HomePage', () => {
     expect(mobileNodes.length).toBeGreaterThan(0);
   });
 
-  it('renders a card linking into /work for every listed case study, and none for the unlisted ones', () => {
+  it('renders a card linking into /work for the study and each deployment, and none for the other studies, which /work lists (owner brief 2026-11-24)', () => {
     renderHomePage();
 
     for (const study of portfolioData.caseStudies) {
-      const cardLinks = document.querySelectorAll(`#work a[href="/work/${study.id}"]`);
-      if (study.listed === false) {
-        expect(cardLinks, study.id).toHaveLength(0);
-      } else {
+      const cardLinks = document.querySelectorAll(`#study a[href="/work/${study.id}"], #work a[href="/work/${study.id}"]`);
+      if (study.home === 'study' || study.home === 'deployment') {
         expect(cardLinks.length, study.id).toBeGreaterThan(0);
         expect(screen.getAllByText(study.card.title).length).toBeGreaterThan(0);
+      } else {
+        expect(cardLinks, study.id).toHaveLength(0);
       }
     }
   });
@@ -189,7 +212,7 @@ describe('HomePage', () => {
   it('renders one hero call to action, the email address as selectable text with a Copy button, and no resume link', () => {
     renderHomePage();
 
-    expect(screen.getByRole('link', { name: home.hero.primaryCta })).toHaveAttribute('href', '#work');
+    expect(screen.getByRole('link', { name: home.hero.primaryCta })).toHaveAttribute('href', '#study');
     expect(screen.getByRole('button', { name: 'Copy the email address' })).toBeInTheDocument();
     expect(screen.getAllByText(personal.email).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: 'Download resume' })).toBeNull();

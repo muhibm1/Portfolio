@@ -124,13 +124,9 @@ describe('CaseStudyPage', () => {
       expect(note.compareDocumentPosition(screen.getByRole('heading', { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
-    // The Orion page points at Fathom, where its data-platform work moved (owner, 2026-10-25).
-    it('shows a banner on the Orion page only, linking to Fathom', () => {
-      expect(caseStudies.filter((study) => study.banner).map((study) => study.id)).toEqual(['orion']);
-      renderCaseStudyAt('/work/orion');
-      const note = screen.getByRole('note');
-      expect(note).toHaveTextContent("Fathom, Orion's sister project, brings the same idea to data platforms.");
-      expect(within(note).getByRole('link', { name: 'Fathom' })).toHaveAttribute('href', '/work/fathom');
+    // Fathom stopped being a standalone study on 2026-11-24, so no page carries a banner now.
+    it('shows no banner on any page', () => {
+      expect(caseStudies.filter((study) => study.banner).map((study) => study.id)).toEqual([]);
     });
   });
 
@@ -152,29 +148,40 @@ describe('CaseStudyPage', () => {
     });
   });
 
-  describe('the fathom case study only (owner, 2026-10-25)', () => {
-    // The owner made the repository public after its history scrub and asked for the link.
-    it('links its public repository from the header and shows no in-development status', () => {
-      const { container } = renderCaseStudyAt('/work/fathom');
+  // The study (owner brief, 2026-11-24): the system-against-baseline chart, the Flywheel bars on
+  // a fixed scale, the crash table and a numbered source list whose links open in a new tab.
+  describe('the study page (owner brief 2026-11-24)', () => {
+    it('shows every system next to its baseline, with small gaps marked as within noise', () => {
+      renderCaseStudyAt('/work/building-around-a-model');
 
-      expect(screen.queryByText('Open source · in development')).toBeNull();
-      const repoLinks = [...container.querySelectorAll('a[href="https://github.com/muhibm1/fathom"]')];
-      expect(repoLinks.length).toBeGreaterThanOrEqual(1);
-      expect(repoLinks[0].closest('header')).not.toBeNull();
-      expect(repoLinks[0]).toHaveAttribute('target', '_blank');
-      expect(repoLinks[0]).toHaveAttribute('rel', 'noopener noreferrer');
+      const results = document.getElementById('results');
+      expect(within(results).getByText('ClearLedger, company K')).toBeInTheDocument();
+      expect(within(results).getByText('+11 points')).toBeInTheDocument();
+      expect(within(results).getByText('+4 points, within noise')).toBeInTheDocument();
+      expect(within(results).getByText('-10 points')).toBeInTheDocument();
+      expect(within(results).getAllByTestId('comparison-bar')).toHaveLength(14);
     });
 
-    // The chip walkthrough gave way to a replay of one recorded check (owner, 2026-10-25).
-    it('shows the replay of one recorded check, at rest on the decision, with its seven steps', () => {
-      renderCaseStudyAt('/work/fathom');
+    it('draws the Flywheel counts against their totals, not against the larger arm', () => {
+      renderCaseStudyAt('/work/building-around-a-model');
 
-      const region = screen.getByRole('region', { name: 'Fathom replay' });
-      const steps = within(within(region).getByRole('list', { name: 'Steps of the check' })).getAllByRole('button');
-      expect(steps).toHaveLength(7);
-      expect(within(region).getByRole('button', { name: 'Approve' })).toBeEnabled();
-      expect(within(region).getByRole('link', { name: 'Skip to the next section' })).toHaveAttribute('href', '#trust');
-      expect(document.querySelector('.wt')).toBeNull();
+      const widths = within(document.getElementById('fair-baseline'))
+        .getAllByTestId('bar')
+        .map((bar) => bar.style.width);
+      expect(widths).toEqual(['97%', '62%', '90%', '100%']);
+    });
+
+    it('lists ten references, each opening its source in a new tab', () => {
+      renderCaseStudyAt('/work/building-around-a-model');
+
+      const items = within(document.getElementById('references')).getAllByRole('listitem');
+      expect(items).toHaveLength(10);
+      for (const item of items) {
+        const link = within(item).getByRole('link');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(link.getAttribute('href')).toMatch(/^https?:\/\//);
+      }
     });
   });
 
@@ -268,17 +275,17 @@ describe('CaseStudyPage', () => {
     },
   );
 
-  it.each(caseStudies.map((study) => study.id))('shows the deployment summary only on a featured page (%s)', (slug) => {
+  it.each(caseStudies.map((study) => study.id))('shows the deployment summary only on a page that carries one, all six rows on a deployment (%s)', (slug) => {
     const study = caseStudies.find((candidate) => candidate.id === slug);
     renderCaseStudyAt(`/work/${slug}`);
 
     const summary = screen.queryByRole('region', { name: 'Deployment summary' });
-    if (!study.card.featured) {
+    if (!study.deploymentSummary) {
       expect(summary).toBeNull();
       return;
     }
-    expect(study.deploymentSummary).toBeDefined();
-    for (const key of ['problem', 'decision', 'result']) {
+    const keys = study.home === 'deployment' ? ['customer', 'problem', 'integration', 'testing', 'result', 'decision'] : ['problem', 'decision', 'result'];
+    for (const key of keys) {
       expect(within(summary).getByText(study.deploymentSummary[key])).toBeInTheDocument();
     }
   });
@@ -299,9 +306,9 @@ describe('CaseStudyPage', () => {
   describe('section subtitle (R9)', () => {
     it('renders a section subtitle under its heading only when the data carries one', async () => {
       const stubData = structuredClone(portfolioData);
-      const stubStudy = stubData.caseStudies.find((study) => study.id === 'fathom');
-      const measured = stubStudy.sections.find((section) => section.id === 'evidence');
-      const why = stubStudy.sections.find((section) => section.id === 'problem');
+      const stubStudy = stubData.caseStudies.find((study) => study.id === 'clearledger');
+      const measured = stubStudy.sections.find((section) => section.id === 'testing');
+      const why = stubStudy.sections.find((section) => section.id === 'customer');
       measured.subtitle = 'Stub subtitle';
 
       vi.resetModules();
@@ -309,7 +316,7 @@ describe('CaseStudyPage', () => {
       const { default: StubCaseStudyPage } = await import('./CaseStudyPage');
 
       render(
-        <MemoryRouter initialEntries={['/work/fathom']}>
+        <MemoryRouter initialEntries={['/work/clearledger']}>
           <Routes>
             <Route path="/work/:slug" element={<StubCaseStudyPage />} />
           </Routes>
@@ -317,24 +324,23 @@ describe('CaseStudyPage', () => {
       );
 
       expect(screen.getAllByText('Stub subtitle')).toHaveLength(1);
-      const measuredHeading = within(document.getElementById('evidence')).getByRole('heading', { level: 2 });
+      const measuredHeading = within(document.getElementById('testing')).getByRole('heading', { level: 2 });
       expect(measuredHeading.nextElementSibling).toHaveTextContent('Stub subtitle');
-      const whyHeading = within(document.getElementById('problem')).getByRole('heading', { level: 2 });
+      const whyHeading = within(document.getElementById('customer')).getByRole('heading', { level: 2 });
       expect(whyHeading.nextElementSibling).toHaveTextContent(why.blocks[0].text);
     });
   });
 
   describe('repository links (G26)', () => {
-    // Moved to the Flywheel page on 2026-10-25, when the WorkHorse page that held three snapshot
-    // links was removed: its header code link and its paragraph link to the design-records agent.
+    // Moved to the ClearLedger page on 2026-11-24, when the Flywheel page became part of the study.
     it('opens every GitHub link in a new tab, with readable names and the right destinations', () => {
-      renderCaseStudyAt('/work/flywheel');
-      const flywheel = caseStudies.find((study) => study.id === 'flywheel');
+      renderCaseStudyAt('/work/clearledger');
+      const clearledger = caseStudies.find((study) => study.id === 'clearledger');
 
       const repoLinks = screen
         .getAllByRole('link')
         .filter((link) => link.getAttribute('href')?.startsWith('https://github.com/muhibm1/'));
-      expect(repoLinks.length).toBeGreaterThanOrEqual(2);
+      expect(repoLinks.length).toBeGreaterThanOrEqual(1);
 
       for (const link of repoLinks) {
         expect(link).toHaveAttribute('target', '_blank');
@@ -342,18 +348,16 @@ describe('CaseStudyPage', () => {
         expect(link.textContent).not.toMatch(/^https?:\/\//);
       }
 
-      expect(repoLinks.find((link) => link.getAttribute('href') === flywheel.codeLink.href)).toBeDefined();
-      const agentLink = screen.getByRole('link', { name: /design-records agent/i });
-      expect(agentLink).toHaveAttribute('href', personal.repositories.studbookAgent);
+      expect(repoLinks.find((link) => link.getAttribute('href') === clearledger.codeLink.href)).toBeDefined();
+      expect(clearledger.codeLink.href).toBe(personal.repositories.clearledger);
     });
 
     it('throws a readable error when a paragraph link.text occurs more than once', async () => {
       const brokenData = structuredClone(portfolioData);
-      const brokenStudy = brokenData.caseStudies.find((study) => study.id === 'flywheel');
-      const linkedBlock = brokenStudy.sections
-        .flatMap((section) => section.blocks)
-        .find((block) => block.link?.text === 'design-records agent');
-      linkedBlock.text = `${linkedBlock.text} The design-records agent appears again here.`;
+      const brokenStudy = brokenData.caseStudies.find((study) => study.id === 'clearledger');
+      const block = brokenStudy.sections[0].blocks.find((candidate) => candidate.type === 'paragraph');
+      block.text = `${block.text} Odoo again.`;
+      block.link = { text: 'Odoo', href: 'https://github.com/odoo/odoo' };
 
       vi.resetModules();
       vi.doMock('../data/portfolioData', () => ({ portfolioData: brokenData }));
@@ -361,7 +365,7 @@ describe('CaseStudyPage', () => {
 
       expect(() =>
         render(
-          <MemoryRouter initialEntries={['/work/flywheel']}>
+          <MemoryRouter initialEntries={['/work/clearledger']}>
             <Routes>
               <Route path="/work/:slug" element={<BrokenCaseStudyPage />} />
             </Routes>

@@ -18,18 +18,18 @@ function renderCards() {
 }
 
 describe("CaseStudyCards", () => {
-  // Owner's split brief, 2026-10-25: the Apple agent leads, and Fathom joins the featured cards.
-  it("renders one route link per listed study in data order, the five featured ones as articles first (owner brief 2026-10-21, 2026-10-25; the ERP data platform added fifth and featured 2026-10-27)", () => {
+  // Owner's brief, 2026-11-24: the study leads, then the three deployments.
+  it("renders one route link per listed study in data order, the study and the three deployments as articles first (owner brief 2026-11-24)", () => {
     renderCards();
 
-    const routeLinks = screen.getAllByRole("link", { name: /read the case study/i });
+    const routeLinks = screen.getAllByRole("link", { name: /read the (case )?study/i });
     expect(routeLinks.map((link) => link.getAttribute("href"))).toEqual(listed.map((study) => `/work/${study.id}`));
-    expect(featured.map((study) => study.id)).toEqual(["apple-decision-support-agent", "agentops", "flywheel", "fathom", "erp-data-platform"]);
+    expect(featured.map((study) => study.id)).toEqual(["building-around-a-model", "casepilot", "clearledger", "agentops"]);
 
     const articles = screen.getAllByRole("article");
-    expect(articles).toHaveLength(5);
+    expect(articles).toHaveLength(4);
     articles.forEach((article, index) => {
-      expect(within(article).getByRole("link", { name: /read the case study/i })).toHaveAttribute(
+      expect(within(article).getByRole("link", { name: /read the (case )?study/i })).toHaveAttribute(
         "href",
         `/work/${featured[index].id}`,
       );
@@ -50,20 +50,26 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("opens each featured card with its problem, decision and result before the stats", () => {
+  it("opens each deployment card with its problem, result and decision before the stats, and the study card with its summary", () => {
     renderCards();
 
     screen.getAllByRole("article").forEach((article, index) => {
-      const { deploymentSummary } = featured[index];
+      const { deploymentSummary, card } = featured[index];
+      if (!deploymentSummary) {
+        expect(within(article).getByText(card.summary)).toBeInTheDocument();
+        return;
+      }
       const summary = within(article).getByLabelText("Deployment summary");
       expect(within(summary).getByText("Problem")).toBeInTheDocument();
       expect(within(summary).getByText(deploymentSummary.problem)).toBeInTheDocument();
       expect(within(summary).getByText(deploymentSummary.decision)).toBeInTheDocument();
       expect(within(summary).getByText(deploymentSummary.result)).toBeInTheDocument();
+      // The card keeps to three rows; the page shows all six.
+      expect(within(summary).queryByText("Integration")).toBeNull();
     });
   });
 
-  it("shows four stats on every featured card, Flywheel's from its card and the others' from their pages", () => {
+  it("shows four stats on every featured card, from the card where it carries its own", () => {
     renderCards();
 
     const articles = screen.getAllByRole("article");
@@ -75,7 +81,7 @@ describe("CaseStudyCards", () => {
         expect(within(article).getByText(stat.label)).toBeInTheDocument();
       }
     });
-    expect(featured[2].card.stats.map((stat) => stat.value)).toEqual(["19 to 14", "27 of 33", "0 of 3", "5"]);
+    expect(featured[1].card.stats.map((stat) => stat.value)).toEqual(["39 of 40", "0", "34 of 35", "67% to 97%"]);
   });
 
   it("gives featured cards with a public repository one external code link, with no link nested in another", () => {
@@ -99,7 +105,8 @@ describe("CaseStudyCards", () => {
         expect(anchor.querySelector("a")).toBeNull();
       }
     });
-    expect(screen.getAllByText("View the code")).toHaveLength(4);
+    // ClearLedger and AgentOps are public; the study and CasePilot carry no code link.
+    expect(screen.getAllByText("View the code")).toHaveLength(2);
   });
 
   it("puts the More work heading above the compact cards, each with its two tags and the read-more label", () => {
@@ -107,10 +114,10 @@ describe("CaseStudyCards", () => {
 
     expect(screen.getByRole("heading", { name: "More work" })).toBeInTheDocument();
     expect(more.map((study) => study.id)).toEqual([
+      "apple-decision-support-agent",
+      "erp-data-platform",
       "analyst-agent",
       "collections-agent",
-      "esper",
-      "orion",
       "apple-integration",
       "apple-data-health",
     ]);
@@ -123,19 +130,18 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("shows the status on the Orion card, links Fathom's public repository, and links to none of the private repositories (TG-07, D2; owner 2026-10-25)", () => {
+  it("shows CasePilot's status, gives Orion and Fathom no card, and links to none of the private repositories (TG-07, D2; owner 2026-11-24)", () => {
     const { container } = renderCards();
 
-    const orion = caseStudies.find((candidate) => candidate.id === "orion");
-    expect(orion.status).toBe("Private · in daily use");
-    expect(orion.codeLink).toBeUndefined();
-    expect(within(container).getByText("Private · in daily use")).toBeInTheDocument();
+    const casepilot = caseStudies.find((candidate) => candidate.id === "casepilot");
+    expect(casepilot.status).toBe("Code available on request");
+    expect(casepilot.codeLink).toBeUndefined();
+    expect(within(container).getByText("Code available on request")).toBeInTheDocument();
 
-    const fathom = caseStudies.find((candidate) => candidate.id === "fathom");
-    expect(fathom.status).toBeUndefined();
-    expect(fathom.codeLink).toEqual({ label: "Code: fathom", href: "https://github.com/muhibm1/fathom" });
-    expect(within(container).queryByText("Open source · in development")).toBeNull();
-    expect(document.querySelectorAll('a[href="https://github.com/muhibm1/fathom"]')).toHaveLength(1);
+    expect(caseStudies.find((candidate) => candidate.id === "fathom")).toBeUndefined();
+    expect(document.querySelectorAll('a[href="/work/orion"]')).toHaveLength(0);
+    expect(document.querySelectorAll('a[href*="github.com/muhibm1/fathom"]')).toHaveLength(0);
+    expect(document.querySelectorAll('a[href*="github.com/muhibm1/casepilot"]')).toHaveLength(0);
 
     expect(screen.queryAllByText("Ongoing project")).toHaveLength(0);
     expect(document.querySelectorAll('a[href*="github.com/muhibm1/orion"]')).toHaveLength(0);

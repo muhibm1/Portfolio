@@ -173,6 +173,16 @@ describe('siteRedirects and redirectPage (owner brief 2026-10-21)', () => {
         to: '/work',
         targetUrl: 'https://muhibm1.github.io/Portfolio/work/',
       },
+      {
+        from: '/work/flywheel',
+        to: '/work/building-around-a-model',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/building-around-a-model/',
+      },
+      {
+        from: '/work/fathom',
+        to: '/work/building-around-a-model',
+        targetUrl: 'https://muhibm1.github.io/Portfolio/work/building-around-a-model/',
+      },
     ]);
   });
 

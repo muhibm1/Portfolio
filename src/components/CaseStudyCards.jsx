@@ -21,14 +21,16 @@ export default function CaseStudyCards({ caseStudies, moreHeading }) {
       {featured.map((study) => (
         <FeaturedCard key={study.id} study={study} />
       ))}
-      {moreHeading && <h3 className={`${eyebrowClasses} mt-6 tab:mt-10`}>{moreHeading}</h3>}
-      <ul className="grid grid-cols-1 gap-3.5 tab:grid-cols-2 tab:gap-6 wide:grid-cols-3">
-        {rest.map((study) => (
-          <li key={study.id} className="flex">
-            <GridCard study={study} />
-          </li>
-        ))}
-      </ul>
+      {moreHeading && rest.length > 0 && <h3 className={`${eyebrowClasses} mt-6 tab:mt-10`}>{moreHeading}</h3>}
+      {rest.length > 0 && (
+        <ul className="grid grid-cols-1 gap-3.5 tab:grid-cols-2 tab:gap-6 wide:grid-cols-3">
+          {rest.map((study) => (
+            <li key={study.id} className="flex">
+              <GridCard study={study} />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

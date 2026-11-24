@@ -22,8 +22,6 @@ import * as forbiddenCopy from "../../scripts/forbidden-copy.mjs";
 // throw on at render.
 const KNOWN_BLOCK_TYPES = new Set([
   "replay",
-  // Added 2026-10-25 for the Fathom replay, which took the place of its chip walkthrough (owner).
-  "fathom-replay",
   // Added 2026-10-25 for the Orion architecture diagram, drawn in the site's own boxes (owner).
   "architecture",
   "paragraph",
@@ -39,6 +37,11 @@ const KNOWN_BLOCK_TYPES = new Set([
   "bars",
   // Added 2026-10-19 (TG-07) for the Orion walkthrough: a console with a step rail and a figure.
   "walkthrough",
+  // Added 2026-11-24 for the study: system against baseline on one scale, a numbered source list,
+  // and a short aside.
+  "comparison",
+  "references",
+  "note",
 ]);
 
 // Copied verbatim from plan section 4.3 (home stats) and plan section 6 (approved facts table).
@@ -71,8 +74,12 @@ const pinnedToolkit = [
 
 // R154: the featured card's four values (D52: 40, not 28) and the WorkHorse case-study stats.
 const pinnedCaseStudyStats = {
-  agentops: ["24 of 24", "3 of 24", "23 of 24", "$0.04"],
-  flywheel: ["19 to 14", "2 of 2", "3 fixed, 5 broken", "0 broken"],
+  // 2026-11-24 (owner's brief): the study and the two new deployments; AgentOps drops its
+  // cost stat for the live shop result.
+  "building-around-a-model": ["0 of 4", "89 vs 78", "9 vs 10", "0 vs 10"],
+  "casepilot": ["39 of 40", "0", "34 of 35", "9"],
+  "clearledger": ["89 vs 78", "86 vs 82", "267 of 300", "63 of 63"],
+  agentops: ["24 of 24", "3 of 24", "23 of 24", "14 of 15"],
   esper: ["79%", "0%", "11 of 11"],
   "apple-decision-support-agent": ["30 to 350+", "2 weeks", "Zero", "~94%"],
   // Added 2026-10-21 from the owner's redesign brief.
@@ -81,7 +88,6 @@ const pinnedCaseStudyStats = {
   // Added 2026-10-19 (TG-07); since the split on 2026-10-25 the agent stack's four figures, and
   // Fathom's four headline results (owner's split brief).
   orion: ["16", "4,599", "0.889", "158"],
-  fathom: ["0 of 50", "100%", "621 of 625", "7 to 0"],
   // Added 2026-10-27 from the erp-data-platform repository's results.
   "erp-data-platform": ["18 checks", "5 of 5", "46 of 47", "73 of 73"],
   // Added 2026-10-27 from erp-data-platform's analyst/eval/RESULTS.md.
@@ -105,9 +111,10 @@ const DECISION_CALLOUT =
   "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.";
 const PRINCIPLE_ONE =
   "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.";
-const HERO_HEADING = "I find the step everyone is waiting on.";
+// 2026-11-24: the owner's new headline (his brief for the restructure around deployments).
+const HERO_HEADING = "I deploy AI agents into business systems and prove whether they work.";
 const HERO_LEAD =
-  "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.";
+  "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.";
 const RESUME_BULLET =
   "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
@@ -143,8 +150,86 @@ const INTEGRATION_CROSS_REFERENCE =
 // Regenerated 2026-10-21 for the owner's redesign brief (glosses cut, Apple infrastructure names
 // generalized, Tannhauser Gate added); earlier entries were copied from the mockups and R154/R155.
 const pinnedCaseStudyNarratives = {
+  "building-around-a-model": {
+    "eyebrow": "Study · November 2026",
+    "title": "When does building around a model beat a plain model?",
+    "lead": "I tested seven agent systems I built against the strongest simple alternative: Claude Opus with the same tools and the chance to check its own work. Systems that tried to reason better than the model tied or lost, every time. Systems that held a guarantee in code, one that stays true when the model is wrong or the process crashes, were the only ones that won. Several early wins disappeared once the baseline was allowed to run its own tests.",
+    "atAGlance": [
+      {
+        "label": "What was tested",
+        "value": "Seven head-to-head results from the agent systems I built between September and November 2026"
+      },
+      {
+        "label": "Against what",
+        "value": "Claude Opus with the same tools and a run-and-check loop, unless noted"
+      },
+      {
+        "label": "How",
+        "value": "Frozen code, scored once, on data built after the model's training cutoff where possible"
+      },
+      {
+        "label": "Refereed by",
+        "value": "Me. No outside team has reproduced these numbers yet"
+      }
+    ],
+    "calloutEyebrow": "The takeaway",
+    "calloutText": "Let the model do the thinking. Spend engineering on what it cannot promise: no action done twice, no confident answer from bad data, a fixed order of work. Then prove it against a baseline that is given a fair chance.",
+    "contactHeading": "Deciding what to build around a model? Let's talk."
+  },
+  "casepilot": {
+    "eyebrow": "Deployment case study · Salesforce · Customer support",
+    "title": "CasePilot: a support agent inside Salesforce that asks before it writes",
+    "lead": "CasePilot reads an open support case, the account behind it, the account's other cases and the knowledge base. It triages the case, drafts the reply, and proposes what to change. Then it stops. A person approves or rejects each proposal, and only an approved write reaches Salesforce, once, with a record of who approved it.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed, built and tested it end to end"
+      },
+      {
+        "label": "Connects to",
+        "value": "Salesforce REST API (OAuth client credentials, SOQL, sObjects) as a least-privilege integration user"
+      },
+      {
+        "label": "Ships as",
+        "value": "An MCP server, a sub-agent and an agent skill, in TypeScript"
+      },
+      {
+        "label": "Models",
+        "value": "Claude Opus answers triage (three votes, majority wins); Claude Sonnet drafts and checks the reply"
+      }
+    ],
+    "calloutEyebrow": "The decision",
+    "calloutText": "The agent does the reading and the drafting. The customer's own rules, written in files they can edit, decide what it may change, and a person approves every write.",
+    "contactHeading": "Want an agent working your support queue? Let's talk."
+  },
+  "clearledger": {
+    "eyebrow": "Deployment case study · Odoo ERP · Finance data",
+    "title": "ClearLedger: finance answers that hold up when the books don't",
+    "lead": "A finance team asks what a customer owes, who is late and whether every won deal turned into cash. ClearLedger answers from the company's own ERP data and can show its work for any number. Where it beats a plain model is not the easy questions. It is the ones where the books themselves are wrong.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed, built and tested it end to end"
+      },
+      {
+        "label": "Connects to",
+        "value": "Odoo 17 through its JSON-RPC API, no database access to the ERP"
+      },
+      {
+        "label": "Stack",
+        "value": "Python, Postgres, dbt, MCP, Claude"
+      },
+      {
+        "label": "Checked by",
+        "value": "29 dbt checks, 5 monitors and 5 deliberate failure drills, run in CI on every push"
+      }
+    ],
+    "calloutEyebrow": "The decision",
+    "calloutText": "The model is already good at SQL. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
+    "contactHeading": "Building AI on your ERP or CRM data? Let's talk."
+  },
   agentops: {
-    eyebrow: "Case study · Personal system · Agentic AI · Incident response",
+    eyebrow: "Deployment case study · Microservices · Incident response",
     title: "AgentOps: an incident agent that can't act alone",
     lead: "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
     atAGlance: [
@@ -168,32 +253,6 @@ const pinnedCaseStudyNarratives = {
     calloutEyebrow: "What I'd bring to a client",
     calloutText: "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
     contactHeading: "Want an agent near production? Let's talk."
-  },
-  flywheel: {
-    eyebrow: "Case study · Personal system · LLM evaluation · LangSmith",
-    title: "Flywheel: an agent's real failures, turned into its tests",
-    lead: "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases. It checks every pull request against them case by case. On three agents it blocked a change that looked fine: one passed every unit test of its behaviour, one looked like random noise in the average scores, and on LangChain's own email agent a cheaper model tied on totals but failed one kind of email every time.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it end to end"
-      },
-      {
-        label: "What it is",
-        value: "A safety check for AI agents: it turns recorded failed runs into test cases and blocks any proposed code change that breaks one"
-      },
-      {
-        label: "Stack",
-        value: "Python, LangSmith, LangGraph, GitHub Actions, Claude"
-      },
-      {
-        label: "Quality",
-        value: "33 tests, automatic checks on every change (run on Python 3.11 and 3.13), and Flywheel's own check guarding its example agent"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a statistical test on each case keeps model noise from blocking a good change.",
-    contactHeading: "Have an agent that works in the demo? Let's talk."
   },
   "apple-decision-support-agent": {
     eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
@@ -273,32 +332,6 @@ const pinnedCaseStudyNarratives = {
     calloutEyebrow: "What I'd bring to a client",
     calloutText: "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
     contactHeading: "Running coding agents every day? Let's talk."
-  },
-  fathom: {
-    eyebrow: "Case study · Open source · Data platforms",
-    title: "Fathom: what a data change reaches, before it ships",
-    lead: "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own"
-      },
-      {
-        label: "What it is",
-        value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow"
-      },
-      {
-        label: "Where it stands",
-        value: "Open source under the Apache-2.0 licence, with its code on GitHub"
-      },
-      {
-        label: "Tested on",
-        value: "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
-    contactHeading: "Want agents to change your data platform safely? Let's talk."
   },
   "erp-data-platform": {
     eyebrow: "Case study · Open source · ERP data engineering",
@@ -466,6 +499,7 @@ const pinnedRepositories = {
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
   erpDataPlatform: "https://github.com/muhibm1/erp-data-platform",
+  clearledger: "https://github.com/muhibm1/clearledger",
 };
 
 // R138: FastAPI is now permitted (it names a real fact in the Stack line); Kubernetes stays
@@ -515,14 +549,15 @@ function workhorseAndStudbookStrings(data) {
 }
 
 describe("portfolioData", () => {
-  it("names / then /work then /work/<id> for the twelve case studies, featured work first and the unlisted Atelier page last (R127, G1, owner brief 2026-10-21; WorkHorse and the agent harness page removed 2026-10-25; Fathom added and the Apple agent first, split brief 2026-10-25; Neural Newsletters removed the same day; the ERP data platform added fifth and featured 2026-10-27; the analyst agent added sixth, not featured, the same day; the collections agent added seventh, not featured, 2026-11-05)", () => {
+  it("names / then /work then /work/<id> for the case studies, the study and the three deployments first, the unlisted pages last (owner brief 2026-11-24: Flywheel and Fathom no longer standalone, Esper and Orion kept but unlisted)", () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       "/",
       "/work",
-      "/work/apple-decision-support-agent",
+      "/work/building-around-a-model",
+      "/work/casepilot",
+      "/work/clearledger",
       "/work/agentops",
-      "/work/flywheel",
-      "/work/fathom",
+      "/work/apple-decision-support-agent",
       "/work/erp-data-platform",
       "/work/analyst-agent",
       "/work/collections-agent",
@@ -533,22 +568,41 @@ describe("portfolioData", () => {
       "/work/atelier",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.card.featured).map((study) => study.id)).toEqual([
-      "apple-decision-support-agent",
+      "building-around-a-model",
+      "casepilot",
+      "clearledger",
       "agentops",
-      "flywheel",
-      "fathom",
-      "erp-data-platform",
+    ]);
+    expect(portfolioData.caseStudies.filter((study) => study.home === "deployment").map((study) => study.id)).toEqual([
+      "casepilot",
+      "clearledger",
+      "agentops",
+    ]);
+    expect(portfolioData.caseStudies.filter((study) => study.home === "study").map((study) => study.id)).toEqual([
+      "building-around-a-model",
     ]);
     expect(portfolioData.caseStudies.filter((study) => study.listed === false).map((study) => study.id)).toEqual([
+      "esper",
+      "orion",
       "atelier",
     ]);
   });
 
-  it("carries the AgentOps case study second, after the Apple agent (owner brief 2026-10-21; split brief 2026-10-25), with its repository codeLink and a `measured` section holding its table (2026-10-12)", () => {
+  it("opens every deployment case study with all six summary rows: customer, problem, integration, testing, result and decision (owner brief 2026-11-24)", () => {
+    for (const study of portfolioData.caseStudies.filter((entry) => entry.home === "deployment")) {
+      expect(Object.keys(study.deploymentSummary)).toEqual(["customer", "problem", "integration", "testing", "result", "decision"]);
+    }
+  });
+
+  it("never states CasePilot's 98% as a headline, only the counts it was verified as (owner brief 2026-11-24)", () => {
+    expect(collectStrings(findCaseStudy("casepilot")).join("\n")).not.toMatch(/98%/);
+  });
+
+  it("carries the AgentOps case study fourth, the last of the three deployments (owner brief 2026-11-24), with its repository codeLink and a `measured` section holding its table (2026-10-12)", () => {
     const agentops = findCaseStudy("agentops");
 
     expect(agentops).toBeDefined();
-    expect(portfolioData.caseStudies[1].id).toBe("agentops");
+    expect(portfolioData.caseStudies[3].id).toBe("agentops");
     expect(agentops.codeLink).toEqual({
       label: "Code: agentops",
       href: "https://github.com/muhibm1/agentops",
@@ -560,50 +614,6 @@ describe("portfolioData", () => {
     expect(table.columns.map((column) => column.label)).toEqual(["Measure", "AgentOps", "ReAct baseline (plain agent)"]);
     expect(table.rows).toHaveLength(4);
     expect(table.rows[2].cells).toEqual(["Changed nothing without an approval", "24 of 24", "3 of 24"]);
-  });
-
-  it("carries the Flywheel case study third, after AgentOps, with its repository codeLink and the AgentOps gate table (2026-10-13)", () => {
-    const flywheel = findCaseStudy("flywheel");
-
-    expect(flywheel).toBeDefined();
-    expect(portfolioData.caseStudies[2].id).toBe("flywheel");
-    expect(flywheel.codeLink).toEqual({
-      label: "Code: flywheel",
-      href: "https://github.com/muhibm1/flywheel",
-    });
-
-    const flow = findSection(flywheel, "how").blocks.find((block) => block.type === "flow");
-    expect(flow.steps.map((step) => step.title)).toEqual(["Trace", "Score", "Mine", "Review", "Promote", "Gate"]);
-    expect(flow.steps.map((step) => step.gate === true)).toEqual([false, false, false, true, false, false]);
-
-    const table = findSection(flywheel, "agentops").blocks.find((block) => block.type === "table");
-    expect(table.rows.map((row) => row.cells.slice(1))).toEqual([
-      ["2 of 3", "0 of 3", "Broken"],
-      ["3 of 3", "1 of 3", "Broken"],
-      ["2 of 3", "1 of 3", "Wobble"],
-      ["19 of 21", "14 of 21", "Blocked"],
-    ]);
-
-    const studbookLink = findSection(flywheel, "studbook-agent").blocks.find((block) => block.link);
-    expect(studbookLink.link).toEqual({
-      text: "design-records agent",
-      href: "https://github.com/muhibm1/studbook-agent",
-    });
-
-    // The LangChain open-source agents study (flywheel PRs 4 and 5, owner brief 2026-10-21).
-    const langchain = findSection(flywheel, "langchain-agents");
-    const langchainTable = langchain.blocks.find((block) => block.type === "table");
-    expect(langchainTable.rows.map((row) => row.cells.slice(1))).toEqual([
-      ["52 of 60", "51 of 60"],
-      ["24 of 33", "27 of 33"],
-      ["27 of 33", "27 of 33"],
-      ["3 of 3", "0 of 3"],
-    ]);
-    expect(langchain.blocks.find((block) => block.link).link.href).toBe(
-      "https://github.com/muhibm1/flywheel/tree/main/studies/langchain-agents",
-    );
-    expect(flywheel.card.featured).toBe(true);
-    expect(flywheel.card.stats.map((stat) => stat.value)).toEqual(["19 to 14", "27 of 33", "0 of 3", "5"]);
   });
 
   it("has no projects, demos, telemetry or philosophy key (R128)", () => {
@@ -977,11 +987,10 @@ describe("portfolioData", () => {
       title: "At Apple Maps",
       text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
     });
-    // 2026-10-21: WorkHorse retired; the line names Orion. 2026-10-25: it names Fathom, the part
-    // of Orion a data team could deploy, after the split (owner's brief).
+    // 2026-11-24: Fathom is no longer a standalone project; the line names the study's question.
     expect(home.hero.rightNow.items[1]).toEqual({
-      title: "Building Fathom",
-      text: "A context layer for AI agents on data platforms: what a change reaches, which rules apply and who owns it, checked before it ships",
+      title: "Testing agents against plain models",
+      text: "Which parts of an agent system beat a strong model with the same tools, and which do not",
     });
     expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
     expect(home.experience.roles[0].company).toBe("Apple Maps");
@@ -1077,8 +1086,8 @@ describe("homeReplay (TG-06)", () => {
 
   // The AgentOps proof band left the home page on 2026-10-21 (owner's brief); the skip link now
   // lands on the production stats that follow the hero.
-  it("skips to the production stats on the page", () => {
-    expect(replay.skip.href).toBe("#stats");
+  it("skips to the study, the first section after the hero (owner brief 2026-11-24)", () => {
+    expect(replay.skip.href).toBe("#study");
   });
 
   it("never mentions Paddock anywhere in the site data", () => {
@@ -1091,9 +1100,8 @@ describe("homeReplay (TG-06)", () => {
 // steps come from the approved Look. Every number on the page is one the document states.
 // 2026-10-25 (owner's split brief): the data-platform half, walkthrough included, moved to the
 // Fathom page and the Orion page became the agent stack. Both pages are held to the same rule.
-describe("the Orion and Fathom case studies (TG-07)", () => {
+describe("the Orion case study (TG-07; Fathom removed 2026-11-24)", () => {
   const orion = portfolioData.caseStudies.find((study) => study.id === "orion");
-  const fathom = portfolioData.caseStudies.find((study) => study.id === "fathom");
 
   // Every figure the owner's document states, as the exact phrase it appears in, so a number cannot
   // be swapped for another one that happens to appear somewhere else (27 of 45 cannot become
@@ -1172,25 +1180,16 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
     return numbersIn(rest);
   }
 
-  it("puts Fathom fourth, then the ERP data platform as the last featured study, then the analyst agent, then the collections agent, then Esper, then Orion, Fathom linking its public repository and Orion with its status and no code link (D2, D10, split brief 2026-10-25)", () => {
-    const ids = portfolioData.caseStudies.map((study) => study.id);
-    expect(ids.indexOf("fathom")).toBe(3);
-    expect(ids.indexOf("erp-data-platform")).toBe(4);
-    expect(ids.indexOf("analyst-agent")).toBe(5);
-    expect(ids.indexOf("collections-agent")).toBe(6);
-    expect(ids.indexOf("esper")).toBe(7);
-    expect(ids.indexOf("orion")).toBe(8);
-    expect(fathom.card.featured).toBe(true);
+  it("keeps Orion reachable but unlisted, with its status and no code link (owner brief 2026-11-24)", () => {
+    expect(orion.listed).toBe(false);
     expect(orion.card.featured).toBe(false);
-    expect(fathom).not.toHaveProperty("status");
-    expect(fathom.codeLink).toEqual({ label: "Code: fathom", href: "https://github.com/muhibm1/fathom" });
     expect(orion.status).toBe("Private · in daily use");
     expect(orion).not.toHaveProperty("codeLink");
+    expect(portfolioData.caseStudies.some((study) => study.id === "fathom")).toBe(false);
   });
 
-  it("states only figures the owner's document states, in the phrase it states them, on both pages and in the walkthrough (D3)", () => {
+  it("states only figures the owner's document states, in the phrase it states them (D3)", () => {
     expect(collectStrings(orion).flatMap(unknownNumbersIn)).toEqual([]);
-    expect(collectStrings(fathom).flatMap(unknownNumbersIn)).toEqual([]);
   });
 
   it("keeps Orion free of the data-platform walkthrough, review and gate (split brief 2026-10-25)", () => {
@@ -1206,25 +1205,15 @@ describe("the Orion and Fathom case studies (TG-07)", () => {
   });
 
   it("leaves out the sentences that use words the copy scan bans, and the sample verdict (D3)", () => {
-    const text = [orion, fathom].flatMap(collectStrings).join("\n");
+    const text = collectStrings(orion).join("\n");
     expect(text).not.toMatch(/95%|sandbox|boundar/i);
     expect(text).not.toMatch(/88\/100|CON-031|INC-230/);
     // Plan step 4's sentence about facts missing from the diff is left out whole, because it names Go.
     expect(text).not.toMatch(/Today's misses need facts|byteLength|Unwrap/);
   });
 
-  it("shows the replay of one recorded check in place of the chip walkthrough (owner, 2026-10-25)", () => {
-    expect(collectBlocks(fathom).some((block) => block.type === "walkthrough")).toBe(false);
-    expect(collectBlocks(fathom).filter((block) => block.type === "fathom-replay")).toEqual([{ type: "fathom-replay", skipHref: "#trust" }]);
-    expect(fathom.sections.map((section) => section.id)).toContain("trust");
-  });
-
-  // Fathom's repository is reached only through its codeLink (made public 2026-10-25); the prose
-  // of both studies still carries no address.
-  it("holds no repository address or link in the Orion or Fathom text, outside Fathom's codeLink", () => {
-    const { codeLink, ...fathomText } = fathom;
-    expect(codeLink.href).toBe("https://github.com/muhibm1/fathom");
-    const text = [orion, fathomText].flatMap(collectStrings).join("\n");
+  it("holds no repository address or link in the Orion text", () => {
+    const text = collectStrings(orion).join("\n");
     expect(text).not.toMatch(/github\.com|https?:\/\//i);
   });
 });
@@ -1269,7 +1258,7 @@ describe("the Atelier case study (TG-08)", () => {
   }
 
   it("is unlisted, after the listed studies, with the words Ongoing project and no code link (D7, D8, owner brief 2026-10-21)", () => {
-    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(11);
+    expect(portfolioData.caseStudies.map((study) => study.id).indexOf("atelier")).toBe(portfolioData.caseStudies.length - 1);
     expect(atelier.listed).toBe(false);
     expect(atelier.status).toBe("Ongoing project");
     expect(atelier).not.toHaveProperty("codeLink");
@@ -1372,12 +1361,10 @@ describe("the Atelier case study (TG-08)", () => {
 // 15% faster than the Atelier one.
 // 2026-10-25 (owner's split brief): the walkthrough moved to Fathom, after its opening problem;
 // Orion opens on where it sits, then the record, its tools, search, the daemon, its drawing, Auspex, lessons, the weight of the work and what's next.
-describe("Fathom and Orion page order and pace", () => {
-  const fathom = findCaseStudy("fathom");
+describe("Orion page order and pace", () => {
   const orion = findCaseStudy("orion");
 
-  it("follows the brief's order on both pages", () => {
-    expect(fathom.sections.map((section) => section.id)).toEqual(["problem", "walkthrough", "trust", "review", "loop", "architecture", "evidence", "weight", "plan"]);
+  it("follows the brief's order", () => {
     expect(orion.sections.map((section) => section.id)).toEqual(["loop", "record", "tools", "retrieval", "always-on", "architecture", "auspex", "lessons", "weight", "plan"]);
   });
 
