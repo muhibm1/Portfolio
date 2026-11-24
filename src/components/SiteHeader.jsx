@@ -3,13 +3,14 @@ import { portfolioData } from '../data/portfolioData';
 import { wrapClasses } from './lookClasses';
 import ThemeButton from './ThemeButton';
 
-// R133. On the home page the links jump to sections on the page (six since 2026-10-21, so on a
+// R133. On the home page the links jump to sections on the page (seven since 2026-11-24, so on a
 // phone the row scrolls sideways instead of wrapping a label onto two lines); everywhere else they point back
 // at home, the work index, and the current page's own contact anchor.
 const HOME_LINKS = [
-  { label: 'Work', href: '#work' },
+  { label: 'Study', href: '#study' },
+  { label: 'Deployments', href: '#work' },
+  { label: 'Notes', href: '#notes' },
   { label: 'About', href: '#about' },
-  { label: 'Build log', href: '#build-log' },
   { label: 'How I work', href: '#approach' },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },

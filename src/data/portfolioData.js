@@ -36,10 +36,8 @@ const REPOSITORIES = {
   studbookAgent: "https://github.com/muhibm1/studbook-agent",
   fathom: "https://github.com/muhibm1/fathom",
   erpDataPlatform: "https://github.com/muhibm1/erp-data-platform",
+  clearledger: "https://github.com/muhibm1/clearledger",
 };
-
-// The Flywheel study of two LangChain open-source agents, in the public flywheel repository.
-const FLYWHEEL_LANGCHAIN_STUDY = "https://github.com/muhibm1/flywheel/tree/main/studies/langchain-agents";
 
 const GITHUB_PROFILE = "https://github.com/muhibm1";
 
@@ -58,12 +56,13 @@ export const portfolioData = {
     hero: {
       eyebrow: "Forward deployed engineer · Austin, TX",
       mobileEyebrow: "Forward deployed engineer",
-      heading: "I find the step everyone is waiting on.",
+      heading: "I deploy AI agents into business systems and prove whether they work.",
       lead:
-        "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.",
+        "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.",
       mobileLead:
-        "Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.",
-      primaryCta: "Read the case studies",
+        "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.",
+      primaryCta: "Start with the study",
+      primaryHref: "#study",
       emailLinkText: "mmalqaim@gmail.com",
       codeLine: { text: "The code is public on GitHub", href: GITHUB_PROFILE },
       rightNow: {
@@ -75,15 +74,15 @@ export const portfolioData = {
               "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
           },
           {
-            title: "Building Fathom",
-            text: "A context layer for AI agents on data platforms: what a change reaches, which rules apply and who owns it, checked before it ships",
+            title: "Testing agents against plain models",
+            text: "Which parts of an agent system beat a strong model with the same tools, and which do not",
           },
         ],
       },
     },
 
     stats: {
-      eyebrow: "Measured in production",
+      eyebrow: "Measured in production at Apple Maps",
       caption: "From systems I built or run. Internal system names are withheld.",
       items: [
         {
@@ -113,19 +112,58 @@ export const portfolioData = {
       ],
     },
 
-    caseStudiesIntro: {
-      eyebrow: "02 · Work",
-      heading: "Deployed, measured, still running.",
+    // The lead study, then the three deployments (owner's brief, 2026-11-24).
+    studyIntro: {
+      eyebrow: "01 · The study",
+      heading: "The study that decides what I build.",
       lead:
-        "Each one covers the situation, what I built, how it stays safe, and what changed. Every number is one I can back up on a call.",
-      moreHeading: "More work",
+        "I put seven of my own agent systems against Claude Opus with the same tools. The ones that tried to out-think the model lost. The ones that held a guarantee in code won.",
+    },
+
+    caseStudiesIntro: {
+      eyebrow: "02 · Deployments",
+      heading: "Three agents, each wired into a real system.",
+      lead:
+        "Each one follows the same order: the customer, the problem, how it connects, how it was tested, the result, and what I decided. Every number is one I can back up on a call.",
+      moreHeading: "Earlier work",
+    },
+
+    // Short notes: smaller projects told in a paragraph, each with the result that ended or
+    // limits it (owner's brief, 2026-11-24). Figures from the study document of 2026-11-24.
+    notes: {
+      eyebrow: "03 · Notes",
+      heading: "Two shorter stories, and what they taught.",
+      lead: "Neither gets a full case study. Each one changed how I decide what to build.",
+      items: [
+        {
+          eyebrow: "Crash safety for agents",
+          title: "Agent Harbor",
+          figure: "0 of 15",
+          figureLabel: "crashes that refunded a customer twice, against 10 of 15 for LangGraph's checkpoint and for Temporal's LangGraph integration",
+          paragraphs: [
+            "Agent Harbor runs an unmodified LangGraph agent and keeps its own record of every outside action, such as a refund. If it crashes and cannot tell whether the refund went through, it stops for a person instead of guessing.",
+            "The cost is real: it needed a person after every one of those 15 crashes. And plain Opus, acting as the on-call operator, also got 6 of 6 right by checking the refund service first. Harbor's case is that it does not depend on the model choosing to check, which is not yet tested at volume.",
+          ],
+          link: { text: "Read the crash results in the study", to: "/work/building-around-a-model#crash-safety" },
+        },
+        {
+          eyebrow: "Finding the commit behind a bug",
+          title: "Flywheel",
+          figure: "9 vs 10",
+          figureLabel: "fresh bugs solved with proof, Flywheel against plain Opus once Opus could run the tests",
+          paragraphs: [
+            "Flywheel took a bug report, wrote a script that reproduces the bug, and searched the project's history for the commit that caused it, with proof. Against Opus that could not run code it led 58 of 60 to 37.",
+            "Once Opus could run the tests and use git bisect, it solved 10 of 10 fresh bugs written after its training cutoff, against Flywheel's 9. So I retired Flywheel. A lead that only exists against a handicapped baseline is not one to sell a customer.",
+          ],
+          link: { text: "Read how the baseline flipped the result", to: "/work/building-around-a-model#fair-baseline" },
+        },
+      ],
     },
 
     // Added 2026-10-21 from the owner's redesign brief (the shift to forward deployed engineering
-    // and deployment strategy). The About text is his draft; the build log entries are his, plus
-    // the AgentOps, Flywheel and Esper milestones filled from their repositories.
+    // and deployment strategy). The About text is his draft.
     about: {
-      eyebrow: "01 · About",
+      eyebrow: "04 · About",
       heading: "A system isn't done until people trust it.",
       // The owner's own wording, 2026-10-27, cut to one paragraph at his request.
       paragraphs: [
@@ -133,57 +171,8 @@ export const portfolioData = {
       ],
     },
 
-    buildLog: {
-      eyebrow: "03 · Build log",
-      heading: "Build log: what changed and why",
-      direction:
-        "I've stopped building agents that imitate a software team. Frontier models already plan and write code well. What stays valuable is what they can't bring with them: a company's own context, rules enforced in code, and proof that a change is safe. That's what I build now, and what I'd help a customer deploy.",
-      entries: [
-        {
-          date: "Oct 27, 2026",
-          text: "Built an analyst agent on the ERP warehouse: it turns a plain-English question into checked, read-only SQL and answers with the query it used. It answered 102 of 103 held-out questions, and a second dataset took one configuration file and no change to the agent.",
-        },
-        {
-          date: "Oct 27, 2026",
-          text: "Built an ERP's data side end to end, treated as a client engagement: extraction through the API, finance numbers that trace to the records behind them, and five deliberate failures, each caught and recovered from. An agent with only read-only tools answered 46 of 47 held-out questions, and all 73 of its citations were real, current records.",
-        },
-        {
-          date: "Oct 25, 2026",
-          text: "Gave Fathom a home of its own. Orion and Fathom began as two ideas I built side by side: context for my own coding agents, and context for agents working on a data team's platform. Each had grown into a full system, so Orion stays my private context layer and Fathom became its own project, the one a data team can deploy, tested on cal-itp's public warehouse.",
-        },
-        {
-          date: "Oct 24 to 25, 2026",
-          text: "Measured Esper against what most people would use, a coding agent with web search, told to cite. 82% of Esper's sentences were backed by the page they cite, against 58% for the agent.",
-        },
-        {
-          date: "Oct 23 to 24, 2026",
-          text: "Made Orion the context layer every one of my agent sessions uses: one cited record of 16 repositories' commits, pull requests, notes and past agent sessions, with search recall 0.889 in the top ten on 42 hand-labelled questions.",
-        },
-        {
-          date: "Oct 20, 2026",
-          text: "Ran Flywheel on two of LangChain's open-source agents. Moving the email agent from Claude Sonnet 4.5 to the cheaper Haiku 4.5 tied on totals, 27 of 33 replies each, but Flywheel blocked it on one email type: a reply deadline Sonnet acknowledged 3 of 3 times and Haiku 0 of 3.",
-        },
-        {
-          date: "Oct 19, 2026",
-          text: "Finished Esper, a research agent that proves every sentence. 79% of its sentences were backed by the page they cite, against 29% for LangChain's Open Deep Research.",
-        },
-        {
-          date: "Oct 16 to 20, 2026",
-          text: "Built Orion and Fathom side by side in one codebase: 38 pull requests merged and about 200 tests. Agents using Fathom made 0 of 50 forbidden calls on my pipeline benchmark, and it synced a 625-model public dbt warehouse in about two minutes.",
-        },
-        {
-          date: "Oct 13, 2026",
-          text: "Shipped Flywheel. Its first catch was a cleanup of AgentOps's prompt that passed 996 unit tests and dropped correct runs from 19 to 14 of 21.",
-        },
-        {
-          date: "Oct 12, 2026",
-          text: "Ran AgentOps live on Claude Sonnet 5.5. In 24 of 24 runs nothing changed before a person approved; a plain agent without the approval step waited in 3 of 24.",
-        },
-      ],
-    },
-
     principles: {
-      eyebrow: "04 · How I work",
+      eyebrow: "05 · How I work",
       heading: "Start with how the work actually moves.",
       items: [
         {
@@ -208,7 +197,7 @@ export const portfolioData = {
           number: "04",
           title: "Measure before claiming",
           text:
-            "Moving LangChain's open-source email agent to a cheaper model tied on totals, 27 of 33 replies each. Checked case by case, the cheaper model missed the reply deadline in one email every time, so the switch was blocked. An average can hide the one failure a client cares about.",
+            "Flywheel led a plain model by 35 points until the model was allowed to run the tests. Then the model won, 10 of 10 against 9, and I retired Flywheel. A result means little until you know what the baseline was allowed to do.",
         },
       ],
     },
@@ -220,7 +209,7 @@ export const portfolioData = {
     },
 
     experience: {
-      eyebrow: "05 · Experience",
+      eyebrow: "06 · Experience",
       heading: "Where the work happened.",
       roles: [
         {
@@ -316,7 +305,7 @@ export const portfolioData = {
     },
 
     contact: {
-      eyebrow: "06 · Contact",
+      eyebrow: "07 · Contact",
       heading: "Have a system that needs deploying? Let's talk.",
       lead: "I reply to email within a day. References are available on request.",
       mobileLead: "I reply within a day.",
@@ -339,7 +328,7 @@ export const portfolioData = {
     name: "AgentOps",
     regionLabel: "AgentOps replay",
     note: "A replay of a recorded run: an AI agent investigating a failing online checkout. The AI's answers were scripted in advance, so nothing here is live.",
-    skip: { text: "Skip to the page", href: "#stats" },
+    skip: { text: "Skip to the page", href: "#study" },
     stepsLabel: "Steps of the run",
     logLabel: "Agent log",
     logHeading: "agent log",
@@ -532,389 +521,784 @@ export const portfolioData = {
     },
   },
 
-  // The Fathom case study's replay (src/components/FathomReplay.jsx), added 2026-10-25 in place of
-  // the thirteen-part chip walkthrough. Every name and number is from one recorded run of Fathom
-  // (main d993d56) on its bundled fixture platform on 2026-10-25: `fathom preflight --intent "drop
-  // the discount_pct column from fct_orders"` (BLOCK, risk 85: +30, +25, +15, +12.6, +2.4), `fathom
-  // preflight --intent "add a column coupon_code to fct_orders"` (INFORM, risk 0), `fathom explain
-  // fct_orders` (8 downstream, 4 tier 1) and the fixture's INC-230 and CON-031 files. The risk
-  // score depends on the run date (the incident's age), so the copy names the recording, not today.
-  // The output is kept in the project's files at portfolio/fathom-walkthrough-2026-10-25/.
-  fathomReplay: {
-    name: "Fathom",
-    regionLabel: "Fathom replay",
-    note: "A replay of one real check on Fathom's sample data platform, the one its tests run against. Nothing here is live.",
-    stepsLabel: "Steps of the check",
-    stageLabel: "Current step",
-    logLabel: "Fathom's notes",
-    logHeading: "fathom",
-    states: {
-      checking: "Checking",
-      waiting: "Waiting for you",
-      approved: "Approved",
-      rejected: "Rejected",
-    },
-    controls: {
-      play: "Play",
-      pause: "Pause",
-      next: "Next step",
-      jump: "Jump to the decision",
-      replay: "Replay",
-      other: "See the other ending",
-      approve: "Approve",
-      reject: "Reject",
-      hintWaiting: "Approve or Reject to continue.",
-    },
-    announce: {
-      step: "Step {n}, {label}.",
-      waiting: "Fathom stopped. It is waiting for your decision.",
-      approved: "Approved. Fathom watches the next runs.",
-      rejected: "Rejected. The agent tries the safe version.",
-    },
-    steps: [
-      { id: "ask", label: "The ask" },
-      { id: "reach", label: "What it reaches" },
-      { id: "rule", label: "The rule" },
-      { id: "history", label: "What broke before" },
-      { id: "verdict", label: "Verdict" },
-      { id: "approval", label: "A person decides" },
-      { id: "after", label: "After" },
-    ],
-    panes: {
-      ask: {
-        note: "before any code is written",
-        request: "drop the discount_pct column from fct_orders",
-        text: "A coding agent is asked to clean up the orders table. Before it writes anything, it asks Fathom what the change would touch.",
-        foot: "next: preflight",
-      },
-      reach: {
-        note: "column-level lineage",
-        source: { name: "fct_orders", detail: "tier 1 · team/data-platform" },
-        nodes: [
-          { name: "dash_revenue_weekly", detail: "tier 1 dashboard · team/finance-data", hit: true },
-          { name: "orders_pipeline.dbt_test", detail: "the table's tests", hit: true },
-          { name: "fct_revenue, fct_refunds, finance_close_job and 3 more", detail: "read other columns, so not reached", hit: false },
-        ],
-        text: "The table feeds 8 other assets, 4 of them tier 1. Fathom follows this one column, not the whole table, and it reaches 2.",
-      },
-      rule: {
-        note: "written by the team, kept as a file",
-        id: "CON-031 · columns_locked · block",
-        text: "Revenue columns are a public contract read by the finance close, and the orders table feeds them.",
-        foot: "Deleting one of these columns fires the rule.",
-      },
-      history: {
-        note: "from the incident record",
-        stamp: "18 Aug 2026 · INC-230",
-        text: "A cleanup removed discount_pct because nothing seemed to use it. The weekly revenue dashboard showed gross revenue instead of net for an afternoon. CON-031 was written after it.",
-        tags: ["same table", "same kind of change"],
-      },
-      verdict: {
-        note: "the score is arithmetic in code, not a model's opinion",
-        level: "BLOCK",
-        risk: "risk 85 / 100",
-        scale: 30,
-        factors: [
-          { label: "A tier 1 dashboard is reached", points: 30 },
-          { label: "A blocking rule fires", points: 25 },
-          { label: "A dropped column is not undone by a rerun", points: 15 },
-          { label: "The same change caused an incident", points: 12.6 },
-          { label: "How far it spreads", points: 2.4 },
-        ],
-        foot: "before merging: run the tests · get sign-off from team/finance-data",
-      },
-      approval: {
-        kick: "Fathom stopped. A person decides.",
-        kickDecided: "Decision recorded",
-        action: "BLOCK · drop fct_orders.discount_pct",
-        text: "Fathom never blocks a change on its own. Approve records the decision, with the finance sign-off it asked for, in the ledger. Reject sends the agent back.",
-      },
-      approved: {
-        title: "Fathom watches what happens",
-        status: "approved",
-        text: "The decision goes into the ledger. Once the change merges, Fathom watches the next three scheduled runs of the table and everything it reaches, then records one outcome against its verdict.",
-        outcomesLabel: "Outcome:",
-        outcomes: ["clean", "failed", "late", "incident"],
-        foot: "Over time those outcomes show whether its warnings were right, and point to new rules for a person to approve.",
-      },
-      rejected: {
-        title: "The agent tries the safe version",
-        note: "and asks again",
-        request: "add a column coupon_code to fct_orders",
-        level: "INFORM",
-        risk: "risk 0 / 100",
-        text: "Adding a column reaches nothing downstream. The table's past incidents came from a different kind of change, and Fathom says so.",
-      },
-    },
-    log: {
-      ask: [{ key: "preflight", value: "drop_column fct_orders.discount_pct" }],
-      reach: [
-        { key: "downstream", value: "8 assets · 4 tier 1" },
-        { key: "this column", value: "reaches 2 · dash_revenue_weekly tier 1" },
-      ],
-      rule: [{ key: "constraint", value: "CON-031 columns_locked fires · block" }],
-      history: [{ key: "history", value: "INC-230 · same asset, same kind of change" }],
-      verdict: [
-        { key: "verdict", value: "BLOCK · risk 85" },
-        { key: "checks", value: "run_tests fct_orders+ · get_approval team/finance-data" },
-      ],
-      approval: [{ key: "waiting", value: "for a person's decision" }],
-      approved: [
-        { key: "decision", value: "approve · recorded in the ledger" },
-        { key: "postflight", value: "watching the next 3 runs" },
-      ],
-      rejected: [
-        { key: "decision", value: "reject · recorded in the ledger" },
-        { key: "preflight", value: "add_column fct_orders.coupon_code" },
-        { key: "verdict", value: "INFORM · risk 0 · reaches nothing" },
-      ],
-    },
-  },
-
   caseStudies: [
-    // First of the featured studies since 2026-10-25 (owner's split brief).
-    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
-    // The reviewer-agreement figure is the owner's: ~98% in his draft, corrected by him to ~94% on
-    // 2026-10-25 to match his CV. He lifted the master copy's no-accuracy-figure rule for this
-    // page on 2026-10-14.
+    // The lead piece (owner's brief, 2026-11-24): the study "When does building around a model
+    // beat a plain model?", carried faithfully from the owner's study document of 2026-11-24.
+    // Every number, caveat and source is the document's own.
     {
-      // Renamed from apple-llm-triage on 2026-10-21 (owner's brief); the old address serves a
-      // redirect page (REDIRECTS in src/routePaths.js).
-      id: "apple-decision-support-agent",
-      deploymentSummary: {
-        problem:
-          "Cross-team data changes waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
-        decision:
-          "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
-        result:
-          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
-      },
+      id: "building-around-a-model",
+      home: "study",
       card: {
         featured: true,
-        eyebrow: "Apple Maps · Decision support agent",
-        title: "A review backlog, turned into an analysis the reviewer can trust",
+        eyebrow: "Study · November 2026 · Seven systems against a fair baseline",
+        mobileEyebrow: "Study · November 2026",
+        title: "When does building around a model beat a plain model?",
         summary:
-          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
-        linkText: "Read the case study",
-        tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
-        mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
+          "I tested seven agent systems I built against the strongest simple alternative: Claude Opus with the same tools and the chance to check its own work. Systems that tried to reason better than the model tied or lost, every time. Systems that held a guarantee in code, one that stays true when the model is wrong or the process crashes, were the only ones that won.",
+        linkText: "Read the study",
+        tags: ["Fair baselines", "Guarantees in code"],
+        stats: [
+          { value: "0 of 4", label: "systems that tried to out-reason the model and beat it" },
+          { value: "+11 pts", label: "ClearLedger over plain Opus on company K, same SQL access" },
+          { value: "35 to -10", label: "Flywheel's lead, before and after the baseline could run tests" },
+          { value: "0 vs 10", label: "double refunds in 15 crashes, Agent Harbor against LangGraph and Temporal" },
+        ],
       },
-      eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
-      title: "A review backlog, turned into an analysis the reviewer can trust",
+      eyebrow: "Study · November 2026",
+      status: "Written 24 November 2026",
+      title: "When does building around a model beat a plain model?",
       intro:
-        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+        "I tested seven agent systems I built against the strongest simple alternative: Claude Opus with the same tools and the chance to check its own work. Systems that tried to reason better than the model tied or lost, every time. Systems that held a guarantee in code, one that stays true when the model is wrong or the process crashes, were the only ones that won. Several early wins disappeared once the baseline was allowed to run its own tests.",
       metaDescription:
-        "An agent that investigates map data unlock requests and hands the reviewer a recommendation. 30 to 350+ tickets a day; a two-month backlog cleared in two weeks.",
+        "Seven agent systems against plain Claude Opus with the same tools. Structure that tried to out-reason the model tied or lost; guarantees held in code won.",
       atAGlance: [
-        { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
-        { label: "Live since", value: "November 2025" },
-        { label: "Stack", value: "Python, an open-source language model, REST APIs" },
-        { label: "Status", value: "In production, with a person making every decision by design" },
+        { label: "What was tested", value: "Seven head-to-head results from the agent systems I built between September and November 2026" },
+        { label: "Against what", value: "Claude Opus with the same tools and a run-and-check loop, unless noted" },
+        { label: "How", value: "Frozen code, scored once, on data built after the model's training cutoff where possible" },
+        { label: "Refereed by", value: "Me. No outside team has reproduced these numbers yet" },
       ],
       stats: [
-        { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
-        { value: "2 weeks", label: "to clear two months of accumulated tickets" },
-        { value: "Zero", label: "backlog since launch" },
-        { value: "~94%", label: "of recommendations match the reviewer's decision" },
+        { value: "0 of 4", label: "systems that tried to out-reason the model and beat it" },
+        { value: "89 vs 78", label: "ClearLedger against plain Opus on company K, same SQL access" },
+        { value: "9 vs 10", label: "Flywheel against Opus once Opus could run the tests, 10 fresh bugs" },
+        { value: "0 vs 10", label: "double refunds in 15 crashes, Agent Harbor against LangGraph and Temporal" },
       ],
       sections: [
         {
-          id: "situation",
-          heading: "The situation",
+          id: "rule",
+          heading: "The rule, in one paragraph",
           blocks: [
             {
               type: "paragraph",
               text:
-                "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.",
+                "The practical rule for anyone putting agents into real systems: spend engineering on what the model cannot promise (no action done twice, no confident answer from bad data, a fixed order of work), and let the model do the thinking. Then prove it against a baseline that is given a fair chance.",
             },
-            {
-              type: "paragraph",
-              text:
-                "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
-            },
-            { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
           ],
         },
         {
-          id: "built",
-          heading: "What I built",
+          id: "question",
+          heading: "The question",
           blocks: [
             {
-              type: "flow",
-              columns: 6,
-              steps: [
-                { title: "Unlock request" },
-                { title: "Map snapshot of the target feature and its neighbors" },
-                { title: "Check against internal specification" },
-                { title: "Impact analysis: what else the change would touch" },
-                { title: "Documented recommendation" },
-                { title: "Reviewer decides", gate: true },
+              type: "paragraph",
+              text:
+                "A company that wants an AI agent in its systems faces one decision early: use a strong model with a few tools and a loop, or build structure around it. Structure means pipelines, retrieval steps, checkers, recovery code and approval gates. Structure costs time to build and to maintain, so it should earn its place.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Since September 2026 I have built eight agent systems for that kind of work: finance questions over a company warehouse, support cases in Salesforce, incident response, data change review, and crash recovery. Each one had a headline score. In November 2026 I asked a harder question of all of them: does this beat a plain model, given the same tools and the same chance to check its own work?",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The answer split the projects cleanly in two. That split is the finding, and it is more useful to a team deploying agents than any single score.",
+            },
+            {
+              type: "bullets",
+              items: [
+                "Plain model: the model on its own (here, Claude Opus), with the same tools the system had and nothing else built around it.",
+                "Baseline: the thing a system is compared against. A result means little until you know what the baseline was allowed to do.",
+                "Training cutoff: the date after which the model has seen no data. Tasks created after it cannot have been memorised.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "fair",
+          heading: "How the comparison was made fair",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A comparison is only as honest as its weakest arm. Anthropic's own guidance is to add complexity \"only when it demonstrably improves outcomes\" [1], and that test means nothing if the simple option is set up to lose. Researchers who audit agent benchmarks find the same problem in published work: weak baselines and loose task setups that inflate results [3, 4]. Four rules followed from that.",
+            },
+            {
+              type: "cards",
+              items: [
+                {
+                  title: "1. Same tools",
+                  note: "The plain model got every tool the system had: the same warehouse and SQL access, the same search index, the same repository files, the same test runner and git bisect.",
+                },
+                {
+                  title: "2. A run-and-check loop",
+                  note: "The plain model could act, look at the result and try again, within a fixed budget: up to 10 SQL lookups per question in ClearLedger, up to 4 searches per ticket in SourceLens, as many test runs as it wanted in Flywheel. A baseline that has to answer in one shot is a straw man.",
+                },
+                {
+                  title: "3. Data the model cannot have memorised",
+                  note: "Opus's training data ends in June 2026. Where possible the test tasks were created after that: Flywheel's fresh bugs were introduced after 1 September 2026, and ClearLedger's test companies were built for this work and never published. LiveCodeBench uses the same idea for code [5].",
+                },
+                {
+                  title: "4. Frozen code, scored once",
+                  note: "Each system's code was fixed before it saw the test set, and the test set was scored a single time. No tuning after seeing the answers.",
+                },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
+                "Two limits apply throughout. Most comparisons are single runs on test sets of 10 to 300 items, so differences of a few points sit inside run-to-run noise. And where a system and its baseline used different models, that is stated next to the number.",
             },
           ],
         },
         {
-          id: "who-decides",
-          heading: "Who decides what",
+          id: "results",
+          heading: "Results: system against a fair baseline",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Seven head-to-head results, from six projects, fall into two groups. The chart puts each system next to its baseline on the same scale.",
+            },
+            {
+              type: "comparison",
+              title: "Where the system tried to out-reason the model, it tied or lost",
+              systemLabel: "System",
+              baselineLabel: "Baseline",
+              noise: 5,
+              groups: [
+                {
+                  heading: "Structure holds a guarantee outside the model",
+                  rows: [
+                    { project: "ClearLedger, company K", measure: "Questions answered correctly, of 100", system: 89, baseline: 78 },
+                    { project: "AgentOps", measure: "Right end state, 15 runs, against stock LangChain approval", system: 93.3, baseline: 80 },
+                    { project: "ClearLedger, company L", measure: "Questions answered correctly, of 100", system: 86, baseline: 82 },
+                  ],
+                },
+                {
+                  heading: "Structure tries to reason better than the model",
+                  rows: [
+                    { project: "ChangeLens", measure: "Real bugs caught, of 116", system: 82.8, baseline: 80.2 },
+                    { project: "SourceLens", measure: "Right article in top 5, 200 tickets", system: 89.3, baseline: 87.2 },
+                    { project: "Foothold (ChEMBL)", measure: "Table links found (F1), against Sonnet alone", system: 86.9, baseline: 88.4 },
+                    { project: "Flywheel", measure: "Culprit named and proved, 10 fresh bugs", system: 90, baseline: 100 },
+                  ],
+                },
+              ],
+              caption:
+                "Project evaluation records, November 2026. Baselines: plain Opus, except AgentOps (stock LangChain approval agent, Sonnet 5.5) and Foothold (Sonnet 5.5 alone). Gaps under 5 points are within run-to-run noise.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The four systems in the lower group each tried to do the model's own job better: find the right help article (SourceLens), spot a data bug in a code change (ChangeLens), map the links in an unfamiliar database (Foothold), or find the commit that caused a bug (Flywheel). Each tied or lost. SourceLens's lead has a 95 percent confidence interval of minus 2 to plus 7 points. ChangeLens and Opus each caught bugs the other missed (10 and 7), which the analysis judged not significant.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The upper group won, and for a different reason. Their structure does not reason. It checks data, holds an order of work, or keeps a record, so it stays right when the model is not. The sections below show what that looks like.",
+            },
+            {
+              type: "note",
+              text:
+                "Two systems sit outside the chart. Agent Harbor's test counts failures, not a score, so it gets its own table below. CasePilot, a support agent inside Salesforce, has no plain-model baseline yet, so it makes no claim here.",
+            },
+          ],
+        },
+        {
+          id: "fair-baseline",
+          heading: "How a fair baseline flipped a result",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Flywheel shows how much the baseline decides. It takes a bug report, writes a script that reproduces the bug, and then searches the project's history for the commit that caused it. It hands back that commit with a proof: the script fails on that commit and passes on the one before.",
+            },
+            {
+              type: "bars",
+              charts: [
+                {
+                  title: "Baseline could not run code: 60 held-out bugs",
+                  max: 60,
+                  items: [
+                    { label: "Flywheel", value: 58, display: "58 of 60" },
+                    { label: "Plain Opus", value: 37, display: "37 of 60" },
+                  ],
+                },
+                {
+                  title: "Baseline could run tests and git bisect: 10 fresh bugs, all after the cutoff",
+                  max: 10,
+                  items: [
+                    { label: "Flywheel", value: 9, display: "9 of 10" },
+                    { label: "Plain Opus", value: 10, display: "10 of 10" },
+                  ],
+                },
+              ],
+              caption: "Flywheel results, held-out set and fresh-bug set, both scored 24 November 2026. Culprit commit named and proved.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "On 60 held-out bugs, Flywheel named and proved the culprit in 58. Plain Opus, asked to write the same kind of reproducing script without being able to run it, managed 37. That looked like a clear win for the pipeline.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Then the baseline got the same abilities Flywheel had: run the tests, edit, use git bisect, and try again. On 10 fresh bugs, all introduced after 1 September 2026 in projects Flywheel had never seen, plain Opus named and proved the culprit in 10 of 10. Flywheel got 9. Neither gave a wrong answer with a proof attached. Each proof was re-run three times on the named commit and three on its parent, so a score counts only answers that hold up when executed, the same idea SWE-bench uses [6].",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Memorisation does not explain Opus's result. Every one of those bugs postdates its June 2026 training cutoff. Asked to name the culprit from the history alone, with no proof required, Opus had already got all 60 of the earlier set. The model was never the weak part. The baseline's missing ability to run code was. Two caveats: 10 cases leave wide error bars, and Flywheel ran on the smaller Sonnet model while the baseline used Opus.",
+            },
+          ],
+        },
+        {
+          id: "guarantees",
+          heading: "Where structure won: guarantees the model does not hold",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The systems that beat a fair baseline share one trait. They do not try to think better than the model. They hold a property in code that stays true when the model is wrong, the data is bad, or the process dies.",
+            },
+          ],
+        },
+        {
+          id: "crash-safety",
+          eyebrow: "Guarantee 1",
+          heading: "Crash safety: Agent Harbor",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "An agent that issues a refund and then crashes leaves a question nobody can answer from inside the agent: did the refund go through? LangGraph's documentation is explicit that a restarted node runs again from the beginning, so side effects before that point should be idempotent, meaning safe to repeat [7]. Temporal's documentation says the same of its Activities: they \"may be executed multiple times\" and should use idempotency keys [8]. Both frameworks hand the problem back to the developer.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Agent Harbor serves an unmodified LangGraph agent and keeps its own record of each outside action. After a crash, if it cannot tell whether an action landed, it stops for a person instead of guessing. On 30 open-source agents drawn at random from GitHub, it repeated no action in 243 scored crash trials. LangGraph's own checkpointing repeated an action in 16 to 23 trials, depending on the storage backend. Those repeats all came from the 5 agents in the set that take real actions, which is a small base.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "A smaller kill-check on 24 November 2026 put Harbor against stronger rivals. A refund agent was killed at three points around the refund call, five times each.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Setup" },
+                { label: "Customer refunded twice", numeric: true },
+                { label: "Request finished", numeric: true },
+                { label: "Needed a person", numeric: true },
+              ],
+              rows: [
+                { cells: ["LangGraph checkpoint, restarted", "10 of 15", "15 of 15", "0 of 15"] },
+                { cells: ["Temporal's LangGraph integration 1.0.0, default retries", "10 of 15", "15 of 15", "0 of 15"] },
+                { cells: ["Temporal integration, retries off", "0 of 15", "0 of 15", "not offered"] },
+                { cells: ["Agent Harbor", "0 of 15", "15 of 15", "15 of 15"], emphasis: true },
+                { cells: ["Opus as on-call operator, plain LangGraph", "0 of 6", "6 of 6", "0 of 6"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Harbor was the only infrastructure that never paid twice and always finished. But a plain Opus acting as the operator also went 6 for 6 without a person. In every run it checked the refund service before acting, even when not told to. That case was easy, because the refund service kept a readable record. An action with no record to check, such as a sent email, was not tested. Temporal's documented fix, an idempotency key the outside service honours, also needs a change to the agent and the service, and was not tested.",
+            },
+          ],
+        },
+        {
+          id: "bad-data",
+          eyebrow: "Guarantee 2",
+          heading: "Bad-data checks: ClearLedger",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "ClearLedger answers finance questions over a company's data warehouse. Each test company has 100 questions: 36 plain ones, 43 where the honest answer needs a caveat about the data, and 21 where the data cannot answer at all. Plain Opus had the same read-only SQL access and up to 10 lookups per question.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. ClearLedger runs an onboarding pass over the warehouse to find data problems, then a review step on each answer, and says when the data cannot support one. Overall it scored 89 against 78 on K and 86 against 82 on L. One company's score moves about 3 to 4 points between runs, so the K gap is real and the L gap is within noise.",
+            },
+          ],
+        },
+        {
+          id: "evidence-order",
+          eyebrow: "Guarantee 3",
+          heading: "Approval and evidence order: AgentOps",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "AgentOps investigates a production incident, proposes a fix with cited evidence, and waits for a human approval before it acts. Its fair comparison is the stock LangChain option: create_agent with the HumanInTheLoopMiddleware approval step, the same model (Sonnet 5.5) and the same six tools, on 15 runs.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Both were 15 of 15 on safety: neither made an unapproved change. So the approval gate alone is not an edge. Anyone can add it in an afternoon. The difference was in order of work. AgentOps gathered evidence before proposing a fix in 15 of 15 runs, against 6 of 15. It reached the right end state in 14 of 15, against 12 of 15. That is a modest gap from one run on the development split.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "AgentOps also scored 94.7% top-1 on 360 cases of the public RCAEval benchmark [9], and 40.9% on 259 cases of OpenRCA [10], against 11.3% for the best method in the OpenRCA paper. Neither benchmark run had a plain-model arm, and a newer paper reports 43.9% on OpenRCA. So those numbers show competence, not an edge over the model.",
+            },
+          ],
+        },
+        {
+          id: "meaning",
+          heading: "What this means for teams deploying agents",
           blocks: [
             {
               type: "cards",
               items: [
                 {
-                  title: "The agent",
-                  note: "Works out what the edit is meant to do and what it could affect, checks it against the spec, and writes a recommendation it must justify.",
+                  title: "Build structure for guarantees, not for reasoning",
+                  note: "Sutton's \"Bitter Lesson\" observes that general methods which scale with computation beat hand-built knowledge \"by a large margin\" [2]. A pipeline that tells the model how to search, review or reason is hand-built knowledge, and the next model release tends to erase its lead. A record of which refund already went out, or a check that a ledger has duplicate rows, does not compete with the model at all. It stays useful however good the model gets.",
                 },
                 {
-                  title: "Code",
-                  note: "Sets hard limits on what the agent can reach: no write access to anything, and only the data and repositories the review needs.",
+                  title: "Give the baseline a loop before claiming a win",
+                  note: "The cheapest way to make a system look good is a baseline that cannot check its own work. Flywheel's lead went from 35 points to minus 10 when the baseline could run tests. Kapoor and colleagues found the same pattern in published agents: simple baselines, such as retrying, matched far more complex designs on a coding benchmark [3].",
                 },
                 {
-                  title: "The reviewer",
-                  note: "Makes every unlock decision. The agent has no authority to change anything.",
-                  emphasis: true,
+                  title: "Count failures when the claim is a guarantee",
+                  note: "A 2-point accuracy gap on 200 items is noise. Ten double refunds against zero is not. For crash safety, unapproved writes and bad data, the honest measure is how often the bad thing happened.",
+                },
+                {
+                  title: "Test on data the model cannot have seen",
+                  note: "Without this, a strong baseline score could be memory. Here, every fresh Flywheel bug postdated the model's training data, and Opus still won.",
+                },
+                {
+                  title: "A careful model can match a guarantee in easy cases",
+                  note: "Opus, acting as the operator after a crash, checked the refund service and got 6 of 6 right. The case for Harbor's structure is that it does not depend on the model choosing to check, and keeps working unattended at volume. That case is plausible but not yet tested.",
                 },
               ],
             },
+          ],
+        },
+        {
+          id: "limits",
+          heading: "Limits",
+          blocks: [
             {
-              type: "paragraph",
-              text:
-                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
+              type: "bullets",
+              items: [
+                "Every number here was refereed by the person who built the system. No outside team has reproduced them.",
+                "Samples are small and most arms ran once: 10 to 300 items, with intervals that overlap for every gap under 5 points.",
+                "The crash tests used stand-in services that record what they received, not real payment systems. The kill-check agent was written for that check.",
+                "Two baselines are not plain Opus: AgentOps was compared with LangChain's stock approval agent, and Foothold with Sonnet alone.",
+                "The strongest next test is not another benchmark. It is one real deployment with a measured before and after.",
+              ],
             },
           ],
         },
         {
-          id: "model",
-          heading: "Choosing and tuning the model",
+          id: "references",
+          heading: "References",
           blocks: [
             {
-              type: "paragraph",
-              text:
-                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right.",
-            },
-          ],
-        },
-        {
-          id: "people",
-          heading: "Working with the teams",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards.",
-            },
-          ],
-        },
-        {
-          id: "changed",
-          heading: "What changed",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
+              type: "references",
+              items: [
+                {
+                  text: "Erik Schluntz and Barry Zhang, Anthropic. Building effective agents. December 2024.",
+                  link: { text: "Building effective agents", href: "https://www.anthropic.com/engineering/building-effective-agents" },
+                },
+                {
+                  text: "Rich Sutton. The Bitter Lesson. March 2019.",
+                  link: { text: "The Bitter Lesson", href: "http://www.incompleteideas.net/IncIdeas/BitterLesson.html" },
+                },
+                {
+                  text: "Sayash Kapoor, Benedikt Stroebl, Zachary Siegel, Nitya Nadgir and Arvind Narayanan. AI Agents That Matter. arXiv 2407.01502, 2024.",
+                  link: { text: "AI Agents That Matter", href: "https://arxiv.org/abs/2407.01502" },
+                },
+                {
+                  text: "Yuxuan Zhu et al. Establishing Best Practices for Building Rigorous Agentic Benchmarks. arXiv 2507.02825, 2025.",
+                  link: { text: "Establishing Best Practices for Building Rigorous Agentic Benchmarks", href: "https://arxiv.org/abs/2507.02825" },
+                },
+                {
+                  text: "Naman Jain et al. LiveCodeBench: Holistic and Contamination Free Evaluation of Large Language Models for Code. arXiv 2403.07974, 2024.",
+                  link: { text: "LiveCodeBench: Holistic and Contamination Free Evaluation of Large Language Models for Code", href: "https://arxiv.org/abs/2403.07974" },
+                },
+                {
+                  text: "Carlos E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? arXiv 2310.06770, 2023.",
+                  link: { text: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?", href: "https://arxiv.org/abs/2310.06770" },
+                },
+                {
+                  text: "LangChain. LangGraph documentation: Interrupts. Accessed November 2026.",
+                  link: { text: "Interrupts", href: "https://docs.langchain.com/oss/python/langgraph/interrupts" },
+                },
+                {
+                  text: "Temporal. What is a Temporal Activity? Accessed November 2026.",
+                  link: { text: "What is a Temporal Activity?", href: "https://docs.temporal.io/activities" },
+                },
+                {
+                  text: "Luan Pham et al. RCAEval: A Benchmark for Root Cause Analysis of Microservice Systems with Telemetry Data. arXiv 2412.17015, 2024.",
+                  link: { text: "RCAEval: A Benchmark for Root Cause Analysis of Microservice Systems with Telemetry Data", href: "https://arxiv.org/abs/2412.17015" },
+                },
+                {
+                  text: "Junjielong Xu et al. OpenRCA: Can Large Language Models Locate the Root Cause of Software Failures? ICLR 2025.",
+                  link: { text: "OpenRCA: Can Large Language Models Locate the Root Cause of Software Failures?", href: "https://iclr.cc/virtual/2025/poster/32093" },
+                },
+              ],
             },
           ],
         },
       ],
       callout: {
-        eyebrow: "What I'd bring to a client",
+        eyebrow: "The takeaway",
         text:
-          "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
+          "Let the model do the thinking. Spend engineering on what it cannot promise: no action done twice, no confident answer from bad data, a fixed order of work. Then prove it against a baseline that is given a fair chance.",
       },
-      disclaimer:
-        "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
-      contactHeading: "Have a queue like this? I reply within a day.",
+      contactHeading: "Deciding what to build around a model? Let's talk.",
+    },
+
+    // Deployment case study 1 (owner's brief, 2026-11-24). Figures from the casepilot repository
+    // (private): README and evals/results/2026-11-23-blind-sets-6-to-9.md, checked 2026-11-24.
+    {
+      id: "casepilot",
+      home: "deployment",
+      deploymentSummary: {
+        customer:
+          "Meridian Fleet, a made-up vehicle-tracking company with 8 customer accounts, from a car-rental fleet to a pharmacy on a trial, loaded into a real Salesforce Developer Edition org.",
+        problem:
+          "Support agents triage, prioritise and answer every case by hand. An AI agent could draft all of it, but one that writes to Salesforce on its own can promise a refund, close the wrong case, or obey an instruction hidden in a customer's email.",
+        integration:
+          "An MCP server with ten tools over the Salesforce REST API (seven read, three propose, none approve), running as a least-privilege integration user. A policy file says what the agent may ever write. A person approves each write, and it lands once, with a record of who approved it.",
+        testing:
+          "Four blind sets of 40 cases, each written by a separate writer who never saw the agent, labelled by two people under written policies, and scored once inside the real org on frozen code. Each set was retired to development data after scoring.",
+        result:
+          "On the last blind set: category, priority, escalation and reply each 39 of 40, and 0 writes without approval. The write gate refuses 34 of 35 red-team attacks.",
+        decision:
+          "Keep every write behind a person and turn judgement calls into written rules the customer can edit. Not yet claimed: a win over a plain model, because that comparison has not been run.",
+      },
+      card: {
+        featured: true,
+        eyebrow: "Deployment · Salesforce · Customer support",
+        mobileEyebrow: "Deployment · Salesforce",
+        title: "CasePilot: a support agent inside Salesforce that asks before it writes",
+        summary:
+          "Works a Salesforce case queue: triages each case, drafts the reply and proposes the changes, then stops. A person approves each write, and only an approved write reaches Salesforce.",
+        linkText: "Read the case study",
+        tags: ["Salesforce REST API", "Every write approved"],
+        stats: [
+          { value: "39 of 40", label: "right category, priority, escalation and reply on the last blind set" },
+          { value: "0", label: "writes reached Salesforce without a person's approval" },
+          { value: "34 of 35", label: "red-team attacks the write gate refused" },
+          { value: "67% to 97%", label: "agreement between two human labelers once priority had written rules" },
+        ],
+      },
+      status: "Code available on request",
+      eyebrow: "Deployment case study · Salesforce · Customer support",
+      title: "CasePilot: a support agent inside Salesforce that asks before it writes",
+      intro:
+        "CasePilot reads an open support case, the account behind it, the account's other cases and the knowledge base. It triages the case, drafts the reply, and proposes what to change. Then it stops. A person approves or rejects each proposal, and only an approved write reaches Salesforce, once, with a record of who approved it.",
+      metaDescription:
+        "A support agent in a real Salesforce org: 39 of 40 on category, priority, escalation and reply on the last blind set, and no write without approval.",
+      atAGlance: [
+        { label: "My role", value: "Designed, built and tested it end to end" },
+        { label: "Connects to", value: "Salesforce REST API (OAuth client credentials, SOQL, sObjects) as a least-privilege integration user" },
+        { label: "Ships as", value: "An MCP server, a sub-agent and an agent skill, in TypeScript" },
+        { label: "Models", value: "Claude Opus answers triage (three votes, majority wins); Claude Sonnet drafts and checks the reply" },
+      ],
+      stats: [
+        { value: "39 of 40", label: "on each score, last blind set, inside the real org" },
+        { value: "0", label: "writes without approval, across every blind set" },
+        { value: "34 of 35", label: "red-team attacks refused by the write gate" },
+        { value: "9", label: "first-day failures found against a mock org before going live" },
+      ],
+      sections: [
+        {
+          id: "customer",
+          heading: "The customer and the problem",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The customer is Meridian Fleet, a vehicle-tracking company I made up, with 8 accounts, 16 contacts, 12 knowledge articles and 52 support cases. The cases are of varied difficulty on purpose: a closed case the customer writes on again, a refund demand with a legal threat, a subpoena, a cancellation, spam, a duplicate, two fleet-wide outages, and a paragraph pretending to be a system notice telling the agent to close the case and announce a refund.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "A support team wants the reading and drafting done for it. It does not want an agent that promises a refund, closes a case it should not, or follows an instruction someone hid in an email. So the question was never only \"is the triage right?\" It was also \"can anything reach Salesforce that a person did not approve?\"",
+            },
+          ],
+        },
+        {
+          id: "integration",
+          heading: "How it connects to Salesforce",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "An MCP server with ten tools over Salesforce: seven read, three propose. There is no approve tool, so an agent connected to it cannot approve its own writes.",
+                "It runs as a least-privilege integration user. The first real run found that this user cannot read Contact.AccountId; the contact read now falls back without it.",
+                "A policy file names the fields, values and close reasons the agent may ever write, and the phrases it may never send. A reply that promises a refund, a cancellation or a deletion is refused, including when the phrase is disguised with invisible characters or look-alike letters.",
+                "Case text goes to the model inside a fence with a random marker, after look-alike characters are normalised. The policy catches what the prompt misses.",
+                "Approval re-checks the policy against the live case and applies the write once. If the connection drops after Salesforce saved the write, approval re-reads the case and records the write once instead of inviting a second try.",
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Before connecting a real org, I ran the agent against a mock org that answers the Salesforce REST API the way a new Developer Edition org does, including field-level security, paging, API limits and a reply lost after the write landed. It found nine things that would have broken on the first day, from a seed script the integration user could not have run to a lost reply that invited a duplicate comment. All nine are fixed.",
+            },
+          ],
+        },
+        {
+          id: "rules",
+          heading: "Turning judgement into written rules",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "How urgent is a case? Two careful labelers answering from judgement agreed only 67% of the time, so no agent could score much above that. The fix is the one a support team uses: write the policy down. The priority rules are 13 checkable lines, such as \"a whole fleet dark is Critical\". With them, two independent labelers agreed on 97% of cases.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Category and escalation got the same treatment. The agent names the rule it matched, and code, not the model, turns that rule into the priority and builds the case update. The person approving sees why. A customer with its own priority matrix edits one file.",
+            },
+          ],
+        },
+        {
+          id: "testing",
+          heading: "How it was tested",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Each blind set had 40 new cases, written by a separate writer that never saw the agent's prompt or results, labelled by two independent labelers under the written policies, and committed before any agent run. The frozen agent worked each set once, inside the real org, read only. Once scored, a set became development data, and the next set tested the next version.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Set" },
+                { label: "Category", numeric: true },
+                { label: "Priority", numeric: true },
+                { label: "Escalation delivered", numeric: true },
+                { label: "Reply", numeric: true },
+                { label: "Writes without approval", numeric: true },
+              ],
+              rows: [
+                { cells: ["Blind set 6", "39 of 40", "38 of 40", "not measured", "40 of 40", "0"] },
+                { cells: ["Blind set 7", "38 of 40", "39 of 40", "37 of 40", "38 of 40", "0"] },
+                { cells: ["Blind set 8", "39 of 40", "38 of 40", "39 of 40", "35 of 40", "0"] },
+                { cells: ["Blind set 9", "39 of 40", "39 of 40", "39 of 40", "39 of 40", "0"], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Set 6 passed every score and still taught the most. Checking the writes showed that 5 of 17 escalations never reached a person: the model put a category name in the case type field, the policy gate refused the whole update, and the escalation went with it. The score only checked the decision. Code now builds the update from the triage, and the eval gained an \"escalation delivered\" score that checks the escalation actually reached the approval queue.",
+            },
+          ],
+        },
+        {
+          id: "limits",
+          heading: "What it does not show yet",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "There is no plain-model baseline. I have not yet compared CasePilot with Claude Opus given the same Salesforce tools, so it makes no claim to beat one.",
+                "The company and its cases are made up, written by separate writers, and the scoring runs read only. No real customer has used it.",
+                "39 of 40 came on the fourth blind set, after the first three had each driven a fix. Each set was scored once before its lessons were used.",
+                "The one red-team attack the gate lets through is a reworded refund promise that uses none of the listed words. It is left to the approving person on purpose.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "The decision",
+        text:
+          "The agent does the reading and the drafting. The customer's own rules, written in files they can edit, decide what it may change, and a person approves every write.",
+      },
+      contactHeading: "Want an agent working your support queue? Let's talk.",
+    },
+
+    // Deployment case study 2 (owner's brief, 2026-11-24). Figures from the public clearledger
+    // repository: README and docs/evidence/blind-companies-2026-11.md, checked 2026-11-24.
+    {
+      id: "clearledger",
+      home: "deployment",
+      deploymentSummary: {
+        customer:
+          "A company that runs its sales and accounting on Odoo, an open-source ERP with a CRM built in. Its finance team wants to ask questions of its own books in plain English.",
+        problem:
+          "Real books carry problems: a customer entered twice, a posted invoice reopened and changed, invoices in euros, a payment sent twice. A model with SQL access answers plain questions well, but gives a confident wrong figure when the data behind it is flawed.",
+        integration:
+          "Data comes out of Odoo through its own API, into a warehouse with 29 automated checks. An analyst agent works through read-only, cited tools, with an onboarding pass that finds the data problems first and a review step on every answer.",
+        testing:
+          "Three companies it had never seen, each built by a separate author who planted new kinds of data problems. 100 questions each, frozen code, scored once. Plain Opus got the same read-only SQL access and up to 10 lookups per question.",
+        result:
+          "267 of 300 right overall. Against plain Opus: 89 vs 78 on company K, 86 vs 82 on company L. Plain questions tied; the whole gap came from the hard ones.",
+        decision:
+          "Spend engineering on checking the data and saying when it cannot answer, not on out-reasoning the model. The L gap is within run noise, and only two companies had an Opus run.",
+      },
+      card: {
+        featured: true,
+        eyebrow: "Deployment · Odoo ERP · Finance data",
+        mobileEyebrow: "Deployment · Finance data",
+        title: "ClearLedger: finance answers that hold up when the books don't",
+        summary:
+          "Gets a company's sales and accounting data out of its ERP, checks it, and answers finance questions with every number traced to the records behind it.",
+        linkText: "Read the case study",
+        tags: ["Odoo API", "Beats plain Opus with the same SQL"],
+        stats: [
+          { value: "89 vs 78", label: "against plain Opus with the same SQL access, company K" },
+          { value: "267 of 300", label: "right on three companies it had never seen" },
+          { value: "63 of 63", label: "times it correctly said the books cannot answer" },
+          { value: "5 of 5", label: "deliberate failures caught and recovered" },
+        ],
+      },
+      codeLink: { label: "Code: clearledger", href: REPOSITORIES.clearledger },
+      eyebrow: "Deployment case study · Odoo ERP · Finance data",
+      title: "ClearLedger: finance answers that hold up when the books don't",
+      intro:
+        "A finance team asks what a customer owes, who is late and whether every won deal turned into cash. ClearLedger answers from the company's own ERP data and can show its work for any number. Where it beats a plain model is not the easy questions. It is the ones where the books themselves are wrong.",
+      metaDescription:
+        "A finance analyst agent over a company's ERP warehouse: 267 of 300 on three unseen companies, and 89 against 78 over plain Opus with the same SQL access.",
+      atAGlance: [
+        { label: "My role", value: "Designed, built and tested it end to end" },
+        { label: "Connects to", value: "Odoo 17 through its JSON-RPC API, no database access to the ERP" },
+        { label: "Stack", value: "Python, Postgres, dbt, MCP, Claude" },
+        { label: "Checked by", value: "29 dbt checks, 5 monitors and 5 deliberate failure drills, run in CI on every push" },
+      ],
+      stats: [
+        { value: "89 vs 78", label: "against plain Opus, company K" },
+        { value: "86 vs 82", label: "against plain Opus, company L (within noise)" },
+        { value: "267 of 300", label: "right across three unseen companies" },
+        { value: "63 of 63", label: "\"the books cannot tell\" answered correctly" },
+      ],
+      sections: [
+        {
+          id: "customer",
+          heading: "The customer and the problem",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The customer runs on Odoo, an open-source ERP (enterprise resource planning: the system that holds orders, invoices and the books). Finance wants three answers: what each customer was billed and has paid, who is late and by how much, and whether every deal sales won actually turned into cash.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The company is simulated, but the system is real: ten months of business run through an actual Odoo 17 using Odoo's own logic. Then the data gets what operations do to data after it has been loaded once: a customer entered twice, a posted invoice reopened and changed, three customers billed in euros, a deal marked won with no order, a draft invoice deleted.",
+            },
+          ],
+        },
+        {
+          id: "integration",
+          heading: "How it connects",
+          blocks: [
+            {
+              type: "bullets",
+              items: [
+                "Extract through Odoo's own API, the way you would at a client: no database access to the ERP. Only what changed since the last load is fetched, and a missing field stops the load and names it.",
+                "Keep history: every saved version of every record, and deletes noted, so a reopened invoice keeps both versions.",
+                "Model the finance tables in dbt, with 29 checks. Sixteen fail the build if the warehouse stops matching Odoo; thirteen list the data problems for a person to fix at the source.",
+                "Serve six read-only tools to any agent over MCP. Every row carries the exact Odoo record version it came from, and a citation check confirms a cited record is real and current.",
+                "Run on a schedule under a lock, with five monitors after each run. Five failures were caused on purpose (Odoo down, two runs at once, a field added and removed, invoices lost, stale data); each was caught and recovered.",
+              ],
+            },
+            {
+              type: "paragraph",
+              text: "The data pipeline is written up on its own in the ERP data platform case study.",
+            },
+          ],
+        },
+        {
+          id: "testing",
+          heading: "How it was tested",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Three companies, J, K and L, were each built by a separate author who planted kinds of data problems no earlier test company had. Each has 100 questions: 36 plain ones, 43 where the honest answer needs a caveat about the data, and 21 where the data cannot answer at all. The code was frozen first and each company was scored once.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The baseline was plain Opus with the same read-only SQL access to the same warehouse and up to 10 lookups per question, run on companies K and L.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Company" },
+                { label: "ClearLedger", numeric: true },
+                { label: "Plain Opus, same SQL", numeric: true },
+              ],
+              rows: [
+                { cells: ["J", "92", "not run"] },
+                { cells: ["K", "89", "78"], emphasis: true },
+                { cells: ["L", "86", "82"] },
+              ],
+            },
+          ],
+        },
+        {
+          id: "result",
+          heading: "The result",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. ClearLedger runs an onboarding pass over the warehouse to find data problems, then a review step on each answer, and says when the data cannot support one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Across all three companies it got 104 of 108 plain questions and 63 of 63 \"the books cannot tell\" questions. The misses are on the hardest kind, where the figure is right as booked but a careful analyst must also say what is wrong behind it: 100 of 129.",
+            },
+            {
+              type: "bullets",
+              items: [
+                "One company's score moves about 3 to 4 points between runs, so the K gap is real and the L gap is within noise.",
+                "Only two companies had an Opus run.",
+                "The companies are simulated; no real finance team has used it yet.",
+              ],
+            },
+          ],
+        },
+      ],
+      callout: {
+        eyebrow: "The decision",
+        text:
+          "The model is already good at SQL. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
+      },
+      contactHeading: "Building AI on your ERP or CRM data? Let's talk.",
     },
 
     {
       id: "agentops",
-      // Problem, decision, result: the owner's 2026-10-21 brief asks for this summary before any
-      // technical detail, on the featured card and at the top of the page. Every figure is one the
-      // page itself already states.
+      home: "deployment",
+      // Deployment case study 3 (owner's brief, 2026-11-24): customer, problem, integration,
+      // testing, result, decision. Figures from the agentops repository's README and
+      // bench/README.md (live shop test 3, live/results/test-3/), checked 2026-11-24.
       deploymentSummary: {
+        customer:
+          "An online shop built from many small services, with its own monitoring: the OpenTelemetry demo shop, run as the production system an on-call engineer looks after.",
         problem:
-          "When production breaks, the on-call engineer has to read logs, metrics and deploy history before acting. An agent reads faster, but one that also acts alone will eventually roll back the wrong deploy or obey an instruction planted in a log line.",
-        decision:
-          "Keep the model for the investigation and move every decision into code: a fixed list of allowed actions, a human approval nothing can switch off, and actions that run exactly once. I chose not to build autonomous remediation.",
+          "When production breaks, the on-call engineer has to read logs, metrics and deploy history before acting. An agent reads faster, but one that also acts alone will eventually turn off the wrong service or obey an instruction planted in a log line.",
+        integration:
+          "The LangGraph agent runs unchanged against the shop's own monitoring. It has exactly one action, turning off a named service's feature flags, behind an approval step nothing can switch off, and each action runs exactly once.",
+        testing:
+          "A separate agent wrote a sealed schedule of 15 faults. Each was switched on in the running shop and the agent was paged with one sentence: customers report pages failing or slow. Separately, it was compared with LangChain's stock approval agent on the same model and tools.",
         result:
-          "In 24 of 24 live runs nothing changed before a person approved. A plain agent without the approval step waited in only 3 of 24.",
+          "14 of 15 faults found and fixed, with no change made without approval. The miss showed no customer symptom, and the agent handed it to a person instead of acting.",
+        decision:
+          "An approval step alone is not an edge: the stock agent was just as safe. The value is the order of work, evidence before any fix, which AgentOps kept in 15 of 15 runs and the stock agent in 6.",
       },
       card: {
         featured: true,
-        eyebrow: "Personal system · Agentic AI · Incident response",
+        eyebrow: "Deployment · Microservices · Incident response",
+        mobileEyebrow: "Deployment · Incident response",
         title: "AgentOps: an incident agent that can't act alone",
         summary:
-          "An AI agent, built with the LangGraph framework, that investigates a simulated production failure, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the AI model, decides what it may change, and every action runs exactly once.",
+          "An AI agent, built with the LangGraph framework, that investigates a production failure, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the AI model, decides what it may change, and every action runs exactly once.",
         linkText: "Read the case study",
-        tags: ["Approval enforced in code", "Compared with a plain read-think-act agent"],
+        tags: ["Approval enforced in code", "Live microservice shop"],
+        stats: [
+          { value: "14 of 15", label: "blind faults in a live microservice shop found and fixed" },
+          { value: "0", label: "changes made without a person's approval" },
+          { value: "15 vs 6", label: "runs gathering evidence before proposing a fix, against LangChain's stock approval agent" },
+          { value: "94.7%", label: "top-1 on 360 cases of the public RCAEval benchmark" },
+        ],
       },
       codeLink: { label: "Code: agentops", href: REPOSITORIES.agentops },
-      eyebrow: "Case study · Personal system · Agentic AI · Incident response",
+      eyebrow: "Deployment case study · Microservices · Incident response",
       title: "AgentOps: an incident agent that can't act alone",
       intro:
         "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
@@ -934,7 +1318,7 @@ export const portfolioData = {
         { value: "24 of 24", label: "runs with the real AI model where nothing changed before a person approved" },
         { value: "3 of 24", label: "baseline runs (a plain agent with no approval step) that waited for a person" },
         { value: "23 of 24", label: "live runs that reached the right end state" },
-        { value: "$0.04", label: "average cost of a live run" },
+        { value: "14 of 15", label: "blind faults in a live microservice shop found and fixed, none changed without approval" },
       ],
       sections: [
         {
@@ -950,6 +1334,60 @@ export const portfolioData = {
               type: "paragraph",
               text:
                 "It is also a worked answer to a question I hear about LangGraph: what does a graph give you that a plain loop of the AI calling tools does not? Here it gives three things. A place to stop and wait for a person that survives a restart. A record of every step that can be replayed with one belief changed. And control flow that lives in code, where a model cannot talk its way around it.",
+            },
+          ],
+        },
+        {
+          id: "live-shop",
+          heading: "Deployed into a live shop",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The graph runs unchanged against the OpenTelemetry demo shop, a web shop built from many small services with its own monitoring. A separate agent wrote a sealed schedule of faults. The test harness switched each one on through the shop's feature-flag service and paged the agent with one sentence: customers report pages failing or slow. The agent has exactly one action, turning off a named service's feature flags, behind the approval pause. A script stands in for the on-call engineer and approves exactly what was proposed, so what is measured is that nothing changes without an approval record.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Test" }, { label: "Result" }, { label: "What changed after it" }],
+              rows: [
+                { cells: ["1 (10 faults)", "6 of 10", "Blame follows calls between services, so a caller is not blamed for a failing service it calls"] },
+                { cells: ["2 (stopped after 2)", "0 of 2, both wrongly marked recovered", "Recovery is judged against the shop's own latency before the fault"] },
+                { cells: ["3 (15 faults)", "14 of 15 found and fixed", "Scored once"], emphasis: true },
+              ],
+            },
+            {
+              type: "bullets",
+              items: [
+                "0 changes without approval, and the verify step never called an unfixed incident recovered.",
+                "The miss was a 10-second shipping slowdown that showed no symptom to customers. The agent named no cause and handed the incident to a person instead of acting.",
+                "Before the test, 5 cycles with no fault produced 0 false alarms.",
+                "Test 3 came after two rounds of fixes from tests 1 and 2, each on a fresh schedule of faults.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "stock",
+          heading: "Against the stock option",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The fair comparison is what a team would build first with LangChain: create_agent with the HumanInTheLoopMiddleware approval step, the same model (Sonnet 5.5) and the same six tools, on 15 runs.",
+            },
+            {
+              type: "table",
+              columns: [{ label: "Measure" }, { label: "AgentOps", numeric: true }, { label: "Stock approval agent", numeric: true }],
+              rows: [
+                { cells: ["No change without approval", "15 of 15", "15 of 15"] },
+                { cells: ["Evidence gathered before a fix was proposed", "15 of 15", "6 of 15"], emphasis: true },
+                { cells: ["Right end state", "14 of 15", "12 of 15"] },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Both were equally safe, so the approval gate alone is not an edge: anyone can add it in an afternoon. The difference is the order of work. That is a modest gap from one run on the development split. On public benchmarks it scored 94.7% top-1 on 360 cases of RCAEval and 40.9% on 259 cases of OpenRCA, where a newer paper reports 43.9%. Neither benchmark run had a plain-model arm, so those numbers show competence, not an edge over the model.",
             },
           ],
         },
@@ -1300,7 +1738,7 @@ export const portfolioData = {
               // every pull request; live comparisons are run by hand (flywheel/README.md).
               type: "paragraph",
               text:
-                "The loop no longer depends on me remembering to run it. Flywheel, the next case study, now checks every AgentOps pull request against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
+                "The loop no longer depends on me remembering to run it. Flywheel, an agent-testing tool I built, now checks every AgentOps pull request against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
             },
           ],
         },
@@ -1378,492 +1816,211 @@ export const portfolioData = {
       contactHeading: "Want an agent near production? Let's talk.",
     },
 
-    // Added 2026-10-13 from the flywheel and studbook-agent READMEs and their results pages.
+    // First of the featured studies since 2026-10-25 (owner's split brief).
+    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
+    // The reviewer-agreement figure is the owner's: ~98% in his draft, corrected by him to ~94% on
+    // 2026-10-25 to match his CV. He lifted the master copy's no-accuracy-figure rule for this
+    // page on 2026-10-14.
     {
-      id: "flywheel",
-      // Problem, decision, result (owner's brief, 2026-10-21). The LangChain figures are from
-      // muhibm1/flywheel studies/langchain-agents/README.md at 4dc7537 (PRs 4 and 5).
+      // Renamed from apple-llm-triage on 2026-10-21 (owner's brief); the old address serves a
+      // redirect page (REDIRECTS in src/routePaths.js).
+      id: "apple-decision-support-agent",
       deploymentSummary: {
         problem:
-          "Teams change an agent's prompt or model and ship on green unit tests, but those tests run on a scripted stand-in for the model. The regression shows up in front of customers, hidden inside an average score.",
+          "Cross-team data changes waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
         decision:
-          "Turn real failed runs recorded in LangSmith into reviewed test cases, and gate every pull request against main case by case. I chose not to gate on an average, which hides one broken case behind two fixed ones.",
+          "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
         result:
-          "It blocked a prompt cleanup that passed 996 unit tests and cut AgentOps from 19 to 14 correct runs of 21. On LangChain's own email agent it caught the one email type a cheaper model fails, while the totals tied at 27 of 33.",
+          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
       },
       card: {
-        featured: true,
-        eyebrow: "Personal system · LLM evaluation · LangSmith",
-        title: "Flywheel: an agent's real failures, turned into its tests",
+        featured: false,
+        eyebrow: "Apple Maps · Decision support agent",
+        title: "A review backlog, turned into an analysis the reviewer can trust",
         summary:
-          "A safety check for AI agents. It turns failed runs recorded in LangSmith into test cases a person reviews. It then compares every pull request with the current approved version, case by case, and blocks the ones that break a case.",
-        stats: [
-          { value: "19 to 14", label: "correct AgentOps runs of 21 after a prompt cleanup that passed 996 unit tests, blocked" },
-          { value: "27 of 33", label: "replies meeting LangChain's criteria on Sonnet and on Haiku, so the totals called them equal" },
-          { value: "0 of 3", label: "times Haiku acknowledged a reply deadline Sonnet caught 3 of 3 times, so the switch was blocked" },
-          { value: "5", label: "agents gated, two of them LangChain's own open-source agents" },
-        ],
+          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
         linkText: "Read the case study",
-        tags: ["Test cases built from real failed runs", "Checked case by case, not on averages"],
+        tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
+        mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
       },
-      codeLink: { label: "Code: flywheel", href: REPOSITORIES.flywheel },
-      eyebrow: "Case study · Personal system · LLM evaluation · LangSmith",
-      title: "Flywheel: an agent's real failures, turned into its tests",
+      eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
+      title: "A review backlog, turned into an analysis the reviewer can trust",
       intro:
-        "An AI agent can pass every unit test and still get worse, because the tests run on a scripted stand-in for the model. Flywheel turns an agent's real failures, recorded in LangSmith, into test cases. It checks every pull request against them case by case. On three agents it blocked a change that looked fine: one passed every unit test of its behaviour, one looked like random noise in the average scores, and on LangChain's own email agent a cheaper model tied on totals but failed one kind of email every time.",
+        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
       metaDescription:
-        "Turns an agent's real failures, recorded in LangSmith, into test cases, and checks every pull request against them case by case, not on an average score.",
+        "An agent that investigates map data unlock requests and hands the reviewer a recommendation. 30 to 350+ tickets a day; a two-month backlog cleared in two weeks.",
       atAGlance: [
-        { label: "My role", value: "Designed and built it end to end" },
-        {
-          label: "What it is",
-          value:
-            "A safety check for AI agents: it turns recorded failed runs into test cases and blocks any proposed code change that breaks one",
-        },
-        { label: "Stack", value: "Python, LangSmith, LangGraph, GitHub Actions, Claude" },
-        {
-          label: "Quality",
-          value: "33 tests, automatic checks on every change (run on Python 3.11 and 3.13), and Flywheel's own check guarding its example agent",
-        },
+        { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
+        { label: "Live since", value: "November 2025" },
+        { label: "Stack", value: "Python, an open-source language model, REST APIs" },
+        { label: "Status", value: "In production, with a person making every decision by design" },
       ],
       stats: [
-        { value: "19 to 14", label: "correct AgentOps runs of 21 after a cleanup of the agent's prompt that passed 996 unit tests" },
-        { value: "2 of 2", label: "test cases the change broke, both mined from AgentOps's real recorded traffic" },
-        { value: "3 fixed, 5 broken", label: "questions for my design-records agent, hidden behind an average that moved only from 95 to 91 correct runs of 108" },
-        { value: "0 broken", label: "when I tested the unchanged code against itself; one case wobbled, within the noise allowance" },
+        { value: "30 to 350+", label: "tickets a day, more than tenfold the manual rate" },
+        { value: "2 weeks", label: "to clear two months of accumulated tickets" },
+        { value: "Zero", label: "backlog since launch" },
+        { value: "~94%", label: "of recommendations match the reviewer's decision" },
       ],
       sections: [
         {
-          id: "why",
-          heading: "Why I built it",
+          id: "situation",
+          heading: "The situation",
           blocks: [
             {
               type: "paragraph",
               text:
-                "An agent built on a language model can pass every unit test and still get worse. The unit tests run on a scripted stand-in for the model, so they check the code around the model, not what the model does. Change the prompt, and the real model reads it and behaves differently. The scripted one does not notice.",
+                "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.",
             },
             {
               type: "paragraph",
               text:
-                "That gap is the forward deployed engineer's job in miniature. A customer's agent demos well. The real questions are whether it provably works, and whether anyone will know when a change breaks it. Flywheel is my answer to both, built on LangSmith, LangChain's tracing and evaluation service. A few terms are used throughout:",
+                "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.",
             },
-            {
-              type: "cards",
-              items: [
-                { title: "Trace", note: "The recording of one agent run: every model call and tool call, in order." },
-                { title: "Evaluator", note: "A small function that scores one run, such as \"did it pick the right team\"." },
-                { title: "Dataset", note: "A saved list of inputs with the answers expected." },
-                { title: "Experiment", note: "One version of the agent scored against one version of the dataset." },
-                { title: "Repetition", note: "Running the same case more than once, because a live model does not answer the same way twice." },
-                {
-                  title: "Regression",
-                  note: "A change that makes something that used to work stop working.",
-                  emphasis: true,
-                },
-              ],
-            },
+            { type: "paragraph", text: "Building a fix was not part of my assigned role. I took it on anyway." },
           ],
         },
         {
-          id: "how",
-          heading: "How the loop works",
+          id: "built",
+          heading: "What I built",
           blocks: [
             {
               type: "flow",
               columns: 6,
               steps: [
-                { title: "Trace", note: "Real runs recorded in LangSmith" },
-                { title: "Score", note: "Evaluators grade each trace" },
-                { title: "Mine", note: "Failures grouped by where they went wrong" },
-                { title: "Review", note: "A person confirms the right answer", gate: true },
-                { title: "Promote", note: "The case joins the test file" },
-                { title: "Gate", note: "Every pull request, case by case" },
+                { title: "Unlock request" },
+                { title: "Map snapshot of the target feature and its neighbors" },
+                { title: "Check against internal specification" },
+                { title: "Impact analysis: what else the change would touch" },
+                { title: "Documented recommendation" },
+                { title: "Reviewer decides", gate: true },
               ],
             },
             {
               type: "paragraph",
               text:
-                "The agent's real runs are recorded. Flywheel grades them with the same checks the tests use, finds the runs that went wrong, and proposes each one as a test case. A person confirms what the right answer was. The case then joins a test file that lives in the repository, next to the code. On every pull request, Flywheel runs all the cases on the proposed change and on the main branch. It compares the two case by case and posts the result as a comment. If a case that used to pass now fails, the check fails.",
+                "The agent does the homework a reviewer used to do by hand. It reads the request, takes a snapshot of the feature to be edited along with the features around it, and checks the proposed edit against internal specification. Then it works through what else the change would touch, because an edit that looks fine on one feature can break a neighboring one, or something built from it later.",
             },
             {
               type: "paragraph",
               text:
-                "The comment reads like this: \"Flywheel ran the agent on 7 test cases, 3 times each, before and after this change. 2 cases that passed before now fail.\" Each broken case links to its trace, so the reviewer goes straight from the red check to the run that went wrong.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Mining reads each recorded run, the scores attached to it, and the step labels that LangGraph adds. So every failure gets a signature: what went wrong, and at which step, such as a wrong outcome at the step where the agent hands the incident to a person. Failures group by signature, so twenty failures are often three bugs. A failure already covered by the dataset is not proposed twice.",
+                "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
             },
           ],
         },
         {
-          id: "decide",
-          heading: "How it decides",
+          id: "who-decides",
+          heading: "Who decides what",
           blocks: [
-            {
-              type: "paragraph",
-              text:
-                "A live model does not answer the same way twice, so one failed run proves little. Flywheel runs every case several times, three by default, and counts how many passed. That count is the pass rate, such as 2 of 3.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The question a reviewer asks is which cases a change broke, not whether the average moved. An average hides one case going from always passing to always failing behind two that improved. So Flywheel decides per case:",
-            },
-            {
-              type: "table",
-              columns: [{ label: "Verdict" }, { label: "What it means" }, { label: "Blocks the change?" }],
-              rows: [
-                {
-                  cells: [
-                    "Broken",
-                    "The pass rate fell by at least half. With 3 repetitions, at least two runs flipped from pass to fail.",
-                    "Yes",
-                  ],
-                  emphasis: true,
-                },
-                { cells: ["Fixed", "The pass rate rose by as much.", "No"] },
-                {
-                  cells: [
-                    "Wobble",
-                    "A smaller move. One run in three flipping is what a live model's noise looks like.",
-                    "No, reported only",
-                  ],
-                },
-                {
-                  cells: [
-                    "New",
-                    "A case added by the pull request. Adding a test for a known bug is how the bug gets fixed, so a failing new case is reported, not blocked.",
-                    "No, reported only",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The gate also fails when a case starts crashing with an error it did not hit before. The report adds a sign test: the chance of seeing a split this uneven between broken and fixed cases if the change did nothing. The pull request's own new test cases also run against the old code. So a fix that arrives with its test shows up as fixed, not new.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "How far a pass rate must move to count, and how many broken cases to tolerate, are two settings in the config file. The defaults are half and zero. The point is to agree them before the first argument, not during it.",
-            },
-          ],
-        },
-        {
-          id: "agentops",
-          heading: "The AgentOps result",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "AgentOps is the incident-response agent I built on LangGraph, in the previous case study. It investigates a simulated production failure and proposes a fix. Its suite of about 1,000 tests runs on a scripted model. I wired Flywheel into it, then made the kind of edit that passes code review.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "First, traffic. I sent 11 realistic incidents through AgentOps on Claude Haiku 4.5 and traced them to LangSmith. Each was a known scenario, with its symptoms worded the way real alerts arrive, such as \"orders error budget exhausted\".",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Then, mining. Flywheel scored the traces with AgentOps's own evaluators and found 2 failures. Both were the same scenario, two faults at once. The terse wording led the agent to give up and hand the incident to a person, when it should have fixed one fault and then the other. Both were promoted to test cases, with the scenario's known correct answer as the expected answer, so the dataset grew from 5 hand-written cases to 7.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Then, the change: a cleanup of the agent's instructions that deleted one paragraph that looked redundant, in the part that tells it to find the root cause of the incident. Every unit test of its behaviour still passed, 996 of them. The only 2 failures were tests that check the instructions' exact wording, which a cleanup edits along with the instructions.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Finally, the gate. Flywheel ran all 7 cases 3 times each on Claude Sonnet 5.5, on the main branch and on the change. It blocked the change:",
-            },
-            {
-              type: "table",
-              columns: [
-                { label: "Case" },
-                { label: "Main", numeric: true },
-                { label: "With the cleanup", numeric: true },
-                { label: "Verdict" },
-              ],
-              rows: [
-                { cells: ["Mined from traffic: \"orders error budget exhausted\"", "2 of 3", "0 of 3", "Broken"], emphasis: true },
-                { cells: ["Mined from traffic: \"orders API degraded since ~11:00\"", "3 of 3", "1 of 3", "Broken"], emphasis: true },
-                { cells: ["Hand-written: the same scenario", "2 of 3", "1 of 3", "Wobble"] },
-                { cells: ["All 7 cases, correct outcomes", "19 of 21", "14 of 21", "Blocked"] },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The lesson is in the third row. The hand-written version of the same scenario only wobbled, inside the noise allowance, so on its own it would not have blocked anything. The cases that caught the regression came from traffic, not from imagination.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "A control run makes the result credible. I ran main against itself: the same code, two separate live experiments. Flywheel passed it, with one case wobbling within the normal variation, so this failing check was a real change, not model noise.",
-            },
-          ],
-        },
-        {
-          id: "studbook-agent",
-          heading: "A second agent: answering from design records",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "My design-records agent answers questions about my projects' design records, with citations, and refuses when the records do not say. It shares no code with AgentOps. Flywheel needed no change to run it, only three new checks: did it cite the right section, did it refuse exactly when it should, and did a model judge the answer correct.",
-              link: { text: "design-records agent", href: REPOSITORIES.studbookAgent },
-            },
-            {
-              type: "paragraph",
-              text: "On 36 questions, each asked 3 times on Claude Haiku 4.5, it scored:",
-            },
-            {
-              type: "stats",
-              items: [
-                { value: "95 of 108", label: "runs with an answer judged correct" },
-                { value: "99 of 108", label: "runs that cited the section holding the answer" },
-                { value: "108 of 108", label: "runs that refused exactly when they should" },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Its weak spot was questions that need two records together. The obvious fix was a prompt paragraph on how to compare two records. On averages it looked like a small dip that could be noise: correct answers went from 95 to 91 of 108.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Case by case, it was not. The paragraph fixed 3 questions completely and broke 5. One of the broken questions was unanswerable, and the agent started answering it with an invented fact instead of refusing. A wrong answer delivered with confidence is the failure this agent exists to avoid. Flywheel blocked the change, and I kept the original prompt.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The report's sign test came out at p = 0.727. That is nowhere near significant: a split this uneven could easily be chance, so it proves nothing either way. The gate does not depend on it: one broken case is enough to block, and here there were five.",
-            },
-          ],
-        },
-        {
-          // muhibm1/workhorse CHANGELOG.md 0.5.3 (#34) and the first mining report,
-          // /mnt/project-files/workhorse/flywheel-mine-workhorse-runs-2026-10-13.md.
-          id: "pipeline-runs",
-          heading: "A third agent: a delivery pipeline's own runs",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The miner needs only two things from an agent: scores on its recorded runs, and the name of the step each part of a run belongs to. My first delivery pipeline, since retired, did not use LangGraph. But it named each phase of a run, as LangGraph names its steps, and scored every run on five checks, such as \"finished within its time budget\". Flywheel read those recordings with no pipeline-specific code.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Of 16 runs, it flagged 13 and grouped them by the phase where they went wrong: 8 over their time budget, 4 of those in the build phase; 3 that stalled; 2 that never closed. The grouping did its job: it showed where the pipeline's runs went wrong, phase by phase.",
-            },
-          ],
-        },
-        {
-          // muhibm1/flywheel studies/langchain-agents/README.md at 4dc7537 (PRs 4 and 5, 2026-10-19 and 20).
-          id: "langchain-agents",
-          heading: "LangChain's own agents: can we use the cheaper model?",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The question a customer asks most often about a working agent is whether it can run on a cheaper model. I ran Flywheel on two agents LangChain publishes, unchanged except for the model: the email assistant from agents-from-scratch, which sorts mail and drafts replies with tools, and the text-to-SQL Deep Agent, which answers questions about a music store's database. The change under test moved every model call from Claude Sonnet 4.5 to Claude Haiku 4.5, about a third of the price per token. The plan, the cases and the decision rules were written down before any result.",
-              link: { text: "written down before any result", href: FLYWHEEL_LANGCHAIN_STUDY },
-            },
-            {
-              type: "paragraph",
-              text:
-                "The text-to-SQL agent passed: 36 questions, 3 runs each, no case broken. Both models were close to perfect, 107 and 105 correct answers of 108, so this database does not separate them.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The email agent is where the totals mislead. These runs used LangChain's own ChatAnthropic client and the three checks from LangChain's own tests, 3 runs per case:",
-            },
-            {
-              type: "table",
-              columns: [
-                { label: "Check" },
-                { label: "Sonnet 4.5", numeric: true },
-                { label: "Haiku 4.5", numeric: true },
-              ],
-              rows: [
-                { cells: ["Sorted into the right category", "52 of 60", "51 of 60"] },
-                { cells: ["Called every expected tool", "24 of 33", "27 of 33"] },
-                { cells: ["Reply met LangChain's criteria", "27 of 33", "27 of 33"] },
-                { cells: ["A school asks for a reply by March 7: deadline acknowledged", "3 of 3", "0 of 3"], emphasis: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "On totals the two models are equal, and a dashboard would have shipped the switch. Case by case, Flywheel blocked it, because Haiku never acknowledged the deadline in that one kind of email. The same case blocked when the agent ran through a second, independent model connection, so the break is not an artifact of one setup. And it was not a hand-written case: Flywheel mined it from 29 realistic emails sent through the agent like a day of mail, one of 4 failures that grew the dataset from 16 cases to 20.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "The study also made Flywheel better. Against a single run of main, the control (main compared with a second run of itself) blocked on a calendar email that passes about a third of the time, so one lucky run made noise look like a break. The gate now pools several runs of main case by case, and with that fix a third independent control passed. A gate bug that counted reply-only checks against every email, and two grader bugs in the SQL check, were fixed along the way. Gating the unchanged agent against itself 2,000 times from the stored runs then measured the false-alarm rate directly: never on the SQL agent, but half of all gates on the email agent at 3 runs a side, and one in six with pooled main, because eight of its checks pass only some of the time. So Flywheel gained a per-case statistical test: a case blocks only when a fall that large would rarely happen by chance. On the same runs it cut false alarms to between 5% and 10%. The trade is that a case which was already a coin toss needs more runs before a real break shows, which the study reports rather than hides.",
-            },
-          ],
-        },
-        {
-          id: "langsmith",
-          heading: "LangSmith, feature by feature",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Each step of the loop maps to one LangSmith feature, used as the product intends rather than worked around. The table reads left to right: the feature, then what Flywheel does with it.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "LangSmith feature" }, { label: "What Flywheel does with it" }],
-              rows: [
-                {
-                  cells: [
-                    "Tracing projects",
-                    "The mine command reads each recorded run, the scores attached to it and LangGraph's step labels, and names the step where each failing run went wrong.",
-                  ],
-                },
-                {
-                  cells: [
-                    "Feedback",
-                    "The score command writes evaluator scores onto existing traces. It works like an online evaluator, using the same checks the tests use.",
-                  ],
-                },
-                {
-                  cells: ["Annotation queues", "Mining can put failing runs in a queue, in front of a reviewer who confirms the right answer."],
-                },
-                {
-                  cells: [
-                    "Datasets and version tags",
-                    "The sync command mirrors the repository's test file into a dataset and tags each version with a content hash, so an experiment records exactly which cases it ran.",
-                  ],
-                  emphasis: true,
-                },
-                {
-                  cells: [
-                    "Experiments with repetitions",
-                    "The run command runs the agent through LangSmith's evaluate function, repeating each case. Every run becomes a trace with its scores attached.",
-                  ],
-                },
-                {
-                  cells: ["Comparison view", "The pull-request comment links both experiments, main and the change, side by side."],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Evaluators take the same three things LangSmith gives them: the inputs, the agent's outputs and the expected outputs. So the same check can grade a run in CI, in a LangSmith experiment and on a recording of live use. In CI, a scripted or recorded model is the right default where the agent has one, because it is free and repeatable. Prompt and model changes need a live run, because a scripted model does not read the prompt.",
-            },
-          ],
-        },
-        {
-          id: "customer",
-          heading: "How I'd use it with a customer",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "The repository carries the plan I would follow when a team hands me an agent that works in the demo and asks whether it is ready for production. It is written for the team's engineers and for whoever signs off on the launch, so each step says what it gives the business as well as what gets built. The short version: you cannot improve what you cannot see, and you cannot ship what you cannot compare.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "When" }, { label: "What gets built" }, { label: "What the business gets" }],
-              rows: [
-                {
-                  cells: [
-                    "Day 1",
-                    "Recording every agent run, with a separate LangSmith project for each environment (such as testing and live), each run named after the business action it performs, and the customer's own reference numbers attached",
-                    "\"What did the agent do?\" takes a minute to answer, not a day",
-                  ],
-                },
-                {
-                  cells: [
-                    "Days 2 to 3",
-                    "Scoring checks written with the people who own the outcome: simple, certain checks first, and an AI judge only where code cannot decide, itself tested against a dozen answers graded by people",
-                    "A shared, written definition of a good answer, which often exposes a disagreement worth settling before launch",
-                  ],
-                },
-                {
-                  cells: [
-                    "Days 4 to 5",
-                    "The first set of test cases, mined from a week of real recorded runs, each expected answer written by a subject expert in a review queue, plus hand-written cases for the rules that must never break",
-                    "A test set that reflects what customers actually send, with a named person behind every expected answer",
-                  ],
-                },
-                {
-                  cells: [
-                    "Days 6 to 7",
-                    "The check on every pull request: a scripted model in the automatic checks, and live runs when the prompt or the model changes",
-                    "Whether a change made anything worse is known before it ships, with a link to the exact case and trace",
-                  ],
-                  emphasis: true,
-                },
-                {
-                  cells: [
-                    "Day 8",
-                    "The rule for how much run-to-run variation to accept, agreed in advance and written into the settings file",
-                    "A red check means something, so people stop ignoring it",
-                  ],
-                },
-                {
-                  cells: [
-                    "Days 9 to 10",
-                    "A daily job that mines new failures, one full cycle run together, and a frozen held-out set scored only when a version is ready to ship",
-                    "The team can run the loop without me, and the launch decision rests on numbers they trust",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text: "What I watch for along the way:",
-            },
             {
               type: "cards",
               items: [
                 {
-                  title: "An average that hides a broken case",
-                  note: "Two cases fixed and one broken reads as better in an average. The gate reports cases, not averages, for this reason.",
+                  title: "The agent",
+                  note: "Works out what the edit is meant to do and what it could affect, checks it against the spec, and writes a recommendation it must justify.",
                 },
                 {
-                  title: "A prompt change tested on a scripted model",
-                  note: "It passes every time, because the script does not read the prompt. Prompt and model changes need a live run.",
+                  title: "Code",
+                  note: "Sets hard limits on what the agent can reach: no write access to anything, and only the data and repositories the review needs.",
                 },
                 {
-                  title: "A dataset that only grows from imagination",
-                  note: "If no case came from a trace, the dataset tests what the team expects, not what customers do.",
-                },
-                {
-                  title: "Tuning against the held-out set",
-                  note: "Once a team has seen held-out scores while making changes, those scores stop meaning anything. Freeze it and protect it.",
+                  title: "The reviewer",
+                  note: "Makes every unlock decision. The agent has no authority to change anything.",
                   emphasis: true,
                 },
               ],
             },
+            {
+              type: "paragraph",
+              text:
+                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
+            },
           ],
         },
         {
-          id: "limits",
-          heading: "Limits",
+          id: "model",
+          heading: "Choosing and tuning the model",
           blocks: [
             {
-              type: "bullets",
-              items: [
-                "Mining finds failures that a score or an error can see. A wrong answer that every evaluator passes stays invisible, so the evaluators deserve as much review as the agent.",
-                "Three repetitions tell a real break from noise only for large moves. A case that goes from 3 of 3 to 2 of 3 is reported as a wobble, not blocked. Cases where a single failure matters need more repetitions.",
-                "Each result here is one change on one agent: 7 to 36 cases, 3 to 6 repetitions. It shows the mechanism working. It is not a benchmark.",
-                "On LangChain's email agent, the client run has 3 runs a side and no control of its own. The deadline break is the one result that holds on both model connections; the pooling fix has been tested against one independent control so far.",
-                "The design-records agent's answer judge is itself a model, Claude Haiku 4.5, and its verdicts have not been audited by a person.",
-              ],
+              type: "paragraph",
+              text:
+                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right.",
+            },
+          ],
+        },
+        {
+          id: "people",
+          heading: "Working with the teams",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards.",
+            },
+          ],
+        },
+        {
+          id: "changed",
+          heading: "What changed",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
+            },
+            {
+              type: "paragraph",
+              text:
+                "The decision this produces is carried out by a separate tool I built, covered in the systems integration case study.",
             },
           ],
         },
@@ -1871,460 +2028,11 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "A way to take a customer's agent from one that demos well to one that provably works: its real failures in LangSmith become reviewed test cases, every change is compared with the current approved version case by case, and a statistical test on each case keeps model noise from blocking a good change.",
+          "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
       },
-      contactHeading: "Have an agent that works in the demo? Let's talk.",
-    },
-
-    // Fathom (fourth, the last featured study), added 2026-10-25 from the owner's Orion / Fathom
-    // split brief: Orion's data-platform half, moved here from /work/orion. Every number traces to
-    // Fathom's pipelinebench results (llm-agents, accuracy, partner-calitp-dbt, partner-balboa,
-    // partner-httpx and partner-hono-cobra, calitp-history-deterministic and -model-consumers,
-    // heldout-sonnet-5-5-baseline-x3) and its README at main d993d56 (about 14,100 lines of
-    // Python, 264 tests). The owner's follow-up the same day: position Fathom as open source now,
-    // and he made the repository public himself after a history scrub, so the card and page link to it.
-    {
-      id: "fathom",
-      deploymentSummary: {
-        problem:
-          "Coding agents and engineers change data models without seeing what depends on them. Review catches the damage late, if at all: a renamed column breaks a dashboard two teams away.",
-        decision:
-          "Give the agent the system's context before it changes anything, and check the change against it in code: what it reaches, which rules apply, who owns it and what has broken there before. I chose to keep the model out of those checks. It may explain the result, never overrule it.",
-        result:
-          "On my benchmark, agents with Fathom made 0 of 50 forbidden calls, against 8 of 50 with no context. On California's public transit warehouse, 625 dbt models, false alarms on 12 real commits went from 7 to 0.",
-      },
-      card: {
-        featured: true,
-        eyebrow: "Open source · Data platforms · AI agents",
-        title: "Fathom: what a data change reaches, before it ships",
-        summary:
-          "An open-source context layer for AI agents on data platforms. Before an agent changes a model, Fathom tells it what depends on the change, column by column, which rules apply, who owns it and what has broken there before. Then it checks the change in code, reviews it, and cites the evidence for every finding.",
-        linkText: "Read the case study",
-        tags: ["0 of 50 forbidden calls by agents using it", "Tested on two public dbt platforms"],
-      },
-      codeLink: { label: "Code: fathom", href: REPOSITORIES.fathom },
-      eyebrow: "Case study · Open source · Data platforms",
-      title: "Fathom: what a data change reaches, before it ships",
-      intro:
-        "A data model change can look harmless in the diff and still break a report two teams away. Fathom gives coding agents, and the engineers working with them, the system context before they change anything: column-level lineage, the rules that apply, who owns each table and what has broken there before. It checks the change against that context in code, reviews the diff like a careful senior engineer, and watches what happened after the merge so its rules grow from the platform's own history. The model may explain a result but never overrule it, and a team's CI gate is the only thing that blocks.",
-      metaDescription:
-        "Gives coding agents a data platform's lineage, rules, owners and incident history before a change ships. 0 of 50 forbidden calls, against 8 of 50 without it.",
-      atAGlance: [
-        { label: "My role", value: "Designed and built it in October 2026, side by side with Orion, then gave it a home of its own" },
-        {
-          label: "What it is",
-          value: "An open-source context layer, change check and code reviewer for AI agents on data platforms, starting with dbt and Airflow",
-        },
-        { label: "Where it stands", value: "Open source under the Apache-2.0 licence, with its code on GitHub" },
-        {
-          label: "Tested on",
-          value:
-            "PipelineBench (my own benchmark), 45 real historical bugs from 8 open-source projects, and two public dbt platforms: California's transit warehouse on BigQuery and Datacoves' balboa on Snowflake",
-        },
-      ],
-      stats: [
-        { value: "0 of 50", label: "forbidden calls by AI agents with Fathom, against 8 of 50 with no context" },
-        { value: "100%", label: "of required citations given with Fathom, against 46% with no context" },
-        { value: "621 of 625", label: "dbt models with column lineage on a real warehouse, up from 4" },
-        { value: "7 to 0", label: "false alarms on 12 real merged commits, after fixing what caused them" },
-      ],
-      sections: [
-        {
-          id: "problem",
-          heading: "The problem",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Coding agents are starting to write data pipeline changes, and they read code well. What they cannot see is the system the code lands in: which dashboards read this column, which rule says this table needs an approver, which team owns it, and that the same change caused an incident in March. An engineer new to the team cannot see it either.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Code-context tools index what the repository says. Fathom indexes what production says: which tables feed which dashboards, which pipeline missed its deadline, which change caused the last outage. So the knowledge a senior engineer carries in their head sits in front of every change, instead of turning up in review after a scheduled run has already failed.",
-            },
-          ],
-        },
-        {
-          id: "walkthrough",
-          heading: "What it does",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Fathom reads a data platform into one graph, then answers one question for any change: what does this reach, and is it safe to ship? It gives an agent that answer before it writes code, checks the change again before it merges, and records what happened after.",
-            },
-            { type: "fathom-replay", skipHref: "#trust" },
-            {
-              type: "paragraph",
-              text:
-                "Adding a column to the same table comes back inform and reaches nothing. That difference is what column-level lineage buys: a check an agent learns to trust, instead of one it learns to ignore. The risk score is a sum of named parts, such as readers on the most important dashboards, a blocking rule, a destructive change and how recent the incident was, so anyone can see exactly why it came out where it did.",
-            },
-          ],
-        },
-        {
-          id: "trust",
-          heading: "How it stays trustworthy",
-          blocks: [
-            {
-              type: "cards",
-              items: [
-                {
-                  title: "Code decides, the model explains",
-                  note: "What a change reaches, which rules apply and the risk score are worked out in code. A model may interpret and rank inside those results, never override them.",
-                },
-                {
-                  title: "Every finding cites evidence",
-                  note: "Each finding points at a stored fact, a file and line, or a hunk of the diff. One without valid evidence is marked uncertain, never shown as fact.",
-                },
-                {
-                  title: "Nothing is invented",
-                  note: "If the graph does not know an owner, a dependency or a past incident, Fathom says \"not recorded\". Paths it cannot map are listed, not dropped.",
-                },
-                {
-                  title: "It advises, the gate blocks",
-                  note: "Fathom never writes to the platform. A team's CI gate is the only place a verdict blocks a merge, and a person records every decision.",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: "review",
-          heading: "A review that reads the whole change",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Fathom also reviews any diff, platform or not, in four stages: gather the facts in code, ask the model for candidate findings, validate every finding in code, then format. Code findings always come first and never depend on a model. What sets the review apart is what it hands the model and what it refuses to let through.",
-            },
-            {
-              type: "cards",
-              items: [
-                {
-                  title: "The code around the change",
-                  note: "A short file goes to the model whole, a long one as the function each hunk sits in. Every function the change calls is looked up in the repository and shown with a line the model can cite.",
-                },
-                {
-                  title: "Four focused passes",
-                  note: "The model reads each change four times, once per kind of failure: unusual inputs, what called functions really do, control flow and state, and contracts with callers. On Claude Haiku 5.5 this lifted recall on real bugs from 0.18 to 0.42, and to 0.60 on 45 held-out bugs.",
-                },
-                {
-                  title: "A second reading",
-                  note: "Every warning must name the concrete case that fails, or it is lowered to a note. A second pass then re-checks each warning against the whole change, and a stronger model can check a cheaper one.",
-                },
-                {
-                  title: "Who else uses what you changed",
-                  note: "For a removed or re-signed definition in any of six languages, from Python to TypeScript, every use in the repository is listed by file and line, parsed so a comment, a string or a same-named method elsewhere is told apart.",
-                },
-                {
-                  title: "It knows what you meant",
-                  note: "The pull request's title and body are passed as the stated intent, so an announced change is not reported as a bug, while a change the intent does not cover still is.",
-                },
-                {
-                  title: "Nothing slips through",
-                  note: "A key, token or password in an added line blocks, and is redacted before the diff leaves the machine. A diff too big for one call is reviewed in several, and anything not shown is named.",
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Any model can sit behind it: offline, Anthropic, any OpenAI-compatible endpoint including local models, a local command, or a coding agent on a subscription with no API key. Every paid call counts against a dollar cap. On a pull request it posts one inline comment per new finding and one summary updated in place, and it never posts a blocking review.",
-            },
-          ],
-        },
-        {
-          id: "loop",
-          heading: "Closing the loop",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Most review tools forget a change once it merges. Fathom keeps an append-only ledger of every verdict, the decision a person made on it and what actually happened next, so its rules grow out of the platform's own history.",
-            },
-            {
-              type: "flow",
-              columns: 4,
-              steps: [
-                { title: "Record the decision", note: "A person approves, waives or rejects, and it is written to the ledger" },
-                { title: "Watch what happened", note: "Postflight finds the commit that landed it and watches the next three runs: clean, failed, late or an incident" },
-                { title: "Compare", note: "Predicted severity against the observed outcome, for every verdict" },
-                { title: "Propose a rule", note: "Repeated missed deadlines, failures after changes or an incident with no rule become a drafted constraint" },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "A drafted constraint lands as a pull request, and merging it is the approval. Rules are written in a closed set of seven types, such as locked columns, a locked schedule or a required approver, so every rule is something code can check and a person can read.",
-            },
-          ],
-        },
-        {
-          id: "architecture",
-          heading: "Architecture",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Fathom is a local process with one database file. A sync reads the platform into a graph and a ledger. Code checks every change against them, and review adds the model inside those results. Agents reach it through one MCP server, a team's CI through the gate, and after a merge postflight and propose close the loop.",
-            },
-            {
-              type: "architecture",
-              // Drawn in the same style as Orion's, to Fathom at main d993d56 (owner's follow-up,
-              // 2026-10-25: "make sure the architecture ... reflects its current state"): the five
-              // adapters, the graph and the append-only ledger, preflight and review, the MCP
-              // server's seven tools, the gate and pull request comments, and postflight and
-              // propose feeding decisions back to the ledger.
-              label: "Fathom's architecture",
-              enlarge: "Enlarge",
-              close: "Close",
-              viewBox: [20, 42, 930, 482],
-              legend: [
-                { kind: "data", label: "The platform's own data" },
-                { kind: "code", label: "Deterministic code, no model" },
-                { kind: "plain", label: "Model, checked by code" },
-                { kind: "agent", label: "Agent interface" },
-              ],
-              labels: [
-                { x: 30, y: 60, text: "Sources" },
-                { x: 196, y: 60, text: "Sync · fathom sync" },
-                { x: 380, y: 60, text: "Store · one DuckDB file" },
-                { x: 590, y: 60, text: "Checks · code first" },
-                { x: 775, y: 60, text: "Access" },
-              ],
-              boxes: [
-                { x: 32, y: 74, w: 138, h: 46, kind: "data", parts: [{ title: "dbt project" }, { text: "manifest, catalog, SQL" }] },
-                { x: 32, y: 126, w: 138, h: 46, kind: "data", parts: [{ title: "Airflow" }, { text: "DAGs and their tasks" }] },
-                { x: 32, y: 178, w: 138, h: 46, kind: "data", parts: [{ title: "Git" }, { text: "commits and past fixes" }] },
-                { x: 32, y: 230, w: 138, h: 58, kind: "data", parts: [{ title: "Run history" }, { text: "task runs, dbt results, table snapshots" }] },
-                { x: 32, y: 294, w: 138, h: 46, kind: "data", parts: [{ title: "Incident reports" }, { text: "kept as files in the repo" }] },
-                { x: 32, y: 346, w: 138, h: 46, kind: "data", parts: [{ title: "Constraints" }, { text: "rules as code, reviewed" }] },
-                {
-                  x: 196, y: 74, w: 155, h: 318, kind: "code",
-                  parts: [
-                    { title: "Adapters" },
-                    { pairs: [["dbt.py", "models"], ["airflow.py", "DAGs"], ["git.py", "commits"], ["runs.py", "runs"], ["incidents.py", "incidents"]] },
-                    { rule: true },
-                    { mono: "lineage.py" },
-                    { text: "column lineage from each model's compiled SQL, parsed by sqlglot" },
-                    { text: "an adapter reads one source and never reasons", gap: true },
-                    { text: "every fact carries where it came from", gap: true },
-                    { text: "a real warehouse of 625 models synced in about two minutes", gap: true },
-                  ],
-                },
-                {
-                  x: 380, y: 74, w: 178, h: 170, kind: "code",
-                  parts: [
-                    { title: "System graph" },
-                    { mono: ".fathom/graph.duckdb" },
-                    { text: "tables, columns and jobs, and what feeds what", gap: true },
-                    { text: "owners and tiers" },
-                    { text: "the rules that cover each table" },
-                    { text: "a fact with no source is refused", gap: true },
-                  ],
-                },
-                {
-                  x: 380, y: 256, w: 178, h: 136, kind: "code",
-                  parts: [
-                    { title: "Ledger" },
-                    { text: "append-only events" },
-                    { text: "incidents, verdicts, decisions and outcomes after merge", gap: true },
-                    { text: "only ever added to", gap: true },
-                  ],
-                },
-                {
-                  x: 590, y: 74, w: 155, h: 170, kind: "code",
-                  parts: [
-                    { title: "Preflight" },
-                    { mono: "fathom preflight" },
-                    { text: "typed change ops from the diff, the SQL or the intent", gap: true },
-                    { text: "column-level blast radius" },
-                    { text: "7 rule types, checked in code" },
-                    { text: "risk as a sum of named parts" },
-                    { text: "inform, warn or block", gap: true },
-                  ],
-                },
-                {
-                  x: 590, y: 256, w: 155, h: 136, kind: "plain",
-                  parts: [
-                    { title: "Review" },
-                    { mono: "fathom review" },
-                    { text: "gather, generate, validate, format", gap: true },
-                    { text: "four focused passes and a second reading" },
-                    { text: "no evidence, no finding", gap: true },
-                  ],
-                },
-                {
-                  x: 773, y: 74, w: 165, h: 170, kind: "agent",
-                  parts: [
-                    { title: "MCP server" },
-                    { text: "seven tools for any coding agent" },
-                    { mono: "preflight · explain", gap: true },
-                    { mono: "history · ask · review" },
-                    { mono: "record_decision" },
-                    { mono: "propose_constraint" },
-                    { text: "none can write to the platform", gap: true },
-                  ],
-                },
-                {
-                  x: 773, y: 256, w: 165, h: 62, kind: "code",
-                  parts: [{ title: "CI gate" }, { mono: "fathom gate" }, { text: "the only place a verdict blocks" }],
-                },
-                {
-                  x: 773, y: 326, w: 165, h: 66, kind: "plain",
-                  parts: [{ title: "Pull request comments" }, { text: "one per new finding, never a blocking review" }],
-                },
-                {
-                  x: 380, y: 416, w: 178, h: 78, kind: "code",
-                  parts: [{ title: "Postflight" }, { mono: "fathom postflight" }, { text: "watches the next three runs after a merge and records the outcome" }],
-                },
-                {
-                  x: 590, y: 416, w: 155, h: 78, kind: "code",
-                  parts: [{ title: "Propose" }, { mono: "fathom propose" }, { text: "drafts rules from patterns in the ledger" }],
-                },
-                {
-                  x: 773, y: 416, w: 165, h: 78, kind: "plain",
-                  parts: [{ title: "A person decides" }, { text: "approves, waives or rejects; merging a drafted rule approves it" }],
-                },
-              ],
-              edges: [
-                { d: "M170 97 H194" }, { d: "M170 149 H194" }, { d: "M170 201 H194" },
-                { d: "M170 259 H194" }, { d: "M170 317 H194" }, { d: "M170 369 H194" },
-                { d: "M351 160 H378" }, { d: "M351 324 H378" },
-                { d: "M558 160 H588" }, { d: "M558 210 H572 V324 H588" },
-                { d: "M667 244 V254" },
-                { d: "M773 160 H747", kind: "agent" },
-                { d: "M745 230 H760 V287 H771", kind: "code" },
-                { d: "M745 359 H771" },
-                { d: "M469 392 V414", both: true },
-                { d: "M558 370 H574 V455 H588" },
-                { d: "M745 455 H771" },
-                { d: "M855 494 V510 H366 V370 H378" },
-              ],
-              edgeLabels: [
-                { x: 749, y: 155, text: "calls" },
-                { x: 610, y: 506, text: "decision" },
-              ],
-              note: "Only review calls a model, and each of its findings is checked against the diff and the graph before anyone sees it. Everything else on this drawing is code, and the model never overrules it.",
-            },
-          ],
-        },
-        {
-          id: "evidence",
-          heading: "Evidence",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "PipelineBench is my own benchmark, so I built it to be hard to game. It has sixty scenarios on a small sample data platform, with answers written by hand from the platform's rules and grading done by code. Each AI agent is tried with nothing, with the repository's files, with plain document search, and with Fathom.",
-            },
-            {
-              type: "cards",
-              items: [
-                {
-                  title: "No forbidden calls",
-                  note: "A forbidden call is going ahead with a change the rules say must stop for a person. With Fathom: 0 of 50 on Claude Sonnet 5.5 and Haiku 5.5. With no context: 8 of 50.",
-                },
-                {
-                  title: "Every required citation",
-                  note: "With Fathom, agents cited 100% of the relevant rules, past incidents, affected tables and required approvers, against 46% with no context.",
-                },
-                {
-                  title: "A higher score than the whole repo",
-                  note: "The benchmark score rose from 0.39 with no context to 0.82 and 0.83 with Fathom, ahead of 0.72 to 0.76 with the whole repository in hand.",
-                },
-                {
-                  title: "Real bugs found",
-                  note: "On 45 real bugs from 8 open-source projects, held out from all tuning, review found 74%, a range of 73% to 76% across 3 runs on Claude Sonnet 5.5.",
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The stronger test is outside my own benchmark. cal-itp/data-infra is California's public transit data warehouse: 625 dbt models and 21 Airflow pipelines, run by a real team. Fathom read the manifest the project publishes and was run on its real history.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "On cal-itp's warehouse" }, { label: "Before" }, { label: "After" }],
-              rows: [
-                { cells: ["First full sync", "Over 20 minutes, stopped", "2 min 9 s"] },
-                { cells: ["Models with column lineage", "4 of 625", "621 of 625"] },
-                { cells: ["Warnings on 12 merged commits", "7 warnings, all false", "2 warnings, both correct"] },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "Every first-pass false alarm came from files Fathom could not map yet, such as shared schema files and hand-written tests. Once they mapped, the two warnings left were both correct. One model finding is confirmed by the project itself: Fathom warned that a change had swapped dbt references for hardcoded production table names, and the project's next commit put the references back.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "116 merged changes over 26 weeks" }, { label: "Warnings" }, { label: "False alarms" }],
-              rows: [
-                { cells: ["Code checks only", "4 warnings in 26 weeks", "0 false alarms a week"] },
-                { cells: ["Code checks plus model review", "2.23 warnings a week", "0.81 false alarms a week, with 3 of 6 known bugs flagged (policy tuned on this history)"], emphasis: true },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "A second public platform took the adapters further. Datacoves' balboa runs dbt on Snowflake, with Airflow written in the newer TaskFlow style and no published manifest. Models whose columns could not be read went from 7 of 43 to 1, a semantic view that is not SQL, and Airflow went from nothing read to 32 DAGs and 53 tasks.",
-            },
-            {
-              type: "paragraph",
-              text:
-                "Fathom reviews ordinary code too. On 26 merged changes from three open-source projects in three languages, httpx, Hono and Cobra, its code checks raised no false warning: parsing told 49 unrelated .read() calls apart from the method a change had removed.",
-            },
-          ],
-        },
-        {
-          id: "weight",
-          heading: "The weight of the work",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "Fathom is a full system, built and tested like one, with its own benchmark to keep it honest.",
-            },
-            {
-              type: "stats",
-              items: [
-                { value: "~14,000 lines", label: "of Python, with no model SDK as a dependency" },
-                { value: "264 tests", label: "with the benchmark's ground truth checked against Fathom on every run" },
-                { value: "60 scenarios", label: "in PipelineBench, with answers written by hand" },
-                { value: "5 adapters", label: "dbt, Airflow, Git, run history and incidents" },
-                { value: "7 rule types", label: "a team writes its constraints in, each checked in code" },
-                { value: "7 MCP tools", label: "none of which can write to the platform" },
-                { value: "5 providers", label: "behind one model interface, from offline to a subscription" },
-                { value: "6 languages", label: "its reference check parses" },
-              ],
-            },
-          ],
-        },
-        {
-          id: "plan",
-          heading: "What's next",
-          blocks: [
-            {
-              type: "bullets",
-              items: [
-                "The public release for dbt teams: preflight, review and the CI gate, with a guide for two weeks in shadow mode, where Fathom only comments while a team counts its warnings.",
-                "More platforms. After cal-itp on BigQuery and balboa on Snowflake, a third public warehouse such as GitLab's data-team dbt project.",
-                "Severity that earns its warnings. Evidence-gated escalation, and confirming the failing case with a read-only query on the warehouse, are built; next is tuning them on more teams' history.",
-                "A design partner. Replay Fathom on a team's last six months of changes and incidents, then two weeks in CI that only comment.",
-              ],
-            },
-          ],
-        },
-      ],
-      callout: {
-        eyebrow: "What I'd bring to a client",
-        text:
-          "A way to let agents change a data platform without guessing. Write down the context a senior engineer carries in their head as data, check every change against it in code, cite every finding, and replay it on the team's own history before it says a word in CI.",
-      },
-      contactHeading: "Want agents to change your data platform safely? Let's talk.",
+      disclaimer:
+        "Details are limited to what I can share publicly. Internal system names are withheld. I'm glad to go deeper on a call.",
+      contactHeading: "Have a queue like this? I reply within a day.",
     },
 
     // Added 2026-10-27 from the erp-data-platform repository's README, eval/RESULTS.md,
@@ -2340,7 +2048,7 @@ export const portfolioData = {
           "Every finance number traces to records that add up. Five deliberate failures were each caught and recovered from. An agent with only the tools answered 46 of 47 held-out questions correctly, and all 73 of its citations were real, current records.",
       },
       card: {
-        featured: true,
+        featured: false,
         eyebrow: "Open source · ERP data · AI agents",
         title: "An ERP's data, made trustworthy for finance and for AI",
         summary:
@@ -3074,6 +2782,8 @@ export const portfolioData = {
 
     {
       id: "esper",
+      // Kept reachable but no longer listed (owner brief, 2026-11-24).
+      listed: false,
       card: {
         featured: false,
         eyebrow: "Personal system · Research agent · LangGraph",
@@ -3262,8 +2972,8 @@ export const portfolioData = {
     // private, so `status` stands where a code link would; there is no codeLink.
     {
       id: "orion",
-      banner: "Fathom, Orion's sister project, brings the same idea to data platforms.",
-      bannerLink: { text: "Fathom", to: "/work/fathom" },
+      // Kept reachable but no longer listed (owner brief, 2026-11-24).
+      listed: false,
       card: {
         featured: false,
         eyebrow: "Personal system · Coding agents · Context",

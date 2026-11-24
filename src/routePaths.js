@@ -20,10 +20,14 @@ function validatedSlug(id) {
 // (GitHub Pages has no server-side redirects). Written by scripts/prerender.mjs and checked by
 // scripts/check-route-pages.mjs. The decision-support case study was renamed on 2026-10-21; the
 // WorkHorse and agent harness (Tannhauser Gate) case studies were removed on 2026-10-25 at the
-// owner's request, so their addresses go to the work list.
+// owner's request, so their addresses go to the work list. On 2026-11-24 Flywheel and Fathom
+// stopped being standalone case studies; they now appear only as data in the study, so their
+// addresses go there.
 export const REDIRECTS = [
   { from: '/work/apple-llm-triage', to: '/work/apple-decision-support-agent' },
   { from: '/work/workhorse', to: '/work' },
   { from: '/work/tannhauser-gate', to: '/work' },
   { from: '/work/neural-newsletters-llm', to: '/work' },
+  { from: '/work/flywheel', to: '/work/building-around-a-model' },
+  { from: '/work/fathom', to: '/work/building-around-a-model' },
 ];

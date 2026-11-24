@@ -14,10 +14,11 @@ export default function CaseStudyBarChart({ charts, caption }) {
   );
 }
 
-// One chart: a title, then a row per item with its label, its bar scaled to the largest value
-// in this chart, and its value written out.
+// One chart: a title, then a row per item with its label, its bar scaled to the chart's `max`
+// when it gives one (a count out of a known total), otherwise to the largest value in this
+// chart, and its value written out.
 function BarChart({ chart }) {
-  const max = Math.max(...chart.items.map((item) => item.value));
+  const max = chart.max ?? Math.max(...chart.items.map((item) => item.value));
   if (!(max > 0)) {
     throw new Error(`Bar chart "${chart.title}" needs at least one positive value.`);
   }

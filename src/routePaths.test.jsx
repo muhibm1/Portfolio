@@ -17,14 +17,15 @@ const appSourcePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const BAD_IDS = ['../x', 'a/b', 'A-B', 'a b', ''];
 
 describe('staticRoutePaths', () => {
-  it('returns / then /work then /work/<id> for each of the twelve case studies in data order, featured work first and the unlisted page last (owner brief 2026-10-21; split brief 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent seventh 2026-11-05)', () => {
+  it('returns / then /work then /work/<id> for each of the thirteen case studies in data order, the study and the deployments first and the unlisted page last (owner brief 2026-11-24)', () => {
     expect(staticRoutePaths(portfolioData.caseStudies)).toEqual([
       '/',
       '/work',
-      '/work/apple-decision-support-agent',
+      '/work/building-around-a-model',
+      '/work/casepilot',
+      '/work/clearledger',
       '/work/agentops',
-      '/work/flywheel',
-      '/work/fathom',
+      '/work/apple-decision-support-agent',
       '/work/erp-data-platform',
       '/work/analyst-agent',
       '/work/collections-agent',
@@ -42,6 +43,8 @@ describe('staticRoutePaths', () => {
       { from: '/work/workhorse', to: '/work' },
       { from: '/work/tannhauser-gate', to: '/work' },
       { from: '/work/neural-newsletters-llm', to: '/work' },
+      { from: '/work/flywheel', to: '/work/building-around-a-model' },
+      { from: '/work/fathom', to: '/work/building-around-a-model' },
     ]);
     const served = staticRoutePaths(portfolioData.caseStudies);
     for (const { from, to } of REDIRECTS) {

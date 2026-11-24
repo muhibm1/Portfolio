@@ -22,9 +22,10 @@ const DECISION_SENTENCE =
 const INTEGRATION_SENTENCE =
   'The judgment behind these requests is covered in the decision support agent case study. This one is about what happens after the decision is made.';
 const THROUGHPUT_SENTENCE = 'It came from removing the investigation in front of it.';
-const HERO_HEADING = 'I find the step everyone is waiting on.';
+// 2026-11-24: the owner's new headline and lead (restructure around deployments).
+const HERO_HEADING = 'I deploy AI agents into business systems and prove whether they work.';
 const HERO_LEAD =
-  'Data Engineer at Apple Maps. The platform is rarely the problem, the process around it usually is. So I start by finding where the work actually stalls, scope the fix with the people it affects, and put agents and automation on live data behind guardrails that make them safe to trust. Success is a number that moved; anything short of that is another iteration.';
+  "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.";
 
 // The master document's item 1 and item 2 list.
 const BANNED_ON_EVERY_ROUTE = [
@@ -98,8 +99,8 @@ function gateStepCountInData(path) {
 }
 
 describe('master copy served on every route (2026-10-08)', () => {
-  it('serves all fourteen routes, the home page, the work list and twelve case studies (owner brief 2026-10-21; Fathom added and Neural Newsletters removed 2026-10-25; the ERP data platform added fifth and featured 2026-10-27; the collections agent added 2026-11-05)', () => {
-    expect(sitePagePaths()).toHaveLength(14);
+  it('serves all fifteen routes, the home page, the work list and thirteen case studies (owner brief 2026-11-24: the study, CasePilot and ClearLedger added; Flywheel and Fathom moved into the study)', () => {
+    expect(sitePagePaths()).toHaveLength(15);
   });
 
   it('renders six decision steps with Reviewer decides as the only dark human gate (R5, item 5)', () => {

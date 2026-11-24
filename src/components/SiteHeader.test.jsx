@@ -8,21 +8,23 @@ import SiteLayout from './SiteLayout';
 
 // G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet.
 describe('SiteHeader', () => {
-  it('shows the home section links, the GitHub profile link and the theme button on /, with no email link (owner, 2026-10-21)', () => {
+  it('shows the home section links, the GitHub profile link and the theme button on /, with no email link (owner, 2026-10-21; sections 2026-11-24)', () => {
     renderSiteLayoutAt('/');
 
-    expect(headerLinkHref('Work')).toBe('#work');
+    expect(headerLinkHref('Study')).toBe('#study');
+    expect(headerLinkHref('Deployments')).toBe('#work');
+    expect(headerLinkHref('Notes')).toBe('#notes');
     expect(headerLinkHref('How I work')).toBe('#approach');
     expect(headerLinkHref('Experience')).toBe('#experience');
     expect(headerLinkHref('Contact')).toBe('#contact');
     expect(headerLinkHref('About')).toBe('#about');
-    expect(headerLinkHref('Build log')).toBe('#build-log');
-    // The owner's 2026-10-21 nav order.
+    // The 2026-11-24 nav order: the page's own section order.
     const sections = within(screen.getByRole('navigation', { name: 'Sections' }));
     expect(sections.getAllByRole('link').map((link) => link.textContent)).toEqual([
-      'Work',
+      'Study',
+      'Deployments',
+      'Notes',
       'About',
-      'Build log',
       'How I work',
       'Experience',
       'Contact',
@@ -134,7 +136,7 @@ describe('SiteHeader inside App (E3)', () => {
 
     fireEvent.click(screen.getByRole('link', { name: /next case study/i }));
 
-    expect(document.title).toBe(pageMetaFor('/work/apple-decision-support-agent').title); // first since 2026-10-25
+    expect(document.title).toBe(pageMetaFor('/work/building-around-a-model').title); // first since 2026-11-24
   });
 });
 

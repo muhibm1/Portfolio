@@ -5,9 +5,9 @@ import CaseStudyFlowDiagram, { CaseStudyHubDiagram } from './CaseStudyFlowDiagra
 import CaseStudyBarChart from './CaseStudyBarChart';
 import CaseStudyArchitecture from './CaseStudyArchitecture';
 import CaseStudyTable from './CaseStudyTable';
+import CaseStudyComparisonChart from './CaseStudyComparisonChart';
 import WalkthroughBlock from './WalkthroughBlock';
 import AgentOpsReplay from './AgentOpsReplay';
-import FathomReplay from './FathomReplay';
 import ContactBand from './ContactBand';
 import DeploymentSummary from './DeploymentSummary';
 
@@ -171,7 +171,7 @@ function OnThisPageNav({ sections }) {
 // sits between the heading and the first block. A section that holds a walkthrough, replay or architecture diagram runs the full
 // width of the column, because its console needs the room the prose measure does not.
 function CaseStudySection({ section }) {
-  const hasWalkthrough = section.blocks.some((block) => ['walkthrough', 'replay', 'fathom-replay', 'architecture'].includes(block.type));
+  const hasWalkthrough = section.blocks.some((block) => ['walkthrough', 'replay', 'architecture'].includes(block.type));
   return (
     <div id={section.id} className={`flex flex-col gap-5 ${hasWalkthrough ? 'min-w-0' : 'max-w-3xl'}`}>
       {section.eyebrow && <p className="font-mono text-xs uppercase tracking-widest text-muted">{section.eyebrow}</p>}
@@ -215,9 +215,12 @@ function Block({ block }) {
     case 'replay':
       // The home page's AgentOps replay, with its skip link pointed at the next section here.
       return <AgentOpsReplay replay={{ ...portfolioData.homeReplay, skip: { text: 'Skip to the next section', href: block.skipHref } }} />;
-    case 'fathom-replay':
-      // The Fathom study's replay of one recorded check, in the same frame as the AgentOps one.
-      return <FathomReplay replay={{ ...portfolioData.fathomReplay, skip: { text: 'Skip to the next section', href: block.skipHref } }} />;
+    case 'comparison':
+      return <CaseStudyComparisonChart {...block} />;
+    case 'references':
+      return <ReferencesBlock items={block.items} />;
+    case 'note':
+      return <p className="border-l-2 border-line-mid pl-4 text-sm leading-relaxed text-muted sm:text-base">{block.text}</p>;
     default:
       throw new Error(`Unknown case-study block type "${block.type}".`);
   }
@@ -249,6 +252,36 @@ function ParagraphWithLink({ text, link }) {
       </a>
       {after}
     </>
+  );
+}
+
+// A numbered source list. Each item is `{ text, link: { text, href } }`; the link text must occur
+// once in the item's text, as in a paragraph. These are outside sources, so the link label says
+// where it goes rather than calling it a repository.
+function ReferencesBlock({ items }) {
+  return (
+    <ol className="flex flex-col gap-2 pl-6 text-sm leading-relaxed text-ink-2 sm:text-base">
+      {items.map((item, index) => {
+        const parts = item.text.split(item.link.text);
+        if (parts.length !== 2) {
+          throw new Error(`Reference link text "${item.link.text}" must occur exactly once in its reference.`);
+        }
+        return (
+          <li key={index} id={`ref-${index + 1}`} className="list-decimal">
+            {parts[0]}
+            <a
+              href={item.link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink underline decoration-[var(--underline)] underline-offset-4 hover:text-ink"
+            >
+              {item.link.text}
+            </a>
+            {parts[1]}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 

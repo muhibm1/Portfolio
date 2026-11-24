@@ -22,13 +22,13 @@ export default function HomeHero({ hero, email, replay }) {
 
       <h1
         id="home-heading"
-        className="h-[3.06em] max-w-[8em] font-display text-[44px] font-semibold leading-[1.02] tracking-[-0.04em] text-balance text-ink tab:h-[2.04em] tab:max-w-[12em] tab:text-[clamp(40px,4.8vw,70px)] wide:col-span-8"
+        className="max-w-[13em] font-display text-[36px] font-semibold leading-[1.04] tracking-[-0.04em] text-balance text-ink tab:max-w-[15em] tab:text-[clamp(40px,4.6vw,64px)] wide:col-span-8"
       >
         {hero.heading}
       </h1>
 
       <div className="mt-3 flex flex-col items-start gap-2 tab:mt-[22px] tab:flex-row tab:flex-wrap tab:items-center tab:gap-x-[22px] tab:gap-y-3 wide:col-span-8 wide:flex-nowrap wide:self-start">
-        <a href="#work" className={primaryButtonClasses}>
+        <a href={hero.primaryHref ?? '#work'} className={primaryButtonClasses}>
           {hero.primaryCta}
         </a>
         <CopyEmail email={email} />
