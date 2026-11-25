@@ -1,33 +1,9 @@
-// The site's one content module. Every string here is copied verbatim from the owner's approved
-// plan (portfolio-redesign-handoff/PORTFOLIO_REDESIGN_PLAN.md, section 6 binding for facts) and
-// the seven mockups (word for word, ADR 0006), amended per the 2026-09-28 revision (the
-// downloadable document withdrawn, contact narrowed to email and LinkedIn, GitHub snapshots
-// linked, an MCP section added, the WorkHorse run record brought to five runs; spec R138, R146,
-// R153, R154, R155).
-// Nothing here is paraphrased, rounded or added beyond what those requirements give verbatim.
-// Change 2026-10-08 aligns the hero, the employer line, the Apple Maps case studies and the
-// WorkHorse wording to the owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), word for word.
-// Only the owner approves a change to this file (CLAUDE.md "Protected").
-//
-// Shape: personal (contact, header facts and the public repositories), home
-// (hero, rightNow, stats, caseStudiesIntro, principles, workingWithPeople, experience, education,
-// toolkit, contact), homeReplay (the home page's AgentOps replay, 2026-10-19), caseStudies (seven, in the plan's reading order, each carrying card,
-// atAGlance, stats, intro, an optional codeLink, sections of content blocks (a paragraph block
-// may carry a link), callout, disclaimer where the mockup has one, and contactHeading; ADR 0006).
-// The AgentOps case study (second, after WorkHorse, its companion agentic-AI project) was added
-// 2026-10-12 from the agentops repository's README results at commit 64289e6 (Sonnet 5.5, dev
-// and held-out splits), pending the owner's approval. Its codeLink points at the public
-// agentops repository (a snapshot until 2026-10-26).
-// The Flywheel case study (third, after AgentOps) was added 2026-10-13 from the flywheel and studbook-agent READMEs.
-// Refreshed 2026-10-13 (owner's request, from his case-studies-v2 draft): WorkHorse gains the 0.5
-// releases and the faster Studbook record, checked against muhibm1/workhorse and muhibm1/studbook;
-// AgentOps and Flywheel gain the gate on every AgentOps pull request and the WorkHorse runs; the
-// Apple and Neural Newsletters studies carry the draft's own facts with plain-language framing.
+// The site's one content module; all copy, metrics and case studies live here.
+// Shape: personal, home (hero, stats, study and deployment intros, principles, experience,
+// education, toolkit, contact), homeReplay, and caseStudies, each with card, atAGlance, stats,
+// intro, an optional codeLink, sections of content blocks, callout and contactHeading.
 
-// The public repositories, held once (R153) and referenced from every place the work is
-// discussed. The owner's old desktop app was removed from the site on 2026-10-19 at his word.
-// On 2026-10-26 the one-commit snapshots gave way to the repositories themselves, republished
-// with their full, cleaned history.
+// The public repositories, held once and referenced wherever the work is discussed.
 const REPOSITORIES = {
   workhorse: "https://github.com/muhibm1/workhorse",
   studbook: "https://github.com/muhibm1/studbook",
@@ -40,6 +16,11 @@ const REPOSITORIES = {
 };
 
 const GITHUB_PROFILE = "https://github.com/muhibm1";
+
+const PUBLIC_DETAILS_DISCLAIMER = "Details are limited to what I can share publicly. Internal system names are withheld.";
+
+const HERO_LEAD =
+  "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.";
 
 export const portfolioData = {
   personal: {
@@ -57,13 +38,10 @@ export const portfolioData = {
       eyebrow: "Forward deployed engineer · Austin, TX",
       mobileEyebrow: "Forward deployed engineer",
       heading: "I build AI agents nontechnical teams can trust, with the rules in code, not in the prompt.",
-      lead:
-        "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.",
-      mobileLead:
-        "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.",
+      lead: HERO_LEAD,
+      mobileLead: HERO_LEAD,
       primaryCta: "Start with the study",
       primaryHref: "#study",
-      emailLinkText: "mmalqaim@gmail.com",
       codeLine: { text: "The code is public on GitHub", href: GITHUB_PROFILE },
       rightNow: {
         eyebrow: "Right now",
@@ -112,7 +90,6 @@ export const portfolioData = {
       ],
     },
 
-    // The lead study, then the three deployments (owner's brief, 2026-11-24).
     studyIntro: {
       eyebrow: "01 · The study",
       heading: "The study behind the rule.",
@@ -128,9 +105,6 @@ export const portfolioData = {
       moreHeading: "Earlier work",
     },
 
-    // Short notes: smaller projects told in a paragraph, each with the result that ended or
-    // limits it (owner's brief, 2026-11-24). Figures from the study document of 2026-11-24.
-    // Flywheel left the notes on 2026-11-25 (non-technical angle); it stays as data in the study.
     notes: {
       eyebrow: "03 · Notes",
       heading: "One shorter story: a guarantee that survives a crash.",
@@ -150,12 +124,9 @@ export const portfolioData = {
       ],
     },
 
-    // Added 2026-10-21 from the owner's redesign brief (the shift to forward deployed engineering
-    // and deployment strategy). The About text is his draft.
     about: {
       eyebrow: "04 · About",
       heading: "A system isn't done until people trust it.",
-      // The owner's own wording, 2026-10-27, cut to one paragraph at his request.
       paragraphs: [
         "I'm a deployment focused data engineer who loves building AI agents, automating workflows and keeping data platforms reliable. At Apple Maps I build decision support agents and lead automation that helps review teams move faster while people keep the final call. Before that I built an AI content pipeline at an early stage startup, taught AI and applied data engineering at edX, and took a client's education platform from discovery through launch and acquisition. Outside work I build what makes agents dependable: orchestration, context, evaluation and guardrails that keep a person in control. I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
       ],
@@ -306,13 +277,9 @@ export const portfolioData = {
     },
   },
 
-  // The AgentOps replay on the home page (src/components/AgentOpsReplay.jsx). Every value is the
-  // recorded sample run of the AgentOps scenario clean_bad_deploy (scenarios/clean_bad_deploy.json
-  // in the agentops repository, run with the scripted model): its service, symptoms, log lines,
-  // metric points, deploy record, the scripted triage and rca outputs, the runbook's two
-  // preconditions for rollback_deploy, and the status, evidence and budget counts the history and
-  // report commands print for that run. Times are shortened to hours and minutes. Nothing is
-  // invented for the page; the words around the values (labels, hints) are plain interface text.
+  // The AgentOps replay on the home page (src/components/AgentOpsReplay.jsx): the recorded sample
+  // run of scenario clean_bad_deploy with the scripted model. Times are shortened to hours and
+  // minutes; the labels and hints around the values are plain interface text.
   homeReplay: {
     scenario: "clean_bad_deploy",
     name: "AgentOps",
@@ -390,9 +357,7 @@ export const portfolioData = {
         { at: "10:45", value: 0.002 },
       ],
       p99Before: { from: 210, to: 425 },
-      p99After: { from: 230, to: 212 },
       poolUtilisation: { name: "db_pool_utilisation", from: "0.40", to: "0.40" },
-      errorRateName: "error_rate",
     },
     triage: {
       note: "first guesses at the cause, each with a score (higher means more suspect): a bad recent release or an overloaded database, before any evidence",
@@ -512,9 +477,6 @@ export const portfolioData = {
   },
 
   caseStudies: [
-    // The lead piece (owner's brief, 2026-11-24): the study "When does building around a model
-    // beat a plain model?", carried faithfully from the owner's study document of 2026-11-24.
-    // Every number, caveat and source is the document's own.
     {
       id: "building-around-a-model",
       home: "study",
@@ -933,8 +895,6 @@ export const portfolioData = {
       contactHeading: "Deciding what to build around a model? Let's talk.",
     },
 
-    // Deployment case study 1 (owner's brief, 2026-11-24). Figures from the casepilot repository
-    // (private): README and evals/results/2026-11-23-blind-sets-6-to-9.md, checked 2026-11-24.
     {
       id: "casepilot",
       home: "deployment",
@@ -1098,8 +1058,6 @@ export const portfolioData = {
       contactHeading: "Want an agent working your support queue? Let's talk.",
     },
 
-    // Deployment case study 2 (owner's brief, 2026-11-24). Figures from the public clearledger
-    // repository: README and docs/evidence/blind-companies-2026-11.md, checked 2026-11-24.
     {
       id: "clearledger",
       home: "deployment",
@@ -1286,9 +1244,6 @@ export const portfolioData = {
     {
       id: "agentops",
       home: "deployment",
-      // Deployment case study 3 (owner's brief, 2026-11-24): customer, problem, integration,
-      // testing, result, decision. Figures from the agentops repository's README and
-      // bench/README.md (live shop test 3, live/results/test-3/), checked 2026-11-24.
       deploymentSummary: {
         customer:
           "The person on call when an online shop breaks, who may not know the failing service and has no time to write a careful prompt. Tested on the OpenTelemetry demo shop, built from many small services with its own monitoring.",
@@ -1750,8 +1705,7 @@ export const portfolioData = {
               ],
             },
             {
-              // agentops #23 (1fd8aec): .github/workflows/flywheel.yml runs the scripted model on
-              // every pull request; live comparisons are run by hand (flywheel/README.md).
+              // The flywheel.yml workflow runs the scripted model on every pull request; live comparisons are run by hand.
               type: "paragraph",
               text:
                 "The checking no longer depends on me remembering to run it. Flywheel, a testing tool I built for agents, now checks every proposed change to AgentOps against seven test cases, two of them taken from real recorded runs, and blocks a change that breaks one. The automatic checks use the scripted model so they give the same answer every time; prompt and model changes also get a live comparison. Its first catch was a prompt cleanup that passed all 996 unit tests and still broke the agent.",
@@ -1799,14 +1753,8 @@ export const portfolioData = {
       contactHeading: "Want an agent near production? Let's talk.",
     },
 
-    // First of the featured studies since 2026-10-25 (owner's split brief).
-    // Rewritten 2026-10-13 from the owner's case-studies-v2 draft, with its facts kept as given.
-    // The reviewer-agreement figure is the owner's: ~98% in his draft, corrected by him to ~94% on
-    // 2026-10-25 to match his CV. He lifted the master copy's no-accuracy-figure rule for this
-    // page on 2026-10-14.
     {
-      // Renamed from apple-llm-triage on 2026-10-21 (owner's brief); the old address serves a
-      // redirect page (REDIRECTS in src/routePaths.js).
+      // The old address apple-llm-triage serves a redirect page (REDIRECTS in src/routePaths.js).
       id: "apple-decision-support-agent",
       deploymentSummary: {
         problem:
@@ -1824,7 +1772,6 @@ export const portfolioData = {
           "Data changes from other teams were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
         linkText: "Read the case study",
         tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
-        mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
       },
       eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
       title: "A review backlog, turned into an analysis the reviewer can trust",
@@ -2018,8 +1965,6 @@ export const portfolioData = {
       contactHeading: "Have a queue like this? I reply within a day.",
     },
 
-    // Added 2026-10-27 from the erp-data-platform repository's README, eval/RESULTS.md,
-    // eval/DATASET.md, drills/report.json and docs/handoff-test.md, pending the owner's approval.
     {
       id: "erp-data-platform",
       deploymentSummary: {
@@ -2121,7 +2066,6 @@ export const portfolioData = {
             },
             {
               type: "architecture",
-              // Drawn to erp-data-platform at main 8082625, in the same shape as Orion's diagram.
               label: "The ERP data platform's architecture",
               enlarge: "Enlarge",
               close: "Close",
@@ -2392,8 +2336,6 @@ export const portfolioData = {
       contactHeading: "Building AI on your ERP or CRM data? Let's talk.",
     },
 
-    // Added 2026-10-27 from erp-data-platform's analyst/README.md and analyst/eval/RESULTS.md,
-    // pending the owner's approval. Not featured until he says so.
     {
       id: "analyst-agent",
       card: {
@@ -2582,8 +2524,6 @@ export const portfolioData = {
       contactHeading: "Want your team to ask the warehouse in plain English? Let's talk.",
     },
 
-    // Added 2026-11-05 from erp-data-platform's remit/README.md and docs/collections/, pending the
-    // owner's approval. Not featured until he says so.
     {
       id: "collections-agent",
       card: {
@@ -2765,7 +2705,6 @@ export const portfolioData = {
 
     {
       id: "esper",
-      // Kept reachable but no longer listed (owner brief, 2026-11-24).
       listed: false,
       card: {
         featured: false,
@@ -2945,17 +2884,9 @@ export const portfolioData = {
       contactHeading: "Need an agent whose answers can be checked? Let's talk.",
     },
 
-    // Orion, rewritten 2026-10-25 from the owner's Orion / Fathom split brief and his follow-up
-    // ("the Orion case study should still be called Orion ... show the bulk and the weight of the
-    // work"): the personal context layer over his own engineering record. Orion's data-platform
-    // half became Fathom (/work/fathom). The ingest counts are the owner's "How Orion runs on your
-    // Mac" sheet; tools, daemon jobs, lessons and retrieval follow Orion's README and
-    // docs/hands-free.md at main 20a11d8 (about 14,350 lines of Python, 357 tests); the Auspex
-    // figures are its first full regrade on his Mac (158 turns, 5 cases). The repository stays
-    // private, so `status` stands where a code link would; there is no codeLink.
+    // `status` stands where a code link would, because the repository is private.
     {
       id: "orion",
-      // Kept reachable but no longer listed (owner brief, 2026-11-24).
       listed: false,
       card: {
         featured: false,
@@ -3139,10 +3070,6 @@ export const portfolioData = {
             },
             {
               type: "architecture",
-              // The owner's "How Orion runs on your Mac" diagram, laid out as he drew it, redrawn to
-              // Orion at main 20a11d8: the Auspex cases source and the lessons store added, the
-              // model provider and the ask tool gone (Orion makes no model call), the outcomes job
-              // on the daemon. The data-platform parts moved to Fathom on 2026-10-25.
               label: "Orion's architecture",
               enlarge: "Enlarge",
               close: "Close",
@@ -3542,7 +3469,7 @@ export const portfolioData = {
         text:
           "Integrations tend to break on sign in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
       },
-      disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
+      disclaimer: PUBLIC_DETAILS_DISCLAIMER,
       contactHeading: "Systems that don't talk to each other? Let's talk.",
     },
 
@@ -3690,18 +3617,13 @@ export const portfolioData = {
         text:
           "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures that block a release at the gate.",
       },
-      disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
+      disclaimer: PUBLIC_DETAILS_DISCLAIMER,
       contactHeading: "Data you can't trust yet? Let's talk.",
     },
 
-    // Atelier (fifth, after Orion), added 2026-10-20 (TG-08) from the Atelier README, its studio skill
-    // and agent files, and the step data of the approved Look, sentence by sentence. A sentence that
-    // uses a word the copy scan bans, or that states a number, is left out whole, not reworded.
-    // The private build system's name is replaced with "my build pipeline", as on the Orion page.
-    // `status` stands where a code link would, because the repository is private; there is no codeLink.
+    // `status` stands where a code link would, because the repository is private.
     {
       id: "atelier",
-      // Off the home page and /work since 2026-10-21 (owner's brief); the page stays live.
       listed: false,
       card: {
         featured: false,
@@ -3774,8 +3696,7 @@ export const portfolioData = {
           ],
         },
         {
-          // Hidden with every walkthrough on the site, "for now" (owner, 2026-11-24). Kept here so it
-          // can come back by deleting this flag.
+          // Hidden with every walkthrough on the site; delete this flag to bring it back.
           hidden: true,
           id: "walkthrough",
           heading: "Walkthrough",
