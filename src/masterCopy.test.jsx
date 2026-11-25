@@ -22,10 +22,10 @@ const DECISION_SENTENCE =
 const INTEGRATION_SENTENCE =
   'The judgment behind these requests is covered in the decision support agent case study. This one is about what happens after the decision is made.';
 const THROUGHPUT_SENTENCE = 'It came from removing the investigation in front of it.';
-// 2026-11-24: the owner's new headline and lead (restructure around deployments).
-const HERO_HEADING = 'I deploy AI agents into business systems and prove whether they work.';
+// 2026-11-25: the non-technical angle (owner brief): headline and lead replace the 2026-11-24 ones.
+const HERO_HEADING = "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.";
 const HERO_LEAD =
-  "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.";
+  "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.";
 
 // The master document's item 1 and item 2 list.
 const BANNED_ON_EVERY_ROUTE = [

@@ -95,12 +95,12 @@ describe('HomePage', () => {
     ]);
   });
 
-  it('renders the short notes on Agent Harbor and Flywheel, each linking into the study (owner brief 2026-11-24)', () => {
+  it('renders the short note on Agent Harbor, linking into the study; Flywheel stays only as data in the study (owner brief 2026-11-25)', () => {
     renderHomePage();
 
     const notes = document.getElementById('notes');
     expect(within(notes).getByRole('heading', { level: 2, name: home.notes.heading })).toBeInTheDocument();
-    expect(within(notes).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual(['Agent Harbor', 'Flywheel']);
+    expect(within(notes).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual(['Agent Harbor']);
     for (const item of home.notes.items) {
       expect(within(notes).getByRole('link', { name: new RegExp(item.link.text) })).toHaveAttribute('href', item.link.to);
     }

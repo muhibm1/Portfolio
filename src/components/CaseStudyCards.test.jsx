@@ -50,7 +50,7 @@ describe("CaseStudyCards", () => {
     }
   });
 
-  it("opens each deployment card with its problem, result and decision before the stats, and the study card with its summary", () => {
+  it("opens each deployment card with who uses it, what goes wrong, the rule in code and the result before the stats (owner brief 2026-11-25), and the study card with its summary", () => {
     renderCards();
 
     screen.getAllByRole("article").forEach((article, index) => {
@@ -60,12 +60,14 @@ describe("CaseStudyCards", () => {
         return;
       }
       const summary = within(article).getByLabelText("Deployment summary");
-      expect(within(summary).getByText("Problem")).toBeInTheDocument();
+      expect(within(summary).getByText("Who uses it")).toBeInTheDocument();
+      expect(within(summary).getByText(deploymentSummary.customer)).toBeInTheDocument();
       expect(within(summary).getByText(deploymentSummary.problem)).toBeInTheDocument();
-      expect(within(summary).getByText(deploymentSummary.decision)).toBeInTheDocument();
+      expect(within(summary).getByText(deploymentSummary.integration)).toBeInTheDocument();
       expect(within(summary).getByText(deploymentSummary.result)).toBeInTheDocument();
-      // The card keeps to three rows; the page shows all six.
-      expect(within(summary).queryByText("Integration")).toBeNull();
+      // The card keeps to four rows; the page shows all six.
+      expect(within(summary).queryByText("Testing")).toBeNull();
+      expect(within(summary).queryByText("Decision")).toBeNull();
     });
   });
 
