@@ -67,7 +67,7 @@ const pinnedRoleTitles = [
 const pinnedToolkit = [
   "Python, SQL, TypeScript, JavaScript, React, Node.js, FastAPI, Elixir and Phoenix",
   "Spark, Iceberg, Snowflake, Kafka, Airflow, dbt, Postgres, pgvector",
-  "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+  "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human approval steps",
   "AWS (S3, Lambda), Docker, Jenkins, CI/CD, OAuth2, REST, WebSockets",
   "Requirements from ambiguous goals, stakeholder partnership, delivery management, teaching, incident response",
 ];
@@ -101,22 +101,22 @@ const pinnedCaseStudyStats = {
 // The owner's master copy document (kept outside the repository; docs/sdlc/2026-10-08-align-the-site-to-the-owner-s-master-copy/spec.md "Data" quotes every string), copied verbatim.
 const DECISION_TITLE = "A review backlog, turned into an analysis the reviewer can trust";
 const DECISION_INTRO =
-  "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
+  "Data changes from other teams were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.";
 const DECISION_LEAD =
-  "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.";
+  "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and data changes from other teams piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.";
 const DECISION_SITUATION =
   "Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.";
 const DECISION_SITUATION_PARAGRAPHS = ["Some features in the map, such as buildings and roads, are locked so they can't be edited by accident. When a team needs to change one, they file an unlock request, and someone on our side reviews it before the edit can go ahead.", "The review was not a rubber stamp. For each request someone had to pull up the feature and everything around it, check the proposed edit against internal specification, and work out what else it would affect, including problems that would only show up further down the pipeline. Each review took 5 to 15 minutes, depending on the request, and the team got through about 30 a day. The queue grew faster than that. About two months of tickets had piled up, and teams across the pipeline were waiting on them.", "Building a fix was not part of my assigned role. I took it on anyway."];
 const DECISION_CALLOUT =
   "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.";
 const PRINCIPLE_ONE =
-  "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.";
+  "At Apple, a review queue was blocking data changes from other teams. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.";
 // 2026-11-25: the non-technical angle (owner brief): headline and lead replace the 2026-11-24 ones.
-const HERO_HEADING = "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.";
+const HERO_HEADING = "I build AI agents nontechnical teams can trust, with the rules in code, not in the prompt.";
 const HERO_LEAD =
   "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.";
 const RESUME_BULLET =
-  "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
+  "Identified a review bottleneck blocking data changes from other teams, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags effects on other features, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
   "Unlock request",
   "Map snapshot of the target feature and its neighbors",
@@ -130,13 +130,13 @@ const DECISION_BUILT_PARAGRAPHS = [
   "It writes up a recommendation, unlock or keep locked, with the reasoning and evidence behind it, a short summary of what is actually failing, and a proposed fix, and puts it in front of a reviewer. It does not act on that recommendation. The hard part of this review was never the decision. It was the work required before anyone could make one.",
 ];
 const DECISION_WHY_PARAGRAPHS = [
-  "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+  "The split follows the cost of being wrong. If the write up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
   "That is also why every recommendation carries its reasoning and evidence. A reviewer should be able to disagree with it on the merits, not take it on faith.",
 ];
 const DECISION_CHANGED_PARAGRAPHS = [
   "Since going live in November 2025, two months of backlog cleared in two weeks and the queue has stayed at zero. Throughput went from about 30 requests a day to over 350.",
   // Added 2026-10-21 from the owner's own account of monthly volume around launch.
-  "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+  "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
   "At the manual rate, the old backlog alone would have taken far longer than two months to clear, with that volume arriving on top of it. The agent raised throughput just as the requests poured in, so the team cleared the backlog and kept up with the new work at the same time.",
   "The gain did not come from removing the decision, which a person still makes on every request. It came from removing the investigation in front of it. A reviewer now opens a finished assessment instead of assembling one.",
   "Reviewers agree with its recommendation about 94% of the time. The requests it flags for a closer look are the extreme ones, kinds of request it hasn't seen before, and requests from a team working outside its own scope. That last kind is flagged even when the edit is justified and low risk, because which team owns which part of the work matters as much as whether the edit is sound.",
@@ -149,6 +149,8 @@ const INTEGRATION_CROSS_REFERENCE =
 // copy) and R155, amended where R154/R155 give an exact new string.
 // Regenerated 2026-10-21 for the owner's redesign brief (glosses cut, Apple infrastructure names
 // generalized, Tannhauser Gate added); earlier entries were copied from the mockups and R154/R155.
+// Regenerated 2026-11-25 from the data after the owner's readability pass (plain words, terms
+// defined, no hyphens or dashes, the private delivery pipeline comparison removed).
 const pinnedCaseStudyNarratives = {
   "building-around-a-model": {
     "eyebrow": "Study · November 2026",
@@ -157,11 +159,11 @@ const pinnedCaseStudyNarratives = {
     "atAGlance": [
       {
         "label": "What was tested",
-        "value": "Seven head-to-head results from the agent systems I built between September and November 2026"
+        "value": "Seven direct comparisons from the agent systems I built between September and November 2026"
       },
       {
         "label": "Against what",
-        "value": "Claude Opus with the same tools and a run-and-check loop, unless noted"
+        "value": "Claude Opus with the same tools and the chance to check its own work and try again, unless noted"
       },
       {
         "label": "How",
@@ -179,7 +181,7 @@ const pinnedCaseStudyNarratives = {
   "casepilot": {
     "eyebrow": "Deployment case study · Salesforce · Customer support",
     "title": "CasePilot: a support agent inside Salesforce that asks before it writes",
-    "lead": "CasePilot reads an open support case, the account behind it, the account's other cases and the knowledge base. It triages the case, drafts the reply, and proposes what to change. Then it stops. A person approves or rejects each proposal, and only an approved write reaches Salesforce, once, with a record of who approved it.",
+    "lead": "CasePilot is a support agent that works inside Salesforce, the system many companies use to track customer support cases. For each open case it reads the case, the customer's account, their other cases and the help articles. It sorts the case (what kind of problem it is, how urgent, whether a manager must see it), drafts the reply and proposes the changes to make. Then it stops. A person approves or rejects each proposal, and only an approved change reaches Salesforce, exactly once, with a record of who approved it.",
     "atAGlance": [
       {
         "label": "My role",
@@ -187,15 +189,15 @@ const pinnedCaseStudyNarratives = {
       },
       {
         "label": "Connects to",
-        "value": "Salesforce REST API (OAuth client credentials, SOQL, sObjects) as a least-privilege integration user"
+        "value": "Salesforce REST API (OAuth client credentials, SOQL queries), signed in as a dedicated user that can change only a few case fields"
       },
       {
         "label": "Ships as",
-        "value": "An MCP server, a sub-agent and an agent skill, in TypeScript"
+        "value": "An MCP server (the open standard that lets an AI assistant use outside tools), written in TypeScript"
       },
       {
         "label": "Models",
-        "value": "Claude Opus answers triage (three votes, majority wins); Claude Sonnet drafts and checks the reply"
+        "value": "Claude Opus sorts each case, asked three times with the majority answer kept; Claude Sonnet drafts and checks the reply"
       }
     ],
     "calloutEyebrow": "The decision",
@@ -205,7 +207,7 @@ const pinnedCaseStudyNarratives = {
   "clearledger": {
     "eyebrow": "Deployment case study · Odoo ERP · Finance data",
     "title": "ClearLedger: finance answers that hold up when the books don't",
-    "lead": "A finance team asks what a customer owes, who is late and whether every won deal turned into cash. ClearLedger answers from the company's own ERP data and can show its work for any number. Where it beats a plain model is not the easy questions. It is the ones where the books themselves are wrong.",
+    "lead": "A finance team asks what a customer owes, who is paying late and whether every deal sales closed actually turned into cash. ClearLedger answers from the company's own business system and can show the records behind any number. It does not beat a plain model on the easy questions. It wins on the ones where the books themselves are wrong.",
     "atAGlance": [
       {
         "label": "My role",
@@ -213,7 +215,7 @@ const pinnedCaseStudyNarratives = {
       },
       {
         "label": "Connects to",
-        "value": "Odoo 17 through its JSON-RPC API, no database access to the ERP"
+        "value": "Odoo 17 through its own API, with no direct access to its database"
       },
       {
         "label": "Stack",
@@ -221,274 +223,273 @@ const pinnedCaseStudyNarratives = {
       },
       {
         "label": "Checked by",
-        "value": "29 dbt checks, 5 monitors and 5 deliberate failure drills, run in CI on every push"
+        "value": "29 automated data checks, 5 monitors and 5 deliberate failure drills, run on every change"
       }
     ],
     "calloutEyebrow": "The decision",
-    "calloutText": "The model is already good at SQL. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
+    "calloutText": "The model is already good at writing database queries. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
     "contactHeading": "Building AI on your ERP or CRM data? Let's talk."
   },
-  agentops: {
-    eyebrow: "Deployment case study · Microservices · Incident response",
-    title: "AgentOps: an incident agent that can't act alone",
-    lead: "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
-    atAGlance: [
+  "agentops": {
+    "eyebrow": "Deployment case study · Microservices · Incident response",
+    "title": "AgentOps: an incident agent that can't act alone",
+    "lead": "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Designed and built it end to end"
+        "label": "My role",
+        "value": "Designed and built it end to end"
       },
       {
-        label: "What it is",
-        value: "An incident-response program built on LangGraph, with a human approval step, a fixed list of allowed actions and a test setup that scores it"
+        "label": "What it is",
+        "value": "An incident response agent built on LangGraph, with a human approval step, a fixed list of allowed actions and a test setup that scores it"
       },
       {
-        label: "Stack",
-        value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude"
+        "label": "Stack",
+        "value": "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude"
       },
       {
-        label: "Quality",
-        value: "998 tests, automated checks (CI) on every push, no model or key needed to run them"
+        "label": "Quality",
+        "value": "998 automated tests that run on every change, with no AI model or API key needed to run them"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
-    contactHeading: "Want an agent near production? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "A way to put an agent next to a live system without trusting it with that system: LangGraph holds the pause, the saved steps and the replay, code holds the rules, a person approves the change, and the evaluation shows where it fails, not only where it works.",
+    "contactHeading": "Want an agent near production? Let's talk."
   },
   "apple-decision-support-agent": {
-    eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
-    title: "A review backlog, turned into an analysis the reviewer can trust",
-    lead: "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
-    atAGlance: [
+    "eyebrow": "Case study · Apple Maps · Data Health team · Feb 2025 to present",
+    "title": "A review backlog, turned into an analysis the reviewer can trust",
+    "lead": "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and data changes from other teams piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Self-initiated; selected the model, built, deployed and own it"
+        "label": "My role",
+        "value": "My own initiative; I selected the model, built, deployed and own it"
       },
       {
-        label: "Live since",
-        value: "November 2025"
+        "label": "Live since",
+        "value": "November 2025"
       },
       {
-        label: "Stack",
-        value: "Python, an open-source language model, REST APIs"
+        "label": "Stack",
+        "value": "Python, an open source language model, REST APIs"
       },
       {
-        label: "Status",
-        value: "In production, with a person making every decision by design"
+        "label": "Status",
+        "value": "In production, with a person making every decision by design"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
-    contactHeading: "Have a queue like this? I reply within a day."
-  },
-  esper: {
-    eyebrow: "Case study · Personal system · Research agent · LangGraph",
-    title: "Esper: a research agent that proves every sentence",
-    lead: "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call. Against a coding agent with web search, told to cite, Esper backed 82% of its sentences to the agent's 58%.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "Designed and built it end to end, with an agent doing the typing"
-      },
-      {
-        label: "What it is",
-        value: "An AI research agent whose every sentence cites a quote found on a saved copy of the web page, with a library that remembers the facts it has checked"
-      },
-      {
-        label: "Stack",
-        value: "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel"
-      },
-      {
-        label: "Quality",
-        value: "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a blocking check (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
-    contactHeading: "Need an agent whose answers can be checked? Let's talk."
-  },
-  // Fathom added and Orion rewritten 2026-10-25 (owner's split brief and his follow-up the same day).
-  orion: {
-    eyebrow: "Case study · Personal system · Coding agents",
-    title: "Orion: what my agents know before they start",
-    lead: "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
-    atAGlance: [
-      {
-        label: "My role",
-        value: "My own system, designed and built in October 2026 and used every day since"
-      },
-      {
-        label: "What it is",
-        value: "A personal context layer over my engineering record, served to any coding agent through MCP"
-      },
-      {
-        label: "Where it stands",
-        value: "In daily use on my own machine and growing; private for now"
-      },
-      {
-        label: "Covers",
-        value: "16 repositories: 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and past agent sessions"
-      }
-    ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
-    contactHeading: "Running coding agents every day? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.",
+    "contactHeading": "Have a queue like this? I reply within a day."
   },
   "erp-data-platform": {
-    eyebrow: "Case study · Open source · ERP data engineering",
-    title: "An ERP's data, made trustworthy for finance and for AI",
-    lead: "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
-    atAGlance: [
+    "eyebrow": "Case study · Open source · ERP data engineering",
+    "title": "An ERP's data, made trustworthy for finance and for AI",
+    "lead": "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables built with dbt (a standard tool that turns raw records into tested tables) where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read only tools that let an AI agent answer from the warehouse and cite its sources. Agents reach those tools through MCP, the open standard AI assistants use to connect to outside tools and data.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be"
+        "label": "My role",
+        "value": "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be"
       },
       {
-        label: "What it is",
-        value: "An open-source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents"
+        "label": "What it is",
+        "value": "An open source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents"
       },
       {
-        label: "Stack",
-        value: "Odoo 17 Community, Python, Postgres 16, dbt, Fathom for lineage and change checks, MCP"
+        "label": "Stack",
+        "value": "Odoo 17 Community, Python, Postgres 16, dbt, Fathom for lineage and change checks, MCP"
       },
       {
-        label: "Where it stands",
-        value: "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push"
+        "label": "Where it stands",
+        "value": "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "The data side of an AI engagement, owned end to end: get the data out of the systems the client already runs, make every number traceable, prove the pipeline fails loudly before trusting it, build the evaluation data from the client's own records, and hand over a runbook someone else has already used.",
-    contactHeading: "Building AI on your ERP or CRM data? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "The data side of an AI engagement, owned end to end: get the data out of the systems the client already runs, make every number traceable, prove the pipeline fails loudly before trusting it, build the evaluation data from the client's own records, and hand over a runbook someone else has already used.",
+    "contactHeading": "Building AI on your ERP or CRM data? Let's talk."
   },
   "analyst-agent": {
-    eyebrow: "Case study · Open source · Question to SQL agent",
-    title: "An analyst agent: ask a warehouse a question in plain English",
-    lead: "Most teams' first question to SQL demo writes one query and shows whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read-only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
-    atAGlance: [
+    "eyebrow": "Case study · Open source · Question to SQL agent",
+    "title": "An analyst agent: ask a warehouse a question in plain English",
+    "lead": "Most first attempts at letting people ask a database questions in everyday words write one SQL query and show whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Designed, built and evaluated it in October 2026"
+        "label": "My role",
+        "value": "Designed, built and evaluated it in October 2026"
       },
       {
-        label: "What it is",
-        value: "A question to SQL agent with retrieval, a repair loop, read-only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds"
+        "label": "What it is",
+        "value": "A question to SQL agent with retrieval, a repair loop, read only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds"
       },
       {
-        label: "Stack",
-        value: "Python, LangGraph, LangChain, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku"
+        "label": "Stack",
+        "value": "Python, LangGraph, LangChain, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku"
       },
       {
-        label: "Where it stands",
-        value: "Open source under the MIT licence, in the erp-data-platform repository, with 40 tests that need no model"
+        "label": "Where it stands",
+        "value": "Open source under the MIT licence, in the erp-data-platform repository, with 40 tests that need no model"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "An analyst agent people can check: the business's own terms written down as data, every query checked in code and again by the database, privacy rules the agent cannot talk its way past, and an evaluation on the client's own questions that shows what each part is worth before anyone relies on it.",
-    contactHeading: "Want your team to ask the warehouse in plain English? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "An analyst agent people can check: the business's own terms written down as data, every query checked in code and again by the database, privacy rules the agent cannot talk its way past, and an evaluation on the client's own questions that shows what each part is worth before anyone relies on it.",
+    "contactHeading": "Want your team to ask the warehouse in plain English? Let's talk."
   },
   "collections-agent": {
-    eyebrow: "Case study · Open source · Collections agent",
-    title: "Remit: a collections agent that writes into the ERP only after a person says yes",
-    lead: "Most of my agents read, advise or check. This one takes action in a business system. Chasing late invoices is routine work every finance team does by hand: find who is late, decide how firm to be, write the reminder, log the call. I built Remit to do that work on the Odoo company from my ERP data platform, run the way a client engagement would be: a discovery memo and a written playbook first, then an agent that proposes, a person who approves, and writes into Odoo that happen once, can be traced, and cannot be anything other than the three kinds of write the playbook allows.",
-    atAGlance: [
+    "eyebrow": "Case study · Open source · Collections agent",
+    "title": "Remit: a collections agent that writes into the ERP only after a person says yes",
+    "lead": "Most of my agents read, advise or check. This one takes action in a business system. Chasing late invoices is routine work every finance team does by hand: find who is late, decide how firm to be, write the reminder, log the call. I built Remit to do that work on the Odoo company from my ERP data platform, run the way a client engagement would be: a discovery memo and a written playbook first, then an agent that proposes and a person who approves. Every change it makes in Odoo happens exactly once, leaves a record, and is one of the three kinds the playbook allows.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Designed and built it in November 2026, from discovery memo and playbook to the runbook for the team that runs it"
+        "label": "My role",
+        "value": "Designed and built it in November 2026, from discovery memo and playbook to the runbook for the team that runs it"
       },
       {
-        label: "What it is",
-        value: "An agent that plans, drafts and queues collections reminders for approval, then writes the approved ones into Odoo once each, with an append-only audit log"
+        "label": "What it is",
+        "value": "An agent that plans, drafts and queues collections reminders for approval, then writes the approved ones into Odoo once each, with an append only audit log"
       },
       {
-        label: "Stack",
-        value: "Python, Odoo 17 JSON-RPC, Postgres 16, dbt, Fathom for change checks, Claude Haiku for the wording"
+        "label": "Stack",
+        "value": "Python, Odoo 17 JSON-RPC, Postgres 16, dbt, Fathom for change checks, Claude Haiku for the wording"
       },
       {
-        label: "Where it stands",
-        value: "Open source under the MIT licence, in the erp-data-platform repository; CI runs it against a real Odoo on every push"
+        "label": "Where it stands",
+        "value": "Open source under the MIT licence, in the erp-data-platform repository; CI runs it against a real Odoo on every push"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "An agent that takes action in the systems the business already runs, introduced the way trust is actually earned: a playbook the team agrees on, code that owns every decision, a person who approves every write until the numbers say otherwise, writes that happen once and can be traced, and a runbook for the people who keep it running.",
-    contactHeading: "Want an agent working inside your ERP? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "An agent that takes action in the systems the business already runs, introduced the way trust is actually earned: a playbook the team agrees on, code that owns every decision, a person who approves every write until the numbers say otherwise, writes that happen once and can be traced, and a runbook for the people who keep it running.",
+    "contactHeading": "Want an agent working inside your ERP? Let's talk."
+  },
+  "esper": {
+    "eyebrow": "Case study · Personal system · Research agent · LangGraph",
+    "title": "Esper: a research agent that proves every sentence",
+    "lead": "A research agent that writes a confident report is easy to build. One whose every sentence can be traced to a quote on a real page is not, and the difference is the whole value of the thing. Esper is my attempt at the second kind. It is a pipeline built on LangGraph. The writer may only use claims that a separate checker has verified. Code confirms every quote exists on the saved page. A reviewer and a red team attack the draft before it is delivered. On eleven questions it backed 79% of its sentences with the page it cites, meaning the page supports the sentence. That compares with 29% for Open Deep Research, a research agent from LangChain, and 35% for a single model call. Against a coding agent with web search, told to cite, Esper backed 82% of its sentences to the agent's 58%.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "Designed and built it end to end, with an agent doing the typing"
+      },
+      {
+        "label": "What it is",
+        "value": "An AI research agent whose every sentence cites a quote found on a saved copy of the web page, with a library that remembers the facts it has checked"
+      },
+      {
+        "label": "Stack",
+        "value": "Python, LangGraph, LangSmith, Claude, SQLite, Flywheel"
+      },
+      {
+        "label": "Quality",
+        "value": "93 tests that use a scripted stand-in for the model, automatic checks on every change, and a blocking check (Flywheel, my agent-testing tool) that replays 22 recorded runs in under a minute"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "A way to make an agent's output checkable rather than merely convincing: claims verified against their sources by a separate step, every sentence tied to a quote code can find, and an honest measurement against the obvious alternatives before anyone relies on it.",
+    "contactHeading": "Need an agent whose answers can be checked? Let's talk."
+  },
+  "orion": {
+    "eyebrow": "Case study · Personal system · Coding agents",
+    "title": "Orion: what my agents know before they start",
+    "lead": "Every coding agent starts a session knowing nothing about my work: not the design decisions, not the bug fixed last week, not the rule that came out of an incident. Orion closes that gap. It reads everything my projects have written down and done into one record, keeps it current with an always-on service, and gives an agent the context a new engineer would spend weeks picking up, before it touches a file. Every passage carries an id that reads back to its source, and no model is called on the way. Auspex, my trace viewer, grades each finished turn, and a mistake that repeats comes back through Orion as a lesson.",
+    "atAGlance": [
+      {
+        "label": "My role",
+        "value": "My own system, designed and built in October 2026 and used every day since"
+      },
+      {
+        "label": "What it is",
+        "value": "A personal context layer over my engineering record, served to any coding agent through MCP"
+      },
+      {
+        "label": "Where it stands",
+        "value": "In daily use on my own machine and growing; private for now"
+      },
+      {
+        "label": "Covers",
+        "value": "16 repositories: 1,743 commits, 4,599 pull requests and issues, 943 sections of notes and design documents, and past agent sessions"
+      }
+    ],
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "The habit of closing the loop on agents: give them the context before they work, cite every passage so nothing is taken on trust, grade what they actually did, and turn what keeps going wrong into a lesson the next run starts from.",
+    "contactHeading": "Running coding agents every day? Let's talk."
   },
   "apple-integration": {
-    eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
-    title: "Three systems, one tool, half the turnaround",
-    lead: "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API, and records why each change was made. Turnaround dropped by about half.",
-    atAGlance: [
+    "eyebrow": "Case study · Apple Maps · Systems integration · Feb 2025 to present",
+    "title": "Three systems, one tool, half the turnaround",
+    "lead": "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official API, signed in properly, and records why each change was made. Turnaround dropped by about half.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Built it end to end"
+        "label": "My role",
+        "value": "Built it end to end"
       },
       {
-        label: "Systems",
-        value: "Ticketing, code repository, geo-data"
+        "label": "Systems",
+        "value": "Ticketing, code repository, map data"
       },
       {
-        label: "Stack",
-        value: "Python, REST APIs, OAuth2"
+        "label": "Stack",
+        "value": "Python, REST APIs, OAuth2"
       },
       {
-        label: "Result",
-        value: "A script-driven process replaced by access on demand, with the reason recorded"
+        "label": "Result",
+        "value": "A scripted process replaced by access on demand, with the reason recorded"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Integrations tend to break on sign-in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign-in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
-    contactHeading: "Systems that don't talk to each other? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "Integrations tend to break on sign in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
+    "contactHeading": "Systems that don't talk to each other? Let's talk."
   },
   "apple-data-health": {
-    eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
-    title: "Keeping a 50+ region data pipeline shippable",
-    lead: "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
-    atAGlance: [
+    "eyebrow": "Case study · Apple Maps · Data reliability · Feb 2025 to present",
+    "title": "Keeping a 50+ region data pipeline shippable",
+    "lead": "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "Data Engineer, Data Health team"
+        "label": "My role",
+        "value": "Data Engineer, Data Health team"
       },
       {
-        label: "Partners",
-        value: "DataOps and the data evaluation team"
+        "label": "Partners",
+        "value": "DataOps and the data evaluation team"
       },
       {
-        label: "Stack",
-        value: "Python, SQL, machine-learning remediation jobs, distributed data processing, a job orchestration server"
+        "label": "Stack",
+        "value": "Python, SQL, machine learning remediation jobs, distributed data processing, a job orchestration server"
       },
       {
-        label: "Incident tools",
-        value: "SQL (database queries), QGIS (a mapping tool)"
+        "label": "Incident tools",
+        "value": "SQL (database queries), QGIS (a mapping tool)"
       }
     ],
-    calloutEyebrow: "What I'd bring to a client",
-    calloutText: "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer release-blocking failures at the gate.",
-    contactHeading: "Data you can't trust yet? Let's talk."
+    "calloutEyebrow": "What I'd bring to a client",
+    "calloutText": "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures that block a release at the gate.",
+    "contactHeading": "Data you can't trust yet? Let's talk."
   },
-  atelier: {
-    eyebrow: "Case study · Personal system · Design studio",
-    title: "Atelier",
-    lead: "A design studio made of AI agents, programs that each do one job on their own. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
-    atAGlance: [
+  "atelier": {
+    "eyebrow": "Case study · Personal system · Design studio",
+    "title": "Atelier",
+    "lead": "A design studio made of AI agents, programs that each do one job on their own. You give it inspiration (screenshots, links, Notion notes, Figma frames) and a brief; it designs websites and web apps with Apple-product-page polish: motion that explains, visuals that pull you in, and pages that stay fast and easy to use.",
+    "atAGlance": [
       {
-        label: "My role",
-        value: "My own project, built in stages"
+        "label": "My role",
+        "value": "My own project, built in stages"
       },
       {
-        label: "What it is",
-        value: "A design studio made of agents"
+        "label": "What it is",
+        "value": "A design studio made of agents"
       },
       {
-        label: "Where it stands",
-        value: "An ongoing project"
+        "label": "Where it stands",
+        "value": "An ongoing project"
       },
       {
-        label: "What it makes",
-        value: "Websites and web apps"
+        "label": "What it makes",
+        "value": "Websites and web apps"
       }
     ],
-    calloutEyebrow: "How it runs",
-    calloutText: "Everything runs on a cloud computer with open-source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
-    contactHeading: "Have a system that needs deploying? Let's talk."
-  },
+    "calloutEyebrow": "How it runs",
+    "calloutText": "Everything runs on a cloud computer with open source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
+    "contactHeading": "Have a system that needs deploying? Let's talk."
+  }
 };
 
 const pinnedRepositories = {
@@ -678,17 +679,17 @@ describe("portfolioData", () => {
     );
 
     expect(findSection(integration, "situation").blocks[0].text).toBe(
-      "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the geo-data system that holds the feature itself.",
+      "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the map data system that holds the feature itself.",
     );
     expect(builtParagraph.text).toBe(
       "The tool reads an approved request from the ticketing system, signs in to the other two systems with the right permissions, changes the lock on the feature, and writes a comment on it saying why. Nobody has to change the tools they already use, because it talks to each system through the official interface each one already offers, its REST API.",
     );
     expect(findSection(integration, "changed").blocks[0].text).toBe(
-      "A script-driven process became permission changes on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
+      "A scripted process became permission changes on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
     );
     expect(integration.stats[2]).toEqual({
       value: "On demand",
-      label: "instead of hand-run scripts",
+      label: "instead of scripts run by hand",
     });
   });
 
@@ -703,7 +704,7 @@ describe("portfolioData", () => {
     );
     expect(integration.atAGlance.slice(0, 3)).toEqual([
       { label: "My role", value: "Built it end to end" },
-      { label: "Systems", value: "Ticketing, code repository, geo-data" },
+      { label: "Systems", value: "Ticketing, code repository, map data" },
       { label: "Stack", value: "Python, REST APIs, OAuth2" },
     ]);
     expect(integration.stats.slice(0, 2)).toEqual([
@@ -713,9 +714,9 @@ describe("portfolioData", () => {
     expect(findSection(integration, "built").blocks[0]).toEqual({
       type: "link-diagram",
       left: { title: "Ticketing system", note: "The request and its status" },
-      edge: "Secure sign-in · API",
+      edge: "Secure sign in · API",
       hub: { title: "The tool", note: "Python" },
-      right: [{ title: "Code repository" }, { title: "Geo-data system" }],
+      right: [{ title: "Code repository" }, { title: "Map data system" }],
     });
     expect(findSection(integration, "hard").blocks[0].text).toBe(
       "The code that changes a lock is short. Getting three separate systems to accept one tool was most of the work, because each one has to trust the tool with permissions it guards carefully.",
@@ -745,19 +746,19 @@ describe("portfolioData", () => {
 
   it("keeps tens of thousands as the incident count in all three places (R162)", () => {
     const appleRole = portfolioData.home.experience.roles.find((role) =>
-      role.highlights?.some((text) => text.includes("building-generation incident")),
+      role.highlights?.some((text) => text.includes("building generation incident")),
     );
     const dataHealth = findCaseStudy("apple-data-health");
     const incidentText = findSection(dataHealth, "incident").blocks[0].text;
 
     expect(appleRole.highlights.join(" ")).toContain(
-      "led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS",
+      "led the response to a building generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS",
     );
     expect(dataHealth.stats[2]).toEqual({
       value: "Tens of thousands",
       label: "buildings triaged in one incident I led",
     });
-    expect(incidentText).toContain("put tens of thousands of buildings into the data");
+    expect(incidentText).toContain("put tens of thousands of buildings into the map data");
   });
 
   it("never says cross-team, crossed team or fully manual on the integration page (R165)", () => {
@@ -770,13 +771,13 @@ describe("portfolioData", () => {
     const incident = findSection(findCaseStudy("apple-data-health"), "incident");
 
     expect(incident.heading).toBe("When it breaks at scale");
-    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "A mass building-generation incident put tens of thousands of buildings into the data. A machine-learning-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is working out how far the damage reaches: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands manageable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
+    expect(incident.blocks).toEqual([{"type": "paragraph", "text": "In one incident, a machine learning automation put tens of thousands of buildings into the map data. Many didn't meet our internal specification for inclusion, and some had the wrong attributes, such as exaggerated height and scale."}, {"type": "paragraph", "text": "The first job in an incident is working out how far the damage reaches: how much was affected, and where. I did that with SQL, to count and group the affected buildings, and QGIS, a mapping tool, to look at them on the map and see patterns a query can't show. Then I drove a delete, correct or retain decision on each group."}, {"type": "paragraph", "text": "Deciding by group rather than building by building is what made tens of thousands manageable. Once each group was handed to the team that owns it, everything was fixed and cleaned up within two weeks."}]);
     expect(collectStrings(portfolioData).join("\n")).not.toMatch(/restricted geospatial/i);
   });
 
   it("carries the integration homepage card summary verbatim (R170)", () => {
     expect(findCaseStudy("apple-integration").card.summary).toBe(
-      "Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
+      "Locking and unlocking permissions on protected map features ran on long command line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
     );
   });
 
@@ -932,9 +933,9 @@ describe("portfolioData", () => {
     expect(decision.title).toBe(DECISION_TITLE);
     expect(decision.intro).toBe(DECISION_LEAD);
     expect(decision.atAGlance).toEqual([
-      { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
+      { label: "My role", value: "My own initiative; I selected the model, built, deployed and own it" },
       { label: "Live since", value: "November 2025" },
-      { label: "Stack", value: "Python, an open-source language model, REST APIs" },
+      { label: "Stack", value: "Python, an open source language model, REST APIs" },
       { label: "Status", value: "In production, with a person making every decision by design" },
     ]);
     expect(decision.stats).toEqual([
@@ -947,8 +948,8 @@ describe("portfolioData", () => {
     expect(paragraphsOf("situation")).toEqual(DECISION_SITUATION_PARAGRAPHS);
     expect(paragraphsOf("built")).toEqual(DECISION_BUILT_PARAGRAPHS);
     expect(paragraphsOf("who-decides")).toEqual(DECISION_WHY_PARAGRAPHS);
-    expect(paragraphsOf("model")).toEqual(["I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
-    expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
+    expect(paragraphsOf("model")).toEqual(["I selected an open source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.", "Launch was not the end of the work. I keep tuning the analysis and the system's scope against how it performs on live requests. Two cases took the most work.", "The first was edits to the map's 3D structure. 3D modeling is open ended, and a bad edit can make the map visibly jarring, so these requests are held to a high bar, and the agent scored them almost entirely on what could go wrong. That is the right instinct for a large change and the wrong one for most of these requests, which are minor. So for small 3D edits it now weighs the other side as well: whether a change too small to notice on its own would bring the map in line with Apple's design standards.", "The second was very large features, such as islands and country borders. Because the feature is enormous, any request to edit one raised flags, even when the edit itself was small, like aligning a short stretch of a border. Separating the size of the feature from the size of the change was one of the hardest parts of getting the analysis right."]);
+    expect(paragraphsOf("people")).toEqual(["A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.", "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.", "So every recommendation now includes a short summary of the failure, covering its root cause and how the data is set up, plus a proposed fix based on the model's assessment. What the agent uncovers this way also feeds back into how checks are defined and into our engineering standards."]);
     expect(paragraphsOf("changed")).toEqual(DECISION_CHANGED_PARAGRAPHS);
     expect(decision.callout.text).toBe(DECISION_CALLOUT);
     expect(decision.disclaimer).toBe(
@@ -996,7 +997,7 @@ describe("portfolioData", () => {
     expect(home.experience.roles[0].company).toBe("Apple Maps");
     expect(home.experience.roles[0].highlights[0]).toBe(RESUME_BULLET);
     expect(home.toolkit.columns[2].items).toBe(
-      "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+      "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human approval steps",
     );
   });
 
@@ -1039,7 +1040,8 @@ describe("portfolioData", () => {
       expect(allText).not.toMatch(pattern);
     }
     expect(collectStrings(findCaseStudy("apple-integration")).join("\n")).not.toMatch(/cross[- ]teams?/i);
-    expect(findCaseStudy("apple-decision-support-agent").intro).toMatch(/cross-team/i);
+    // Owner, 2026-11-25: no hyphens in site copy, so "cross-team" became "from other teams".
+    expect(findCaseStudy("apple-decision-support-agent").intro).toMatch(/data changes from other teams/i);
   });
 
   // 5 and 15 (minutes per manual review), 3 (3D edits) and 94 (reviewer agreement; 98 in his draft, corrected by him 2026-10-25) come from the owner's draft.
@@ -1109,7 +1111,7 @@ describe("the Orion case study (TG-07; Fathom removed 2026-11-24)", () => {
   const PHRASES_IN_THE_DOCUMENT = [
     "0 of 50", "8 of 50", "27 of 45 (60%)", "27 of 45", "87% (39 of 45)", "6 false alarms on 19 correct changes",
     "625-model", "tier-1", "625 dbt models", "625", "621 of them", "21 Airflow pipelines", "45 real historical bugs",
-    "45 held-out bugs", "from 8 open-source projects", "50-change benchmark", "50-bug tuning set", "60 scenarios",
+    "45 held-out bugs", "from 8 open source projects", "50-change benchmark", "50-bug tuning set", "60 scenarios",
     "95 hand-labelled", "0.82 and 0.83", "0.39 with no context", "0.72 to 0.76", "0.56 to 0.58", "1.00", "0.95",
     "16% with no context", "8 to 18%", "18% to 42%", "100% of relevant", "80% got a warning", "80% or more",
     "90% or more", "60%", "$2.77", "$3 to $5", "$30 to $60", "2 min 9 s", "20 minutes", "raised 1",
