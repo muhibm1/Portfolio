@@ -18,7 +18,7 @@ export default function HomeNotes({ notes }) {
           </div>
           <p className={`${bodyLargeClasses} md:col-span-5`}>{notes.lead}</p>
         </div>
-        <ul className="grid grid-cols-1 gap-3.5 tab:grid-cols-2 tab:gap-6">
+        <ul className={`grid grid-cols-1 gap-3.5 tab:gap-6 ${notes.items.length > 1 ? 'tab:grid-cols-2' : 'max-w-[760px]'}`}>
           {notes.items.map((item) => (
             <li key={item.title} className="flex flex-col gap-3 rounded-[var(--r-lg)] border border-line bg-surface px-5 py-[22px] tab:p-7">
               <p className="text-[13px] font-medium text-muted">{item.eyebrow}</p>

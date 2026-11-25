@@ -56,11 +56,11 @@ export const portfolioData = {
     hero: {
       eyebrow: "Forward deployed engineer · Austin, TX",
       mobileEyebrow: "Forward deployed engineer",
-      heading: "I deploy AI agents into business systems and prove whether they work.",
+      heading: "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.",
       lead:
-        "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.",
+        "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.",
       mobileLead:
-        "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.",
+        "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.",
       primaryCta: "Start with the study",
       primaryHref: "#study",
       emailLinkText: "mmalqaim@gmail.com",
@@ -74,8 +74,8 @@ export const portfolioData = {
               "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
           },
           {
-            title: "Testing agents against plain models",
-            text: "Which parts of an agent system beat a strong model with the same tools, and which do not",
+            title: "Putting the rules in code",
+            text: "Which rules belong in code rather than the prompt, tested against a strong model with the same tools",
           },
         ],
       },
@@ -115,25 +115,26 @@ export const portfolioData = {
     // The lead study, then the three deployments (owner's brief, 2026-11-24).
     studyIntro: {
       eyebrow: "01 · The study",
-      heading: "The study that decides what I build.",
+      heading: "The study behind the rule.",
       lead:
-        "I put seven of my own agent systems against Claude Opus with the same tools. The ones that tried to out-think the model lost. The ones that held a guarantee in code won.",
+        "I put seven of my own agent systems against Claude Opus with the same tools. The ones that tried to out-think the model lost. The ones that held a guarantee in code won. Those guarantees matter most to the teams that can't build them, which is why every agent below keeps its rules in code.",
     },
 
     caseStudiesIntro: {
       eyebrow: "02 · Deployments",
-      heading: "Three agents, each wired into a real system.",
+      heading: "Three agents for teams that don't write prompts.",
       lead:
-        "Each one follows the same order: the customer, the problem, how it connects, how it was tested, the result, and what I decided. Every number is one I can back up on a call.",
+        "Each one opens the same way: who uses it, what goes wrong with plain Claude, the rule in code that stops it, and the measured result. Every number is one I can back up on a call.",
       moreHeading: "Earlier work",
     },
 
     // Short notes: smaller projects told in a paragraph, each with the result that ended or
     // limits it (owner's brief, 2026-11-24). Figures from the study document of 2026-11-24.
+    // Flywheel left the notes on 2026-11-25 (non-technical angle); it stays as data in the study.
     notes: {
       eyebrow: "03 · Notes",
-      heading: "Two shorter stories, and what they taught.",
-      lead: "Neither gets a full case study. Each one changed how I decide what to build.",
+      heading: "One shorter story: a guarantee that survives a crash.",
+      lead: "It doesn't get a full case study, but it shows the same rule at its sharpest: the agent can be wrong or the process can die, and the customer is still refunded once.",
       items: [
         {
           eyebrow: "Crash safety for agents",
@@ -145,17 +146,6 @@ export const portfolioData = {
             "The cost is real: it needed a person after every one of those 15 crashes. And plain Opus, acting as the on-call operator, also got 6 of 6 right by checking the refund service first. Harbor's case is that it does not depend on the model choosing to check, which is not yet tested at volume.",
           ],
           link: { text: "Read the crash results in the study", to: "/work/building-around-a-model#crash-safety" },
-        },
-        {
-          eyebrow: "Finding the commit behind a bug",
-          title: "Flywheel",
-          figure: "9 vs 10",
-          figureLabel: "fresh bugs solved with proof, Flywheel against plain Opus once Opus could run the tests",
-          paragraphs: [
-            "Flywheel took a bug report, wrote a script that reproduces the bug, and searched the project's history for the commit that caused it, with proof. Against Opus that could not run code it led 58 of 60 to 37.",
-            "Once Opus could run the tests and use git bisect, it solved 10 of 10 fresh bugs written after its training cutoff, against Flywheel's 9. So I retired Flywheel. A lead that only exists against a handicapped baseline is not one to sell a customer.",
-          ],
-          link: { text: "Read how the baseline flipped the result", to: "/work/building-around-a-model#fair-baseline" },
         },
       ],
     },
@@ -189,15 +179,15 @@ export const portfolioData = {
         },
         {
           number: "03",
-          title: "Put the rules in code",
+          title: "Put the rules in code, not the prompt",
           text:
-            "Models reason; code enforces. In AgentOps, the agent can propose a rollback, but code decides what it may change, a person approves, and the action runs exactly once.",
+            "Models reason; code enforces. A support rep shouldn't have to word a prompt carefully to keep an agent from promising a refund. In CasePilot, a policy file in code refuses that reply, a person approves every write, and the write lands once.",
         },
         {
           number: "04",
           title: "Measure before claiming",
           text:
-            "Flywheel led a plain model by 35 points until the model was allowed to run the tests. Then the model won, 10 of 10 against 9, and I retired Flywheel. A result means little until you know what the baseline was allowed to do.",
+            "Every agent is tested against a strong model given the same tools and a chance to check its work. ClearLedger beat plain Opus by 11 points on one company and by 4 on another, and I report the 4 as within run noise. A result means little until you know what the baseline was allowed to do.",
         },
       ],
     },
@@ -306,7 +296,7 @@ export const portfolioData = {
 
     contact: {
       eyebrow: "07 · Contact",
-      heading: "Have a system that needs deploying? Let's talk.",
+      heading: "Have a team that needs an agent it can trust? Let's talk.",
       lead: "I reply to email within a day. References are available on request.",
       mobileLead: "I reply within a day.",
       emailButton: "Email mmalqaim@gmail.com",
@@ -950,11 +940,11 @@ export const portfolioData = {
       home: "deployment",
       deploymentSummary: {
         customer:
-          "Meridian Fleet, a made-up vehicle-tracking company with 8 customer accounts, from a car-rental fleet to a pharmacy on a trial, loaded into a real Salesforce Developer Edition org.",
+          "A support rep working a Salesforce case queue who has never written a prompt. Tested at Meridian Fleet, a made-up vehicle-tracking company with 8 accounts, loaded into a real Salesforce Developer Edition org.",
         problem:
-          "Support agents triage, prioritise and answer every case by hand. An AI agent could draft all of it, but one that writes to Salesforce on its own can promise a refund, close the wrong case, or obey an instruction hidden in a customer's email.",
+          "Plain Claude with Salesforce access writes whatever it decides. A line in the prompt saying \"never promise a refund\" is a request, not a rule, and an instruction hidden in a customer's email can talk it out of it. Then it promises a refund or closes the wrong case.",
         integration:
-          "An MCP server with ten tools over the Salesforce REST API (seven read, three propose, none approve), running as a least-privilege integration user. A policy file says what the agent may ever write. A person approves each write, and it lands once, with a record of who approved it.",
+          "A policy file the customer can edit says which fields and values the agent may ever write and which phrases it may never send, and code checks every proposal against it. The MCP server has ten tools, none that approve. A person approves each write, and it lands once, with a record of who approved it.",
         testing:
           "Four blind sets of 40 cases, each written by a separate writer who never saw the agent, labelled by two people under written policies, and scored once inside the real org on frozen code. Each set was retired to development data after scoring.",
         result:
@@ -968,7 +958,7 @@ export const portfolioData = {
         mobileEyebrow: "Deployment · Salesforce",
         title: "CasePilot: a support agent inside Salesforce that asks before it writes",
         summary:
-          "Works a Salesforce case queue: triages each case, drafts the reply and proposes the changes, then stops. A person approves each write, and only an approved write reaches Salesforce.",
+          "For a support rep who has never written a prompt. It triages each Salesforce case, drafts the reply and proposes the changes, then stops. Code checks every write against the customer's policy, a person approves it, and only an approved write reaches Salesforce.",
         linkText: "Read the case study",
         tags: ["Salesforce REST API", "Every write approved"],
         stats: [
@@ -1000,7 +990,7 @@ export const portfolioData = {
       sections: [
         {
           id: "customer",
-          heading: "The customer and the problem",
+          heading: "Who uses it and what goes wrong",
           blocks: [
             {
               type: "paragraph",
@@ -1010,7 +1000,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A support team wants the reading and drafting done for it. It does not want an agent that promises a refund, closes a case it should not, or follows an instruction someone hid in an email. So the question was never only \"is the triage right?\" It was also \"can anything reach Salesforce that a person did not approve?\"",
+                "The person using it is a support rep who wants the reading and drafting done and has never written a prompt. With plain Claude, the only guard against a promised refund, a wrongly closed case or an instruction hidden in an email is a line in the prompt asking it not to. CasePilot moves those rules into code. So the question was never only \"is the triage right?\" It was also \"can anything reach Salesforce that a person did not approve?\"",
             },
           ],
         },
@@ -1115,15 +1105,15 @@ export const portfolioData = {
       home: "deployment",
       deploymentSummary: {
         customer:
-          "A company that runs its sales and accounting on Odoo, an open-source ERP with a CRM built in. Its finance team wants to ask questions of its own books in plain English.",
+          "A finance manager who wants to ask the books a question in plain English and has never written SQL or a prompt. The company runs its sales and accounting on Odoo, an open-source ERP with a CRM built in.",
         problem:
-          "Real books carry problems: a customer entered twice, a posted invoice reopened and changed, invoices in euros, a payment sent twice. A model with SQL access answers plain questions well, but gives a confident wrong figure when the data behind it is flawed.",
+          "Real books carry problems: a customer entered twice, a posted invoice reopened and changed, a payment sent twice. Plain Claude with SQL access answers plain questions well, but on flawed data it gives a confident wrong figure, and nothing tells the manager it is wrong.",
         integration:
-          "Data comes out of Odoo through its own API, into a warehouse with 29 automated checks. An analyst agent works through read-only, cited tools, with an onboarding pass that finds the data problems first and a review step on every answer.",
+          "Data comes out of Odoo through its own API into a warehouse with 29 automated checks. The agent works through read-only, cited tools. An onboarding pass finds the data problems first, a review step checks every answer, and code makes it say so when the books cannot answer.",
         testing:
           "Three companies it had never seen, each built by a separate author who planted new kinds of data problems. 100 questions each, frozen code, scored once. Plain Opus got the same read-only SQL access and up to 10 lookups per question.",
         result:
-          "267 of 300 right overall. Against plain Opus: 89 vs 78 on company K, 86 vs 82 on company L. Plain questions tied; the whole gap came from the hard ones.",
+          "267 of 300 right overall, and 63 of 63 \"the books cannot tell\" questions. Against plain Opus: 89 vs 78 on company K, 86 vs 82 on company L. Plain questions tied; the whole gap came from the hard ones.",
         decision:
           "Spend engineering on checking the data and saying when it cannot answer, not on out-reasoning the model. The L gap is within run noise, and only two companies had an Opus run.",
       },
@@ -1133,7 +1123,7 @@ export const portfolioData = {
         mobileEyebrow: "Deployment · Finance data",
         title: "ClearLedger: finance answers that hold up when the books don't",
         summary:
-          "Gets a company's sales and accounting data out of its ERP, checks it, and answers finance questions with every number traced to the records behind it.",
+          "For a finance manager who has never written SQL. It answers questions from the company's own ERP data with every number traced to its records, and code makes it say so when the books cannot answer.",
         linkText: "Read the case study",
         tags: ["Odoo API", "Beats plain Opus with the same SQL"],
         stats: [
@@ -1165,12 +1155,12 @@ export const portfolioData = {
       sections: [
         {
           id: "customer",
-          heading: "The customer and the problem",
+          heading: "Who uses it and what goes wrong",
           blocks: [
             {
               type: "paragraph",
               text:
-                "The customer runs on Odoo, an open-source ERP (enterprise resource planning: the system that holds orders, invoices and the books). Finance wants three answers: what each customer was billed and has paid, who is late and by how much, and whether every deal sales won actually turned into cash.",
+                "The person using it is a finance manager who has never written SQL. The customer runs on Odoo, an open-source ERP (enterprise resource planning: the system that holds orders, invoices and the books). Finance wants three answers: what each customer was billed and has paid, who is late and by how much, and whether every deal sales won actually turned into cash.",
             },
             {
               type: "paragraph",
@@ -1269,17 +1259,17 @@ export const portfolioData = {
       // bench/README.md (live shop test 3, live/results/test-3/), checked 2026-11-24.
       deploymentSummary: {
         customer:
-          "An online shop built from many small services, with its own monitoring: the OpenTelemetry demo shop, run as the production system an on-call engineer looks after.",
+          "The person on call when an online shop breaks, who may not know the failing service and has no time to write a careful prompt. Tested on the OpenTelemetry demo shop, built from many small services with its own monitoring.",
         problem:
-          "When production breaks, the on-call engineer has to read logs, metrics and deploy history before acting. An agent reads faster, but one that also acts alone will eventually turn off the wrong service or obey an instruction planted in a log line.",
+          "An agent reads logs, metrics and deploy history faster than a person. A plain agent with the same tools applies its own fix. Adding LangChain's stock approval step makes it ask first, but it still proposed a fix before gathering evidence in 9 of 15 runs.",
         integration:
-          "The LangGraph agent runs unchanged against the shop's own monitoring. It has exactly one action, turning off a named service's feature flags, behind an approval step nothing can switch off, and each action runs exactly once.",
+          "The LangGraph agent runs unchanged against the shop's own monitoring. Code fixes the order of work, evidence before any fix. It has exactly one action, turning off a named service's feature flags, behind an approval step nothing can switch off, and each action runs exactly once.",
         testing:
           "A separate agent wrote a sealed schedule of 15 faults. Each was switched on in the running shop and the agent was paged with one sentence: customers report pages failing or slow. Separately, it was compared with LangChain's stock approval agent on the same model and tools.",
         result:
-          "14 of 15 faults found and fixed, with no change made without approval. The miss showed no customer symptom, and the agent handed it to a person instead of acting.",
+          "14 of 15 faults found and fixed, with no change made without approval. The miss showed no customer symptom, and the agent handed it to a person instead of acting. Evidence came before the fix in 15 of 15 runs, against 6 for the stock agent.",
         decision:
-          "An approval step alone is not an edge: the stock agent was just as safe. The value is the order of work, evidence before any fix, which AgentOps kept in 15 of 15 runs and the stock agent in 6.",
+          "An approval step alone is not an edge: the stock agent was just as safe. The value is the order of work held in code, which a prompt only asks for.",
       },
       card: {
         featured: true,
@@ -1287,7 +1277,7 @@ export const portfolioData = {
         mobileEyebrow: "Deployment · Incident response",
         title: "AgentOps: an incident agent that can't act alone",
         summary:
-          "An AI agent, built with the LangGraph framework, that investigates a production failure, proposes a fix with cited evidence, and stops for a person to approve it. Code, not the AI model, decides what it may change, and every action runs exactly once.",
+          "For the person on call when a shop breaks. A LangGraph agent investigates, proposes a fix with cited evidence, and stops for approval. Code, not the AI model, fixes the order of work and what it may change, and every action runs exactly once.",
         linkText: "Read the case study",
         tags: ["Approval enforced in code", "Live microservice shop"],
         stats: [

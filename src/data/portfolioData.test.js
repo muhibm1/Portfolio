@@ -111,10 +111,10 @@ const DECISION_CALLOUT =
   "Find the review step everyone waits on, then separate the investigation from the judgment. Most review bottlenecks are not slow because the decision is hard, they are slow because the work required to make the decision has to be redone by hand every time. Automate that work, leave the judgment with the person accountable for it, and give them the evidence to disagree.";
 const PRINCIPLE_ONE =
   "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.";
-// 2026-11-24: the owner's new headline (his brief for the restructure around deployments).
-const HERO_HEADING = "I deploy AI agents into business systems and prove whether they work.";
+// 2026-11-25: the non-technical angle (owner brief): headline and lead replace the 2026-11-24 ones.
+const HERO_HEADING = "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.";
 const HERO_LEAD =
-  "I connect AI agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and keep a person in charge of every change. Then I test each one against the simplest thing a customer could use instead: a strong model with the same tools. Where my build wins, I show by how much. Where it doesn't, I say so. By day I'm a data engineer at Apple Maps.";
+  "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.";
 const RESUME_BULLET =
   "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.";
 const DECISION_FLOW_TITLES = [
@@ -987,10 +987,10 @@ describe("portfolioData", () => {
       title: "At Apple Maps",
       text: "Running a decision support agent and data health tooling for a pipeline spanning 50+ regions",
     });
-    // 2026-11-24: Fathom is no longer a standalone project; the line names the study's question.
+    // 2026-11-25: the non-technical angle; the line names the rule the deployments follow.
     expect(home.hero.rightNow.items[1]).toEqual({
-      title: "Testing agents against plain models",
-      text: "Which parts of an agent system beat a strong model with the same tools, and which do not",
+      title: "Putting the rules in code",
+      text: "Which rules belong in code rather than the prompt, tested against a strong model with the same tools",
     });
     expect(home.principles.items[0].text).toBe(PRINCIPLE_ONE);
     expect(home.experience.roles[0].company).toBe("Apple Maps");
