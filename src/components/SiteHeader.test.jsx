@@ -8,22 +8,16 @@ import SiteLayout from './SiteLayout';
 
 // G8. SiteHeader renders inside SiteLayout, so these tests mount SiteLayout with a stub outlet.
 describe('SiteHeader', () => {
-  it('shows the home section links, the GitHub profile link and the theme button on /, with no email link (owner, 2026-10-21; sections 2026-11-24)', () => {
+  it('shows the home section links, the GitHub profile link and the theme button on /, with no email link (owner, 2026-10-21; sections 2026-11-25)', () => {
     renderSiteLayoutAt('/');
 
-    expect(headerLinkHref('Study')).toBe('#study');
-    expect(headerLinkHref('Deployments')).toBe('#work');
-    expect(headerLinkHref('Notes')).toBe('#notes');
     expect(headerLinkHref('How I work')).toBe('#approach');
     expect(headerLinkHref('Experience')).toBe('#experience');
     expect(headerLinkHref('Contact')).toBe('#contact');
     expect(headerLinkHref('About')).toBe('#about');
-    // The 2026-11-24 nav order: the page's own section order.
+    // The owner's 2026-11-25 nav: Study, Deployments and Notes left the header.
     const sections = within(screen.getByRole('navigation', { name: 'Sections' }));
     expect(sections.getAllByRole('link').map((link) => link.textContent)).toEqual([
-      'Study',
-      'Deployments',
-      'Notes',
       'About',
       'How I work',
       'Experience',
