@@ -2,10 +2,11 @@ import { Fragment } from 'react';
 import AtelierFloor from './walkthroughs/AtelierFloor';
 import ChipWalkthrough from './walkthroughs/ChipWalkthrough';
 import OrionBench from './walkthroughs/OrionBench';
+import { fill } from './walkthroughs/fill';
 import useWalkthrough from './walkthroughs/useWalkthrough';
 
 // The figures a walkthrough block can name. A name that is not here throws, the same fail-loud
-// shape the block switch in CaseStudyPage has for an unknown block type (ADR 0006).
+// shape the block switch in CaseStudyPage has for an unknown block type.
 const FIGURES = { 'orion-bench': OrionBench, 'atelier-floor': AtelierFloor };
 
 const DECISION_KINDS = ['approve', 'waive', 'reject'];
@@ -23,8 +24,7 @@ const DECISION_KINDS = ['approve', 'waive', 'reject'];
  * step where a person decides.
  */
 export default function WalkthroughBlock({ block }) {
-  // The Orion walkthrough is drawn as a chip with its own layout (owner, 2026-10-23); every other
-  // walkthrough is the console below.
+  // The Orion walkthrough is drawn as a chip with its own layout; every other one is the console below.
   if (block.figure === 'orion-chip') return <ChipWalkthrough block={block} />;
   return <ConsoleWalkthrough block={block} />;
 }
@@ -41,7 +41,6 @@ function ConsoleWalkthrough({ block }) {
   const total = steps.length;
   const hasAgents = steps.some((item) => Array.isArray(item.agents));
   const hasFootnotes = steps.some((item) => item.readout);
-  const fill = (template, values) => Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, String(value)), template);
   const stepName = (i) => fill(block.announce.step, { n: i + 1, total, label: steps[i].label, tag: steps[i].tag });
   // A phase picked on the figure itself (a tap on its station) opens like a rail button.
   const pickStep = (id) => {
@@ -169,7 +168,7 @@ function ConsoleWalkthrough({ block }) {
                   {Array.isArray(item.agents) && (
                     <>
                       <p key={`w-${run}`} className="wt-ro-who wt-in" style={{ '--i': 3 }}>
-                        {item.agents.length === 0 ? labels.who : item.agents.length === 1 ? labels.who : labels.whoInOrder}
+                        {item.agents.length <= 1 ? labels.who : labels.whoInOrder}
                       </p>
                       {item.agents.length === 0 ? (
                         <p key={`n-${run}`} className="wt-ro-rule wt-in" style={{ '--i': 4 }}>

@@ -451,13 +451,16 @@ function logLines({ replay, ids, idx, decision, approvalIndex }) {
   return result;
 }
 
-// Turns metric points into a polyline's points string. x runs over the minutes from `from` to
-// `to`; y runs so that the chart's top sits at the highest error rate the sample run reaches.
+// Turns metric points into a polyline's points string. x runs over the minutes between the first
+// and last of `span` (the points themselves by default); y runs so that the chart's top sits at the
+// highest error rate the sample run reaches.
 const CHART_WIDTH = 300;
 const CHART_BASELINE = 92;
 const CHART_RANGE = 77.5;
 const CHART_PEAK = 0.12;
-function sparkPoints(points, fromMinute, toMinute) {
+function sparkPoints(points, [first, last] = [points[0], points.at(-1)]) {
+  const fromMinute = minuteOf(first.at);
+  const toMinute = minuteOf(last.at);
   return points
     .map(({ at, value }) => {
       const x = ((minuteOf(at) - fromMinute) / (toMinute - fromMinute)) * CHART_WIDTH;
@@ -485,13 +488,25 @@ function Pane({ id, label, on, className = '', children }) {
   );
 }
 
+// The label and the chips for the evidence the root cause cites.
+function Cites({ rca }) {
+  return (
+    <>
+      <span className="rp-muted">{rca.citedLabel}</span>{' '}
+      {rca.cites.map((cite) => (
+        <Fragment key={cite}>
+          <span className="rp-chip rp-mono">{cite}</span>{' '}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 // Sets the entrance order of an element: its position in the pane's reveal.
 const order = (i) => ({ '--i': i });
 
 function AlertPane({ replay, on, label }) {
   const { alert, metrics } = replay;
-  const first = minuteOf(metrics.errorRate[0].at);
-  const last = minuteOf(metrics.errorRate.at(-1).at);
   return (
     <Pane id="alert" label={label} on={on}>
       <p className="rp-pk rp-in" style={order(0)}>
@@ -512,7 +527,7 @@ function AlertPane({ replay, on, label }) {
           {alert.metric} <b>{alert.change}</b> <span className="rp-muted">{alert.rangeLabel}</span>
         </p>
         <svg className="rp-spark rp-fill" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label={alert.chartLabel}>
-          <polyline className="rp-draw" points={sparkPoints(metrics.errorRate, first, last)} />
+          <polyline className="rp-draw" points={sparkPoints(metrics.errorRate)} />
         </svg>
       </div>
     </Pane>
@@ -554,8 +569,6 @@ function TriagePane({ replay, on, label }) {
 
 function EvidencePane({ replay, on, label }) {
   const { evidence, metrics, alert } = replay;
-  const first = minuteOf(metrics.errorRate[0].at);
-  const last = minuteOf(metrics.errorRate.at(-1).at);
   return (
     <Pane id="evidence" label={label} on={on}>
       <p className="rp-pk rp-in" style={order(0)}>
@@ -592,7 +605,7 @@ function EvidencePane({ replay, on, label }) {
               {alert.metric} <b>{evidence.metrics.change}</b>
             </p>
             <svg className="rp-spark" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label={alert.chartLabel}>
-              <polyline className="rp-draw" points={sparkPoints(metrics.errorRate, first, last)} />
+              <polyline className="rp-draw" points={sparkPoints(metrics.errorRate)} />
             </svg>
             <p className="rp-mono rp-muted rp-small">
               {evidence.metrics.p99Label} {metrics.p99Before.from} → {metrics.p99Before.to}
@@ -664,12 +677,7 @@ function RcaPane({ replay, on, label }) {
         {rca.cause}
       </p>
       <p className="rp-cites rp-in" style={order(2)}>
-        <span className="rp-muted">{rca.citedLabel}</span>{' '}
-        {rca.cites.map((cite) => (
-          <Fragment key={cite}>
-            <span className="rp-chip rp-mono">{cite}</span>{' '}
-          </Fragment>
-        ))}
+        <Cites rca={rca} />
       </p>
       <Hypotheses items={rca.hypotheses} update />
     </Pane>
@@ -740,8 +748,7 @@ function ExecutePane({ replay, on, label }) {
 function VerifyPane({ replay, on, label }) {
   const { verify, metrics, previewTag } = replay;
   const after = [metrics.errorRate.at(-1), ...metrics.errorRateAfterRollback];
-  const first = minuteOf(metrics.errorRate[0].at);
-  const end = minuteOf(after.at(-1).at);
+  const span = [metrics.errorRate[0], after.at(-1)];
   return (
     <Pane id="verify" label={label} on={on}>
       <p className="rp-pk rp-in" style={order(0)}>
@@ -752,8 +759,8 @@ function VerifyPane({ replay, on, label }) {
         {verify.metric} <b>{verify.sequence}</b>
       </p>
       <svg className="rp-spark rp-tall rp-in" style={order(1)} viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label={verify.chartLabel}>
-        <polyline className="rp-was" points={sparkPoints(metrics.errorRate, first, end)} />
-        <polyline className="rp-draw rp-late" points={sparkPoints(after, first, end)} />
+        <polyline className="rp-was" points={sparkPoints(metrics.errorRate, span)} />
+        <polyline className="rp-draw rp-late" points={sparkPoints(after, span)} />
       </svg>
       <p className="rp-mono rp-muted rp-small rp-in" style={order(2)}>
         {verify.p99}
@@ -772,8 +779,7 @@ function VerifyPane({ replay, on, label }) {
 function PostmortemPane({ replay, on, label }) {
   const { postmortem, metrics, previewTag } = replay;
   const after = [metrics.errorRate.at(-1), ...metrics.errorRateAfterRollback];
-  const first = minuteOf(metrics.errorRate[0].at);
-  const end = minuteOf(after.at(-1).at);
+  const span = [metrics.errorRate[0], after.at(-1)];
   return (
     <Pane id="postmortem" label={label} on={on}>
       <p className="rp-pk rp-in" style={order(0)}>
@@ -792,8 +798,8 @@ function PostmortemPane({ replay, on, label }) {
         <span className="rp-mono rp-muted rp-small">{postmortem.metric}</span>
       </div>
       <svg className="rp-spark rp-fill rp-in" style={order(3)} viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label={postmortem.chartLabel}>
-        <polyline className="rp-was" points={sparkPoints(metrics.errorRate, first, end)} />
-        <polyline points={sparkPoints(after, first, end)} />
+        <polyline className="rp-was" points={sparkPoints(metrics.errorRate, span)} />
+        <polyline points={sparkPoints(after, span)} />
       </svg>
     </Pane>
   );
@@ -816,12 +822,7 @@ function RejectedPane({ replay, on }) {
         <p className="rp-muted rp-small">{rejected.declinedLabel}</p>
         <p className="rp-cause">{rca.cause}</p>
         <p className="rp-cites">
-          <span className="rp-muted">{rca.citedLabel}</span>{' '}
-          {rca.cites.map((cite) => (
-            <Fragment key={cite}>
-              <span className="rp-chip rp-mono">{cite}</span>{' '}
-            </Fragment>
-          ))}
+          <Cites rca={rca} />
         </p>
       </div>
     </Pane>

@@ -1,5 +1,5 @@
-// The site's route table (R3). Every page renders inside SiteLayout, the pathless layout route
-// that supplies the navbar and the contact footer on every address (R4).
+// The site's route table. Every page renders inside SiteLayout, the pathless layout route
+// that supplies the navbar and the contact footer on every address.
 import { Route, Routes } from 'react-router';
 import CaseStudyPage from './components/CaseStudyPage';
 import SiteLayout from './components/SiteLayout';

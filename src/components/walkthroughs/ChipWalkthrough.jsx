@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { REDUCED_MOTION_QUERY } from '../../prefersReducedMotion';
+import { fill } from './fill';
 
 // Where each step's part sits on the die, in die units (the die is 480 across). The parts read in
-// step order, left to right and row by row, so a run is easy to follow (owner, 2026-10-23). Layout,
+// step order, left to right and row by row, so a run is easy to follow. Layout,
 // not content, so it lives here beside the drawing rather than in portfolioData.
 const PLAN = {
   sync: [0, 0, 100, 140],
@@ -81,7 +82,6 @@ function useMedia(query) {
     () => false,
   );
 }
-const fill = (template, values) => Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, String(value)), template);
 const split = (text, by) => text.split(by).map((part) => part.trim());
 const two = (n) => String(n).padStart(2, '0');
 // A finger or a pen, which open parts by tapping rather than by hovering.
@@ -142,7 +142,7 @@ function Scramble({ text, calm }) {
 }
 
 /**
- * The Orion walkthrough as a chip (owner's ask, 2026-10-23). Each step is one part of the die.
+ * The Orion walkthrough as a chip Each step is one part of the die.
  * Left alone, it lies tilted and plays the steps in order, stopping at the decision until a person
  * records one. With a mouse over it, it rises flat and grows and keeps playing; pointing at a part
  * opens it and holds the run there until the cursor moves off. A tap, a click or the arrow keys open a part and pause the run; Play hands control
@@ -252,7 +252,7 @@ export default function ChipWalkthrough({ block }) {
 
   // The mouse: anywhere over the framed plate, the chip turns face up and keeps playing. Pointing at a part opens that
   // part and holds the run there; moving off the part (still over the chip, or away from it)
-  // lets the run carry on from that step (owner, 2026-10-23).
+  // lets the run carry on from that step.
   const onEnter = (event) => {
     if (!fine || isTouch(event)) return;
     setOpen(true);

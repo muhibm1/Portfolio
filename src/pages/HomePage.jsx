@@ -1,6 +1,5 @@
-// The "/" route (R132), in the order of the owner's 2026-11-24 brief: the hero, the lead study,
-// the three deployment case studies, short notes, the measured stats from Apple, About, the
-// approach, the experience and the contact footer, composed from the data module.
+// The "/" route: the hero, the lead study, the deployment case studies, short notes, stats, About,
+// the approach, the experience and the contact footer, composed from the data module.
 // useScrollToHashTarget makes a header link such as #work, #approach or #experience land on the
 // right section; React Router does not scroll to hashes on its own.
 import { useEffect } from 'react';

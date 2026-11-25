@@ -1,9 +1,6 @@
-// The deployment summary a case study opens with, before any technical detail. A deployment case
-// study carries six rows in reading order (customer, problem, integration, testing, result,
-// decision; owner's brief, 2026-11-24). Since 2026-11-25 (the non-technical angle) the rows read
-// as who uses it, what goes wrong with plain Claude, the rule in code that stops it, testing,
-// result and decision, and a card shows the first three and the result. Rows a summary does not
-// carry are left out.
+// The deployment summary a case study opens with, before any technical detail: six rows in reading
+// order (who uses it, what goes wrong, the rule in code that stops it, testing, result, decision).
+// A card shows the first three and the result. Rows a summary does not carry are left out.
 const ROWS = [
   { key: 'customer', label: 'Who uses it' },
   { key: 'problem', label: 'What goes wrong' },

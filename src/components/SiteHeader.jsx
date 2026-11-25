@@ -3,9 +3,9 @@ import { portfolioData } from '../data/portfolioData';
 import { wrapClasses } from './lookClasses';
 import ThemeButton from './ThemeButton';
 
-// R133. On the home page the links jump to sections on the page (seven since 2026-11-24, so on a
-// phone the row scrolls sideways instead of wrapping a label onto two lines); everywhere else they point back
-// at home, the work index, and the current page's own contact anchor.
+// On the home page the links jump to sections on the page (so many that on a phone the row scrolls
+// sideways instead of wrapping a label onto two lines); everywhere else they point back at home,
+// the work index, and the current page's own contact anchor.
 const HOME_LINKS = [
   { label: 'Study', href: '#study' },
   { label: 'Deployments', href: '#work' },
@@ -26,8 +26,7 @@ const navLink = 'inline-flex min-h-11 shrink-0 items-center whitespace-nowrap te
 
 /**
  * The sticky header of the Look: name and role, the section links, the GitHub profile link and the
- * light and dark switch. On a phone it is two rows (name and GitHub, then links and switch). The
- * owner moved GitHub here in place of the email on 2026-10-21, since Contact is already a nav link.
+ * light and dark switch. On a phone it is two rows (name and GitHub, then links and switch).
  */
 export default function SiteHeader() {
   const { personal } = portfolioData;

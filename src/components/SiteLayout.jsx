@@ -19,7 +19,7 @@ export default function SiteLayout() {
   );
 }
 
-// R139: the tab title follows route changes, sourced from the same per-route meta the prerender
+// The tab title follows route changes, sourced from the same per-route meta the prerender
 // script uses for the built page's <title> (src/pageMeta.js).
 function usePageTitle() {
   const { pathname } = useLocation();

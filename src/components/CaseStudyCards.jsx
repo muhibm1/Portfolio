@@ -2,10 +2,10 @@ import { Link } from 'react-router';
 import DeploymentSummary from './DeploymentSummary';
 import { eyebrowClasses, h3Classes } from './lookClasses';
 
-// Renders the case-study list (R132, R134) in the Look: every study whose card is featured as a
+// Renders the case-study list: every study whose card is featured as a
 // wide card with its deployment summary and four stats, then, under the "More work" heading,
 // every other listed study as a card in a three-column grid (two on a tablet, one on a phone).
-// A study with `listed: false` keeps its page but gets no card (owner's brief, 2026-10-21).
+// A study with `listed: false` keeps its page but gets no card.
 // Shared by the home page and /work, so the study list comes in as a prop rather than being read
 // from the data module here.
 const cardBase =
