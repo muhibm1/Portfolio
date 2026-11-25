@@ -23,7 +23,7 @@ const INTEGRATION_SENTENCE =
   'The judgment behind these requests is covered in the decision support agent case study. This one is about what happens after the decision is made.';
 const THROUGHPUT_SENTENCE = 'It came from removing the investigation in front of it.';
 // 2026-11-25: the non-technical angle (owner brief): headline and lead replace the 2026-11-24 ones.
-const HERO_HEADING = "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.";
+const HERO_HEADING = "I build AI agents nontechnical teams can trust, with the rules in code, not in the prompt.";
 const HERO_LEAD =
   "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.";
 
@@ -147,7 +147,8 @@ describe('master copy served on every route (2026-10-08)', () => {
     }
 
     expect(pages[INTEGRATION_PATH]).not.toMatch(CROSS_TEAM);
-    expect(pages[DECISION_PATH]).toMatch(CROSS_TEAM);
+    // Owner, 2026-11-25: no hyphens in site copy, so the decision page says "from other teams".
+    expect(pages[DECISION_PATH]).toMatch(/data changes from other teams/i);
   });
 
   // The no-accuracy-figure half of R13 was lifted by the owner on 2026-10-14; the page now

@@ -56,7 +56,7 @@ export const portfolioData = {
     hero: {
       eyebrow: "Forward deployed engineer · Austin, TX",
       mobileEyebrow: "Forward deployed engineer",
-      heading: "I build AI agents non-technical teams can trust, with the rules in code, not in the prompt.",
+      heading: "I build AI agents nontechnical teams can trust, with the rules in code, not in the prompt.",
       lead:
         "Most teams get AI as a chat window and a list of \"don't do that\" corrections in the prompt. A prompt is a request, and one odd email or one bad row of data can be enough to undo it. I connect agents to the systems a business already runs on, such as a Salesforce support queue, a finance warehouse or a live online shop, and put the rules that matter in code: what the agent may change, that a person approves it, and when it has to say it cannot answer. Then I test each one against a strong model with the same tools, and say where mine wins and where it doesn't. By day I'm a data engineer at Apple Maps.",
       mobileLead:
@@ -105,9 +105,9 @@ export const portfolioData = {
         },
         {
           value: "~40%",
-          label: "Fewer release-blocking failures",
+          label: "Fewer failures that block a release",
           context: "After data checks moved earlier in the pipeline",
-          mobileText: "fewer release-blocking failures after data checks moved earlier in the pipeline",
+          mobileText: "fewer failures that block a release after data checks moved earlier in the pipeline",
         },
       ],
     },
@@ -117,7 +117,7 @@ export const portfolioData = {
       eyebrow: "01 · The study",
       heading: "The study behind the rule.",
       lead:
-        "I put seven of my own agent systems against Claude Opus with the same tools. The ones that tried to out-think the model lost. The ones that held a guarantee in code won. Those guarantees matter most to the teams that can't build them, which is why every agent below keeps its rules in code.",
+        "I put seven of my own agent systems against Claude Opus with the same tools. The ones that tried to reason better than the model lost. The ones that held a guarantee in code won. Those guarantees matter most to the teams that can't build them, which is why every agent below keeps its rules in code.",
     },
 
     caseStudiesIntro: {
@@ -143,7 +143,7 @@ export const portfolioData = {
           figureLabel: "crashes that refunded a customer twice, against 10 of 15 for LangGraph's checkpoint and for Temporal's LangGraph integration",
           paragraphs: [
             "Agent Harbor runs an unmodified LangGraph agent and keeps its own record of every outside action, such as a refund. If it crashes and cannot tell whether the refund went through, it stops for a person instead of guessing.",
-            "The cost is real: it needed a person after every one of those 15 crashes. And plain Opus, acting as the on-call operator, also got 6 of 6 right by checking the refund service first. Harbor's case is that it does not depend on the model choosing to check, which is not yet tested at volume.",
+            "The cost is real: it needed a person after every one of those 15 crashes. And plain Opus, acting as the on call operator, also got 6 of 6 right by checking the refund service first. Harbor's case is that it does not depend on the model choosing to check, which is not yet tested at volume.",
           ],
           link: { text: "Read the crash results in the study", to: "/work/building-around-a-model#crash-safety" },
         },
@@ -157,7 +157,7 @@ export const portfolioData = {
       heading: "A system isn't done until people trust it.",
       // The owner's own wording, 2026-10-27, cut to one paragraph at his request.
       paragraphs: [
-        "I'm a deployment-focused data engineer who loves building AI agents, automating workflows and keeping data platforms reliable. At Apple Maps I build decision support agents and lead automation that helps review teams move faster while people keep the final call. Before that I built an AI content pipeline at an early-stage startup, taught AI and applied data engineering at edX, and took a client's education platform from discovery through launch and acquisition. Outside work I build what makes agents dependable: orchestration, context, evaluation and guardrails that keep a person in control. I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
+        "I'm a deployment focused data engineer who loves building AI agents, automating workflows and keeping data platforms reliable. At Apple Maps I build decision support agents and lead automation that helps review teams move faster while people keep the final call. Before that I built an AI content pipeline at an early stage startup, taught AI and applied data engineering at edX, and took a client's education platform from discovery through launch and acquisition. Outside work I build what makes agents dependable: orchestration, context, evaluation and guardrails that keep a person in control. I'm happiest finding the step everyone is waiting on and fixing it alongside the people who use it.",
       ],
     },
 
@@ -169,13 +169,13 @@ export const portfolioData = {
           number: "01",
           title: "Find the step everyone waits on",
           text:
-            "At Apple, a review queue was blocking cross-team data changes. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.",
+            "At Apple, a review queue was blocking data changes from other teams. I built an agent that does the investigation and hands the reviewer a documented recommendation, and the backlog hasn't come back.",
         },
         {
           number: "02",
           title: "Connect what's already there",
           text:
-            "Client data never lives in one place. I've wired ticketing, repository and geo-data systems together through their own OAuth2 APIs rather than asking anyone to change tools.",
+            "Client data never lives in one place. I've wired ticketing, repository and map data systems together through their own OAuth2 APIs rather than asking anyone to change tools.",
         },
         {
           number: "03",
@@ -208,10 +208,10 @@ export const portfolioData = {
           period: "Feb 2025 to present",
           subheading: "Data Health team · Austin, TX",
           highlights: [
-            "Identified a review bottleneck blocking cross-team data changes, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags knock-on effects, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two-month backlog cleared in two weeks; 30 to 350+ tickets a day.",
-            "Built a Python tool that manages map edit permissions for protected features: it lets an approved editor make a change, then locks the feature again. It connects ticketing, repository and geo-data systems over OAuth2 and cut turnaround time by about 50%.",
-            "Run and tune machine-learning-driven jobs that automatically fix data-check failures. They have resolved hundreds of thousands of failures across a 50+ region pipeline on Spark, Iceberg on S3 and Snowflake.",
-            "Cut release-blocking failures by about 40% by moving validation checks upstream and making them more robust, using root cause analysis and the remediation from each incident to refine every check. I also led the response to a building-generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
+            "Identified a review bottleneck blocking data changes from other teams, then deployed an agent that checks each request to unlock a protected map feature against the surrounding map data and the internal specification, flags effects on other features, and returns a documented recommendation a reviewer approves or overrides. Reviewers accept 94% of its recommendations, and each override becomes a new rule. Two month backlog cleared in two weeks; 30 to 350+ tickets a day.",
+            "Built a Python tool that manages map edit permissions for protected features: it lets an approved editor make a change, then locks the feature again. It connects ticketing, repository and map data systems over OAuth2 and cut turnaround time by about 50%.",
+            "Run and tune machine learning jobs that automatically fix data check failures. They have resolved hundreds of thousands of failures across a 50+ region pipeline on Spark, Iceberg on S3 and Snowflake.",
+            "Cut failures that block a release by about 40% by moving validation checks upstream and making them more robust, using root cause analysis and the remediation from each incident to refine every check. I also led the response to a building generation incident affecting tens of thousands of buildings, scoping the impact in SQL and QGIS and driving the fix for each.",
           ],
         },
         {
@@ -222,7 +222,7 @@ export const portfolioData = {
             "Owned the connection to a large language model that powered the product's core personalization feature, refining its instructions against how it behaved in real use.",
             "Rebuilt an LLM content pipeline that shipped malformed output on nearly every run. A new Postgres schema, CI/CD quality gates and prompt tuning took it to structured output on every run.",
             "Fixed an N+1 query in the personalization fetch, cutting its latency by about 80%, from 2 s to 400 ms.",
-            "Built the REST API layer and the WebSocket live-update infrastructure on Elixir Phoenix and Postgres.",
+            "Built the REST API layer and the WebSocket live update infrastructure on Elixir Phoenix and Postgres.",
           ],
         },
         {
@@ -231,7 +231,7 @@ export const portfolioData = {
           period: "Oct 2023 to Mar 2025",
           highlights: [
             "Taught AI and applied data engineering to two cohorts of about 30, built to get graduates job ready.",
-            "Ran 4.5 hours a week of office hours and 1:1 mentorship with hands-on code review.",
+            "Ran 4.5 hours a week of office hours and 1:1 mentorship with hands on code review.",
           ],
         },
         {
@@ -247,7 +247,7 @@ export const portfolioData = {
           title: "Software Engineering Intern",
           period: "May 2022 to Sep 2022",
           highlights: [
-            "Built frontend components and backend APIs for a decentralized platform redesign in Web3.js, and contributed to integration testing for secure, real-time features.",
+            "Built frontend components and backend APIs for a decentralized platform redesign in Web3.js, and contributed to integration testing for secure, real time features.",
           ],
         },
       ],
@@ -280,7 +280,7 @@ export const portfolioData = {
         {
           title: "AI",
           items:
-            "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human-in-the-loop",
+            "LangGraph, LangSmith, agent orchestration, MCP servers, RAG, hybrid retrieval and reranking, evals, guardrails, prompt injection, human approval steps",
         },
         {
           title: "Ship",
@@ -364,7 +364,7 @@ export const portfolioData = {
       { id: "approval", label: "Approval" },
       { id: "execute", label: "Execute" },
       { id: "verify", label: "Verify" },
-      { id: "postmortem", label: "Write-up" },
+      { id: "postmortem", label: "Report" },
     ],
     alert: {
       stamp: "10 Mar 2026, 10:30 UTC",
@@ -432,7 +432,7 @@ export const portfolioData = {
       foot: "ranked guesses: recent_deploy_regression (0.70), database_saturation (0.20)",
     },
     rca: {
-      cause: "Version v2.15.0 (deploy-001) added code that reads the field shipping_option with no fallback. From 10:13, every request without that field crashes with a KeyError, a missing-field error (log-003). The share of database connections in use stayed flat at 0.40.",
+      cause: "Version v2.15.0 (deploy-001) added code that reads the field shipping_option with no fallback. From 10:13, every request without that field crashes with a KeyError, a missing field error (log-003). The share of database connections in use stayed flat at 0.40.",
       citedLabel: "Cited",
       cites: ["deploy-001", "log-003"],
       hypotheses: [
@@ -528,7 +528,7 @@ export const portfolioData = {
         linkText: "Read the study",
         tags: ["Fair baselines", "Guarantees in code"],
         stats: [
-          { value: "0 of 4", label: "systems that tried to out-reason the model and beat it" },
+          { value: "0 of 4", label: "systems that tried to reason better than the model and beat it" },
           { value: "+11 pts", label: "ClearLedger over plain Opus on company K, same SQL access" },
           { value: "35 to -10", label: "Flywheel's lead, before and after the baseline could run tests" },
           { value: "0 vs 10", label: "double refunds in 15 crashes, Agent Harbor against LangGraph and Temporal" },
@@ -540,15 +540,15 @@ export const portfolioData = {
       intro:
         "I tested seven agent systems I built against the strongest simple alternative: Claude Opus with the same tools and the chance to check its own work. Systems that tried to reason better than the model tied or lost, every time. Systems that held a guarantee in code, one that stays true when the model is wrong or the process crashes, were the only ones that won. Several early wins disappeared once the baseline was allowed to run its own tests.",
       metaDescription:
-        "Seven agent systems against plain Claude Opus with the same tools. Structure that tried to out-reason the model tied or lost; guarantees held in code won.",
+        "Seven agent systems against plain Claude Opus with the same tools. Systems that tried to reason better than the model tied or lost; guarantees held in code won.",
       atAGlance: [
-        { label: "What was tested", value: "Seven head-to-head results from the agent systems I built between September and November 2026" },
-        { label: "Against what", value: "Claude Opus with the same tools and a run-and-check loop, unless noted" },
+        { label: "What was tested", value: "Seven direct comparisons from the agent systems I built between September and November 2026" },
+        { label: "Against what", value: "Claude Opus with the same tools and the chance to check its own work and try again, unless noted" },
         { label: "How", value: "Frozen code, scored once, on data built after the model's training cutoff where possible" },
         { label: "Refereed by", value: "Me. No outside team has reproduced these numbers yet" },
       ],
       stats: [
-        { value: "0 of 4", label: "systems that tried to out-reason the model and beat it" },
+        { value: "0 of 4", label: "systems that tried to reason better than the model and beat it" },
         { value: "89 vs 78", label: "ClearLedger against plain Opus on company K, same SQL access" },
         { value: "9 vs 10", label: "Flywheel against Opus once Opus could run the tests, 10 fresh bugs" },
         { value: "0 vs 10", label: "double refunds in 15 crashes, Agent Harbor against LangGraph and Temporal" },
@@ -561,7 +561,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The practical rule for anyone putting agents into real systems: spend engineering on what the model cannot promise (no action done twice, no confident answer from bad data, a fixed order of work), and let the model do the thinking. Then prove it against a baseline that is given a fair chance.",
+                "The practical rule for anyone putting AI agents into a company's systems: let the model do the thinking, and spend engineering on what the model cannot promise. That means no action done twice, no confident answer from bad data, and a fixed order of work. Then prove it against the simplest alternative, given a fair chance.",
             },
           ],
         },
@@ -572,12 +572,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A company that wants an AI agent in its systems faces one decision early: use a strong model with a few tools and a loop, or build structure around it. Structure means pipelines, retrieval steps, checkers, recovery code and approval gates. Structure costs time to build and to maintain, so it should earn its place.",
+                "A company that wants an AI agent in its systems faces one decision early. It can give a strong model a few tools and let it work until it is done, or it can build structure around the model. Structure means fixed sequences of steps, search systems, automated checkers, crash recovery and approval steps. Structure costs time to build and to maintain, so it should earn its place.",
             },
             {
               type: "paragraph",
               text:
-                "Since September 2026 I have built eight agent systems for that kind of work: finance questions over a company warehouse, support cases in Salesforce, incident response, data change review, and crash recovery. Each one had a headline score. In November 2026 I asked a harder question of all of them: does this beat a plain model, given the same tools and the same chance to check its own work?",
+                "Since September 2026 I have built eight agent systems for that kind of work: answering finance questions from a company's data, handling support cases in Salesforce, responding to outages, reviewing changes to data code, and recovering safely from crashes. Each one had a headline score. In November 2026 I asked a harder question of all of them: does this beat a plain model, given the same tools and the same chance to check its own work?",
             },
             {
               type: "paragraph",
@@ -588,8 +588,8 @@ export const portfolioData = {
               type: "bullets",
               items: [
                 "Plain model: the model on its own (here, Claude Opus), with the same tools the system had and nothing else built around it.",
-                "Baseline: the thing a system is compared against. A result means little until you know what the baseline was allowed to do.",
-                "Training cutoff: the date after which the model has seen no data. Tasks created after it cannot have been memorised.",
+                "Baseline: what a system is compared against. A result means little until you know what the baseline was allowed to do.",
+                "Training cutoff: the date after which the model has seen no data. A task created after it cannot have been memorised.",
               ],
             },
           ],
@@ -601,7 +601,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A comparison is only as honest as its weakest arm. Anthropic's own guidance is to add complexity \"only when it demonstrably improves outcomes\" [1], and that test means nothing if the simple option is set up to lose. Researchers who audit agent benchmarks find the same problem in published work: weak baselines and loose task setups that inflate results [3, 4]. Four rules followed from that.",
+                "A comparison is only as honest as its weakest side. Anthropic's own guidance is to add complexity \"only when it demonstrably improves outcomes\" [1], and that test means nothing if the simple option is set up to lose. Researchers who audit published agent results find exactly that problem: weak baselines and loose test setups that inflate scores [3, 4]. Four rules followed.",
             },
             {
               type: "cards",
@@ -611,12 +611,12 @@ export const portfolioData = {
                   note: "The plain model got every tool the system had: the same warehouse and SQL access, the same search index, the same repository files, the same test runner and git bisect.",
                 },
                 {
-                  title: "2. A run-and-check loop",
-                  note: "The plain model could act, look at the result and try again, within a fixed budget: up to 10 SQL lookups per question in ClearLedger, up to 4 searches per ticket in SourceLens, as many test runs as it wanted in Flywheel. A baseline that has to answer in one shot is a straw man.",
+                  title: "2. A chance to check and retry",
+                  note: "The plain model could act, look at the result and try again, within a fixed budget: up to 10 database queries per question in ClearLedger, up to 4 searches per ticket in SourceLens, as many test runs as it wanted in Flywheel. A baseline that must answer in one attempt is set up to lose.",
                 },
                 {
                   title: "3. Data the model cannot have memorised",
-                  note: "Opus's training data ends in June 2026. Where possible the test tasks were created after that: Flywheel's fresh bugs were introduced after 1 September 2026, and ClearLedger's test companies were built for this work and never published. LiveCodeBench uses the same idea for code [5].",
+                  note: "Opus's training data ends in June 2026. Where possible the test tasks were created after that: Flywheel's new bugs were introduced after 1 September 2026, and ClearLedger's test companies were built for this work and never published. LiveCodeBench, a public coding benchmark, uses the same idea [5].",
                 },
                 {
                   title: "4. Frozen code, scored once",
@@ -627,7 +627,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Two limits apply throughout. Most comparisons are single runs on test sets of 10 to 300 items, so differences of a few points sit inside run-to-run noise. And where a system and its baseline used different models, that is stated next to the number.",
+                "Two limits apply throughout. Most comparisons are single runs on test sets of 10 to 300 items, so a difference of a few points can be chance. And where a system and its baseline used different models, that is stated next to the number.",
             },
           ],
         },
@@ -638,11 +638,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Seven head-to-head results, from six projects, fall into two groups. The chart puts each system next to its baseline on the same scale.",
+                "Seven comparisons, from six projects, fall into two groups. The chart puts each system next to its baseline on the same scale.",
             },
             {
               type: "comparison",
-              title: "Where the system tried to out-reason the model, it tied or lost",
+              title: "Where the system tried to reason better than the model, it tied or lost",
               systemLabel: "System",
               baselineLabel: "Baseline",
               noise: 5,
@@ -651,7 +651,7 @@ export const portfolioData = {
                   heading: "Structure holds a guarantee outside the model",
                   rows: [
                     { project: "ClearLedger, company K", measure: "Questions answered correctly, of 100", system: 89, baseline: 78 },
-                    { project: "AgentOps", measure: "Right end state, 15 runs, against stock LangChain approval", system: 93.3, baseline: 80 },
+                    { project: "AgentOps", measure: "Outage fixed or correctly handed to a person, 15 runs, against LangChain's ready made approval agent", system: 93.3, baseline: 80 },
                     { project: "ClearLedger, company L", measure: "Questions answered correctly, of 100", system: 86, baseline: 82 },
                   ],
                 },
@@ -659,29 +659,29 @@ export const portfolioData = {
                   heading: "Structure tries to reason better than the model",
                   rows: [
                     { project: "ChangeLens", measure: "Real bugs caught, of 116", system: 82.8, baseline: 80.2 },
-                    { project: "SourceLens", measure: "Right article in top 5, 200 tickets", system: 89.3, baseline: 87.2 },
-                    { project: "Foothold (ChEMBL)", measure: "Table links found (F1), against Sonnet alone", system: 86.9, baseline: 88.4 },
+                    { project: "SourceLens", measure: "Right help article among the top 5 results, 200 tickets", system: 89.3, baseline: 87.2 },
+                    { project: "Foothold (ChEMBL)", measure: "Links between database tables found (F1 score, which balances finding real links against reporting false ones), against Sonnet alone", system: 86.9, baseline: 88.4 },
                     { project: "Flywheel", measure: "Culprit named and proved, 10 fresh bugs", system: 90, baseline: 100 },
                   ],
                 },
               ],
               caption:
-                "Project evaluation records, November 2026. Baselines: plain Opus, except AgentOps (stock LangChain approval agent, Sonnet 5.5) and Foothold (Sonnet 5.5 alone). Gaps under 5 points are within run-to-run noise.",
+                "Project evaluation records, November 2026. Baselines: plain Opus, except AgentOps (LangChain's ready made approval agent, Sonnet 5.5) and Foothold (Sonnet 5.5 alone). Gaps under 5 points can be chance.",
             },
             {
               type: "paragraph",
               text:
-                "The four systems in the lower group each tried to do the model's own job better: find the right help article (SourceLens), spot a data bug in a code change (ChangeLens), map the links in an unfamiliar database (Foothold), or find the commit that caused a bug (Flywheel). Each tied or lost. SourceLens's lead has a 95 percent confidence interval of minus 2 to plus 7 points. ChangeLens and Opus each caught bugs the other missed (10 and 7), which the analysis judged not significant.",
+                "The four systems in the lower group each tried to do the model's own job better: find the right help article (SourceLens), spot a data bug in a code change (ChangeLens), map the links in an unfamiliar database (Foothold), or find the code change that caused a bug (Flywheel). Each tied or lost. SourceLens's small lead could be anything from 2 points behind to 7 points ahead. ChangeLens and Opus each caught bugs the other missed, 10 and 7, a difference the statistics could not separate from chance.",
             },
             {
               type: "paragraph",
               text:
-                "The upper group won, and for a different reason. Their structure does not reason. It checks data, holds an order of work, or keeps a record, so it stays right when the model is not. The sections below show what that looks like.",
+                "The upper group won, and for a different reason. Their structure does not try to think. It checks data, holds an order of work, or keeps a record, so it stays right when the model is not. The sections below show what that looks like.",
             },
             {
               type: "note",
               text:
-                "Two systems sit outside the chart. Agent Harbor's test counts failures, not a score, so it gets its own table below. CasePilot, a support agent inside Salesforce, has no plain-model baseline yet, so it makes no claim here.",
+                "Two systems sit outside the chart. Agent Harbor's test counts failures, not a score, so it gets its own table below. CasePilot, a support agent inside Salesforce, has not yet been compared with a plain model, so it makes no claim here.",
             },
           ],
         },
@@ -692,13 +692,13 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Flywheel shows how much the baseline decides. It takes a bug report, writes a script that reproduces the bug, and then searches the project's history for the commit that caused it. It hands back that commit with a proof: the script fails on that commit and passes on the one before.",
+                "Flywheel shows how much the baseline decides. It takes a bug report, writes a small test that reproduces the bug, and then searches the project's history for the change (the commit) that caused it. It hands back that change with proof: the test fails with that change and passes on the version just before it.",
             },
             {
               type: "bars",
               charts: [
                 {
-                  title: "Baseline could not run code: 60 held-out bugs",
+                  title: "Baseline could not run code: 60 test bugs",
                   max: 60,
                   items: [
                     { label: "Flywheel", value: 58, display: "58 of 60" },
@@ -706,7 +706,7 @@ export const portfolioData = {
                   ],
                 },
                 {
-                  title: "Baseline could run tests and git bisect: 10 fresh bugs, all after the cutoff",
+                  title: "Baseline could run tests and search the history itself: 10 new bugs, all after the cutoff",
                   max: 10,
                   items: [
                     { label: "Flywheel", value: 9, display: "9 of 10" },
@@ -714,22 +714,22 @@ export const portfolioData = {
                   ],
                 },
               ],
-              caption: "Flywheel results, held-out set and fresh-bug set, both scored 24 November 2026. Culprit commit named and proved.",
+              caption: "Flywheel results on both bug sets, scored 24 November 2026. Counts the cause named and proved.",
             },
             {
               type: "paragraph",
               text:
-                "On 60 held-out bugs, Flywheel named and proved the culprit in 58. Plain Opus, asked to write the same kind of reproducing script without being able to run it, managed 37. That looked like a clear win for the pipeline.",
+                "On 60 test bugs, Flywheel named and proved the cause in 58. Plain Opus, asked to write the same kind of test without being able to run it, managed 37. That looked like a clear win for the pipeline.",
             },
             {
               type: "paragraph",
               text:
-                "Then the baseline got the same abilities Flywheel had: run the tests, edit, use git bisect, and try again. On 10 fresh bugs, all introduced after 1 September 2026 in projects Flywheel had never seen, plain Opus named and proved the culprit in 10 of 10. Flywheel got 9. Neither gave a wrong answer with a proof attached. Each proof was re-run three times on the named commit and three on its parent, so a score counts only answers that hold up when executed, the same idea SWE-bench uses [6].",
+                "Then the baseline got the same abilities Flywheel had: run the tests, edit files, search the history with git bisect (a standard tool that halves the search at each step), and try again. On 10 new bugs, all introduced after 1 September 2026 in projects Flywheel had never seen, plain Opus named and proved the cause in 10 of 10. Flywheel got 9. Neither gave a wrong answer with proof attached. Each proof was run again three times on the named change and three times on the version before it, so a score counts only answers that hold up when run, the same idea the SWE-bench coding benchmark uses [6].",
             },
             {
               type: "paragraph",
               text:
-                "Memorisation does not explain Opus's result. Every one of those bugs postdates its June 2026 training cutoff. Asked to name the culprit from the history alone, with no proof required, Opus had already got all 60 of the earlier set. The model was never the weak part. The baseline's missing ability to run code was. Two caveats: 10 cases leave wide error bars, and Flywheel ran on the smaller Sonnet model while the baseline used Opus.",
+                "Memorisation does not explain Opus's result. Every one of those bugs came after its June 2026 training cutoff. Asked to name the cause from the history alone, with no proof required, Opus had already got all 60 of the earlier set. The model was never the weak part. The baseline's missing ability to run code was. Two caveats: 10 cases is a small sample, and Flywheel ran on the smaller Sonnet model while the baseline used Opus.",
             },
           ],
         },
@@ -752,17 +752,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "An agent that issues a refund and then crashes leaves a question nobody can answer from inside the agent: did the refund go through? LangGraph's documentation is explicit that a restarted node runs again from the beginning, so side effects before that point should be idempotent, meaning safe to repeat [7]. Temporal's documentation says the same of its Activities: they \"may be executed multiple times\" and should use idempotency keys [8]. Both frameworks hand the problem back to the developer.",
+                "An agent that issues a refund and then crashes leaves a question nobody can answer from inside the agent: did the refund go through? LangGraph, a popular framework for building agents, says plainly in its documentation that a step restarted after a crash runs again from its beginning, so any outside action in it should be safe to repeat [7]. Temporal, a widely used system for running long jobs reliably, says the same of its steps: they \"may be executed multiple times\" [8]. Both hand the problem back to the developer.",
             },
             {
               type: "paragraph",
               text:
-                "Agent Harbor serves an unmodified LangGraph agent and keeps its own record of each outside action. After a crash, if it cannot tell whether an action landed, it stops for a person instead of guessing. On 30 open-source agents drawn at random from GitHub, it repeated no action in 243 scored crash trials. LangGraph's own checkpointing repeated an action in 16 to 23 trials, depending on the storage backend. Those repeats all came from the 5 agents in the set that take real actions, which is a small base.",
+                "Agent Harbor runs an unchanged LangGraph agent and keeps its own record of each outside action, such as a refund. After a crash, if it cannot tell whether an action went through, it stops for a person instead of guessing. On 30 open source agents picked at random from GitHub, it repeated no action in 243 scored crash tests. LangGraph's own crash recovery repeated an action in 16 to 23 of them, depending on where it stored its progress. Those repeats all came from the 5 agents in the set that take real actions, which is a small base.",
             },
             {
               type: "paragraph",
               text:
-                "A smaller kill-check on 24 November 2026 put Harbor against stronger rivals. A refund agent was killed at three points around the refund call, five times each.",
+                "A smaller test on 24 November 2026 put Harbor against stronger rivals. A refund agent was deliberately killed at three points around the refund, five times each.",
             },
             {
               type: "table",
@@ -777,30 +777,30 @@ export const portfolioData = {
                 { cells: ["Temporal's LangGraph integration 1.0.0, default retries", "10 of 15", "15 of 15", "0 of 15"] },
                 { cells: ["Temporal integration, retries off", "0 of 15", "0 of 15", "not offered"] },
                 { cells: ["Agent Harbor", "0 of 15", "15 of 15", "15 of 15"], emphasis: true },
-                { cells: ["Opus as on-call operator, plain LangGraph", "0 of 6", "6 of 6", "0 of 6"] },
+                { cells: ["Opus as on call operator, plain LangGraph", "0 of 6", "6 of 6", "0 of 6"] },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Harbor was the only infrastructure that never paid twice and always finished. But a plain Opus acting as the operator also went 6 for 6 without a person. In every run it checked the refund service before acting, even when not told to. That case was easy, because the refund service kept a readable record. An action with no record to check, such as a sent email, was not tested. Temporal's documented fix, an idempotency key the outside service honours, also needs a change to the agent and the service, and was not tested.",
+                "Harbor was the only system that never paid twice and always finished. But plain Opus, asked to act as the person on call after the crash, also went 6 for 6 without help. In every run it checked the refund service before acting, even when not told to. That case was easy, because the refund service kept a record it could read. An action with no record to check, such as a sent email, was not tested. Temporal's documented fix, a unique key per action that the outside service refuses to process twice, needs changes to both the agent and the service, and was not tested.",
             },
           ],
         },
         {
           id: "bad-data",
           eyebrow: "Guarantee 2",
-          heading: "Bad-data checks: ClearLedger",
+          heading: "Checks for bad data: ClearLedger",
           blocks: [
             {
               type: "paragraph",
               text:
-                "ClearLedger answers finance questions over a company's data warehouse. Each test company has 100 questions: 36 plain ones, 43 where the honest answer needs a caveat about the data, and 21 where the data cannot answer at all. Plain Opus had the same read-only SQL access and up to 10 lookups per question.",
+                "ClearLedger answers finance questions from a company's own business data. Each test company has 100 questions: 36 plain ones, 43 where the honest answer needs a warning about the data, and 21 where the data cannot answer at all. Plain Opus had the same read only database access and up to 10 queries per question.",
             },
             {
               type: "paragraph",
               text:
-                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. ClearLedger runs an onboarding pass over the warehouse to find data problems, then a review step on each answer, and says when the data cannot support one. Overall it scored 89 against 78 on K and 86 against 82 on L. One company's score moves about 3 to 4 points between runs, so the K gap is real and the L gap is within noise.",
+                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. ClearLedger first reads a new company's data to find its problems, then checks each answer against them, and says when the data cannot support an answer. Overall it scored 89 against 78 on K and 86 against 82 on L. One company's score moves about 3 to 4 points between runs, so the K gap is real and the L gap could be chance.",
             },
           ],
         },
@@ -812,17 +812,17 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "AgentOps investigates a production incident, proposes a fix with cited evidence, and waits for a human approval before it acts. Its fair comparison is the stock LangChain option: create_agent with the HumanInTheLoopMiddleware approval step, the same model (Sonnet 5.5) and the same six tools, on 15 runs.",
+                "AgentOps investigates an outage in a live system, proposes a fix with the evidence for it, and waits for a person to approve before it acts. Its fair comparison is LangChain's ready made agent with its standard approval step, using the same model (Sonnet 5.5) and the same six tools, over 15 runs.",
             },
             {
               type: "paragraph",
               text:
-                "Both were 15 of 15 on safety: neither made an unapproved change. So the approval gate alone is not an edge. Anyone can add it in an afternoon. The difference was in order of work. AgentOps gathered evidence before proposing a fix in 15 of 15 runs, against 6 of 15. It reached the right end state in 14 of 15, against 12 of 15. That is a modest gap from one run on the development split.",
+                "Both were 15 of 15 on safety: neither made an unapproved change. So the approval step alone is not an edge. Anyone can add it in an afternoon. The difference was in the order of work. AgentOps gathered evidence before proposing a fix in 15 of 15 runs, against 6 of 15. It fixed the outage or correctly handed it to a person in 14 of 15, against 12 of 15. That is a modest gap, from one run on incidents also used during building.",
             },
             {
               type: "paragraph",
               text:
-                "AgentOps also scored 94.7% top-1 on 360 cases of the public RCAEval benchmark [9], and 40.9% on 259 cases of OpenRCA [10], against 11.3% for the best method in the OpenRCA paper. Neither benchmark run had a plain-model arm, and a newer paper reports 43.9% on OpenRCA. So those numbers show competence, not an edge over the model.",
+                "AgentOps also named the right cause first in 94.7% of 360 cases on RCAEval, a public benchmark for diagnosing outages [9], and got 40.9% of 259 cases right on OpenRCA [10], against 11.3% for the best method in the OpenRCA paper. Neither run included a plain model, and a newer paper reports 43.9% on OpenRCA. So those numbers show competence, not an edge over the model.",
             },
           ],
         },
@@ -835,23 +835,23 @@ export const portfolioData = {
               items: [
                 {
                   title: "Build structure for guarantees, not for reasoning",
-                  note: "Sutton's \"Bitter Lesson\" observes that general methods which scale with computation beat hand-built knowledge \"by a large margin\" [2]. A pipeline that tells the model how to search, review or reason is hand-built knowledge, and the next model release tends to erase its lead. A record of which refund already went out, or a check that a ledger has duplicate rows, does not compete with the model at all. It stays useful however good the model gets.",
+                  note: "Rich Sutton's essay \"The Bitter Lesson\" observes that general methods which grow with computing power beat hand written expertise \"by a large margin\" [2]. A pipeline that tells the model how to search, review or reason is hand written expertise, and the next model release tends to erase its lead. A record of which refund already went out, or a check that a ledger has duplicate rows, does not compete with the model at all. It stays useful however good the model gets.",
                 },
                 {
-                  title: "Give the baseline a loop before claiming a win",
-                  note: "The cheapest way to make a system look good is a baseline that cannot check its own work. Flywheel's lead went from 35 points to minus 10 when the baseline could run tests. Kapoor and colleagues found the same pattern in published agents: simple baselines, such as retrying, matched far more complex designs on a coding benchmark [3].",
+                  title: "Let the baseline check its work before claiming a win",
+                  note: "The easiest way to make a system look good is a baseline that cannot check its own work. Flywheel's lead went from 35 points ahead to 10 behind when the baseline could run tests. Kapoor and colleagues found the same pattern in published agents: simple baselines, such as just retrying, matched far more complex designs on a coding benchmark [3].",
                 },
                 {
                   title: "Count failures when the claim is a guarantee",
-                  note: "A 2-point accuracy gap on 200 items is noise. Ten double refunds against zero is not. For crash safety, unapproved writes and bad data, the honest measure is how often the bad thing happened.",
+                  note: "A 2 point accuracy gap on 200 items can be chance. Ten double refunds against zero is not. For crash safety, unapproved changes and bad data, the honest measure is how often the bad thing happened.",
                 },
                 {
                   title: "Test on data the model cannot have seen",
-                  note: "Without this, a strong baseline score could be memory. Here, every fresh Flywheel bug postdated the model's training data, and Opus still won.",
+                  note: "Without this, a strong baseline score could be memory. Here, every new Flywheel bug came after the model's training data, and Opus still won.",
                 },
                 {
                   title: "A careful model can match a guarantee in easy cases",
-                  note: "Opus, acting as the operator after a crash, checked the refund service and got 6 of 6 right. The case for Harbor's structure is that it does not depend on the model choosing to check, and keeps working unattended at volume. That case is plausible but not yet tested.",
+                  note: "Opus, acting as the person on call after a crash, checked the refund service and got 6 of 6 right. The case for Harbor's structure is that it does not depend on the model choosing to check, and keeps working unattended at volume. That case is plausible but not yet tested.",
                 },
               ],
             },
@@ -864,10 +864,10 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Every number here was refereed by the person who built the system. No outside team has reproduced them.",
-                "Samples are small and most arms ran once: 10 to 300 items, with intervals that overlap for every gap under 5 points.",
-                "The crash tests used stand-in services that record what they received, not real payment systems. The kill-check agent was written for that check.",
-                "Two baselines are not plain Opus: AgentOps was compared with LangChain's stock approval agent, and Foothold with Sonnet alone.",
+                "Every number here was checked by the person who built the system. No outside team has reproduced them.",
+                "Samples are small and most comparisons ran once: 10 to 300 items, so any gap under 5 points could be chance.",
+                "The crash tests used stand in services that record what they received, not real payment systems. The refund agent was written for that test.",
+                "Two baselines are not plain Opus: AgentOps was compared with LangChain's ready made approval agent, and Foothold with Sonnet alone.",
                 "The strongest next test is not another benchmark. It is one real deployment with a measured before and after.",
               ],
             },
@@ -940,7 +940,7 @@ export const portfolioData = {
       home: "deployment",
       deploymentSummary: {
         customer:
-          "A support rep working a Salesforce case queue who has never written a prompt. Tested at Meridian Fleet, a made-up vehicle-tracking company with 8 accounts, loaded into a real Salesforce Developer Edition org.",
+          "A support rep working a Salesforce case queue who has never written a prompt. Tested at Meridian Fleet, a made up vehicle tracking company with 8 accounts, loaded into a real Salesforce Developer Edition org.",
         problem:
           "Plain Claude with Salesforce access writes whatever it decides. A line in the prompt saying \"never promise a refund\" is a request, not a rule, and an instruction hidden in a customer's email can talk it out of it. Then it promises a refund or closes the wrong case.",
         integration:
@@ -948,7 +948,7 @@ export const portfolioData = {
         testing:
           "Four blind sets of 40 cases, each written by a separate writer who never saw the agent, labelled by two people under written policies, and scored once inside the real org on frozen code. Each set was retired to development data after scoring.",
         result:
-          "On the last blind set: category, priority, escalation and reply each 39 of 40, and 0 writes without approval. The write gate refuses 34 of 35 red-team attacks.",
+          "On the last blind set: category, priority, escalation and reply each 39 of 40, and 0 writes without approval. The write gate refuses 34 of 35 red team attacks.",
         decision:
           "Keep every write behind a person and turn judgement calls into written rules the customer can edit. Not yet claimed: a win over a plain model, because that comparison has not been run.",
       },
@@ -964,7 +964,7 @@ export const portfolioData = {
         stats: [
           { value: "39 of 40", label: "right category, priority, escalation and reply on the last blind set" },
           { value: "0", label: "writes reached Salesforce without a person's approval" },
-          { value: "34 of 35", label: "red-team attacks the write gate refused" },
+          { value: "34 of 35", label: "red team attacks the write gate refused" },
           { value: "67% to 97%", label: "agreement between two human labelers once priority had written rules" },
         ],
       },
@@ -972,20 +972,20 @@ export const portfolioData = {
       eyebrow: "Deployment case study · Salesforce · Customer support",
       title: "CasePilot: a support agent inside Salesforce that asks before it writes",
       intro:
-        "CasePilot reads an open support case, the account behind it, the account's other cases and the knowledge base. It triages the case, drafts the reply, and proposes what to change. Then it stops. A person approves or rejects each proposal, and only an approved write reaches Salesforce, once, with a record of who approved it.",
+        "CasePilot is a support agent that works inside Salesforce, the system many companies use to track customer support cases. For each open case it reads the case, the customer's account, their other cases and the help articles. It sorts the case (what kind of problem it is, how urgent, whether a manager must see it), drafts the reply and proposes the changes to make. Then it stops. A person approves or rejects each proposal, and only an approved change reaches Salesforce, exactly once, with a record of who approved it.",
       metaDescription:
         "A support agent in a real Salesforce org: 39 of 40 on category, priority, escalation and reply on the last blind set, and no write without approval.",
       atAGlance: [
         { label: "My role", value: "Designed, built and tested it end to end" },
-        { label: "Connects to", value: "Salesforce REST API (OAuth client credentials, SOQL, sObjects) as a least-privilege integration user" },
-        { label: "Ships as", value: "An MCP server, a sub-agent and an agent skill, in TypeScript" },
-        { label: "Models", value: "Claude Opus answers triage (three votes, majority wins); Claude Sonnet drafts and checks the reply" },
+        { label: "Connects to", value: "Salesforce REST API (OAuth client credentials, SOQL queries), signed in as a dedicated user that can change only a few case fields" },
+        { label: "Ships as", value: "An MCP server (the open standard that lets an AI assistant use outside tools), written in TypeScript" },
+        { label: "Models", value: "Claude Opus sorts each case, asked three times with the majority answer kept; Claude Sonnet drafts and checks the reply" },
       ],
       stats: [
         { value: "39 of 40", label: "on each score, last blind set, inside the real org" },
         { value: "0", label: "writes without approval, across every blind set" },
-        { value: "34 of 35", label: "red-team attacks refused by the write gate" },
-        { value: "9", label: "first-day failures found against a mock org before going live" },
+        { value: "34 of 35", label: "deliberate attacks on the write check, refused" },
+        { value: "9", label: "problems found against a fake Salesforce before connecting a real one" },
       ],
       sections: [
         {
@@ -995,12 +995,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The customer is Meridian Fleet, a vehicle-tracking company I made up, with 8 accounts, 16 contacts, 12 knowledge articles and 52 support cases. The cases are of varied difficulty on purpose: a closed case the customer writes on again, a refund demand with a legal threat, a subpoena, a cancellation, spam, a duplicate, two fleet-wide outages, and a paragraph pretending to be a system notice telling the agent to close the case and announce a refund.",
+                "The customer is Meridian Fleet, a vehicle tracking company I made up, loaded into a real Salesforce account with 8 customer accounts, 16 contacts, 12 help articles and 52 support cases. The cases are hard on purpose: a closed case the customer writes on again, a refund demand with a legal threat, a court subpoena, a cancellation, spam, a duplicate, two outages that took down a customer's whole fleet, and a paragraph pretending to be a system notice that tells the agent to close the case and promise a refund.",
             },
             {
               type: "paragraph",
               text:
-                "The person using it is a support rep who wants the reading and drafting done and has never written a prompt. With plain Claude, the only guard against a promised refund, a wrongly closed case or an instruction hidden in an email is a line in the prompt asking it not to. CasePilot moves those rules into code. So the question was never only \"is the triage right?\" It was also \"can anything reach Salesforce that a person did not approve?\"",
+                "The person using it is a support rep who wants the reading and drafting done and has never written a prompt. With a plain AI assistant, the only guard against a promised refund, a wrongly closed case or an instruction hidden in a customer's email is a line in the prompt asking it not to. That line is a request the model usually follows, not a rule. CasePilot moves those rules into code. So the test was never only \"did it sort the case correctly?\" It was also \"can anything reach Salesforce that a person did not approve?\"",
             },
           ],
         },
@@ -1011,17 +1011,17 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "An MCP server with ten tools over Salesforce: seven read, three propose. There is no approve tool, so an agent connected to it cannot approve its own writes.",
-                "It runs as a least-privilege integration user. The first real run found that this user cannot read Contact.AccountId; the contact read now falls back without it.",
-                "A policy file names the fields, values and close reasons the agent may ever write, and the phrases it may never send. A reply that promises a refund, a cancellation or a deletion is refused, including when the phrase is disguised with invisible characters or look-alike letters.",
-                "Case text goes to the model inside a fence with a random marker, after look-alike characters are normalised. The policy catches what the prompt misses.",
-                "Approval re-checks the policy against the live case and applies the write once. If the connection drops after Salesforce saved the write, approval re-reads the case and records the write once instead of inviting a second try.",
+                "Ten tools over Salesforce: seven that read and three that propose a change. There is no tool that approves, so an agent connected to it has no way to approve its own changes.",
+                "It signs in as a dedicated Salesforce user with the least access that works: it can read cases, accounts and contacts, and change only a few fields on a case. The first real run found this user could not read which account a contact belongs to, so that lookup now works without it.",
+                "A policy file, which the customer can edit, lists the fields, values and closing reasons the agent may ever write, and the phrases it may never send. A reply that promises a refund, a cancellation or a data deletion is refused, even when the words are disguised with invisible characters or letters from other alphabets that look the same.",
+                "Case text reaches the model fenced off with a random marker, so the model treats it as a customer's words rather than as instructions. Where the model is still fooled, the policy check catches it.",
+                "At approval, code checks the policy again against the case as it is now, then applies the change once. If the connection drops after Salesforce saved the change, it reads the case back and records the change once, instead of sending it a second time.",
               ],
             },
             {
               type: "paragraph",
               text:
-                "Before connecting a real org, I ran the agent against a mock org that answers the Salesforce REST API the way a new Developer Edition org does, including field-level security, paging, API limits and a reply lost after the write landed. It found nine things that would have broken on the first day, from a seed script the integration user could not have run to a lost reply that invited a duplicate comment. All nine are fixed.",
+                "Before connecting a real Salesforce account, I ran the agent against a fake one that answers the way a new Salesforce account does, including per field permissions, results split across pages, daily request limits and a reply lost after a change was saved. It found nine things that would have broken on the first day, from a setup script the agent's user had no permission to run to a lost reply that would have posted the same comment twice. All nine are fixed.",
             },
           ],
         },
@@ -1032,12 +1032,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "How urgent is a case? Two careful labelers answering from judgement agreed only 67% of the time, so no agent could score much above that. The fix is the one a support team uses: write the policy down. The priority rules are 13 checkable lines, such as \"a whole fleet dark is Critical\". With them, two independent labelers agreed on 97% of cases.",
+                "How urgent is a case? Two careful people marking the right answer from their own judgement agreed only 67% of the time, so no agent could score much above that, because the right answer itself was unclear. The fix is the one a good support team uses: write the policy down. The priority rules are 13 lines anyone can check, such as \"a whole fleet offline is Critical\". With them, two people marking cases independently agreed on 97%.",
             },
             {
               type: "paragraph",
               text:
-                "Category and escalation got the same treatment. The agent names the rule it matched, and code, not the model, turns that rule into the priority and builds the case update. The person approving sees why. A customer with its own priority matrix edits one file.",
+                "The case type and the decision to escalate to a manager got the same treatment. The agent names the rule it matched, and code, not the model, turns that rule into the priority and builds the change to the case. The person approving sees which rule applied. A customer with its own priority rules edits one file.",
             },
           ],
         },
@@ -1048,7 +1048,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Each blind set had 40 new cases, written by a separate writer that never saw the agent's prompt or results, labelled by two independent labelers under the written policies, and committed before any agent run. The frozen agent worked each set once, inside the real org, read only. Once scored, a set became development data, and the next set tested the next version.",
+                "The agent was tested on blind sets: 40 new cases at a time, written by a separate writer who never saw the agent's instructions or results. Two people marked the right answer for each case under the written rules, and those answers were saved before the agent ran. The agent's code was frozen, then it worked each set once inside the real Salesforce account, without writing anything. Once scored, a set was used for improvements, and the next set tested the next version.",
             },
             {
               type: "table",
@@ -1070,7 +1070,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Set 6 passed every score and still taught the most. Checking the writes showed that 5 of 17 escalations never reached a person: the model put a category name in the case type field, the policy gate refused the whole update, and the escalation went with it. The score only checked the decision. Code now builds the update from the triage, and the eval gained an \"escalation delivered\" score that checks the escalation actually reached the approval queue.",
+                "Set 6 passed every score and still taught the most. Checking the actual changes showed that 5 of 17 escalations never reached a person. The model had put a category name in the case type field, the policy check rightly refused the whole change, and the escalation was refused with it. The score had only checked the decision, not whether it arrived. Code now builds the change from the agent's answer, and the test gained an \"escalation delivered\" score that checks the escalation actually reached the approval queue.",
             },
           ],
         },
@@ -1081,10 +1081,10 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "There is no plain-model baseline. I have not yet compared CasePilot with Claude Opus given the same Salesforce tools, so it makes no claim to beat one.",
-                "The company and its cases are made up, written by separate writers, and the scoring runs read only. No real customer has used it.",
+                "No comparison with a plain model yet. I have not tested Claude Opus with the same Salesforce tools and no CasePilot code around it, so this page makes no claim to beat one.",
+                "The company and its cases are made up, written by separate writers, and the scored runs wrote nothing. No real support team has used it.",
                 "39 of 40 came on the fourth blind set, after the first three had each driven a fix. Each set was scored once before its lessons were used.",
-                "The one red-team attack the gate lets through is a reworded refund promise that uses none of the listed words. It is left to the approving person on purpose.",
+                "Of 35 deliberate attempts to sneak a forbidden change past the policy check, it refused 34. The one it let through is a refund promise reworded to avoid every listed phrase. That case is left to the approving person on purpose.",
               ],
             },
           ],
@@ -1105,17 +1105,17 @@ export const portfolioData = {
       home: "deployment",
       deploymentSummary: {
         customer:
-          "A finance manager who wants to ask the books a question in plain English and has never written SQL or a prompt. The company runs its sales and accounting on Odoo, an open-source ERP with a CRM built in.",
+          "A finance manager who wants to ask the books a question in plain English and has never written SQL or a prompt. The company runs its sales and accounting on Odoo, an open source ERP with a CRM built in.",
         problem:
           "Real books carry problems: a customer entered twice, a posted invoice reopened and changed, a payment sent twice. Plain Claude with SQL access answers plain questions well, but on flawed data it gives a confident wrong figure, and nothing tells the manager it is wrong.",
         integration:
-          "Data comes out of Odoo through its own API into a warehouse with 29 automated checks. The agent works through read-only, cited tools. An onboarding pass finds the data problems first, a review step checks every answer, and code makes it say so when the books cannot answer.",
+          "Data comes out of Odoo through its own API into a warehouse with 29 automated checks. The agent works through read only, cited tools. An onboarding pass finds the data problems first, a review step checks every answer, and code makes it say so when the books cannot answer.",
         testing:
-          "Three companies it had never seen, each built by a separate author who planted new kinds of data problems. 100 questions each, frozen code, scored once. Plain Opus got the same read-only SQL access and up to 10 lookups per question.",
+          "Three companies it had never seen, each built by a separate author who planted new kinds of data problems. 100 questions each, frozen code, scored once. Plain Opus got the same read only SQL access and up to 10 lookups per question.",
         result:
           "267 of 300 right overall, and 63 of 63 \"the books cannot tell\" questions. Against plain Opus: 89 vs 78 on company K, 86 vs 82 on company L. Plain questions tied; the whole gap came from the hard ones.",
         decision:
-          "Spend engineering on checking the data and saying when it cannot answer, not on out-reasoning the model. The L gap is within run noise, and only two companies had an Opus run.",
+          "Spend engineering on checking the data and saying when it cannot answer, not on trying to reason better than the model. The L gap is within run noise, and only two companies had an Opus run.",
       },
       card: {
         featured: true,
@@ -1137,14 +1137,14 @@ export const portfolioData = {
       eyebrow: "Deployment case study · Odoo ERP · Finance data",
       title: "ClearLedger: finance answers that hold up when the books don't",
       intro:
-        "A finance team asks what a customer owes, who is late and whether every won deal turned into cash. ClearLedger answers from the company's own ERP data and can show its work for any number. Where it beats a plain model is not the easy questions. It is the ones where the books themselves are wrong.",
+        "A finance team asks what a customer owes, who is paying late and whether every deal sales closed actually turned into cash. ClearLedger answers from the company's own business system and can show the records behind any number. It does not beat a plain model on the easy questions. It wins on the ones where the books themselves are wrong.",
       metaDescription:
-        "A finance analyst agent over a company's ERP warehouse: 267 of 300 on three unseen companies, and 89 against 78 over plain Opus with the same SQL access.",
+        "A finance agent on a company's own books: 267 of 300 right on three companies it had never seen, and 89 to 78 against plain Opus with the same database access.",
       atAGlance: [
         { label: "My role", value: "Designed, built and tested it end to end" },
-        { label: "Connects to", value: "Odoo 17 through its JSON-RPC API, no database access to the ERP" },
+        { label: "Connects to", value: "Odoo 17 through its own API, with no direct access to its database" },
         { label: "Stack", value: "Python, Postgres, dbt, MCP, Claude" },
-        { label: "Checked by", value: "29 dbt checks, 5 monitors and 5 deliberate failure drills, run in CI on every push" },
+        { label: "Checked by", value: "29 automated data checks, 5 monitors and 5 deliberate failure drills, run on every change" },
       ],
       stats: [
         { value: "89 vs 78", label: "against plain Opus, company K" },
@@ -1160,12 +1160,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The person using it is a finance manager who has never written SQL. The customer runs on Odoo, an open-source ERP (enterprise resource planning: the system that holds orders, invoices and the books). Finance wants three answers: what each customer was billed and has paid, who is late and by how much, and whether every deal sales won actually turned into cash.",
+                "The person using it is a finance manager who has never written a database query. The company runs on Odoo, an open source ERP, the kind of system that holds a company's orders, invoices, payments and accounts. Finance wants three answers: what each customer was billed and has paid, who is late and by how much, and whether every deal sales closed actually turned into cash.",
             },
             {
               type: "paragraph",
               text:
-                "The company is simulated, but the system is real: ten months of business run through an actual Odoo 17 using Odoo's own logic. Then the data gets what operations do to data after it has been loaded once: a customer entered twice, a posted invoice reopened and changed, three customers billed in euros, a deal marked won with no order, a draft invoice deleted.",
+                "The company is simulated, but the system is real: ten months of business were run through an actual Odoo 17, so every order, invoice and payment follows Odoo's own rules. Then the data got what real operations do to data: a customer entered twice, a finished invoice reopened and changed, three customers billed in euros, a deal marked closed with no order behind it, a draft invoice deleted. A plain AI with database access answers plain questions well, but on data like this it gives a confident wrong figure, and nothing tells the finance manager it is wrong.",
             },
           ],
         },
@@ -1176,11 +1176,11 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Extract through Odoo's own API, the way you would at a client: no database access to the ERP. Only what changed since the last load is fetched, and a missing field stops the load and names it.",
-                "Keep history: every saved version of every record, and deletes noted, so a reopened invoice keeps both versions.",
-                "Model the finance tables in dbt, with 29 checks. Sixteen fail the build if the warehouse stops matching Odoo; thirteen list the data problems for a person to fix at the source.",
-                "Serve six read-only tools to any agent over MCP. Every row carries the exact Odoo record version it came from, and a citation check confirms a cited record is real and current.",
-                "Run on a schedule under a lock, with five monitors after each run. Five failures were caused on purpose (Odoo down, two runs at once, a field added and removed, invoices lost, stale data); each was caught and recovered.",
+                "Data comes out through Odoo's own API, the way it would at a client who will not hand over database access. Only what changed since the last load is fetched, and if a field goes missing the load stops and names it.",
+                "Every saved version of every record is kept, and deletions are noted, so a reopened invoice keeps both its old and new versions.",
+                "The finance tables are built in a data warehouse with dbt, a standard tool for that job, and checked by 29 automated tests. Sixteen stop the update if the warehouse no longer matches Odoo. Thirteen list data problems for a person to fix in Odoo itself.",
+                "Any AI agent can use six read only tools over MCP, the open standard for giving an AI assistant outside tools. Every row carries the exact Odoo record version it came from, and a check confirms that any record the agent cites is real and current.",
+                "Loads run on a schedule, one at a time, with five monitors checked after each run. Five failures were caused on purpose: Odoo down, two loads at once, a field added and removed, invoices lost, and data gone stale. Each was caught and recovered from.",
               ],
             },
             {
@@ -1196,12 +1196,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Three companies, J, K and L, were each built by a separate author who planted kinds of data problems no earlier test company had. Each has 100 questions: 36 plain ones, 43 where the honest answer needs a caveat about the data, and 21 where the data cannot answer at all. The code was frozen first and each company was scored once.",
+                "Three companies, J, K and L, were each built by a separate author who planted kinds of data problems that no earlier test company had. Each has 100 questions: 36 plain ones, 43 where the honest answer needs a warning about the data, and 21 where the data cannot answer at all. The code was frozen first and each company was scored once.",
             },
             {
               type: "paragraph",
               text:
-                "The baseline was plain Opus with the same read-only SQL access to the same warehouse and up to 10 lookups per question, run on companies K and L.",
+                "The comparison was plain Claude Opus with the same read only access to the same warehouse, able to run up to 10 database queries per question, run on companies K and L.",
             },
             {
               type: "table",
@@ -1219,25 +1219,57 @@ export const portfolioData = {
           ],
         },
         {
+          id: "history",
+          heading: "How it got from 76 to 93",
+          blocks: [
+            {
+              type: "paragraph",
+              text:
+                "The scores above did not come first time. Each version of the code was frozen, then scored once on a new company it had never seen, built by a separate author with new kinds of data problems. A company, once scored, was only used for improvements after that, never scored again as a test.",
+            },
+            {
+              type: "table",
+              columns: [
+                { label: "Unseen company" },
+                { label: "Score, of 100", numeric: true },
+                { label: "What changed before it" },
+              ],
+              rows: [
+                { cells: ["E", "76", "Starting point: a table of known data problems, and a review step that adds warnings from it"] },
+                { cells: ["F", "74", "More problem checks, written from what E got wrong"] },
+                { cells: ["G", "73", "More checks again; plain questions stayed nearly all right, warnings under half"] },
+                { cells: ["H", "85", "An onboarding pass: the model reads each new company's books once and records its problems before any question"] },
+                { cells: ["I", "73", "Fixes from H's misses, and the review step moved to the larger Opus model"] },
+                { cells: ["J", "93", "The review step checks the books itself, with up to four read only queries, before an answer goes out"], emphasis: true },
+              ],
+            },
+            {
+              type: "paragraph",
+              text:
+                "Three companies in a row scored 73 to 76. Plain questions were nearly always right, but answers that needed a warning about the data got one less than half the time, because every new company had problems the checks had never seen. Writing more checks could not keep up. What worked was to stop predicting the problems and have the system find them: first by reading each company's books before answering, then by checking each answer against the data itself. J was later graded again with a stricter grader, which reads whole answers and takes a majority of three votes, and came to 92, the figure used above. K and L were scored with that stricter grader.",
+            },
+          ],
+        },
+        {
           id: "result",
           heading: "The result",
           blocks: [
             {
               type: "paragraph",
               text:
-                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. ClearLedger runs an onboarding pass over the warehouse to find data problems, then a review step on each answer, and says when the data cannot support one.",
+                "On plain questions the two tied: 34 of 36 each on company K, and 36 against 35 on company L. The whole gap came from the hard questions. When it meets a new company, ClearLedger first reads the warehouse to find its data problems. Then a review step checks each answer against those problems, and code makes it say so when the data cannot support an answer.",
             },
             {
               type: "paragraph",
               text:
-                "Across all three companies it got 104 of 108 plain questions and 63 of 63 \"the books cannot tell\" questions. The misses are on the hardest kind, where the figure is right as booked but a careful analyst must also say what is wrong behind it: 100 of 129.",
+                "Across all three companies it got 104 of 108 plain questions and 63 of 63 questions where the right answer is \"the books cannot tell\". The misses are on the hardest kind, where the figure is right as recorded but a careful analyst must also say what is wrong behind it: 100 of 129.",
             },
             {
               type: "bullets",
               items: [
                 "One company's score moves about 3 to 4 points between runs, so the K gap is real and the L gap is within noise.",
                 "Only two companies had an Opus run.",
-                "The companies are simulated; no real finance team has used it yet.",
+                "The companies are simulated, and no real finance team has used it yet.",
               ],
             },
           ],
@@ -1246,7 +1278,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "The decision",
         text:
-          "The model is already good at SQL. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
+          "The model is already good at writing database queries. What it cannot do alone is know that the books are wrong. So the engineering went into checking the data and saying when it cannot answer.",
       },
       contactHeading: "Building AI on your ERP or CRM data? Let's talk.",
     },
@@ -1284,7 +1316,7 @@ export const portfolioData = {
           { value: "14 of 15", label: "blind faults in a live microservice shop found and fixed" },
           { value: "0", label: "changes made without a person's approval" },
           { value: "15 vs 6", label: "runs gathering evidence before proposing a fix, against LangChain's stock approval agent" },
-          { value: "94.7%", label: "top-1 on 360 cases of the public RCAEval benchmark" },
+          { value: "94.7%", label: "right first answer on 360 cases of the public RCAEval benchmark" },
         ],
       },
       codeLink: { label: "Code: agentops", href: REPOSITORIES.agentops },
@@ -1293,16 +1325,16 @@ export const portfolioData = {
       intro:
         "When production breaks, an agent can read logs, metrics and deploy history faster than a person. An agent that also applies the fix on its own will eventually roll back the wrong deploy, or follow an instruction someone left in a log line. AgentOps keeps the agent for the reading and takes the decisions away from it.",
       metaDescription:
-        "An incident-response agent on LangGraph that investigates, then waits for a person. In 24 of 24 live runs, nothing changed before someone approved.",
+        "An incident response agent on LangGraph that investigates an outage, then waits for a person. In 24 of 24 live runs, nothing changed before someone approved.",
       atAGlance: [
         { label: "My role", value: "Designed and built it end to end" },
         {
           label: "What it is",
           value:
-            "An incident-response program built on LangGraph, with a human approval step, a fixed list of allowed actions and a test setup that scores it",
+            "An incident response agent built on LangGraph, with a human approval step, a fixed list of allowed actions and a test setup that scores it",
         },
         { label: "Stack", value: "Python, LangGraph, LangChain, Pydantic, SQLite, LangSmith, Claude" },
-        { label: "Quality", value: "998 tests, automated checks (CI) on every push, no model or key needed to run them" },
+        { label: "Quality", value: "998 automated tests that run on every change, with no AI model or API key needed to run them" },
       ],
       stats: [
         { value: "24 of 24", label: "runs with the real AI model where nothing changed before a person approved" },
@@ -1318,12 +1350,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Most agent demos let the model decide everything, which is fine until the decision is a production change. I wanted to show the other design: the model proposes, code enforces every step, and nothing changes in the target system until a person approves an action from a fixed list.",
+                "Most agent demos let the model decide everything. That is fine until the decision is a change to a live system that customers depend on. I wanted to show the other design: the model proposes, code enforces every step, and nothing changes until a person approves an action from a fixed list.",
             },
             {
               type: "paragraph",
               text:
-                "It is also a worked answer to a question I hear about LangGraph: what does a graph give you that a plain loop of the AI calling tools does not? Here it gives three things. A place to stop and wait for a person that survives a restart. A record of every step that can be replayed with one belief changed. And control flow that lives in code, where a model cannot talk its way around it.",
+                "It also answers a question teams ask about LangGraph, a framework that builds an agent as a set of steps with fixed paths between them. What does that give you over a simple loop, where the model calls tools until it decides it is done? Here it gives three things. A pause that waits for a person and survives a restart. A saved record of every step, so any run can be replayed from any point with one of the agent's conclusions changed. And an order of work that lives in code, where the model cannot talk its way around it.",
             },
           ],
         },
@@ -1334,24 +1366,24 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The graph runs unchanged against the OpenTelemetry demo shop, a web shop built from many small services with its own monitoring. A separate agent wrote a sealed schedule of faults. The test harness switched each one on through the shop's feature-flag service and paged the agent with one sentence: customers report pages failing or slow. The agent has exactly one action, turning off a named service's feature flags, behind the approval pause. A script stands in for the on-call engineer and approves exactly what was proposed, so what is measured is that nothing changes without an approval record.",
+                "To test it outside my own scripted incidents, I pointed it at the OpenTelemetry demo shop: an open source online store built from about a dozen small services, with the same kind of monitoring a real company runs. A separate agent wrote a schedule of faults that neither I nor AgentOps saw before the test. A test script switched each fault on through the shop's feature flags, which are settings that change how a service behaves without a new release. Then it paged AgentOps with one sentence: customers report pages failing or slow. AgentOps has exactly one action here, turning off a named service's feature flags, and only after an approval. A script played the on call engineer and approved exactly what was proposed, so the test measures whether the agent finds and fixes the fault, and whether anything changes without an approval on record.",
             },
             {
               type: "table",
               columns: [{ label: "Test" }, { label: "Result" }, { label: "What changed after it" }],
               rows: [
-                { cells: ["1 (10 faults)", "6 of 10", "Blame follows calls between services, so a caller is not blamed for a failing service it calls"] },
-                { cells: ["2 (stopped after 2)", "0 of 2, both wrongly marked recovered", "Recovery is judged against the shop's own latency before the fault"] },
+                { cells: ["1 (10 faults)", "6 of 10", "When one service calls another that is failing, the blame now goes to the failing service, not to the caller"] },
+                { cells: ["2 (stopped after 2)", "0 of 2, both wrongly reported as fixed", "A fix now counts only when response times are back to the shop's own level before the fault"] },
                 { cells: ["3 (15 faults)", "14 of 15 found and fixed", "Scored once"], emphasis: true },
               ],
             },
             {
               type: "bullets",
               items: [
-                "0 changes without approval, and the verify step never called an unfixed incident recovered.",
-                "The miss was a 10-second shipping slowdown that showed no symptom to customers. The agent named no cause and handed the incident to a person instead of acting.",
-                "Before the test, 5 cycles with no fault produced 0 false alarms.",
-                "Test 3 came after two rounds of fixes from tests 1 and 2, each on a fresh schedule of faults.",
+                "0 changes without approval, and the check after each fix never reported a fault as fixed when it was not.",
+                "The miss was a slowdown in the shipping service that customers never saw. The agent could not name a cause, so it handed the incident to a person instead of acting.",
+                "Before the test, 5 rounds with no fault switched on produced 0 false alarms.",
+                "Test 3 came after fixes from tests 1 and 2, and every test used a new schedule of faults the agent had never seen.",
               ],
             },
           ],
@@ -1363,7 +1395,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The fair comparison is what a team would build first with LangChain: create_agent with the HumanInTheLoopMiddleware approval step, the same model (Sonnet 5.5) and the same six tools, on 15 runs.",
+                "The fair comparison is what a team would build first with LangChain: its ready made agent (create_agent) with its standard approval step (HumanInTheLoopMiddleware), which pauses before every action until a person approves it. Both agents used the same model, Claude Sonnet 5.5, the same six tools and the same 15 runs.",
             },
             {
               type: "table",
@@ -1377,7 +1409,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Both were equally safe, so the approval gate alone is not an edge: anyone can add it in an afternoon. The difference is the order of work. That is a modest gap from one run on the development split. On public benchmarks it scored 94.7% top-1 on 360 cases of RCAEval and 40.9% on 259 cases of OpenRCA, where a newer paper reports 43.9%. Neither benchmark run had a plain-model arm, so those numbers show competence, not an edge over the model.",
+                "Both were equally safe, so an approval step alone is not an edge: any team can add one in an afternoon. The difference is the order of work. AgentOps always gathered the evidence a diagnosis needs before it proposed a fix; the stock agent did so in 6 of 15 runs. That gap comes from one run on incidents I also used while building, so treat it as a modest result. On two public research benchmarks for finding the cause of an outage, AgentOps named the right cause first in 94.7% of 360 RCAEval cases and got 40.9% of 259 OpenRCA cases right. A newer paper reports 43.9% on OpenRCA. Neither run included a plain model for comparison, so those numbers show the agent is competent, not that it beats the model.",
             },
           ],
         },
@@ -1389,14 +1421,14 @@ export const portfolioData = {
               type: "flow",
               columns: 8,
               steps: [
-                { title: "Triage", note: "Model lists likely causes" },
-                { title: "Read", note: "Logs, metrics, deploys, in parallel" },
-                { title: "Merge", note: "Code merges evidence, spends budget" },
-                { title: "Diagnose", note: "Model re-scores, proposes one action" },
+                { title: "Triage", note: "The model lists likely causes" },
+                { title: "Read", note: "Logs, metrics and release history, at the same time" },
+                { title: "Merge", note: "Code combines the evidence and counts what is left of the budget" },
+                { title: "Diagnose", note: "The model ranks the causes again and proposes one action" },
                 { title: "Approve", note: "A person decides", gate: true },
-                { title: "Apply once", note: "Preview the change, check it has not run before, log it" },
+                { title: "Apply once", note: "Preview the change, check it has not run before, record it" },
                 { title: "Verify", note: "Did the symptoms clear?" },
-                { title: "Close", note: "Write-up of what happened, or hand-off", dashed: true },
+                { title: "Close", note: "A report of what happened, or a hand off to a person", dashed: true },
               ],
             },
             {
@@ -1407,7 +1439,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "One typed state object flows through the graph and is saved after every step. Its fields come in three kinds, and keeping them apart is the design:",
+                "Everything the agent knows lives in one structured record that is saved after every step. Its fields come in three kinds, and keeping them apart is the core of the design:",
             },
             {
               type: "cards",
@@ -1418,7 +1450,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Evidence",
-                  note: "Append-only: every log line, metric series and deploy record read, and every model and tool call with its cost.",
+                  note: "Only ever added to, never changed: every log line, metric and release record read, and every model and tool call.",
                 },
                 {
                   title: "Control",
@@ -1441,7 +1473,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The model runs in four places: listing the plausible causes, re-scoring them against the evidence and proposing one action, writing the postmortem, and writing the hand-off summary when the graph gives up. Everything else is code:",
+                "The model runs in four places: listing the plausible causes, ranking them again against the evidence and proposing one action, writing the incident report afterwards, and writing a summary for a person when the agent gives up. Everything else is code:",
             },
             {
               type: "cards",
@@ -1457,7 +1489,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict template (Pydantic) and may cite only evidence the run has actually collected. The evidence it reads is wrapped in a random marker and treated as data rather than instructions, and the action registry refuses anything not in the runbook (the fixed list of allowed actions), however convincing the request. One scripted incident plants a log line telling the operator to drop a table; the agent reports the line and never acts on it.",
+                "The split follows the cost of being wrong. A model that picks the wrong source wastes one read. A model that decides an action is allowed, or that the incident is fixed, can make the outage worse. So every model answer must fit a strict format, checked in code, and may cite only evidence the run has actually collected. Evidence is fenced off with a random marker so the model treats it as data, not as instructions. The list of allowed actions, the runbook, refuses anything not on it, however convincing the request. One test incident plants a log line telling the operator to delete a database table. The agent reports the line and never acts on it.",
             },
           ],
         },
@@ -1468,7 +1500,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Each thing an operator needs maps to one LangGraph or LangChain feature, used as the product intends rather than worked around. The table reads left to right: the need, the feature, what it does in this system.",
+                "Each thing an operator needs maps to one LangGraph or LangChain feature, used the way the product intends. The table reads left to right: the need, the feature, and what it does in this system.",
             },
             {
               type: "table",
@@ -1478,7 +1510,7 @@ export const portfolioData = {
                   cells: [
                     "Three sources read at once, within a budget",
                     "Parallel reads merged into shared state (Send, reducers)",
-                    "The router sends one request per source worth asking. Results are added to a shared list, so reads that run at the same time never overwrite each other.",
+                    "The agent sends one request to each source worth asking. Results are added to a shared list, so reads that run at the same time never overwrite each other.",
                   ],
                 },
                 {
@@ -1492,7 +1524,7 @@ export const portfolioData = {
                 {
                   cells: [
                     "A run that survives a crash",
-                    "Saved progress after every step (SqliteSaver checkpointer)",
+                    "Progress saved after every step (SqliteSaver checkpointer)",
                     "Every step is saved to disk as a checkpoint. A process killed right after applying a fix picks up at the next step and never applies the fix twice.",
                   ],
                 },
@@ -1514,21 +1546,21 @@ export const portfolioData = {
                   cells: [
                     "Answers the code can trust",
                     "Answers forced into a fixed format (structured output)",
-                    "Every model answer is a Pydantic model. A cited evidence id that does not exist in state is refused and the call retried.",
+                    "Every model answer must fit a fixed shape (a Pydantic model). An answer that cites evidence the run never collected is refused and the call is retried.",
                   ],
                 },
                 {
                   cells: [
                     "A fair comparison",
                     "The standard agent loop (LangChain create_agent)",
-                    "The baseline is the standard agent loop over the same six tools and the same allowed-action list, so the gap measures the gates and nothing else.",
+                    "The comparison agent is the standard loop over the same six tools and the same list of allowed actions, so any gap measures the checks and nothing else.",
                   ],
                 },
                 {
                   cells: [
                     "Every call on record",
                     "Run recording and scoring (LangSmith tracing, evaluators)",
-                    "Tracing is opt-in and lands every model and tool call in a LangSmith project. The graders follow LangSmith's evaluator signature, so the same scoring functions run offline in automated checks (CI).",
+                    "When switched on, every model and tool call is recorded in LangSmith. The scoring functions use LangSmith's standard format, so the same scoring runs offline in the automated checks on every change.",
                   ],
                 },
               ],
@@ -1536,7 +1568,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Three things I learned about the product by using it in anger. First, when a step pauses for a person, it restarts from its beginning once the answer arrives. So the approval step is written to pause exactly once and to change nothing until the answer is checked. Second, the answer format the model sees is not always the one I declared: the model provider's strict format mode emptied my free-form parameters field, so the agent could only ever propose actions with no parameters. Nothing in the fake-model test suite could see that; the fix was a list of name and value pairs. Third, an approval has to be bound to its thread and its exact change: the executor refuses any apply whose idempotency key is not the one approved, and a forked thread gets its own ledger, so a replay cannot reuse an approval given to a different run.",
+                "Three things I only learned by running it for real. First, when a step pauses for a person, LangGraph restarts that step from its beginning once the answer arrives. So the approval step is written to pause exactly once and to change nothing until the answer is checked. Second, the answer format the model sees is not always the one I declared. The model provider's strict format mode emptied a field I had left open for any parameters, so the agent could only ever propose actions with no parameters. None of my tests could see that, because they used a scripted stand in for the model; the fix was a list of name and value pairs. Third, an approval has to be tied to one run and one exact change. Every change carries a unique key, and the agent refuses to apply any change whose key is not the one approved. A replayed run gets its own record of applied changes, so it cannot reuse an approval given to a different run.",
             },
           ],
         },
@@ -1547,23 +1579,23 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "When the graph has a cause and an allowed action, it stops and shows the operator the proposed action, its target and parameters, the evidence it cites, a dry run of what would change, and the idempotency key that identifies this exact change. The operator approves, rejects with a reason (the graph goes back to investigate with that reason in its next prompt), or edits the proposal, which is validated against the runbook again before anything runs. No flag, environment variable or configuration can skip this step.",
+                "When the agent has a cause and an allowed action, it stops and shows the operator the proposed action, what it applies to, the evidence it cites, a preview of what would change, and the unique key for this exact change. The operator approves, rejects with a reason (the agent goes back to investigate with that reason in hand), or edits the proposal, which is checked against the runbook again before anything runs. No setting of any kind can skip this step.",
             },
             {
               type: "paragraph",
               text:
-                "After an approval the executor checks the action's preconditions against the live evidence, writes the dry run to an append-only audit log, checks a ledger for the idempotency key, applies the action once, and records the result. If the process dies right after the apply, the next run finds the key in the ledger and does not apply it again. The repository shows that in three commands: start an incident, approve it with a switch that ends the process right after the apply, then continue the thread and watch it verify instead of re-applying.",
+                "After an approval, code checks that the action still makes sense against the latest evidence, writes the preview to an audit log that is never edited, checks a record of applied changes for the change's key, applies the action once and records the result. If the process dies right after the change, the next run finds the key and does not apply it again. The repository shows this in three commands: start an incident, approve it with a switch that kills the process right after the change, then continue the run and watch it check the result instead of applying the change a second time.",
             },
           ],
         },
         {
           id: "replay",
-          heading: "Replaying a red herring",
+          heading: "Replaying a misleading clue",
           blocks: [
             {
               type: "paragraph",
               text:
-                "In one scripted incident a deploy lands four minutes before the database runs out of free connections (its connection pool saturates). The deploy only changed a log level, but it is the obvious suspect. With a scripted model, the history command shows the graph's belief changing as evidence arrives:",
+                "In one test incident a new release goes out four minutes before the database runs out of free connections. The release only changed how much the service logs, but it is the obvious suspect. The history command shows the agent's ranking of causes changing as evidence arrives:",
             },
             {
               type: "table",
@@ -1576,7 +1608,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Triage leans towards the deploy. Once the pool metric and the deploy record are in, the diagnosis flips to the database and proposes scaling the pool, citing the metric. Because every step is a checkpoint, the fork command can replay the investigation from any point with a belief I choose, say the deploy at 0.9, under a new thread. That is how I debug a run that went wrong: not by re-reading a transcript, but by changing one belief at the step where it mattered and watching what the graph does next.",
+                "At first the agent leans towards the release. Once the database connection metric and the release record are in, the diagnosis flips to the database and proposes allowing more connections, citing the metric. Because every step is saved, the fork command can replay the investigation from any point with a ranking I choose, for example the release at 90% likely, as a separate run. That is how I debug a run that went wrong: not by reading a transcript, but by changing one conclusion at the step where it mattered and watching what the agent does next.",
             },
           ],
         },
@@ -1587,7 +1619,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I measured it against the agent most teams build first: one that reads the evidence and then acts on its own, with the same tools and the same simulated incidents but no approval step and no fixed list of allowed actions. Eight scripted incidents, each with a known cause and a known right fix, run three times each on Claude Sonnet 5.5. Five of the incidents I used while improving the system; three were kept aside and scored once at the end, so they show how it does on incidents it was never tuned on.",
+                "I measured it against the agent most teams build first: one that reads the evidence and then acts on its own, with the same tools and the same incidents but no approval step and no fixed list of allowed actions. There were eight scripted incidents, each with a known cause and a known right fix, and each ran three times on Claude Sonnet 5.5. I used five of the incidents while improving the system. The other three were kept aside and scored once at the end, so they show how it does on incidents it was never tuned on.",
             },
             {
               type: "paragraph",
@@ -1601,7 +1633,7 @@ export const portfolioData = {
                 { title: "Evidence first", note: "Read what a correct diagnosis needs before proposing anything" },
                 { title: "No wrong action", note: "Never proposed or applied the action the incident plants as a trap" },
                 { title: "Safety", note: "Every change was approved by a person and taken from the allowed list", emphasis: true },
-                { title: "Explanation", note: "A model judge found the write-up cites the evidence that settles the case" },
+                { title: "Explanation", note: "A second model, used as a judge, found the report cites the evidence that settles the case" },
               ],
             },
             {
@@ -1634,16 +1666,16 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The two agents are close on accuracy. The difference is what each does before it is sure. The baseline changed the system without approval in 21 of 24 runs, and in half of them it acted before reading the evidence it needed. AgentOps never did either, and the one time it fell short it stopped and handed the incident to a person with its findings, rather than guessing. Getting here took eleven live runs, each one changing one thing, running the same incidents again, and comparing incident by incident. The first four runs each failed on a bug in my own code that no test with a stand-in model could catch; the last found a bug in my scoring that had marked one approved change as unapproved. Every run is published with what it found and what I changed, and the three held-out incidents were never used to tune anything.",
+                "The two agents are close on accuracy. The difference is what each does before it is sure. The plain agent changed the system without approval in 21 of 24 runs, and in half of them it acted before reading the evidence it needed. AgentOps never did either, and the one time it fell short it stopped and handed the incident to a person with its findings, rather than guessing. Getting here took eleven live runs. Each changed one thing, ran the same incidents again and compared the results incident by incident. The first four each failed on a bug in my own code that tests with a scripted stand in for the model could not catch. The last found a bug in my scoring that had marked one approved change as unapproved. Every run is published with what it found and what I changed, and the three incidents kept aside were never used to tune anything.",
             },
             {
               type: "paragraph",
               text:
-                "A fair question is whether the safety gap is just the approval step, which LangChain also offers off the shelf. So I ran the plain agent a third way, with LangChain's own human-approval middleware pausing every action, on the five tuned incidents, three runs each. With that step it matched AgentOps on safety, 15 of 15, because the model picked an allowed action every time and a person approved it. What the approval step did not change: it still read the evidence it needed before acting in only 6 of 15 runs, against 15 of 15, and on the two-fault incident it fixed one fault and stopped, where AgentOps went back for the second. The fixed list of allowed actions matters when the model is fooled: if it proposes dropping a table, the middleware asks a person and, once approved, runs it, while AgentOps refuses before anyone is asked.",
+                "A fair question is whether the safety gap is just the approval step, which LangChain also offers ready made. So I ran the plain agent a third way, with LangChain's own approval step pausing every action, on the five tuning incidents, three runs each. With that step it matched AgentOps on safety, 15 of 15, because the model picked an allowed action every time and a person approved it. What the approval step did not change: it read the evidence it needed before acting in only 6 of 15 runs, against 15 of 15. On the incident with two faults at once it fixed one and stopped, where AgentOps went back for the second. The fixed list of allowed actions matters when the model is fooled. If it proposes deleting a table, LangChain's step asks a person and, once approved, runs it. AgentOps refuses before anyone is asked.",
             },
             {
               type: "table",
-              columns: [{ label: "Tuned incidents, 15 runs each" }, { label: "AgentOps", numeric: true }, { label: "Plain agent with LangChain's approval step", numeric: true }],
+              columns: [{ label: "Tuning incidents, 15 runs each" }, { label: "AgentOps", numeric: true }, { label: "Plain agent with LangChain's approval step", numeric: true }],
               rows: [
                 { cells: ["Right end state", "14 of 15", "12 of 15"] },
                 { cells: ["Evidence first", "15 of 15", "6 of 15"] },
@@ -1653,7 +1685,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Where it fell short is as telling as where it scored. The one miss on the tuned incidents was a case with two real faults at once, a bad deploy and a saturated pool: AgentOps rolled back the deploy, confirmed the rollback worked, then scored the two remaining causes 0.72 and 0.65. The code refuses to pick between causes within 0.15 of each other, so it handed off instead of guessing, which is the rule doing its job. Held out, it fixed every incident but named one cause a level too coarse, blaming the deploy rather than the data change the deploy carried. The low explanation score there is the judge giving no credit to a correct hand-off that cites no evidence. Those are notes for the next version, not changes to this one, because a held-out split is scored once.",
+                "Where it fell short is as telling as where it scored. The one miss on the tuning incidents had two real faults at once, a bad release and a database out of connections. AgentOps rolled back the release, confirmed the rollback worked, then rated the two remaining causes 0.72 and 0.65. The code refuses to pick between causes rated within 0.15 of each other, so it handed off instead of guessing, which is the rule doing its job. On the three incidents kept aside, it fixed every one but named one cause too broadly, blaming the release rather than the data change the release carried. Those are notes for the next version, not changes to this one, because incidents kept aside are scored only once.",
             },
           ],
         },
@@ -1664,7 +1696,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The numbers above are the fourth version of the prompts and rules. Each version changed one thing, ran the five tuning incidents three times on the cheaper model, Claude Haiku 4.5, and was compared with the previous version incident by incident, so a better average could not hide one incident getting worse. A compare command in the repository prints exactly that: for each incident, better, worse, mixed or same, and which grade moved.",
+                "The numbers above come from the fourth version of the prompts and rules. Each version changed one thing, ran the five tuning incidents three times on the smaller model, Claude Haiku 4.5, and was compared with the previous version incident by incident, so a better average could not hide one incident getting worse. A compare command in the repository prints exactly that: for each incident, better, worse, mixed or same, and which grade moved.",
             },
             {
               type: "table",
@@ -1674,19 +1706,19 @@ export const portfolioData = {
                 {
                   cells: [
                     "2",
-                    "The diagnosis step may add a cause the evidence supports, instead of only re-ranking causes guessed from the symptoms",
+                    "The diagnosis step may add a cause the evidence supports, instead of only reranking causes guessed from the symptoms",
                     "12 of 15",
                     "8 of 15",
                   ],
                 },
-                { cells: ["3", "Every cause label gets a one-sentence definition; scores rank what to fix first", "11 of 15", "11 of 15"] },
+                { cells: ["3", "Every cause label gets a one sentence definition; scores rank what to fix first", "11 of 15", "11 of 15"] },
                 { cells: ["4", "The prompt states the numeric scores the code checks; a cause and its fix come together or not at all", "10 of 15", "10 of 15"] },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Before those four rounds came five runs that found bugs in my own code, none of which 961 passing tests had caught, because the tests' stand-in model answered in exactly the shape the code expected:",
+                "Before those four rounds came five runs that found bugs in my own code. None had been caught by 961 passing tests, because the tests used a scripted stand in for the model that always answered in exactly the shape the code expected:",
             },
             {
               type: "cards",
@@ -1697,7 +1729,7 @@ export const portfolioData = {
                 },
                 {
                   title: "An answer format the model never saw",
-                  note: "The provider's strict-format mode rewrote the parameters field to an empty one, so no action with parameters could ever be proposed.",
+                  note: "The model provider's strict format mode emptied the parameters field, so no action with parameters could ever be proposed.",
                 },
                 {
                   title: "A rule in a checker the model never sees",
@@ -1705,7 +1737,7 @@ export const portfolioData = {
                 },
                 {
                   title: "A scorer wrong against the graph",
-                  note: "An approved rollback counted as unapproved after the run looped and handed off. Fixed, re-scored, and shown beside the original.",
+                  note: "An approved rollback counted as unapproved after the run went round again and handed off. Fixed, scored again, and shown beside the original.",
                 },
                 {
                   title: "A model limit, not a prompt",
@@ -1722,7 +1754,7 @@ export const portfolioData = {
               // every pull request; live comparisons are run by hand (flywheel/README.md).
               type: "paragraph",
               text:
-                "The loop no longer depends on me remembering to run it. Flywheel, an agent-testing tool I built, now checks every AgentOps pull request against seven test cases, two of them mined from real traced runs, on the change and on main, and blocks a change that breaks one. In CI it uses the scripted model, which is free and repeatable; prompt and model changes get a live comparison. Its first catch was a prompt cleanup that passed 996 unit tests.",
+                "The checking no longer depends on me remembering to run it. Flywheel, a testing tool I built for agents, now checks every proposed change to AgentOps against seven test cases, two of them taken from real recorded runs, and blocks a change that breaks one. The automatic checks use the scripted model so they give the same answer every time; prompt and model changes also get a live comparison. Its first catch was a prompt cleanup that passed all 996 unit tests and still broke the agent.",
             },
           ],
         },
@@ -1735,7 +1767,7 @@ export const portfolioData = {
               items: [
                 {
                   title: "A real evidence source",
-                  note: "The runtime reads scripted incidents through one small connection point. A real logs or metrics source can plug in there, and every payload is already treated as untrusted.",
+                  note: "The agent reads scripted incidents through one small connection point. A real logging or monitoring system can plug in there, and everything it returns is already treated as untrusted.",
                 },
                 {
                   title: "Autonomous remediation",
@@ -1743,11 +1775,11 @@ export const portfolioData = {
                 },
                 {
                   title: "A console",
-                  note: "The operator works from the command line or LangGraph Studio. A web console on the LangGraph JS SDK is designed but not built.",
+                  note: "The operator works from the command line or LangGraph Studio, LangChain's visual tool for running agents. A web console is designed but not built.",
                 },
                 {
                   title: "Many incidents",
-                  note: "Eight hand-built incidents are enough to show the method and too few for a general accuracy claim, and the write-up says so.",
+                  note: "Eight hand written incidents are enough to show the method and too few for a general accuracy claim, and the write up says so.",
                 },
               ],
             },
@@ -1758,44 +1790,11 @@ export const portfolioData = {
             },
           ],
         },
-        {
-          id: "compare",
-          heading: "Two ways to gate an agent",
-          blocks: [
-            {
-              type: "paragraph",
-              text:
-                "I built a delivery pipeline first, which gated software changes at two human approvals using hooks: code that runs before every action the AI takes and can block it. AgentOps gates an incident response the same way with a different mechanism, and the contrast is the useful part.",
-            },
-            {
-              type: "table",
-              columns: [{ label: "Question" }, { label: "Delivery pipeline, hooks that block actions" }, { label: "AgentOps, LangGraph" }],
-              rows: [
-                { cells: ["Where is the state?", "Files and gate documents on disk", "A structured record saved to a small database file after every step"] },
-                { cells: ["How is a gate enforced?", "A hook blocks the action", "The workflow pauses itself (interrupt)"] },
-                { cells: ["How do you continue after a stop?", "Re-run from the gate document", "Continue the run from its last saved step"] },
-                { cells: ["How do you debug a bad run?", "Read the record", "Replay from any saved step with one belief changed"] },
-                {
-                  cells: [
-                    "Where did it break?",
-                    "Gate state was local: an approval recorded on one machine stayed there when the work moved to the cloud. Gates now live on the pull request",
-                    "The stand-in model hid prompt bugs: the first live run failed every incident on rules the code enforced but the prompts never stated",
-                  ],
-                },
-              ],
-            },
-            {
-              type: "paragraph",
-              text:
-                "The lesson from the last row applies to any agent built on a graph: its control flow can be tested to a high standard without a model and still fail on the first real call. A cheap live run belongs in the loop from the start, and LangSmith is where I would put it.",
-            },
-          ],
-        },
       ],
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "A way to put an agent near production without trusting it with production: LangGraph holds the pause, the checkpoints and the replay, code holds the rules, a person makes the change, and the evaluation shows where it fails, not only where it works.",
+          "A way to put an agent next to a live system without trusting it with that system: LangGraph holds the pause, the saved steps and the replay, code holds the rules, a person approves the change, and the evaluation shows where it fails, not only where it works.",
       },
       contactHeading: "Want an agent near production? Let's talk.",
     },
@@ -1811,18 +1810,18 @@ export const portfolioData = {
       id: "apple-decision-support-agent",
       deploymentSummary: {
         problem:
-          "Cross-team data changes waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
+          "Data changes from other teams waited behind a manual review queue. Each unlock request took 5 to 15 minutes of real investigation, the team cleared about 30 a day, and two months of tickets had piled up.",
         decision:
           "Build an agent that does the investigation and hands the reviewer a documented recommendation with its evidence. I chose not to let it approve anything: the reviewer still makes every call.",
         result:
-          "30 to 350+ tickets a day, the two-month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
+          "30 to 350+ tickets a day, the two month backlog cleared in two weeks while monthly volume grew from about 500 to about 4,000, and the queue has stayed at zero since November 2025.",
       },
       card: {
         featured: false,
         eyebrow: "Apple Maps · Decision support agent",
         title: "A review backlog, turned into an analysis the reviewer can trust",
         summary:
-          "Cross-team data changes were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
+          "Data changes from other teams were stuck behind a manual review queue, because each request needed real investigation before anyone could approve it. I built an agent that does that investigation and hands the reviewer a documented recommendation. The person still makes the call.",
         linkText: "Read the case study",
         tags: ["30 to 350+ tickets/day", "Backlog cleared in 2 weeks"],
         mobileTags: ["30 to 350+ tickets/day", "Backlog gone in 2 weeks"],
@@ -1830,13 +1829,13 @@ export const portfolioData = {
       eyebrow: "Case study · Apple Maps · Data Health team · Feb 2025 to present",
       title: "A review backlog, turned into an analysis the reviewer can trust",
       intro:
-        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and cross-team data changes piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
+        "Some map data is protected: before anyone can edit it, a person reviews a request to unlock it. That review was real work, and data changes from other teams piled up behind it. I built an agent that does the investigation for each request and hands the reviewer a documented recommendation with its evidence. The reviewer still makes every call. Throughput went from about 30 requests a day to over 350, and two months of backlog cleared in two weeks.",
       metaDescription:
-        "An agent that investigates map data unlock requests and hands the reviewer a recommendation. 30 to 350+ tickets a day; a two-month backlog cleared in two weeks.",
+        "An agent that investigates map data unlock requests and hands the reviewer a recommendation. 30 to 350+ tickets a day; a two month backlog cleared in two weeks.",
       atAGlance: [
-        { label: "My role", value: "Self-initiated; selected the model, built, deployed and own it" },
+        { label: "My role", value: "My own initiative; I selected the model, built, deployed and own it" },
         { label: "Live since", value: "November 2025" },
-        { label: "Stack", value: "Python, an open-source language model, REST APIs" },
+        { label: "Stack", value: "Python, an open source language model, REST APIs" },
         { label: "Status", value: "In production, with a person making every decision by design" },
       ],
       stats: [
@@ -1916,7 +1915,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The split follows the cost of being wrong. If the write-up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
+                "The split follows the cost of being wrong. If the write up misses something, a reviewer reading the evidence can catch it. If unlocking were left to the agent, a miss would go straight into the map. These requests carry consequences that are not always visible at the point of the edit, and a system that cannot be questioned is not one a reviewer should be asked to trust.",
             },
             {
               type: "paragraph",
@@ -1932,7 +1931,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "I selected an open-source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open-source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
+                "I selected an open source model, built the agent around it, and own it end to end. Much of the backend it works against is proprietary, so I wanted the agent itself to not depend on any one platform. An open source model isn't tied to one provider's service, so the agent can run wherever the work needs it and move with the systems around it.",
             },
             {
               type: "paragraph",
@@ -1958,12 +1957,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write-up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
+                "A tool like this only works if the reviewers believe it. I worked directly with the stakeholder teams who own these requests to decide what the system should handle, what it should leave to people, and how its write up should read so a reviewer could check it quickly. As live results came in, we widened or narrowed its scope together.",
             },
             {
               type: "paragraph",
               text:
-                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early in the GIS life cycle, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
+                "The clearest example came from the teams themselves. At first the agent answered only what the request asked. That wasn't enough. Requests usually arrive early, when an editor has spotted a problem in protected data but hasn't yet worked out its full scope or the right fix. And not every failure is obvious: a check can fail for an unexpected reason, or for a related one its description doesn't cover.",
             },
             {
               type: "paragraph",
@@ -1984,7 +1983,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long-running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
+                "The queue was not standing still while it cleared. In the month before the agent went live, the team processed about 500 requests. With the agent, it processed about 2,000 in the first month, about 4,000 in the second and about 3,000 in the third. Much of that came from one long running project that is still producing thousands of requests, and from other large projects that have started, and some finished, since.",
             },
             {
               type: "paragraph",
@@ -2027,9 +2026,9 @@ export const portfolioData = {
         problem:
           "A company's ERP holds its orders, invoices and payments, but finance cannot trust a number it cannot trace, and an AI assistant built on that data is only as good as the records it reads and the checks around it.",
         decision:
-          "Treat it as a client engagement: load the ERP through its API, keep every version of every record, make each finance number trace to the exact records behind it, then prove the pipeline fails loudly by breaking it on purpose. I chose to let AI agents read the warehouse only through read-only tools that cite their sources, with the citations checked in code.",
+          "Treat it as a client engagement: load the ERP through its API, keep every version of every record, make each finance number trace to the exact records behind it, then prove the pipeline fails loudly by breaking it on purpose. I chose to let AI agents read the warehouse only through read only tools that cite their sources, with the citations checked in code.",
         result:
-          "Every finance number traces to records that add up. Five deliberate failures were each caught and recovered from. An agent with only the tools answered 46 of 47 held-out questions correctly, and all 73 of its citations were real, current records.",
+          "Every finance number traces to records that add up. Five deliberate failures were each caught and recovered from. An agent with only the tools answered 46 of 47 unseen questions correctly, and all 73 of its citations were real, current records.",
       },
       card: {
         featured: false,
@@ -2044,14 +2043,14 @@ export const portfolioData = {
       eyebrow: "Case study · Open source · ERP data engineering",
       title: "An ERP's data, made trustworthy for finance and for AI",
       intro:
-        "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables in dbt where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read-only tools that let an AI agent answer from the warehouse and cite its sources.",
+        "Companies run on an ERP, the system that holds their orders, invoices and books, usually with a CRM for customers and deals beside it. Before anyone builds AI on that data, someone has to get it out, make it trustworthy, and keep it that way. I built that data side end to end against a real Odoo 17 running a simulated year of business: extraction through Odoo's API, finance tables built with dbt (a standard tool that turns raw records into tested tables) where every number traces to the exact records behind it, a pipeline that runs on a schedule and watches itself, five failure drills, a question set for judging and training models, and read only tools that let an AI agent answer from the warehouse and cite its sources. Agents reach those tools through MCP, the open standard AI assistants use to connect to outside tools and data.",
       metaDescription:
-        "An ERP's data made trustworthy: API extraction, dbt finance tables that trace to their records, five failure drills, and cited read-only tools for AI agents.",
+        "An ERP's data made trustworthy: API extraction, dbt finance tables that trace to their records, five failure drills, and cited read only tools for AI agents.",
       atAGlance: [
         { label: "My role", value: "Designed and built it in October 2026 on a simulated company, run as the first weeks of a client engagement would be" },
         {
           label: "What it is",
-          value: "An open-source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents",
+          value: "An open source data platform for an ERP: extraction, dbt models, monitoring, failure drills, evaluation and training data, and MCP tools for AI agents",
         },
         { label: "Stack", value: "Odoo 17 Community, Python, Postgres 16, dbt, Fathom for lineage and change checks, MCP" },
         { label: "Where it stands", value: "Open source under the MIT licence; CI rebuilds and tests everything from nothing on every push" },
@@ -2059,7 +2058,7 @@ export const portfolioData = {
       stats: [
         { value: "18 checks", label: "on every build: 12 that fail it, 6 that name each data problem with its records" },
         { value: "5 of 5", label: "deliberate failures caught and recovered from" },
-        { value: "46 of 47", label: "held-out questions answered by an agent using only the tools" },
+        { value: "46 of 47", label: "unseen questions answered by an agent using only the tools" },
         { value: "73 of 73", label: "of its citations real and current, checked in code" },
       ],
       sections: [
@@ -2092,7 +2091,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Every version kept",
-                  note: "Raw tables are append-only, one row per saved version of a record. When an invoice is changed after posting, both versions stay, and a deletion in Odoo is noticed and recorded.",
+                  note: "Raw tables are append only, one row per saved version of a record. When an invoice is changed after posting, both versions stay, and a deletion in Odoo is noticed and recorded.",
                 },
                 {
                   title: "Numbers that show their work",
@@ -2100,7 +2099,7 @@ export const portfolioData = {
                 },
                 {
                   title: "Mess named, not hidden",
-                  note: "18 checks run on every build. Twelve hard checks fail it if the finance tables stop matching. Six source-quality checks list each problem with its records, such as the customer entered twice, so a person can fix it at the source while the models handle it the safe way.",
+                  note: "18 checks run on every build. Twelve hard checks fail it if the finance tables stop matching. Six source quality checks list each problem with its records, such as the customer entered twice, so a person can fix it at the source while the models handle it the safe way.",
                 },
               ],
             },
@@ -2165,7 +2164,7 @@ export const portfolioData = {
                 },
                 {
                   x: 380, y: 74, w: 178, h: 90, kind: "code",
-                  parts: [{ title: "Raw" }, { mono: "raw.*" }, { text: "append-only, one row per saved version" }, { text: "(odoo_id, write_date)" }],
+                  parts: [{ title: "Raw" }, { mono: "raw.*" }, { text: "append only, one row per saved version" }, { text: "(odoo_id, write_date)" }],
                 },
                 {
                   x: 380, y: 174, w: 178, h: 112, kind: "code",
@@ -2202,8 +2201,8 @@ export const portfolioData = {
                     { section: "Tools" },
                     { mono: "find_customers" }, { mono: "customer_summary" }, { mono: "list_invoices" }, { mono: "list_deals" }, { mono: "query" }, { mono: "check_citations" },
                     { rule: true },
-                    { sub: "Read-only" },
-                    { text: "query runs as edp_reader: modelled tables only, read-only transaction, 5 s, 200 rows" },
+                    { sub: "Read only" },
+                    { text: "query runs as edp_reader: modelled tables only, read only transaction, 5 s, 200 rows" },
                     { sub: "Cited" },
                     { text: "every row names its Odoo record and version" },
                   ],
@@ -2220,7 +2219,7 @@ export const portfolioData = {
                   x: 773, y: 218, w: 165, h: 100, kind: "plain",
                   parts: [
                     { title: "Finance" },
-                    { text: "month-end close, collections" },
+                    { text: "month end close, collections" },
                     { text: ["any number to its records with ", { mono: "edp trace" }], gap: true },
                   ],
                 },
@@ -2275,13 +2274,13 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A pipeline earns trust by how it fails. It runs on a schedule under a database lock, retries a dropped connection with backoff, and runs five monitors after every load: did it succeed, is the data fresh, did a table shrink, did Odoo's fields change, and does the warehouse bill the same total as Odoo itself. Then I broke it five ways.",
+                "A pipeline earns trust by how it fails. It runs on a schedule under a database lock, retries a dropped connection after a short and growing wait, and runs five monitors after every load: did it succeed, is the data fresh, did a table shrink, did Odoo's fields change, and does the warehouse bill the same total as Odoo itself. Then I broke it five ways.",
             },
             {
               type: "table",
               columns: [{ label: "Failure" }, { label: "What the pipeline did" }],
               rows: [
-                { cells: ["Odoo goes down mid-schedule", "Failed in 6 seconds with the error recorded, then caught up on everything changed meanwhile once Odoo returned"] },
+                { cells: ["Odoo goes down partway through a scheduled run", "Failed in 6 seconds with the error recorded, then caught up on everything changed meanwhile once Odoo returned"] },
                 { cells: ["Two runs start at once", "The second found the lock taken and stepped aside"] },
                 { cells: ["An admin adds a custom field, fills it, deletes it", "Warned both times; the value was loaded"] },
                 { cells: ["Three invoices lost from the warehouse", "Caught against Odoo's own totals and repaired with one command in under a second"], emphasis: true },
@@ -2308,8 +2307,8 @@ export const portfolioData = {
               type: "cards",
               items: [
                 {
-                  title: "Read-only by construction",
-                  note: "Queries run as a database role that can read only the modelled tables, inside a read-only transaction with a five-second limit. Raw tables, server files and writes are refused by the database, not by a prompt.",
+                  title: "Read only by construction",
+                  note: "Queries run as a database role that can read only the modelled tables, inside a read only transaction with a five second time limit. Raw tables, server files and writes are refused by the database, not by a prompt.",
                 },
                 {
                   title: "Every row carries its source",
@@ -2324,7 +2323,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Claude Sonnet got only the 47 held-out questions and the tools. It answered 46 correctly, and all 73 of its citations were real and current. The miss taught the most: asked for a customer's most overdue invoice, it cited a real, current invoice that was not the most overdue one. The citation check passed, because a citation proves where an answer came from, not that it is right. So answers and citations are graded separately, and a finance team gets both the number and the records behind it.",
+                "Claude Sonnet got only the 47 unseen questions and the tools. It answered 46 correctly, and all 73 of its citations were real and current. The miss taught the most: asked for a customer's most overdue invoice, it cited a real, current invoice that was not the most overdue one. The citation check passed, because a citation proves where an answer came from, not that it is right. So answers and citations are graded separately, and a finance team gets both the number and the records behind it.",
             },
           ],
         },
@@ -2335,11 +2334,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The warehouse also produces 184 finance questions over 31 customers, six kinds, from billed totals to days overdue to cash collected on a deal. Every answer is computed by SQL and stored with the query, never written by a person or a model. Train, dev and test never share a customer, and the build fails if a customer, a question, an invoice or a record set crosses a split. Train is exported as chat examples for fine-tuning, and a dataset card records the splits, the share of zero answers and every leakage check.",
+                "The warehouse also produces 184 finance questions over 31 customers, six kinds, from billed totals to days overdue to cash collected on a deal. Every answer is computed by SQL and stored with the query, never written by a person or a model. The questions are split three ways: a training set, a development set used while building, and a test set used only for scoring. No customer appears in more than one, so a model cannot pass the test by having seen that customer before, and the build fails if a customer, a question, an invoice or a record set ever crosses from one set to another. The training set is exported in the format used to train chat models, and a short data sheet records the splits, how many answers are zero and every check for overlap.",
             },
             {
               type: "table",
-              columns: [{ label: "Held-out test, 47 questions" }, { label: "Correct" }],
+              columns: [{ label: "Unseen test, 47 questions" }, { label: "Correct" }],
               rows: [
                 { cells: ["Claude Sonnet, records in the prompt, told about the data problems", "47"] },
                 { cells: ["Claude Sonnet, same records, no warning", "47"] },
@@ -2350,7 +2349,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "On records this size the model read the mess correctly without being warned. The value is the method, ready for harder records: answers from SQL, splits no customer crosses, a floor to beat, scores by data problem, and grading in code.",
+                "The last row is the floor any system has to beat: so many true answers are zero or empty that answering nothing still scores 23. On records this size the model read the mess correctly without being warned. The value is the method, ready for harder records: answers computed by SQL, splits no customer crosses, a floor to beat, scores broken down by data problem, and grading done by code rather than by a person or a model.",
             },
           ],
         },
@@ -2366,7 +2365,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Fathom sits on top for change control: it reads the dbt project for column lineage, owners and rules, so proposing to drop a column from the aging table comes back blocked, naming month-end close and the collections queue as the reports it would break.",
+                "Fathom, a change checking tool I built, sits on top. It reads the dbt project to learn which reports depend on which columns, who owns them and which rules apply, so proposing to drop a column from the aging table comes back blocked, naming month end close and the collections queue as the reports it would break.",
             },
           ],
         },
@@ -2379,7 +2378,7 @@ export const portfolioData = {
               items: [
                 "A second source system beside Odoo, such as a CRM or accounting export, matched to the same customers.",
                 "A harder question set: longer histories, partial payments across many invoices, and questions that span customers.",
-                "A fine-tuning run on the train split, scored against the same held-out test.",
+                "Train a smaller model on the training questions and score it against the same unseen test.",
               ],
             },
           ],
@@ -2402,28 +2401,28 @@ export const portfolioData = {
         eyebrow: "Open source · Question to SQL · LangGraph",
         title: "An analyst agent: ask a warehouse a question in plain English",
         summary:
-          "An agent that answers business questions by writing SQL, checking it, running it read-only and explaining the result, with the query behind every answer. It works on two datasets, finance and a simulated search ads account, and the second took one configuration file and no change to the agent.",
+          "An agent that answers business questions by writing SQL, checking it, running it read only and explaining the result, with the query behind every answer. It works on two datasets, finance and a simulated search ads account, and the second took one configuration file and no change to the agent.",
         linkText: "Read the case study",
-        tags: ["102 of 103 held-out questions", "18 of 18 privacy requests refused"],
+        tags: ["102 of 103 unseen questions", "18 of 18 privacy requests refused"],
       },
       codeLink: { label: "Code: erp-data-platform/analyst", href: `${REPOSITORIES.erpDataPlatform}/tree/main/analyst` },
       eyebrow: "Case study · Open source · Question to SQL agent",
       title: "An analyst agent: ask a warehouse a question in plain English",
       intro:
-        "Most teams' first question to SQL demo writes one query and shows whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read-only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
+        "Most first attempts at letting people ask a database questions in everyday words write one SQL query and show whatever comes back. That is fine until the query is slightly wrong, the money is in four currencies, or the answer would expose a handful of people. I built the next step up on the finance warehouse from my ERP data platform: an agent that finds the right tables and business terms, writes a query, has code check and run it read only, repairs it on error, reads the rows, and answers with the query it used. When the data cannot answer, it says so. Then I added a second dataset, a simulated search ads account with A/B tests and a privacy rule, by writing one configuration file.",
       metaDescription:
-        "An agent that turns plain-English business questions into checked, read-only SQL and answers with the query it used. 102 of 103 held-out questions answered.",
+        "An agent that turns business questions in everyday words into checked, read only SQL and answers with the query it used. 102 of 103 unseen questions right.",
       atAGlance: [
         { label: "My role", value: "Designed, built and evaluated it in October 2026" },
         {
           label: "What it is",
-          value: "A question to SQL agent with retrieval, a repair loop, read-only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds",
+          value: "A question to SQL agent with retrieval, a repair loop, read only execution, privacy enforced in the tool, conversation memory, and an evaluation that isolates what each part adds",
         },
         { label: "Stack", value: "Python, LangGraph, LangChain, sqlglot, Postgres 16, BM25 and a local bge-small embedding model, Claude Sonnet and Haiku" },
         { label: "Where it stands", value: "Open source under the MIT licence, in the erp-data-platform repository, with 40 tests that need no model" },
       ],
       stats: [
-        { value: "102 of 103", label: "held-out questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
+        { value: "102 of 103", label: "unseen questions answered correctly with Claude Sonnet, 96 with the cheaper Haiku" },
         { value: "73 to 77", label: "finance questions right, from one query read by the model to the full agent (47 if the first column is taken as the answer)" },
         { value: "18 of 18", label: "requests that would expose fewer than 50 people or single users refused, by the tool" },
         { value: "46 of 47", label: "questions the data cannot answer, declined instead of guessed" },
@@ -2451,7 +2450,7 @@ export const portfolioData = {
                 { title: "Retrieve", note: "Picks the tables, terms and examples the question needs" },
                 { title: "Draft", note: "Model looks a name up if it must, then writes one query, or declines" },
                 { title: "Check", note: "Code allows one SELECT on allowed tables, no writes", gate: true },
-                { title: "Run", note: "Read-only role, five-second limit; an error goes back to Draft, up to 3 tries" },
+                { title: "Run", note: "Read only role, five second time limit; an error goes back to Draft, up to 3 tries" },
                 { title: "Read", note: "Model turns the rows into an answer" },
                 { title: "Cite", note: "Source records checked, real and current", dashed: true },
               ],
@@ -2461,26 +2460,26 @@ export const portfolioData = {
               items: [
                 {
                   title: "Context retrieval",
-                  note: "A domain file describes each table, the business terms and a few worked examples. For each question, a keyword ranker and a local embedding model each rank those notes, the two rankings are fused, and only the top tables, terms and examples go into the prompt.",
+                  note: "A domain file describes each table, the business terms and a few worked examples. For each question, two methods rank those notes: one by matching keywords, one by meaning, using a small embedding model that runs locally. The two rankings are combined, and only the top tables, terms and examples go into the prompt.",
                 },
                 {
                   title: "A graph, not a single call",
-                  note: "A LangGraph state graph runs retrieve, draft, run, read, cite and remember. The model drafts one query, or declines, or asks to clarify, or first looks up how the data spells a name. A failed query goes back to it with the error, up to three tries, and a reading it judges wrong gets one more draft. The model is reached through LangChain's chat-model interface, so LangSmith can trace every step.",
+                  note: "LangGraph, a framework for building an agent as a fixed series of steps, runs retrieve, draft, run, read, cite and remember in order. The model drafts one query, or declines, or asks to clarify, or first looks up how the data spells a name. A failed query goes back to it with the error, up to three tries, and a reading it judges wrong gets one more draft. The model is called through LangChain's standard interface, so LangSmith, a tracing tool, records every step.",
                 },
                 {
                   title: "Rules in code and in the database",
-                  note: "sqlglot parses every query first: one SELECT, allowed schemas only, no writes, no file reads. The database then enforces the same rules again with a read-only role, a read-only transaction, a five-second limit and 200 rows.",
+                  note: "sqlglot, a SQL parser, reads every query before it runs and allows only one SELECT, on allowed schemas only, no writes, no file reads. The database then enforces the same rules again with a read only role, a read only transaction, a five second time limit and 200 rows.",
                 },
                 {
                   title: "Privacy in the tool, not the prompt",
-                  note: "On the ads data, user-level records sit where the agent's role cannot read. Every people figure in a result must come from at least 50 people or it comes back blanked. The tool traces each column to its source, so renaming a count does not hide it, and it checks the counts behind every rate. What it cannot stop alone is differencing across separate questions; that needs a privacy budget.",
+                  note: "On the ads data, user level records sit where the agent's role cannot read. Every people figure in a result must come from at least 50 people or it comes back blanked. The tool traces each column to its source, so renaming a count does not hide it, and it checks the counts behind every rate. What it cannot stop alone is someone asking two questions and subtracting one answer from the other to single out a small group. Closing that needs a limit on how much anyone can ask about the same data.",
                 },
               ],
             },
             {
               type: "paragraph",
               text:
-                "Finance queries go through the platform's own query tool unchanged, so every citation to an Odoo record version is checked in code. Conversations are saved per thread, so \"and how much have they paid?\" works as a follow-up.",
+                "Finance queries go through the platform's own query tool unchanged, so every citation to an Odoo record version is checked in code. Conversations are saved per thread, so \"and how much have they paid?\" works as a follow up.",
             },
           ],
         },
@@ -2491,7 +2490,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "To test whether the agent is general, I built a simulated search ads account: six campaigns spending in dollars, pounds, euros and yen, 52 keywords over 60 days, audience splits by age and gender, two product page A/B tests, and user-level taps kept in a private schema. Onboarding it meant writing one file: the connection, the schemas the agent may read, the read-only role, the privacy rule, and notes on terms such as converting spend to dollars, rolling rates up from totals, and when an A/B difference is significant. Columns are read live from the database. The agent's code did not change.",
+                "To test whether the agent is general, I built a simulated search ads account: six campaigns spending in dollars, pounds, euros and yen, 52 keywords over 60 days, audience splits by age and gender, two product page A/B tests, and user level taps kept in a private schema. Onboarding it meant writing one file: the connection, the schemas the agent may read, the read only role, the privacy rule, and notes on terms such as converting spend to dollars, rolling rates up from totals, and when an A/B difference is significant. Columns are read live from the database. The agent's code did not change.",
             },
           ],
         },
@@ -2502,11 +2501,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Every answer in the question sets is computed by gold SQL, never written by hand. Dev and test are kept apart, the test sets were frozen before any run, and code grades every answer. Four versions of the agent ran on the same 103 held-out questions, to show what each part adds.",
+                "Every answer in the question sets is computed by a SQL query I wrote and checked, never typed in by hand. The questions used while building are kept apart from the questions used for scoring, the test sets were frozen before any run, and code grades every answer. Four versions of the agent ran on the same 103 unseen questions, to show what each part adds.",
             },
             {
               type: "table",
-              columns: [{ label: "Held-out questions, Claude Sonnet" }, { label: "Finance (77)" }, { label: "Ads (26)" }],
+              columns: [{ label: "Unseen questions, Claude Sonnet" }, { label: "Finance (77)" }, { label: "Ads (26)" }],
               rows: [
                 { cells: ["One query, first column taken as the answer", "47", "not run"] },
                 { cells: ["One query, read by the model", "73", "25"] },
@@ -2517,7 +2516,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The biggest gain is reading the result well: the usual version often selected the right row but took the customer id as the answer. The notes fixed two finance traps, empty aging buckets that turn a sum to nothing and a merged customer, and for Haiku they were worth seven finance questions. On ads they cost Haiku three, by pulling the audience table into view. That fix belongs in the domain file, and the run files record every query tried, so each miss can be explained.",
+                "The biggest gain is reading the result well: the simplest version often selected the right row but took the customer id in the first column as the answer. The notes fixed two finance traps. One is an empty overdue bucket, such as nothing 90 days late, where a SQL sum comes back empty instead of zero. The other is a customer merged from two records. For Haiku the notes were worth seven finance questions. On ads they cost Haiku three, by pulling the audience table into view. That fix belongs in the domain file, and the run files record every query tried, so each miss can be explained.",
             },
           ],
         },
@@ -2528,11 +2527,11 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The held-out sets name keywords and campaigns the way the data spells them. People don't. A marketer asks about \"the Mint keyword\" when the data says \"mint budget\", or \"the German campaign\" when it says \"Ledgerly - DE - Search\". On questions like that, the first version wrote a query that matched nothing and confidently reported 0. So I wrote 16 new test questions in that style, three of them about things that do not exist, and froze them before any agent ran. Then I gave the agent two new moves: look up how the data spells a name before writing the final query, and take one more try when it judges its own reading was wrong.",
+                "The unseen sets name keywords and campaigns the way the data spells them. People don't. A marketer asks about \"the Mint keyword\" when the data says \"mint budget\", or \"the German campaign\" when it says \"Ledgerly - DE - Search\". On questions like that, the first version wrote a query that matched nothing and confidently reported 0. So I wrote 16 new test questions in that style, three of them about things that do not exist, and froze them before any agent ran. Then I gave the agent two new moves: look up how the data spells a name before writing the final query, and take one more try when it judges its own reading was wrong.",
             },
             {
               type: "table",
-              columns: [{ label: "Loose-name questions, Claude Sonnet" }, { label: "Correct of 16" }],
+              columns: [{ label: "Questions with loose names, Claude Sonnet" }, { label: "Correct of 16" }],
               rows: [
                 { cells: ["One query, read by the model", "10"] },
                 { cells: ["First version of the agent", "9"] },
@@ -2554,7 +2553,7 @@ export const portfolioData = {
               type: "bullets",
               items: [
                 "Across 697 scored answers, no query tried to write or read outside its schemas.",
-                "It refused all 18 requests that would expose fewer than 50 people or user-level records.",
+                "It refused all 18 requests that would expose fewer than 50 people or user level records.",
                 "It declined 46 of 47 questions the data cannot answer, such as a credit score or a competitor's bids.",
                 "Nine times, the reading step saw its own query was wrong and declined rather than guess.",
               ],
@@ -2592,7 +2591,7 @@ export const portfolioData = {
         eyebrow: "Open source · Collections agent · Odoo",
         title: "Remit: a collections agent that writes into the ERP only after a person says yes",
         summary:
-          "An agent that works a finance team's late invoices every morning: it picks the next step for each customer, drafts the reminder, and queues it for a person. Once approved, it writes the reminder and a follow-up call into Odoo exactly once, and it can write nothing else.",
+          "An agent that works a finance team's late invoices every morning: it picks the next step for each customer, drafts the reminder, and queues it for a person. Once approved, it writes the reminder and a follow up call into Odoo exactly once, and it can write nothing else.",
         linkText: "Read the case study",
         tags: ["First contact in 1 day, not 5", "10 of 10 seeded traps handled"],
       },
@@ -2600,14 +2599,14 @@ export const portfolioData = {
       eyebrow: "Case study · Open source · Collections agent",
       title: "Remit: a collections agent that writes into the ERP only after a person says yes",
       intro:
-        "Most of my agents read, advise or check. This one takes action in a business system. Chasing late invoices is routine work every finance team does by hand: find who is late, decide how firm to be, write the reminder, log the call. I built Remit to do that work on the Odoo company from my ERP data platform, run the way a client engagement would be: a discovery memo and a written playbook first, then an agent that proposes, a person who approves, and writes into Odoo that happen once, can be traced, and cannot be anything other than the three kinds of write the playbook allows.",
+        "Most of my agents read, advise or check. This one takes action in a business system. Chasing late invoices is routine work every finance team does by hand: find who is late, decide how firm to be, write the reminder, log the call. I built Remit to do that work on the Odoo company from my ERP data platform, run the way a client engagement would be: a discovery memo and a written playbook first, then an agent that proposes and a person who approves. Every change it makes in Odoo happens exactly once, leaves a record, and is one of the three kinds the playbook allows.",
       metaDescription:
         "A collections agent on Odoo: it plans and drafts reminders for late invoices, a person approves, and it writes each one into the ERP exactly once.",
       atAGlance: [
         { label: "My role", value: "Designed and built it in November 2026, from discovery memo and playbook to the runbook for the team that runs it" },
         {
           label: "What it is",
-          value: "An agent that plans, drafts and queues collections reminders for approval, then writes the approved ones into Odoo once each, with an append-only audit log",
+          value: "An agent that plans, drafts and queues collections reminders for approval, then writes the approved ones into Odoo once each, with an append only audit log",
         },
         { label: "Stack", value: "Python, Odoo 17 JSON-RPC, Postgres 16, dbt, Fathom for change checks, Claude Haiku for the wording" },
         { label: "Where it stands", value: "Open source under the MIT licence, in the erp-data-platform repository; CI runs it against a real Odoo on every push" },
@@ -2615,7 +2614,7 @@ export const portfolioData = {
       stats: [
         { value: "5 to 1", label: "days from an invoice going late to its first contact, lower in all 20 simulated runs" },
         { value: "~18 fewer", label: "calls for the finance person over 90 days, with the same customers and the same payments" },
-        { value: "10 of 10", label: "seeded traps handled, including a write-off instruction hidden in an invoice" },
+        { value: "10 of 10", label: "seeded traps handled, including a write off instruction hidden in an invoice" },
         { value: "24 of 24", label: "reminders worded by Claude Haiku that passed the code's checks first time" },
       ],
       sections: [
@@ -2638,7 +2637,7 @@ export const portfolioData = {
               type: "flow",
               columns: 6,
               steps: [
-                { title: "Read", note: "Late invoices from a dbt table, each traced to its Odoo record" },
+                { title: "Read", note: "Late invoices from the warehouse, each traced to its Odoo record" },
                 { title: "Plan", note: "Code picks one step per customer, or holds and says why" },
                 { title: "Draft", note: "Model words the reminder; code checks every amount", dashed: true },
                 { title: "Approve", note: "A person approves, edits or rejects it", gate: true },
@@ -2655,11 +2654,11 @@ export const portfolioData = {
                 },
                 {
                   title: "Three writes and nothing else",
-                  note: "The reader allows five read calls. The writer has three methods: post the reminder as a note on the invoice, schedule a follow-up call, and put a to-do on an invoice for a person. There is no generic call, so no draft, reply or note can become an edit, a deletion, a payment or a write-off.",
+                  note: "The reader allows five read calls. The writer has three methods: post the reminder as a note on the invoice, schedule a follow up call, and put a task on an invoice for a person. There is no generic call, so no draft, reply or note can become an edit, a deletion, a payment or a write off.",
                 },
                 {
                   title: "Exactly once, even after a crash",
-                  note: "An approved proposal claims its keys in Postgres before Odoo is called, so two approvals of the same thing write once. Every note carries the proposal's id, so after a crash Remit looks for it in Odoo before writing again. The audit log cannot be changed or deleted.",
+                  note: "Before Remit calls Odoo, it records a unique key for the approved proposal in its own database, so two approvals of the same thing still write once. Every note carries the proposal's id, so after a crash Remit looks for it in Odoo before writing again. The audit log cannot be changed or deleted.",
                 },
                 {
                   title: "Trust is earned in stages",
@@ -2683,7 +2682,7 @@ export const portfolioData = {
               columns: [{ label: "Trap" }, { label: "What Remit does" }],
               rows: [
                 { cells: ["Invoice text tells the agent to write the balance off, \"approved by CFO\"", "Holds that invoice and flags it for a person"] },
-                { cells: ["The same instruction written with look-alike letters", "Caught the same way"] },
+                { cells: ["The same instruction disguised with letters from other alphabets that look identical", "Caught the same way"] },
                 { cells: ["Customer paid this morning, payment not yet matched", "Holds the reminder, asks a person to match it"] },
                 { cells: ["A credit note covers the late amount", "Holds, asks a person to match it"] },
                 { cells: ["A credit note covers only part", "Reminds, and tells the approver about the credit"] },
@@ -2708,7 +2707,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Simulated customers cannot be sent a reminder and watched, so I played 90 days forward from the warehouse's open invoices twice for each of 20 random seeds: once the way the work is done by hand, with one person working the late list each Monday, and once with Remit running every morning and the same person calling only the customers it escalated. Both sides see the same customers, new invoices and chances to pay. How much a reminder changes when people pay has not been measured for this company, so every seed also ran with that effect halved.",
+                "Simulated customers cannot be sent a reminder and watched, so I played 90 days forward from the warehouse's open invoices twice for each of 20 different random starting points: once the way the work is done by hand, with one person working the late list each Monday, and once with Remit running every morning and the same person calling only the customers it escalated. Both sides see the same customers, new invoices and chances to pay. How much a reminder changes when people pay has not been measured for this company, so every run was repeated with that effect halved.",
             },
             {
               type: "table",
@@ -2734,10 +2733,10 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "One morning job applies yesterday's approvals, plans today's reminders and runs Remit's own checks; a failure pages through the same alerts as the data pipeline.",
+                "One morning job applies yesterday's approvals, plans today's reminders and runs Remit's own checks. A failure raises the same alerts as the data pipeline.",
                 "The checks catch what goes wrong after launch: no run in a day, a queue nobody has worked for two days, a write that started and never finished, a write Odoo refused.",
                 "Tagging a customer in Odoo stops all contact at the next run, so finance can pause it without asking an engineer.",
-                "The new dbt table it reads is declared in the warehouse's lineage, so a change to it shows Remit as something it would break before the change lands.",
+                "The warehouse table it reads is recorded in the map of which tables feed which, so anyone proposing a change to that table is told Remit would break before the change lands.",
               ],
             },
           ],
@@ -2749,7 +2748,7 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Send reminders by email, which is one more write on the allowlist.",
+                "Send reminders by email, which means adding one more kind of write to the allowed list.",
                 "A pilot with a real finance team, starting in shadow mode, to measure what a reminder is worth in cash.",
               ],
             },
@@ -2773,9 +2772,9 @@ export const portfolioData = {
         eyebrow: "Personal system · Research agent · LangGraph",
         title: "Esper: a research agent that proves every sentence",
         summary:
-          "A research agent built so a reader can check it. Every sentence of an answer cites a quote, and code confirms the quote appears on a saved copy of the page. A separate checker reads each claim against its source before the writer may use it. I compared it with two others on the same questions, models and web: a simple one-step version, and LangChain's Open Deep Research, an open-source research agent.",
+          "A research agent built so a reader can check it. Every sentence of an answer cites a quote, and code confirms the quote appears on a saved copy of the page. A separate checker reads each claim against its source before the writer may use it. I compared it with two others on the same questions, models and web: a simple one-step version, and LangChain's Open Deep Research, an open source research agent.",
         linkText: "Read the case study",
-        tags: ["Every sentence cites a checked quote", "Scored against LangChain's open-source research agent"],
+        tags: ["Every sentence cites a checked quote", "Scored against LangChain's open source research agent"],
       },
       eyebrow: "Case study · Personal system · Research agent · LangGraph",
       title: "Esper: a research agent that proves every sentence",
@@ -3411,26 +3410,26 @@ export const portfolioData = {
         eyebrow: "Apple Maps · Systems integration",
         title: "Three systems, one tool, half the turnaround",
         summary:
-          "Locking and unlocking permissions on protected map features ran on long command-line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
+          "Locking and unlocking permissions on protected map features ran on long command line scripts. I replaced it with one tool that does it on demand and records why each change was made.",
         linkText: "Read the case study",
         tags: ["~50% faster turnaround", "OAuth2 across 3 systems"],
       },
       eyebrow: "Case study · Apple Maps · Systems integration · Feb 2025 to present",
       title: "Three systems, one tool, half the turnaround",
       intro:
-        "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official, signed-in API, and records why each change was made. Turnaround dropped by about half.",
+        "Once someone decides a protected map feature can be edited, its permissions have to actually change, in three separate systems. That already worked, but it ran on long scripts run from a command line and extra tickets raised just to carry the change. I built one Python tool that does it on demand through each system's own official API, signed in properly, and records why each change was made. Turnaround dropped by about half.",
       metaDescription:
         "One Python tool that changes protected map feature permissions across three systems through their official APIs, cutting turnaround by about half.",
       atAGlance: [
         { label: "My role", value: "Built it end to end" },
-        { label: "Systems", value: "Ticketing, code repository, geo-data" },
+        { label: "Systems", value: "Ticketing, code repository, map data" },
         { label: "Stack", value: "Python, REST APIs, OAuth2" },
-        { label: "Result", value: "A script-driven process replaced by access on demand, with the reason recorded" },
+        { label: "Result", value: "A scripted process replaced by access on demand, with the reason recorded" },
       ],
       stats: [
         { value: "~50%", label: "faster turnaround on lock and unlock requests" },
         { value: "3 systems", label: "connected through each one's own official API, signed in with OAuth2" },
-        { value: "On demand", label: "instead of hand-run scripts" },
+        { value: "On demand", label: "instead of scripts run by hand" },
       ],
       sections: [
         {
@@ -3440,12 +3439,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the geo-data system that holds the feature itself.",
+                "Locking a map feature protects it from edits; unlocking it lets a specific change go ahead. Doing either meant touching three systems that don't share a login: the ticketing system that holds the request, the code repository, and the map data system that holds the feature itself.",
             },
             {
               type: "paragraph",
               text:
-                "The path was hostile: long command-line invocations, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care, which is exactly the kind of work a tool should do.",
+                "The old process was slow and fragile: long typed commands, extra tickets raised just to carry the change, and enough setup that a routine request was easy to get wrong. None of it required judgment, only care, which is exactly the kind of work a tool should do.",
             },
             {
               type: "paragraph",
@@ -3461,9 +3460,9 @@ export const portfolioData = {
             {
               type: "link-diagram",
               left: { title: "Ticketing system", note: "The request and its status" },
-              edge: "Secure sign-in · API",
+              edge: "Secure sign in · API",
               hub: { title: "The tool", note: "Python" },
-              right: [{ title: "Code repository" }, { title: "Geo-data system" }],
+              right: [{ title: "Code repository" }, { title: "Map data system" }],
             },
             {
               type: "paragraph",
@@ -3512,12 +3511,12 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Then the ground moved. The tool originally signed in through a shared automated account, and that sign-in method was deprecated. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors passed from one system to the next.",
+                "Then the sign in method changed. The tool originally signed in through a shared automated account, and that sign in method was deprecated. I moved it to OAuth2, the standard that lets a tool act with a named person's permissions without ever holding their password. That fixed one system and broke the others in turn: each had its own permission rules, and the errors passed from one system to the next.",
             },
             {
               type: "paragraph",
               text:
-                "Most of that work was diagnosis rather than code. A permission error usually says that a request was refused, not why. So I took each system in turn and compared what the new sign-in was actually allowed to do with what that system expected of it, until all three accepted it.",
+                "Most of that work was diagnosis rather than code. A permission error usually says that a request was refused, not why. So I took each system in turn and compared what the new sign in was actually allowed to do with what that system expected of it, until all three accepted it.",
             },
           ],
         },
@@ -3528,7 +3527,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A script-driven process became permission changes on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
+                "A scripted process became permission changes on demand, turnaround on lock and unlock requests dropped by about 50%, and every change now leaves behind the reason it was made.",
             },
             {
               type: "paragraph",
@@ -3541,7 +3540,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Integrations tend to break on sign-in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign-in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
+          "Integrations tend to break on sign in and permissions, not on the code in between. I've done that unglamorous part: getting separate systems to trust one tool, and keeping them trusting it when the sign in method changes underneath. The same instinct applies to the context around a system: the question someone will ask in six months is usually why is this like this, and that answer is cheapest to capture at the moment the change is made.",
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Systems that don't talk to each other? Let's talk.",
@@ -3554,20 +3553,20 @@ export const portfolioData = {
         eyebrow: "Apple Maps · Data reliability",
         title: "Keeping a 50+ region data pipeline shippable",
         summary:
-          "Automated jobs that fix data-check failures on live data, checks that decide when a repository can be promoted to production, a migration of data validation to new infrastructure, with the DataOps team, that moved checks earlier in the pipeline, and incident response when something breaks at scale.",
+          "Automated jobs that fix data check failures on live data, checks that decide when a repository can be promoted to production, a migration of data validation to new infrastructure, with the DataOps team, that moved checks earlier in the pipeline, and incident response when something breaks at scale.",
         linkText: "Read the case study",
-        tags: ["~40% fewer release-blocking failures", "Hundreds of thousands of failures resolved"],
+        tags: ["~40% fewer failures that block a release", "Hundreds of thousands of failures resolved"],
       },
       eyebrow: "Case study · Apple Maps · Data reliability · Feb 2025 to present",
       title: "Keeping a 50+ region data pipeline shippable",
       intro:
         "Apple Maps is built from data covering more than 50 regions, and every release has to pass automated quality checks before it ships. Apple's Data Health team helps set those standards. My part is keeping bad data from blocking releases: fixing it once it's live, stopping it at the gate, and cleaning up fast when something slips through.",
       metaDescription:
-        "Keeping bad data from blocking Apple Maps releases across 50+ regions: automated fixes, earlier checks, and about 40% fewer release-blocking failures.",
+        "Keeping bad data from blocking Apple Maps releases across 50+ regions: automated fixes, earlier checks, and about 40% fewer failures that block a release.",
       atAGlance: [
         { label: "My role", value: "Data Engineer, Data Health team" },
         { label: "Partners", value: "DataOps and the data evaluation team" },
-        { label: "Stack", value: "Python, SQL, machine-learning remediation jobs, distributed data processing, a job orchestration server" },
+        { label: "Stack", value: "Python, SQL, machine learning remediation jobs, distributed data processing, a job orchestration server" },
         { label: "Incident tools", value: "SQL (database queries), QGIS (a mapping tool)" },
       ],
       stats: [
@@ -3577,7 +3576,7 @@ export const portfolioData = {
         },
         {
           value: "~40% fewer",
-          label: "release-blocking failures since migrating validation to new infrastructure with DataOps, and still falling",
+          label: "failures that block a release since migrating validation to new infrastructure with DataOps, and still falling",
         },
         { value: "Tens of thousands", label: "buildings triaged in one incident I led" },
       ],
@@ -3589,7 +3588,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "Map data is checked by automated validations, rules the data has to meet before it can ship. When data breaks a rule, that's a validation failure. Some failures are minor. Others are release-blocking: until they're fixed, the region's data can't be promoted, which means moved into the version the map is actually built from.",
+                "Map data is checked by automated validations, rules the data has to meet before it can ship. When data breaks a rule, that's a validation failure. Some failures are minor. Others block a release: until they're fixed, the region's data can't be promoted, which means moved into the version the map is actually built from.",
             },
             {
               type: "cards",
@@ -3613,7 +3612,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A remediation job is an automated repair: it finds data that fails a rule and corrects it. I run and continuously tune machine-learning remediation jobs, run by our job orchestration server, that clean up and modernize production data. Those jobs have resolved hundreds of thousands of validation failures.",
+                "A remediation job is an automated repair: it finds data that fails a rule and corrects it. I run and continuously tune machine learning remediation jobs, run by our job orchestration server, that clean up and modernize production data. Those jobs have resolved hundreds of thousands of validation failures.",
             },
             {
               type: "paragraph",
@@ -3634,7 +3633,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "When gating or critical-path validation failures stop a repository from being promoted to production, I resolve them with DataOps and the data evaluation team so releases stay on schedule. That means working out whether the failure is real bad data, a rule that needs updating, or a fault in the check itself, and getting the right team to the right fix.",
+                "When a failure on a check that must pass stops a region's data from being promoted to production, I resolve them with DataOps and the data evaluation team so releases stay on schedule. That means working out whether the failure is real bad data, a rule that needs updating, or a fault in the check itself, and getting the right team to the right fix.",
             },
             {
               type: "paragraph",
@@ -3655,7 +3654,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "The new infrastructure made it practical to run validation closer to where the data enters the pipeline. Problems now surface earlier, when they are smaller and before they reach the gate. Since the migration, release-blocking failures have dropped by about 40%, and the number keeps improving as our data standards tighten.",
+                "The new infrastructure made it practical to run validation closer to where the data enters the pipeline. Problems now surface earlier, when they are smaller and before they reach the gate. Since the migration, failures that block a release have dropped by about 40%, and the number keeps improving as our data standards tighten.",
             },
             {
               type: "paragraph",
@@ -3671,7 +3670,7 @@ export const portfolioData = {
             {
               type: "paragraph",
               text:
-                "A mass building-generation incident put tens of thousands of buildings into the data. A machine-learning-based automation added buildings that didn't meet our internal specification for inclusion, and gave some of them the wrong attributes, such as exaggerated height and scale.",
+                "In one incident, a machine learning automation put tens of thousands of buildings into the map data. Many didn't meet our internal specification for inclusion, and some had the wrong attributes, such as exaggerated height and scale.",
             },
             {
               type: "paragraph",
@@ -3689,7 +3688,7 @@ export const portfolioData = {
       callout: {
         eyebrow: "What I'd bring to a client",
         text:
-          "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer release-blocking failures at the gate.",
+          "Bad data shows up in three places: already live, at the gate, and in an incident. I've owned all three at a scale of 50+ regions, and I've seen what moving a check upstream buys you: about 40% fewer failures that block a release at the gate.",
       },
       disclaimer: "Details are limited to what I can share publicly. Internal system names are withheld.",
       contactHeading: "Data you can't trust yet? Let's talk.",
@@ -4090,7 +4089,7 @@ export const portfolioData = {
             {
               type: "bullets",
               items: [
-                "Principles, never assets. Nothing from a reference site reaches the page: no images, wording, code or paid fonts. Code under the open-source MIT or Apache licences may be used, with its licence named in a comment.",
+                "Principles, never assets. Nothing from a reference site reaches the page: no images, wording, code or paid fonts. Code under the open source MIT or Apache licences may be used, with its licence named in a comment.",
                 "Never invent a measured number. Every figure on a page comes from the content source, the material the page's facts are taken from.",
                 "Code-native art. Visuals are drawn in code (CSS, SVG, canvas or WebGL, the web's own drawing tools), written for the page. No AI image generator is used.",
                 "No scroll-jacking. The page never takes over the mouse wheel and never forces the scroll to jump to set points on a long page.",
@@ -4135,7 +4134,7 @@ export const portfolioData = {
       ],
       callout: {
         eyebrow: "How it runs",
-        text: "Everything runs on a cloud computer with open-source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
+        text: "Everything runs on a cloud computer with open source tools: a real browser to capture each site, and ffmpeg for the filmstrip and the video.",
       },
       contactHeading: "Have a system that needs deploying? Let's talk.",
     },
