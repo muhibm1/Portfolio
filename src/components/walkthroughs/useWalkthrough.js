@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { prefersReducedMotion, REDUCED_MOTION_QUERY } from '../../prefersReducedMotion';
+import { fill } from './fill';
 
 // The step where a person decides. The walkthrough stops here until a decision is recorded or
 // the visitor moves on by hand.
@@ -31,9 +32,7 @@ export function railTarget(key, at, last) {
 }
 
 // Fills a template such as "Step {n}, {label}, {tag}." from one step.
-function say(template, index, step, total) {
-  return template.replace('{n}', String(index + 1)).replace('{total}', String(total)).replace('{label}', step.label).replace('{tag}', step.tag);
-}
+const say = (template, index, step, total) => fill(template, { n: index + 1, total, label: step.label, tag: step.tag });
 
 /**
  * Builds the reducer for one walkthrough block. Every change the visitor or the clock can cause is
@@ -85,7 +84,7 @@ export function createReducer(block) {
         return {
           ...state,
           agent: action.index,
-          live: (announce.agent ?? '').replace('{name}', agent.name).replace('{kind}', agent.kind),
+          live: fill(announce.agent ?? '', { name: agent.name, kind: agent.kind }),
         };
       }
       case 'back':
@@ -100,7 +99,7 @@ export function createReducer(block) {
         return move(state, {
           decision: action.kind,
           playing: state.calm ? state.playing : true,
-          live: announce.decision.replace('{kind}', action.kind),
+          live: fill(announce.decision, { kind: action.kind }),
         });
       default:
         return state;
@@ -217,9 +216,9 @@ export default function useWalkthrough(block) {
       return;
     }
     if (!clockRef.current) {
-      const fill = trackRefs.current[idx];
-      if (!fill || typeof fill.animate !== 'function') return;
-      const animation = fill.animate(FILL_FRAMES, { duration: dwells[idx], easing: 'linear' });
+      const track = trackRefs.current[idx];
+      if (!track || typeof track.animate !== 'function') return;
+      const animation = track.animate(FILL_FRAMES, { duration: dwells[idx], easing: 'linear' });
       animation.onfinish = () => {
         clockRef.current = null;
         dispatch({ type: 'advance' });

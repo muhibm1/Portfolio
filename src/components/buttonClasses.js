@@ -1,4 +1,4 @@
-// Shared class strings for the Look's interactive elements (R148): every button-styled control
+// Shared class strings for the Look's interactive elements: every button-styled control
 // is at least 48px tall (min-h-12), every nav link at least 44px (min-h-11), and focus is visible
 // through the global :focus-visible outline in src/index.css, not a per-class ring. Colours are
 // the Look's variables (src/look.css), so each string follows the light or dark theme.

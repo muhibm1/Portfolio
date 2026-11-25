@@ -1,4 +1,4 @@
-// Renders two of the case-study content blocks from ADR 0006: the default export draws a `flow`
+// Renders two of the case-study content blocks: the default export draws a `flow`
 // block (a row of step boxes, one gate or dashed step at most changing its style) and the named
 // export `CaseStudyHubDiagram` draws a `link-diagram` block (one hub connected to a left node and
 // a column of right-hand nodes).

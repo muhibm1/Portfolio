@@ -1,4 +1,4 @@
-// Renders a case-study `table` block (ADR 0006): a column header row with `<th scope="col">`, and
+// Renders a case-study `table` block: a column header row with `<th scope="col">`, and
 // body rows whose `emphasis` flag bolds the row (used for the configuration that shipped).
 
 /** `columns` is `[{ label, numeric? }]`, `rows` is `[{ cells, emphasis? }]`. */

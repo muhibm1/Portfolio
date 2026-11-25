@@ -1,8 +1,8 @@
 import { onDarkSolidButtonClasses } from './buttonClasses';
 import { h2Classes, wrapClasses } from './lookClasses';
 
-// The dark contact band at the foot of every case-study page (ADR 0006). `id="contact"` is the
-// jump target for the header's Contact link (R133), so it stays on the element itself.
+// The dark contact band at the foot of every case-study page `id="contact"` is the
+// jump target for the header's Contact link, so it stays on the element itself.
 
 /** `heading` is the case study's `contactHeading`; `email` is `personal.email`. */
 export default function ContactBand({ heading, email }) {

@@ -5,8 +5,7 @@ import { eyebrowClasses } from './lookClasses';
 /**
  * The hero of the Look: eyebrow, the one big heading, the call to action with the email address,
  * and the lead paragraph. On a wide screen the lead sits beside the heading; on a tablet or phone
- * it follows the call to action. The AgentOps replay was taken off on 2026-11-24 (owner), since
- * AgentOps no longer leads. Copy comes straight from home.hero.
+ * it follows the call to action. Copy comes straight from home.hero.
  */
 export default function HomeHero({ hero, email }) {
   return (

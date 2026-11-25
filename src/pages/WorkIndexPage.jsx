@@ -9,8 +9,8 @@ import { pageMetaFor } from '../pageMeta';
 const PAGE_HEADING = pageMetaFor('/work').title.split(' | ')[0];
 
 /**
- * The /work index: the listed case studies in R127 order using the home card style, the featured
- * ones first as wide cards, then "More work" (R134). No projects, demos, filter chips or ?type handling;
+ * The /work index: the listed case studies using the home card style, the featured
+ * ones first as wide cards, then "More work". No projects, demos, filter chips or ?type handling;
  * the plan names no heading of its own for this page, so an sr-only h1 gives it one for
  * assistive tech without changing the visual design.
  */

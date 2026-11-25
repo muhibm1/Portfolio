@@ -13,7 +13,7 @@ import DeploymentSummary from './DeploymentSummary';
 
 // Literal Tailwind class names, one per supported column count, so Tailwind's scanner sees them
 // at build time. A `style={{ gridTemplateColumns }}` here would override the mobile `grid-cols-*`
-// classes below at every breakpoint, not just the desktop one (R-review HIGH).
+// classes below at every breakpoint, not just the desktop one.
 const DESKTOP_COLUMNS_CLASS = {
   1: 'md:grid-cols-1',
   2: 'md:grid-cols-2',
@@ -21,15 +21,14 @@ const DESKTOP_COLUMNS_CLASS = {
   4: 'md:grid-cols-4',
 };
 
-// Every link off this page to a repository points at a public repository; the aria-label says so.
 function githubSnapshotLabel(linkText) {
   return `${linkText} on GitHub, public repository`;
 }
 
 /**
- * The /work/:slug page: one case study rendered as a single scroll (ADR 0006), or the not-found
+ * The /work/:slug page: one case study rendered as a single scroll, or the not-found
  * page for any other slug. Every section body is a list of content blocks whose shape is fixed by
- * the data module; an unknown block type throws rather than rendering nothing (R135, R136).
+ * the data module; an unknown block type throws rather than rendering nothing.
  */
 export default function CaseStudyPage() {
   const { slug } = useParams();
@@ -39,7 +38,7 @@ export default function CaseStudyPage() {
 
   const caseStudy = caseStudies[position];
   const { previous, next } = neighboursOf(caseStudies, caseStudy);
-  // A section flagged hidden stays in the data but is not shown (walkthroughs, owner 2026-11-24).
+  // A section flagged hidden stays in the data but is not shown.
   const shownSections = caseStudy.sections.filter((section) => !section.hidden);
 
   return (
@@ -73,7 +72,7 @@ export default function CaseStudyPage() {
   );
 }
 
-// The listed case studies before and after this one, wrapping at both ends (R127). A study with
+// The listed case studies before and after this one, wrapping at both ends. A study with
 // `listed: false` is never offered as a neighbour; its own page points at the last and first
 // listed studies, so nothing links to an unlisted page.
 function neighboursOf(caseStudies, caseStudy) {
@@ -229,7 +228,7 @@ function Block({ block }) {
 }
 
 // Splits a paragraph's text around the single occurrence of `link.text` and wraps it in an
-// external anchor (interface (f), R153). A repeated or missing occurrence would silently move
+// external anchor. A repeated or missing occurrence would silently move
 // or drop the link on a copy edit, so both throw a readable error at render instead.
 function ParagraphWithLink({ text, link }) {
   const parts = text.split(link.text);
